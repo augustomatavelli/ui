@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 // material-ui
@@ -12,7 +12,6 @@ import { Formik } from "formik";
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
 
-import useAuth from "hooks/useAuth";
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -20,11 +19,14 @@ import { strengthColor, strengthIndicator } from "utils/password-strength";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import JWTContext from "contexts/JWTContext";
+import InputMask from "react-input-mask";
 
 // ============================|| JWT - REGISTER ||============================ //
 
 const AuthRegister = () => {
-	const { register } = useAuth();
+	const { register } = useContext(JWTContext);
+
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
@@ -50,8 +52,6 @@ const AuthRegister = () => {
 		changePassword("");
 	}, []);
 
-	//TODO: Verificar quais os tipos de dados permitidos para cada input (number, text, email, etc)
-	//TODO: colocar máscaras nos inputs
 	return (
 		<>
 			<Formik
@@ -67,19 +67,30 @@ const AuthRegister = () => {
 				validationSchema={Yup.object().shape({
 					name: Yup.string().max(255).required("Nome é obrigatório"),
 					email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
-					phone: Yup.string().max(255).required("Celular é obrigatório"),
-					doc: Yup.string().max(255).required("Documento é obrigatório"),
+					phone: Yup.string()
+						.transform((value) => value.replace(/\D/g, ""))
+						.matches(/^\d{11}$/, "Número de celular inválido")
+						.required("Celular é obrigatório"),
+					doc: Yup.string()
+						.transform((value) => value.replace(/\D/g, ""))
+						.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
+						.required("Documento é obrigatório"),
 					pilot: isPilot ? Yup.string().max(255).required("Número do registro é obrigatório") : Yup.string().max(255),
-					password: Yup.string().max(255).required("Senha é obrigatória"),
+					password: Yup.string()
+						.required("Senha é obrigatória")
+						.matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
+						.matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula")
+						.matches(/\d/, "A senha deve conter pelo menos um número")
+						.matches(/[\W_]/, "A senha deve conter pelo menos um caractere especial"),
 				})}
 				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
 					try {
 						const payload = {
 							name: values.name,
 							email: values.email,
-							phone: values.phone,
-							cpf: typeDoc === "cpf" ? values.doc : "",
-							cnpj: typeDoc === "cnpj" ? values.doc : "",
+							phone: values.phone.replace(/\D/g, ""),
+							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
+							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
 							type: isPilot ? "P" : "C",
 							pilotRegister: values.pilot,
 							password: values.password,
@@ -106,10 +117,13 @@ const AuthRegister = () => {
 							}, 1500);
 						}
 					} catch (err) {
+						setErrors({});
 						console.error(err);
+						const message =
+							err.response.status === 409 ? "Usuário já cadastrado!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
-							setErrors({ submit: err.message });
+							setErrors({ submit: message });
 							setSubmitting(false);
 						}
 					}
@@ -163,22 +177,14 @@ const AuthRegister = () => {
 							</Grid>
 							<Grid item xs={12}>
 								<Stack spacing={1}>
+									<InputLabel htmlFor="doc-signup">Documento</InputLabel>
 									<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
 										<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
 										<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
 									</RadioGroup>
-									<OutlinedInput
-										fullWidth
-										error={Boolean(touched.doc && errors.doc)}
-										id="doc-signup"
-										type="doc"
-										value={values.doc}
-										name="doc"
-										onBlur={handleBlur}
-										onChange={handleChange}
-										placeholder="Digite o número do documento"
-										inputProps={{}}
-									/>
+									<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+										{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento" />}
+									</InputMask>
 									{touched.doc && errors.doc && (
 										<FormHelperText error id="helper-text-doc-signup">
 											{errors.doc}
@@ -189,18 +195,9 @@ const AuthRegister = () => {
 							<Grid item xs={12}>
 								<Stack spacing={1}>
 									<InputLabel htmlFor="phone-signup">Celular</InputLabel>
-									<OutlinedInput
-										fullWidth
-										error={Boolean(touched.phone && errors.phone)}
-										id="phone-login"
-										type="phone"
-										value={values.phone}
-										name="phone"
-										onBlur={handleBlur}
-										onChange={handleChange}
-										placeholder="Digite seu celular"
-										inputProps={{}}
-									/>
+									<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur}>
+										{() => <OutlinedInput fullWidth error={Boolean(touched.phone && errors.phone)} id="phone-signup" name="phone" placeholder="Digite o número do celular" />}
+									</InputMask>
 									{touched.phone && errors.phone && (
 										<FormHelperText error id="helper-text-phone-signup">
 											{errors.phone}
@@ -225,7 +222,7 @@ const AuthRegister = () => {
 												name="pilot"
 												onBlur={handleBlur}
 												onChange={handleChange}
-												placeholder="Registro de piloto"
+												placeholder="Digite o RAB"
 												inputProps={{}}
 											/>
 											{touched.pilot && errors.pilot && (
@@ -268,7 +265,7 @@ const AuthRegister = () => {
 										</FormHelperText>
 									)}
 								</Stack>
-								<FormControl fullWidth sx={{ mt: 2 }}>
+								{/* <FormControl fullWidth sx={{ mt: 2 }}>
 									<Grid container spacing={2} alignItems="center">
 										<Grid item>
 											<Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: "7px" }} />
@@ -279,7 +276,7 @@ const AuthRegister = () => {
 											</Typography>
 										</Grid>
 									</Grid>
-								</FormControl>
+								</FormControl> */}
 							</Grid>
 							{errors.submit && (
 								<Grid item xs={12}>

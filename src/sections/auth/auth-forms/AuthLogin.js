@@ -10,18 +10,20 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 
 // project import
-import useAuth from "hooks/useAuth";
 import useScriptRef from "hooks/useScriptRef";
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import JWTContext from "contexts/JWTContext";
+import { openSnackbar } from "store/reducers/snackbar";
 
 // ============================|| JWT - LOGIN ||============================ //
 
 const AuthLogin = ({ isDemo = false }) => {
-	const { login } = useAuth();
+	const { login } = React.useContext(JWTContext);
+
 	const scriptedRef = useScriptRef();
 
 	const [showPassword, setShowPassword] = React.useState(false);
@@ -57,10 +59,12 @@ const AuthLogin = ({ isDemo = false }) => {
 							setSubmitting(false);
 						}
 					} catch (err) {
+						setErrors({});
 						console.error(err);
+						const message = err.response.status === 404 ? "Usuário não encontrado!" : "Erro ao fazer login!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
-							setErrors({ submit: err.message });
+							setErrors({ submit: message });
 							setSubmitting(false);
 						}
 					}
