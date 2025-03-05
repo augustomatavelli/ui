@@ -100,7 +100,6 @@ const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
 const AuthForgotPassword = Loadable(lazy(() => import("pages/auth/forgot-password")));
 const AuthResetPassword = Loadable(lazy(() => import("pages/auth/reset-password")));
-const AuthCheckMail = Loadable(lazy(() => import("pages/auth/check-mail")));
 const AuthCodeVerification = Loadable(lazy(() => import("pages/auth/code-verification")));
 
 const MaintenanceError = Loadable(lazy(() => import("pages/maintenance/404")));
@@ -530,10 +529,6 @@ const MainRoutes = {
 				{
 					path: "reset-password",
 					element: <AuthResetPassword />,
-				},
-				{
-					path: "check-mail",
-					element: <AuthCheckMail />,
 				},
 				{
 					path: "code-verification",

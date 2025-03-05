@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 
 // third-party
 import { Chance } from "chance";
@@ -60,6 +60,7 @@ export const JWTProvider = ({ children }) => {
 	const { authAxios } = UseAxios();
 
 	const [state, dispatch] = useReducer(authReducer, initialState);
+	const [user, setUser] = useState({});
 
 	useEffect(() => {
 		const init = async () => {
@@ -94,8 +95,9 @@ export const JWTProvider = ({ children }) => {
 
 	const login = async (data) => {
 		const response = await authAxios.post("/auth/login", data);
-		const { token, userId } = response.data;
+		const { token, userId, name } = response.data;
 		setSession(token);
+		setUser({ name: name });
 		dispatch({
 			type: LOGIN,
 			payload: {
@@ -131,7 +133,7 @@ export const JWTProvider = ({ children }) => {
 		return <Loader />;
 	}
 
-	return <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>;
+	return <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile, user }}>{children}</JWTContext.Provider>;
 };
 
 JWTProvider.propTypes = {

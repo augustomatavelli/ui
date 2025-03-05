@@ -122,7 +122,10 @@ const AuthLogin = ({ isDemo = false }) => {
 									)}
 								</Stack>
 							</Grid>
-
+							{/* //TODO: fluxo da recuperação de senha: 
+							//1. ao clicar no botão esqueceu sua senha, o usuário é redirecionado para a página forgot-password
+							//2. usuário vai para a página code-verification
+							//3. usuário vai para a página reset-password */}
 							<Grid item xs={12} sx={{ mt: -1 }}>
 								<Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
 									<Link variant="h6" component={RouterLink} to={isDemo ? "/auth/forgot-password" : "/forgot-password"} color="text.primary">
