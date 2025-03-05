@@ -145,12 +145,9 @@ const Profile = () => {
 										<Grid container justifyContent="space-between" alignItems="center">
 											<Grid item>
 												<Stack direction="row" spacing={1.25} alignItems="center">
-													<Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+													<Avatar alt="profile user" size="md" name={user.name} />
 													<Stack>
 														<Typography variant="h6">{user?.name}</Typography>
-														<Typography variant="body2" color="textSecondary">
-															UI/UX Designer
-														</Typography>
 													</Stack>
 												</Stack>
 											</Grid>
