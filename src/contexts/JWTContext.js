@@ -95,8 +95,10 @@ export const JWTProvider = ({ children }) => {
 
 	const login = async (data) => {
 		const response = await authAxios.post("/auth/login", data);
-		const { token, userId, name } = response.data;
+		const { token, userId, name, userType, userStatus } = response.data;
 		setSession(token);
+		localStorage.setItem("type", userType);
+		localStorage.setItem("status", userStatus);
 		setUser({ name: name });
 		dispatch({
 			type: LOGIN,
@@ -109,8 +111,10 @@ export const JWTProvider = ({ children }) => {
 
 	const register = async (data) => {
 		const response = await authAxios.post("/users", data);
-		const { token, userId } = response.data;
+		const { token, userId, userType, userStatus } = response.data;
 		setSession(token);
+		localStorage.setItem("type", userType);
+		localStorage.setItem("status", userStatus);
 		dispatch({
 			type: LOGIN,
 			payload: {
