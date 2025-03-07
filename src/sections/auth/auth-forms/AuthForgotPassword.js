@@ -14,6 +14,8 @@ import AnimateButton from "components/@extended/AnimateButton";
 
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
+import { useContext } from "react";
+import JWTContext from "contexts/JWTContext";
 
 // ============================|| FIREBASE - FORGOT PASSWORD ||============================ //
 
@@ -21,7 +23,7 @@ const AuthForgotPassword = () => {
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
-	const { isLoggedIn, resetPassword } = useAuth();
+	const { isLoggedIn, resetPassword } = useContext(JWTContext);
 
 	return (
 		<>

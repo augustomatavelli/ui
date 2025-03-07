@@ -10,7 +10,7 @@ const UseAxios = () => {
 
 	const insertAuthorization = async (config) => {
 		const cookies = parseCookies();
-		const token = cookies["usuario.token"];
+		const token = cookies["sessionToken"];
 
 		if (token) {
 			config.headers["Authorization"] = `Bearer ${token}`;
@@ -21,7 +21,7 @@ const UseAxios = () => {
 
 	const logout = async () => {
 		localStorage.clear();
-		destroyCookie(null, "usuario.token", {
+		destroyCookie(null, "sessionToken", {
 			path: "/",
 		});
 	};

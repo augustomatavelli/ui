@@ -16,13 +16,12 @@ import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
-import JWTContext from "contexts/JWTContext";
-import { openSnackbar } from "store/reducers/snackbar";
+import useAuth from "hooks/useAuth";
 
 // ============================|| JWT - LOGIN ||============================ //
 
 const AuthLogin = ({ isDemo = false }) => {
-	const { login } = React.useContext(JWTContext);
+	const { login } = useAuth();
 
 	const scriptedRef = useScriptRef();
 

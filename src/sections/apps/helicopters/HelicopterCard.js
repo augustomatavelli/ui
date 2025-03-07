@@ -166,7 +166,7 @@ const HelicopterCard = ({ customer }) => {
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddHelicopter customer={customer} onCancel={handleAdd} />
 			</Dialog>
-			<CustomerPreview customer={customer} open={open} onClose={handleClose} />
+			{/* 	<CustomerPreview customer={customer} open={open} onClose={handleClose} /> */}
 			{/* <AlertCustomerDelete title={customer.fatherName} open={openAlert} handleClose={handleAlertClose} /> */}
 		</>
 	);

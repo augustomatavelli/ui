@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
 // material-ui
@@ -20,6 +20,7 @@ import useAuth from "hooks/useAuth";
 // assets
 import avatar1 from "assets/images/users/avatar-1.png";
 import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import AuthContext from "contexts/AuthContext";
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -49,7 +50,8 @@ const Profile = () => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 
-	const { logout, user } = useAuth();
+	const { logout } = useAuth();
+	const { user } = useContext(AuthContext);
 	const handleLogout = async () => {
 		try {
 			await logout();

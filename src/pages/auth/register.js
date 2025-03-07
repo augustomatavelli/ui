@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 
 // material-ui
 import { Grid, Stack, Typography } from "@mui/material";
 
 // project import
-import useAuth from "hooks/useAuth";
 import AuthWrapper from "sections/auth/AuthWrapper";
 import FirebaseRegister from "sections/auth/auth-forms/AuthRegister";
+import AuthContext from "contexts/AuthContext";
 
 // ================================|| REGISTER ||================================ //
 
 const Register = () => {
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn } = useContext(AuthContext);
 
 	return (
 		<AuthWrapper>

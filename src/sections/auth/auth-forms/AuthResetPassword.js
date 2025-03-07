@@ -7,12 +7,12 @@ import { Box, Button, FormControl, FormHelperText, Grid, InputAdornment, InputLa
 // third party
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { useContext } from "react";
 
 // project import
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
 
-import useAuth from "hooks/useAuth";
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -20,6 +20,7 @@ import { strengthColor, strengthIndicator } from "utils/password-strength";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import AuthContext from "contexts/AuthContext";
 
 // ============================|| STATIC - RESET PASSWORD ||============================ //
 
@@ -27,7 +28,7 @@ const AuthResetPassword = () => {
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn } = useContext(AuthContext);
 
 	const [level, setLevel] = useState();
 	const [showPassword, setShowPassword] = useState(false);
