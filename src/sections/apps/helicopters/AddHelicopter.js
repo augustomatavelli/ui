@@ -47,6 +47,7 @@ import { openSnackbar } from "store/reducers/snackbar";
 
 // assets
 import { CameraOutlined, DeleteFilled } from "@ant-design/icons";
+import useHelicopter from "hooks/useHelicopter";
 
 // constant
 const getInitialValues = (helicopter) => {
@@ -75,10 +76,13 @@ const allStatus = ["Complicated", "Single", "Relationship"];
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddHelicopter = ({ helicopter, onCancel }) => {
+	const { createHelicopter } = useHelicopter();
+
 	const [openAlert, setOpenAlert] = useState(false);
 	const [isMembership, setIsMembership] = useState(true);
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
+	const [typeDoc, setTypeDoc] = useState("cpf");
 
 	useEffect(() => {
 		if (selectedImage) {
@@ -112,15 +116,21 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 	const formik = useFormik({
 		initialValues: getInitialValues(helicopter),
 		validationSchema: HelicopterSchema,
-		onSubmit: (values, { setSubmitting, setErrors }) => {
+		onSubmit: async (values, { setSubmitting, setErrors }) => {
 			try {
-				/* const newHelicopter = {
-					name: values.name,
-					email: values.email,
-					location: values.location,
-					orderStatus: values.orderStatus,
+				const { rab, category, image, membership, name, email, phone } = values;
+				const newHelicopter = {
+					rab: rab,
+					category: category,
+					image: image,
+					membership: membership,
+					name: name,
+					email: email,
+					phone: phone,
+					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
+					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
 				};
-				dispatch(createHelicopter(newHelicopter)); */
+				await createHelicopter(newHelicopter);
 				dispatch(
 					openSnackbar({
 						open: true,

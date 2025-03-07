@@ -22,6 +22,7 @@ import { ConfigProvider } from "contexts/ConfigContext";
 import { JWTProvider } from "contexts/JWTContext";
 import { AuthProvider } from "contexts/AuthContext";
 import reportWebVitals from "./reportWebVitals";
+import { HelicopterProvider } from "contexts/HelicopterContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -34,7 +35,9 @@ root.render(
 				<BrowserRouter>
 					<JWTProvider>
 						<AuthProvider>
-							<App />
+							<HelicopterProvider>
+								<App />
+							</HelicopterProvider>
 						</AuthProvider>
 					</JWTProvider>
 				</BrowserRouter>

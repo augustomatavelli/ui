@@ -26,7 +26,7 @@ import useAuth from "hooks/useAuth";
 // ============================|| JWT - REGISTER ||============================ //
 
 const AuthRegister = () => {
-	const { register } = useAuth();
+	const { createUser } = useAuth();
 
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
@@ -97,7 +97,7 @@ const AuthRegister = () => {
 							password: values.password,
 						};
 
-						await register(payload);
+						await createUser(payload);
 						if (scriptedRef.current) {
 							setStatus({ success: true });
 							setSubmitting(false);

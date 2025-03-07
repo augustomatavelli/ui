@@ -1,13 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
-// auth provider
 import AuthContext from "contexts/AuthContext";
 import UseAxios from "./useAxios";
-
-// import AuthContext from 'contexts/FirebaseContext';
-// import AuthContext from 'contexts/AWSCognitoContext';
-// import AuthContext from 'contexts/Auth0Context';
 
 // ==============================|| AUTH HOOKS ||============================== //
 
@@ -28,7 +22,7 @@ const useAuth = () => {
 		}, 2000);
 	};
 
-	const register = async (data) => {
+	const createUser = async (data) => {
 		const response = await authAxios.post("/users", data);
 		const { token, userType, userStatus } = response.data;
 		setSession(token);
@@ -39,7 +33,7 @@ const useAuth = () => {
 	const logout = () => {
 		setSession(null);
 	};
-	return { login, register, logout };
+	return { login, createUser, logout };
 };
 
 export default useAuth;
