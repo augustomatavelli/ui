@@ -69,7 +69,7 @@ const getInitialValues = (helicopter) => {
 	return newHelicopter;
 };
 
-const allStatus = ["Complicated", "Single", "Relationship"];
+const allStatus = ["A", "B", "C", "D", "E"];
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
@@ -106,7 +106,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 
 	const HelicopterSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
-		category: Yup.string().required("Status is required"),
+		category: Yup.string().required("Categoria é obrigatório"),
 		name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))

@@ -18,60 +18,50 @@ import AddHelicopterCard from "sections/apps/helicopters/AddHelicopterCard";
 import HelicopterContext from "contexts/HelicopterContext";
 import useHelicopter from "hooks/useHelicopter";
 
-// ==============================|| CUSTOMER - CARD ||============================== //
-
 const allColumns = [
 	{
 		id: 1,
-		header: "Default",
+		header: "Padrão",
 	},
 	{
 		id: 2,
-		header: "Customer Name",
+		header: "RAB",
 	},
 	{
 		id: 3,
-		header: "Email",
+		header: "Categoria",
 	},
 	{
 		id: 4,
-		header: "Contact",
+		header: "Nome responsável",
 	},
 	{
 		id: 5,
-		header: "Age",
-	},
-	{
-		id: 6,
-		header: "Country",
-	},
-	{
-		id: 7,
-		header: "Status",
+		header: "Email responsável",
 	},
 ];
 
 const Dashboard = () => {
 	const { findAllHelicopters } = useHelicopter();
 
-	const { helicopters } = useContext(HelicopterContext);
+	const { helicopters, setHelicopters } = useContext(HelicopterContext);
 
 	const data = useMemo(() => makeData(4), []);
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-	const [sortBy, setSortBy] = useState("Default");
+	const [sortBy, setSortBy] = useState("");
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [add, setAdd] = useState(false);
-	const [customer, setCustomer] = useState(null);
-	const [userCard, setUserCard] = useState([]);
+	const [helicopter, setHelicopter] = useState(null);
 	const [page, setPage] = useState(1);
+
 	const handleChange = (event) => {
 		setSortBy(event.target.value);
 	};
 
 	const handleAdd = () => {
 		setAdd(!add);
-		if (customer && !add) setCustomer(null);
+		if (helicopter && !add) setHelicopter(null);
 	};
 
 	// search
@@ -83,7 +73,7 @@ const Dashboard = () => {
 				return value;
 			}
 		});
-		setUserCard(newData);
+		setHelicopters(newData);
 	}, [globalFilter, data]);
 
 	const PER_PAGE = 10;
@@ -97,7 +87,7 @@ const Dashboard = () => {
 
 	useEffect(() => {
 		findAllHelicopters();
-	}, []);
+	}, [helicopters]);
 
 	return (
 		<>
@@ -114,10 +104,10 @@ const Dashboard = () => {
 									inputProps={{ "aria-label": "Without label" }}
 									renderValue={(selected) => {
 										if (!selected) {
-											return <Typography variant="subtitle1">Sort By</Typography>;
+											return <Typography variant="subtitle1">Ordenar por</Typography>;
 										}
 
-										return <Typography variant="subtitle2">Sort by ({sortBy})</Typography>;
+										return <Typography variant="subtitle2">Ordenar por ({sortBy})</Typography>;
 									}}
 								>
 									{allColumns.map((column) => {
@@ -141,15 +131,14 @@ const Dashboard = () => {
 				{helicopters.length > 0 ? (
 					_DATA
 						.currentData()
-						/* .sort(function (a, b) {
-							if (sortBy === "Customer Name") return a.fatherName.localeCompare(b.fatherName);
-							if (sortBy === "Email") return a.email.localeCompare(b.email);
-							if (sortBy === "Contact") return a.contact.localeCompare(b.contact);
-							if (sortBy === "Age") return b.age < a.age ? 1 : -1;
-							if (sortBy === "Country") return a.country.localeCompare(b.country);
-							if (sortBy === "Status") return a.status.localeCompare(b.status);
+						.sort(function (a, b) {
+							if (sortBy === "Padrão") return b.id_helicopter < a.id_helicopter ? 1 : -1;
+							if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
+							if (sortBy === "Categoria") return a.category.localeCompare(b.category);
+							if (sortBy === "Email responsável") return a.email.localeCompare(b.email);
+							if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);
 							return a;
-						}) */
+						})
 						.map((helicopter, index) => (
 							<Slide key={helicopter.id_helicopter} direction="up" in={true}>
 								<Grid item xs={12} sm={6} lg={3}>
@@ -165,10 +154,9 @@ const Dashboard = () => {
 				<Pagination count={count} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>
 
-			{/* add customer dialog */}
-			{/* <Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddHelicopter customer={customer} onCancel={handleAdd} />
-			</Dialog> */}
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+				<AddHelicopter helicopter={helicopter} onCancel={handleAdd} />
+			</Dialog>
 		</>
 	);
 };
