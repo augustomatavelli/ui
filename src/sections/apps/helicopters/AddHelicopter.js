@@ -20,9 +20,7 @@ import {
 	OutlinedInput,
 	Select,
 	Stack,
-	Switch,
 	TextField,
-	Tooltip,
 	Typography,
 	RadioGroup,
 	FormControlLabel,
@@ -39,15 +37,15 @@ import { useFormik, Form, FormikProvider } from "formik";
 // project imports
 /* import AlertCustomerDelete from "./AlertCustomerDelete"; */
 import Avatar from "components/@extended/Avatar";
-import IconButton from "components/@extended/IconButton";
 
 import { ThemeMode } from "config";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
 // assets
-import { CameraOutlined, DeleteFilled } from "@ant-design/icons";
+import { CameraOutlined } from "@ant-design/icons";
 import useHelicopter from "hooks/useHelicopter";
+import InputMask from "react-input-mask";
 
 // constant
 const getInitialValues = (helicopter) => {
@@ -95,6 +93,15 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 		onCancel();
 	};
 
+	async function readFile(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
 	const theme = useTheme();
 
 	const HelicopterSchema = Yup.object().shape({
@@ -118,17 +125,19 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 		validationSchema: HelicopterSchema,
 		onSubmit: async (values, { setSubmitting, setErrors }) => {
 			try {
-				const { rab, category, image, membership, name, email, phone } = values;
+				const { rab, category, membership, name, email, doc, phone } = values;
+				let base64Image = "";
+				base64Image = await readFile(selectedImage);
 				const newHelicopter = {
 					rab: rab,
 					category: category,
-					image: image,
+					image: selectedImage ? base64Image : "",
 					membership: membership,
 					name: name,
 					email: email,
 					phone: phone,
-					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
-					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
+					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
+					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 				};
 				await createHelicopter(newHelicopter);
 				dispatch(
@@ -151,7 +160,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 		},
 	});
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } = formik;
+	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
 
 	return (
 		<>
@@ -191,7 +200,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 											>
 												<Stack spacing={0.5} alignItems="center">
 													<CameraOutlined style={{ color: theme.palette.secondary.lighter, fontSize: "2rem" }} />
-													<Typography sx={{ color: "secondary.lighter" }}>Upload</Typography>
+													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
 												</Stack>
 											</Box>
 										</FormLabel>
@@ -252,16 +261,20 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 											</Stack>
 										</Grid>
 										<Grid item xs={12}>
-											<Stack spacing={1.25}>
-												<InputLabel htmlFor="doc">Documento do responsável (CPF ou CNPJ)</InputLabel>
-												<TextField
-													fullWidth
-													id="doc"
-													placeholder="Digite o documento do responsável"
-													{...getFieldProps("doc")}
-													error={Boolean(touched.doc && errors.doc)}
-													helperText={touched.doc && errors.doc}
-												/>
+											<Stack spacing={1}>
+												<InputLabel htmlFor="doc-signup">Documento do responsável</InputLabel>
+												<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
+													<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
+													<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
+												</RadioGroup>
+												<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+													{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento" />}
+												</InputMask>
+												{touched.doc && errors.doc && (
+													<FormHelperText error id="helper-text-doc-signup">
+														{errors.doc}
+													</FormHelperText>
+												)}
 											</Stack>
 										</Grid>
 										<Grid item xs={12}>
@@ -278,16 +291,16 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 											</Stack>
 										</Grid>
 										<Grid item xs={12}>
-											<Stack spacing={1.25}>
-												<InputLabel htmlFor="phone">Celular do responsável</InputLabel>
-												<TextField
-													fullWidth
-													id="phone"
-													placeholder="Digite o celular do responsável"
-													{...getFieldProps("phone")}
-													error={Boolean(touched.phone && errors.phone)}
-													helperText={touched.phone && errors.phone}
-												/>
+											<Stack spacing={1}>
+												<InputLabel htmlFor="phone-signup">Celular</InputLabel>
+												<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur}>
+													{() => <OutlinedInput fullWidth error={Boolean(touched.phone && errors.phone)} id="phone-signup" name="phone" placeholder="Digite o número do celular" />}
+												</InputMask>
+												{touched.phone && errors.phone && (
+													<FormHelperText error id="helper-text-phone-signup">
+														{errors.phone}
+													</FormHelperText>
+												)}
 											</Stack>
 										</Grid>
 										<Grid item xs={12}>

@@ -35,8 +35,9 @@ const UseAxios = () => {
 	};
 
 	authAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
-
 	authAxios.interceptors.response.use((response) => response, invalidAuthorization);
+	publicAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
+	publicAxios.interceptors.response.use((response) => response, invalidAuthorization);
 
 	return { authAxios, logout, publicAxios };
 };

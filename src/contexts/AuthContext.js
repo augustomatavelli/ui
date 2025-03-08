@@ -53,7 +53,6 @@ export const AuthProvider = ({ children }) => {
 		const init = async () => {
 			try {
 				const sessionToken = window.localStorage.getItem("sessionToken");
-				console.log(sessionToken, user);
 				if (sessionToken && verifyToken(sessionToken)) {
 					setSession(sessionToken);
 					dispatch({
