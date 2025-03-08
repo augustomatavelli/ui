@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useContext } from "react";
 
 // material-ui
 import { Grid, Stack, useMediaQuery, Button, FormControl, Select, MenuItem, Box, Dialog, Slide, Pagination, Typography } from "@mui/material";
@@ -15,6 +15,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import HelicopterCard from "sections/apps/helicopters/HelicopterCard";
 import AddHelicopter from "sections/apps/helicopters/AddHelicopter";
 import AddHelicopterCard from "sections/apps/helicopters/AddHelicopterCard";
+import HelicopterContext from "contexts/HelicopterContext";
+import useHelicopter from "hooks/useHelicopter";
 
 // ==============================|| CUSTOMER - CARD ||============================== //
 
@@ -50,13 +52,17 @@ const allColumns = [
 ];
 
 const Dashboard = () => {
+	const { findAllHelicopters } = useHelicopter();
+
+	const { helicopters } = useContext(HelicopterContext);
+
 	const data = useMemo(() => makeData(4), []);
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
 	const [sortBy, setSortBy] = useState("Default");
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [add, setAdd] = useState(false);
-	const [helicopter, setCustomer] = useState(null);
+	const [customer, setCustomer] = useState(null);
 	const [userCard, setUserCard] = useState([]);
 	const [page, setPage] = useState(1);
 	const handleChange = (event) => {
@@ -65,7 +71,7 @@ const Dashboard = () => {
 
 	const handleAdd = () => {
 		setAdd(!add);
-		if (helicopter && !add) setCustomer(null);
+		if (customer && !add) setCustomer(null);
 	};
 
 	// search
@@ -81,14 +87,17 @@ const Dashboard = () => {
 	}, [globalFilter, data]);
 
 	const PER_PAGE = 10;
-
-	const count = Math.ceil(userCard.length / PER_PAGE);
-	const _DATA = usePagination(userCard, PER_PAGE);
+	const count = Math.ceil(helicopters.length / PER_PAGE);
+	const _DATA = usePagination(helicopters, PER_PAGE);
 
 	const handleChangePage = (e, p) => {
 		setPage(p);
 		_DATA.jump(p);
 	};
+
+	useEffect(() => {
+		findAllHelicopters();
+	}, []);
 
 	return (
 		<>
@@ -129,10 +138,10 @@ const Dashboard = () => {
 			</Box>
 			<Grid container spacing={3}>
 				<AddHelicopterCard />
-				{userCard.length > 0 ? (
+				{helicopters.length > 0 ? (
 					_DATA
 						.currentData()
-						.sort(function (a, b) {
+						/* .sort(function (a, b) {
 							if (sortBy === "Customer Name") return a.fatherName.localeCompare(b.fatherName);
 							if (sortBy === "Email") return a.email.localeCompare(b.email);
 							if (sortBy === "Contact") return a.contact.localeCompare(b.contact);
@@ -140,11 +149,11 @@ const Dashboard = () => {
 							if (sortBy === "Country") return a.country.localeCompare(b.country);
 							if (sortBy === "Status") return a.status.localeCompare(b.status);
 							return a;
-						})
-						.map((user, index) => (
-							<Slide key={index} direction="up" in={true} timeout={50}>
+						}) */
+						.map((helicopter, index) => (
+							<Slide key={helicopter.id_helicopter} direction="up" in={true}>
 								<Grid item xs={12} sm={6} lg={3}>
-									<HelicopterCard customer={user} />
+									<HelicopterCard data={helicopter} />
 								</Grid>
 							</Slide>
 						))
@@ -157,9 +166,9 @@ const Dashboard = () => {
 			</Stack>
 
 			{/* add customer dialog */}
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddHelicopter customer={helicopter} onCancel={handleAdd} />
-			</Dialog>
+			{/* <Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+				<AddHelicopter customer={customer} onCancel={handleAdd} />
+			</Dialog> */}
 		</>
 	);
 };

@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 export const HelicopterContext = createContext({});
 
 export const HelicopterProvider = ({ children }) => {
-	return <HelicopterContext.Provider value={{}}>{children}</HelicopterContext.Provider>;
+	const [helicopters, setHelicopters] = useState([]);
+
+	return <HelicopterContext.Provider value={{ helicopters, setHelicopters }}>{children}</HelicopterContext.Provider>;
 };
 
 HelicopterProvider.propTypes = {
