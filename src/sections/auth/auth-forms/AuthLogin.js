@@ -18,6 +18,9 @@ import AnimateButton from "components/@extended/AnimateButton";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import useAuth from "hooks/useAuth";
 
+import { openSnackbar } from "store/reducers/snackbar";
+import { dispatch } from "store";
+
 // ============================|| JWT - LOGIN ||============================ //
 
 const AuthLogin = ({ isDemo = false }) => {
@@ -52,8 +55,19 @@ const AuthLogin = ({ isDemo = false }) => {
 							login: values.email,
 							password: values.password,
 						};
-						await login(payload);
+						const response = await login(payload);
 						if (scriptedRef.current) {
+							dispatch(
+								openSnackbar({
+									open: true,
+									message: response.message,
+									variant: "alert",
+									alert: {
+										color: "success",
+									},
+									close: false,
+								})
+							);
 							setStatus({ success: true });
 							setSubmitting(false);
 						}

@@ -46,6 +46,7 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { CameraOutlined } from "@ant-design/icons";
 import useHelicopter from "hooks/useHelicopter";
 import InputMask from "react-input-mask";
+import useScriptRef from "hooks/useScriptRef";
 
 // constant
 const getInitialValues = (helicopter) => {
@@ -81,6 +82,8 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
 	const [typeDoc, setTypeDoc] = useState("cpf");
+
+	const scriptedRef = useScriptRef();
 
 	useEffect(() => {
 		if (selectedImage) {
@@ -123,7 +126,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 	const formik = useFormik({
 		initialValues: getInitialValues(helicopter),
 		validationSchema: HelicopterSchema,
-		onSubmit: async (values, { setSubmitting, setErrors }) => {
+		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
 			try {
 				const { rab, category, membership, name, email, doc, phone } = values;
 				let base64Image = "";
@@ -139,21 +142,23 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 				};
-				await createHelicopter(newHelicopter);
-				dispatch(
-					openSnackbar({
-						open: true,
-						message: "Helicóptero criado com sucesso!",
-						variant: "alert",
-						alert: {
-							color: "success",
-						},
-						close: false,
-					})
-				);
-
-				setSubmitting(false);
-				onCancel();
+				const response = await createHelicopter(newHelicopter);
+				if (response) {
+					dispatch(
+						openSnackbar({
+							open: true,
+							message: response.message,
+							variant: "alert",
+							alert: {
+								color: "success",
+							},
+							close: false,
+						})
+					);
+					setStatus({ success: true });
+					setSubmitting(false);
+					onCancel();
+				}
 			} catch (error) {
 				console.error(error);
 			}

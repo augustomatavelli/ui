@@ -10,10 +10,11 @@ import { useNavigate } from "react-router";
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
-const ProfileTab = ({ handleLogout }) => {
+const ProfileTab = ({ handleLogout, setOpen }) => {
 	const navigate = useNavigate();
 
 	const handleListItemClick = () => {
+		setOpen(false);
 		navigate("/users/me");
 	};
 

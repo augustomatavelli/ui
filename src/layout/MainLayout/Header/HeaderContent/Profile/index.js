@@ -164,7 +164,7 @@ const Profile = () => {
 										</Tabs>
 									</Box>
 									<TabPanel value={value} index={0} dir={theme.direction}>
-										<ProfileTab handleLogout={handleLogout} />
+										<ProfileTab handleLogout={handleLogout} setOpen={setOpen} />
 									</TabPanel>
 								</MainCard>
 							</ClickAwayListener>

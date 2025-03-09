@@ -97,14 +97,14 @@ const AuthRegister = () => {
 							password: values.password,
 						};
 
-						await createUser(payload);
+						const response = await createUser(payload);
 						if (scriptedRef.current) {
 							setStatus({ success: true });
 							setSubmitting(false);
 							dispatch(
 								openSnackbar({
 									open: true,
-									message: "Cadastro realizado com sucesso!",
+									message: response.message,
 									variant: "alert",
 									alert: {
 										color: "success",

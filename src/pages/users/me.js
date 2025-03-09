@@ -19,6 +19,7 @@ import UserContext from "contexts/UserContext";
 
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import useUser from "hooks/useUser";
+import { useNavigate } from "react-router";
 
 // ==============================|| TAB - PERSONAL ||============================== //
 
@@ -28,6 +29,8 @@ const UserProfile = () => {
 	const { user } = useContext(UserContext);
 
 	const [showPassword, setShowPassword] = useState(false);
+
+	const navigate = useNavigate();
 
 	const typeUser = localStorage.getItem("type");
 
@@ -60,29 +63,44 @@ const UserProfile = () => {
 					submit: null,
 				}}
 				validationSchema={Yup.object().shape({
-					newPassword: Yup.string().max(255).required("Senha é obrigatória"),
+					newPassword: Yup.string()
+						.required("Senha é obrigatória")
+						.matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
+						.matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula")
+						.matches(/\d/, "A senha deve conter pelo menos um número")
+						.matches(/[\W_]/, "A senha deve conter pelo menos um caractere especial"),
 					confirmNewPassword: Yup.string()
 						.required("Senha é obrigatória")
+						.required("Senha é obrigatória")
+						.matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
+						.matches(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula")
+						.matches(/\d/, "A senha deve conter pelo menos um número")
+						.matches(/[\W_]/, "A senha deve conter pelo menos um caractere especial")
 						.test("confirmNewPassword", "As senhas devem ser iguais", (confirmNewPassword, yup) => yup.parent.newPassword === confirmNewPassword),
 				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+				onSubmit={async (values, { setErrors, setStatus, setSubmitting, setValues }) => {
 					try {
 						const { newPassword, confirmNewPassword } = values;
 						const payload = { newPassword: newPassword, confirmNewPassword: confirmNewPassword };
-						await updatePassword(payload);
-						dispatch(
-							openSnackbar({
-								open: true,
-								message: "Senha alterada com sucesso!",
-								variant: "alert",
-								alert: {
-									color: "success",
-								},
-								close: false,
-							})
-						);
-						setStatus({ success: false });
-						setSubmitting(false);
+						const response = await updatePassword(payload);
+						if (response) {
+							dispatch(
+								openSnackbar({
+									open: true,
+									message: response.message,
+									variant: "alert",
+									alert: {
+										color: "success",
+									},
+									close: false,
+								})
+							);
+							setStatus({ success: true });
+							setSubmitting(false);
+							setTimeout(() => {
+								navigate("/dashboard");
+							}, 1000);
+						}
 					} catch (err) {
 						setStatus({ success: false });
 						setErrors({ submit: err.message });
@@ -177,8 +195,8 @@ const UserProfile = () => {
 						<Divider />
 						<Box sx={{ p: 2.5 }}>
 							<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-								<Button variant="outlined" color="error">
-									Fechar
+								<Button variant="outlined" color="error" onClick={() => window.history.back()}>
+									Voltar
 								</Button>
 								<Button disabled={isSubmitting || Object.keys(errors).length !== 0} type="submit" variant="contained">
 									Salvar
