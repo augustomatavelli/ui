@@ -12,8 +12,6 @@ import MainCard from "components/MainCard";
 // assets
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 
-// ==============================|| CUSTOMER - CARD ||============================== //
-
 const HelicopterCard = ({ data }) => {
 	const { rab, category, image, membership, status, name, email, mobile } = data;
 
@@ -91,10 +89,10 @@ const HelicopterCard = ({ data }) => {
 								component="ul"
 							>
 								<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
-									<Chip color={membership === "S" ? "success" : "info"} variant="filled" size="small" label={membership === "S" ? "Mensalista" : "Não mensalista"} />
+									<Chip color={status === "A" ? "success" : "warning"} variant="filled" size="small" label={status === "A" ? "Aprovado" : "Pendente"} sx={{ fontWeight: "bold" }} />
 								</ListItem>
 								<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
-									<Chip color={status === "A" ? "success" : "warning"} variant="filled" size="small" label={status === "A" ? "Ativo" : "Pendente"} />
+									<Chip color={membership === "S" ? "primary" : "secondary"} variant="filled" size="small" label={membership === "S" ? "Mensalista" : "Avulso"} sx={{ fontWeight: "bold" }} />
 								</ListItem>
 							</Box>
 						</Box>

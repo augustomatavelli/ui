@@ -2,9 +2,6 @@ import PropTypes from "prop-types";
 // material-ui
 import { Box, Grid, Stack, Typography } from "@mui/material";
 
-// project import
-import UserCard from "./UserCard";
-
 // ==============================|| EMPTY STATE ||============================== //
 
 const EmptyUserCard = ({ title }) => {
@@ -14,7 +11,7 @@ const EmptyUserCard = ({ title }) => {
 				<Box
 					sx={{
 						p: { xs: 2.5, sm: 6 },
-						height: "100%",
+						height: "50vh",
 						display: "flex",
 						justifyContent: "center",
 						alignItems: "center",
