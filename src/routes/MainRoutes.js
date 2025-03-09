@@ -11,6 +11,9 @@ const DashboardDefault = Loadable(lazy(() => import("pages/dashboard/default")))
 const DashboardAnalytics = Loadable(lazy(() => import("pages/dashboard/analytics")));
 const Dashboard = Loadable(lazy(() => import("pages/dashboard/index")));
 
+// render - users
+const UserProfile = Loadable(lazy(() => import("pages/users/me")));
+
 // render - widget
 const WidgetStatistics = Loadable(lazy(() => import("pages/widget/statistics")));
 const WidgetData = Loadable(lazy(() => import("pages/widget/data")));
@@ -32,7 +35,7 @@ const AppInvoiceList = Loadable(lazy(() => import("pages/apps/invoice/list")));
 const AppInvoiceDetails = Loadable(lazy(() => import("pages/apps/invoice/details")));
 const AppInvoiceEdit = Loadable(lazy(() => import("pages/apps/invoice/edit")));
 
-const UserProfile = Loadable(lazy(() => import("pages/apps/profiles/user")));
+const UserProfile1 = Loadable(lazy(() => import("pages/apps/profiles/user")));
 const UserTabPersonal = Loadable(lazy(() => import("sections/apps/profiles/user/TabPersonal")));
 const UserTabPayment = Loadable(lazy(() => import("sections/apps/profiles/user/TabPayment")));
 const UserTabPassword = Loadable(lazy(() => import("sections/apps/profiles/user/TabPassword")));
@@ -141,6 +144,15 @@ const MainRoutes = {
 						{
 							path: "analytics",
 							element: <DashboardAnalytics />,
+						},
+					],
+				},
+				{
+					path: "users",
+					children: [
+						{
+							path: "me",
+							element: <UserProfile />,
 						},
 					],
 				},
@@ -259,7 +271,7 @@ const MainRoutes = {
 								},
 								{
 									path: "user",
-									element: <UserProfile />,
+									element: <UserProfile1 />,
 									children: [
 										{
 											path: "personal",

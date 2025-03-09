@@ -327,7 +327,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 								<Grid item>
 									<Stack direction="row" spacing={2} alignItems="center">
 										<Button color="error" onClick={onCancel}>
-											Cancel
+											Fechar
 										</Button>
 										<Button type="submit" variant="contained" disabled={isSubmitting}>
 											Adicionar

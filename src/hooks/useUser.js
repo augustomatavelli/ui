@@ -11,7 +11,15 @@ const useUser = () => {
 		setUser(response.data);
 	};
 
-	return { findOneUser };
+	const updatePassword = async (data) => {
+		try {
+			await publicAxios.patch("/users", data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	return { findOneUser, updatePassword };
 };
 
 export default useUser;
