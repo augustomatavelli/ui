@@ -17,13 +17,13 @@ import { ThemeMode } from "config";
 
 // assets
 import { CheckCircleFilled, ClockCircleFilled, LogoutOutlined, MinusCircleFilled, RightOutlined, SearchOutlined, SettingOutlined } from "@ant-design/icons";
-import AuthContext from "contexts/AuthContext";
+import UserContext from "contexts/UserContext";
 
 // ==============================|| CHAT DRAWER ||============================== //
 
 function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser }) {
 	const theme = useTheme();
-	const { user } = useContext(AuthContext);
+	const { user } = useContext(UserContext);
 
 	const matchDownLG = useMediaQuery(theme.breakpoints.down("lg"));
 	const drawerBG = theme.palette.mode === ThemeMode.DARK ? "dark.main" : "white";

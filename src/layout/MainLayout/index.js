@@ -17,10 +17,13 @@ import navigation from "menu-items";
 import useConfig from "hooks/useConfig";
 import { dispatch } from "store";
 import { openDrawer } from "store/reducers/menu";
+import useUser from "hooks/useUser";
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
+	const { findOneUser } = useUser();
+
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
 	const downLG = useMediaQuery(theme.breakpoints.down("lg"));
@@ -36,6 +39,10 @@ const MainLayout = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [matchDownXL]);
+
+	useEffect(() => {
+		findOneUser();
+	}, []);
 
 	return (
 		<Box sx={{ display: "flex", width: "100%" }}>

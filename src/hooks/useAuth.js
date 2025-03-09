@@ -32,6 +32,12 @@ const useAuth = () => {
 
 	const logout = () => {
 		setSession(null);
+		localStorage.clear();
+		navigate(`/login`, {
+			state: {
+				from: "",
+			},
+		});
 	};
 	return { login, createUser, logout };
 };

@@ -20,7 +20,7 @@ import useAuth from "hooks/useAuth";
 // assets
 import avatar1 from "assets/images/users/avatar-1.png";
 import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-import AuthContext from "contexts/AuthContext";
+import UserContext from "contexts/UserContext";
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -51,18 +51,9 @@ const Profile = () => {
 	const navigate = useNavigate();
 
 	const { logout } = useAuth();
-	const { user } = useContext(AuthContext);
-	const handleLogout = async () => {
-		try {
-			await logout();
-			navigate(`/login`, {
-				state: {
-					from: "",
-				},
-			});
-		} catch (err) {
-			console.error(err);
-		}
+	const { user } = useContext(UserContext);
+	const handleLogout = () => {
+		logout();
 	};
 
 	const anchorRef = useRef(null);

@@ -16,6 +16,7 @@ import AddHelicopter from "sections/apps/helicopters/AddHelicopter";
 import AddHelicopterCard from "sections/apps/helicopters/AddHelicopterCard";
 import HelicopterContext from "contexts/HelicopterContext";
 import useHelicopter from "hooks/useHelicopter";
+import useUser from "hooks/useUser";
 
 const allColumns = [
 	{
@@ -87,7 +88,7 @@ const Dashboard = () => {
 
 	useEffect(() => {
 		findAllHelicopters();
-	});
+	}, []);
 
 	return (
 		<>
