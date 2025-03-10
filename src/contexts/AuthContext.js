@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState, useEffect, useReducer, useContext } from "react";
+import { createContext, useEffect, useReducer, useContext } from "react";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
 import Loader from "components/Loader";
 import authReducer from "store/reducers/auth";
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
 	const resetAuthState = () => {};
 
-	return <AuthContext.Provider value={{ ...state, resetAuthState }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ ...state, dispatch, resetAuthState }}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {

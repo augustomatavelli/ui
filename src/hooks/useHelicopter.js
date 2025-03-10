@@ -25,7 +25,7 @@ const useHelicopter = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}
@@ -46,13 +46,11 @@ const useHelicopter = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}
 	};
-
-	
 
 	return { createHelicopter, findAllHelicopters };
 };

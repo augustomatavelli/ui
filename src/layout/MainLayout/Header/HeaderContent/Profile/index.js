@@ -155,7 +155,7 @@ const Profile = () => {
 										</Tabs>
 									</Box>
 									<TabPanel value={value} index={0} dir={theme.direction}>
-										<ProfileTab etOpen={setOpen} />
+										<ProfileTab setOpen={setOpen} />
 									</TabPanel>
 								</MainCard>
 							</ClickAwayListener>

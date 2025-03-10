@@ -24,7 +24,7 @@ const useUser = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}
@@ -45,7 +45,7 @@ const useUser = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}

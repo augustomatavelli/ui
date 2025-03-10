@@ -3,18 +3,19 @@ import { useNavigate } from "react-router-dom";
 import AuthContext, { setSession } from "contexts/AuthContext";
 import UseAxios from "./useAxios";
 import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import HelicopterContext from "contexts/HelicopterContext";
 import UserContext from "contexts/UserContext";
+import { LOGIN, LOGOUT } from "store/reducers/actions";
 
 // ==============================|| AUTH HOOKS ||============================== //
 
 const useAuth = () => {
 	const { authAxios } = UseAxios();
 
-	const { setUser, resetUserStates } = useContext(UserContext);
+	const { user, setUser, resetUserStates } = useContext(UserContext);
 	const { resetHelicopterStates } = useContext(HelicopterContext);
+	const { dispatch } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
@@ -23,6 +24,13 @@ const useAuth = () => {
 			const response = await authAxios.post("/auth/login", data);
 			const { token, name, userType, userStatus } = response.data;
 			setSession(token);
+			dispatch({
+				type: LOGIN,
+				payload: {
+					isLoggedIn: true,
+					user,
+				},
+			});
 			localStorage.setItem("type", userType);
 			localStorage.setItem("status", userStatus);
 			setUser({ name: name });
@@ -41,7 +49,7 @@ const useAuth = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}
@@ -66,7 +74,7 @@ const useAuth = () => {
 					alert: {
 						color: "error",
 					},
-					close: false,
+					close: true,
 				})
 			);
 		}
@@ -76,6 +84,12 @@ const useAuth = () => {
 		localStorage.clear();
 		resetUserStates();
 		resetHelicopterStates();
+		dispatch({
+			type: LOGOUT,
+			payload: {
+				isLoggedIn: false,
+			},
+		});
 		setTimeout(() => {
 			navigate("/login");
 		}, 1000);
