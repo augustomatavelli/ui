@@ -11,16 +11,36 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
 const HelicopterDetails = () => {
-	const { findOneHelicopterById, removeLinkUserHelicopter } = useHelicopter();
+	const { findOneHelicopterById, addLinkUserHelicopter, removeLinkUserHelicopter } = useHelicopter();
 
 	const { helicopterDetails } = useContext(HelicopterContext);
 
 	const { id } = useParams();
 
-	const { id_helicopter, rab, category, image, membership, status, name, email, mobile } = helicopterDetails;
+	const { id_helicopter, rab, category, image, membership, status, id_user_resp, name, email, mobile } = helicopterDetails;
 
-	const handleRemoveHelicopter = async () => {
+	const userId = localStorage.getItem("_userId");
+
+	const handleRemoveLinkUserHelicopter = async () => {
 		const response = await removeLinkUserHelicopter(id_helicopter);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		window.history.back();
+	};
+
+	const handleAddLinkUserHelicopter = async (userId, helicopterId) => {
+		const payload = { userId: userId, helicopterId: helicopterId };
+
+		const response = await addLinkUserHelicopter(payload);
 		dispatch(
 			openSnackbar({
 				open: true,
@@ -64,10 +84,13 @@ const HelicopterDetails = () => {
 								}}
 							/>
 							<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-								<Button variant="contained" color="primary" onClick={() => {}}>
-									Vincular
-								</Button>
-								<Button variant="contained" color="warning" onClick={handleRemoveHelicopter}>
+								{/* //TODO: só aparecer o botão caso for admin ou o responsável pelo helicóptero */}
+								{userId === id_user_resp && (
+									<Button variant="contained" color="primary" onClick={() => {}}>
+										Vincular
+									</Button>
+								)}
+								<Button variant="contained" color="warning" onClick={handleRemoveLinkUserHelicopter}>
 									Desvincular
 								</Button>
 							</Stack>

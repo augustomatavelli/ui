@@ -32,7 +32,7 @@ const UserProfile = () => {
 
 	const navigate = useNavigate();
 
-	const typeUser = localStorage.getItem("type");
+	const typeUser = localStorage.getItem("_type");
 
 	const maxDate = new Date();
 	maxDate.setFullYear(maxDate.getFullYear() - 18);

@@ -22,7 +22,7 @@ const useAuth = () => {
 	const login = async (data) => {
 		try {
 			const response = await authAxios.post("/auth/login", data);
-			const { token, name, userType, userStatus } = response.data;
+			const { token, name, userType, userId, userStatus } = response.data;
 			setSession(token);
 			dispatch({
 				type: LOGIN,
@@ -31,8 +31,9 @@ const useAuth = () => {
 					user,
 				},
 			});
-			localStorage.setItem("type", userType);
-			localStorage.setItem("status", userStatus);
+			localStorage.setItem("_userId", userId);
+			localStorage.setItem("_type", userType);
+			localStorage.setItem("_status", userStatus);
 			setUser({ name: name });
 			setTimeout(() => {
 				navigate("/helicopters/me");
@@ -58,10 +59,11 @@ const useAuth = () => {
 	const createUser = async (data) => {
 		try {
 			const response = await authAxios.post("/users", data);
-			const { token, userType, userStatus } = response.data;
+			const { token, userType, userId, userStatus } = response.data;
 			setSession(token);
-			localStorage.setItem("type", userType);
-			localStorage.setItem("status", userStatus);
+			localStorage.setItem("_userId", userId);
+			localStorage.setItem("_type", userType);
+			localStorage.setItem("_status", userStatus);
 			return response.data;
 		} catch (error) {
 			console.log(error);

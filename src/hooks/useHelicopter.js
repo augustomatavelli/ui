@@ -73,9 +73,9 @@ const useHelicopter = () => {
 		}
 	};
 
-	const removeLinkUserHelicopter = async (helicopterId) => {
+	const addLinkUserHelicopter = async (data) => {
 		try {
-			const response = await publicAxios.delete(`/helicopters/link/${helicopterId}`);
+			const response = await publicAxios.post(`/helicopters/link/add`, data);
 			return response.data;
 		} catch (error) {
 			console.log(error);
@@ -94,7 +94,28 @@ const useHelicopter = () => {
 		}
 	};
 
-	return { createHelicopter, findAllHelicopters, findOneHelicopterById, removeLinkUserHelicopter };
+	const removeLinkUserHelicopter = async (helicopterId) => {
+		try {
+			const response = await publicAxios.delete(`/helicopters/link/remove/${helicopterId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	return { createHelicopter, findAllHelicopters, findOneHelicopterById, addLinkUserHelicopter, removeLinkUserHelicopter };
 };
 
 export default useHelicopter;
