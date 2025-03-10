@@ -7,10 +7,13 @@ import { List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 // assets
 import { EditOutlined, ProfileOutlined, LogoutOutlined, UserOutlined, WalletOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import useAuth from "hooks/useAuth";
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
-const ProfileTab = ({ handleLogout, setOpen }) => {
+const ProfileTab = ({ setOpen }) => {
+	const { logout } = useAuth();
+
 	const navigate = useNavigate();
 
 	const handleListItemClick = () => {
@@ -26,7 +29,11 @@ const ProfileTab = ({ handleLogout, setOpen }) => {
 				</ListItemIcon>
 				<ListItemText primary="Editar perfil" />
 			</ListItemButton>
-			<ListItemButton onClick={handleLogout}>
+			<ListItemButton
+				onClick={() => {
+					logout();
+				}}
+			>
 				<ListItemIcon>
 					<LogoutOutlined />
 				</ListItemIcon>

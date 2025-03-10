@@ -2,12 +2,12 @@
 import { FormattedMessage } from "react-intl";
 
 // assets
-import { LineChartOutlined, IdcardOutlined, DatabaseOutlined } from "@ant-design/icons";
+import { LineChartOutlined, IdcardOutlined, DatabaseOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 // icons
 const icons = {
 	LineChartOutlined,
-	IdcardOutlined,
+	UnorderedListOutlined,
 	DatabaseOutlined,
 };
 
@@ -20,11 +20,11 @@ const widget = {
 	type: "group",
 	children: [
 		{
-			id: "statistics",
-			title: <FormattedMessage id="statistics" />,
+			id: "my helicopters",
+			title: <FormattedMessage id="Meus helicópteros" />,
 			type: "item",
-			url: "/widget/statistics",
-			icon: icons.IdcardOutlined,
+			url: "/helicopters/me",
+			icon: icons.UnorderedListOutlined,
 		},
 		{
 			id: "data",

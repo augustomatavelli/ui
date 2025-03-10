@@ -6,7 +6,11 @@ export const HelicopterContext = createContext({});
 export const HelicopterProvider = ({ children }) => {
 	const [helicopters, setHelicopters] = useState([]);
 
-	return <HelicopterContext.Provider value={{ helicopters, setHelicopters }}>{children}</HelicopterContext.Provider>;
+	const resetHelicopterStates = () => {
+		setHelicopters([]);
+	};
+
+	return <HelicopterContext.Provider value={{ helicopters, setHelicopters, resetHelicopterStates }}>{children}</HelicopterContext.Provider>;
 };
 
 HelicopterProvider.propTypes = {

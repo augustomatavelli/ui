@@ -1,25 +1,21 @@
 import PropTypes from "prop-types";
 import { useContext, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Box, ButtonBase, CardContent, ClickAwayListener, Grid, Paper, Popper, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, ButtonBase, CardContent, ClickAwayListener, Grid, Paper, Popper, Stack, Tab, Tabs, Typography } from "@mui/material";
 
 // project import
 import ProfileTab from "./ProfileTab";
-import SettingTab from "./SettingTab";
 import Avatar from "components/@extended/Avatar";
 import MainCard from "components/MainCard";
 import Transitions from "components/@extended/Transitions";
-import IconButton from "components/@extended/IconButton";
 
 import { ThemeMode } from "config";
 import useAuth from "hooks/useAuth";
 
 // assets
-import avatar1 from "assets/images/users/avatar-1.png";
-import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import UserContext from "contexts/UserContext";
 
 // tab panel wrapper
@@ -48,13 +44,8 @@ function a11yProps(index) {
 
 const Profile = () => {
 	const theme = useTheme();
-	const navigate = useNavigate();
 
-	const { logout } = useAuth();
 	const { user } = useContext(UserContext);
-	const handleLogout = () => {
-		logout();
-	};
 
 	const anchorRef = useRef(null);
 	const [open, setOpen] = useState(false);
@@ -164,7 +155,7 @@ const Profile = () => {
 										</Tabs>
 									</Box>
 									<TabPanel value={value} index={0} dir={theme.direction}>
-										<ProfileTab handleLogout={handleLogout} setOpen={setOpen} />
+										<ProfileTab etOpen={setOpen} />
 									</TabPanel>
 								</MainCard>
 							</ClickAwayListener>

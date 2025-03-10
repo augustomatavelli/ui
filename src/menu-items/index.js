@@ -1,12 +1,12 @@
 // project import
 import applications from "./applications";
-import widget from "./widget";
+import forms from "./forms";
 
 // ==============================|| MENU ITEMS ||============================== //
 
 //TODO: navegação do menu lateral
 const menuItems = {
-	items: [widget, applications],
+	items: [forms, applications],
 };
 
 export default menuItems;

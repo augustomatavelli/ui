@@ -38,7 +38,7 @@ const allColumns = [
 	},
 ];
 
-const Dashboard = () => {
+const MyHelicopters = () => {
 	const { findAllHelicopters } = useHelicopter();
 
 	const { helicopters } = useContext(HelicopterContext);
@@ -160,4 +160,4 @@ const Dashboard = () => {
 	);
 };
 
-export default Dashboard;
+export default MyHelicopters;

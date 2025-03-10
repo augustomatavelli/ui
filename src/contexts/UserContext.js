@@ -6,7 +6,11 @@ export const UserContext = createContext({});
 export const UserProvider = ({ children }) => {
 	const [user, setUser] = useState({});
 
-	return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+	const resetUserStates = () => {
+		setUser({});
+	};
+
+	return <UserContext.Provider value={{ user, setUser, resetUserStates }}>{children}</UserContext.Provider>;
 };
 
 UserProvider.propTypes = {

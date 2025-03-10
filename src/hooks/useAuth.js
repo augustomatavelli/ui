@@ -1,17 +1,22 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "contexts/AuthContext";
+import AuthContext, { setSession } from "contexts/AuthContext";
 import UseAxios from "./useAxios";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import HelicopterContext from "contexts/HelicopterContext";
+import UserContext from "contexts/UserContext";
 
 // ==============================|| AUTH HOOKS ||============================== //
 
 const useAuth = () => {
 	const { authAxios } = UseAxios();
+
+	const { setUser, resetUserStates } = useContext(UserContext);
+	const { resetHelicopterStates } = useContext(HelicopterContext);
+
 	const navigate = useNavigate();
-	const { setUser, setSession } = useContext(AuthContext);
 
 	const login = async (data) => {
 		try {
@@ -22,7 +27,7 @@ const useAuth = () => {
 			localStorage.setItem("status", userStatus);
 			setUser({ name: name });
 			setTimeout(() => {
-				navigate("/dashboard");
+				navigate("/helicopters/me");
 			}, 1000);
 			return response.data;
 		} catch (error) {
@@ -68,14 +73,14 @@ const useAuth = () => {
 	};
 
 	const logout = () => {
-		setSession(null);
 		localStorage.clear();
-		navigate(`/login`, {
-			state: {
-				from: "",
-			},
-		});
+		resetUserStates();
+		resetHelicopterStates();
+		setTimeout(() => {
+			navigate("/login");
+		}, 1000);
 	};
+
 	return { login, createUser, logout };
 };
 

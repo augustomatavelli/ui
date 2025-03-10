@@ -114,7 +114,7 @@ const AuthRegister = () => {
 							);
 
 							setTimeout(() => {
-								navigate("/dashboard", { replace: true });
+								navigate("/helicopters/me", { replace: true });
 							}, 1500);
 						}
 					} catch (err) {

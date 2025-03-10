@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
-import { createContext, useState, useEffect, useReducer } from "react";
+import { createContext, useState, useEffect, useReducer, useContext } from "react";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
 import Loader from "components/Loader";
 import authReducer from "store/reducers/auth";
 import axios from "utils/axios";
 import { setCookie, destroyCookie } from "nookies";
 import jwtDecode from "jwt-decode";
+import UserContext from "./UserContext";
 
 // constant
 const initialState = {
@@ -25,7 +26,7 @@ const verifyToken = (sessionToken) => {
 	return decoded.exp > Date.now() / 1000;
 };
 
-const setSession = (sessionToken) => {
+export const setSession = (sessionToken) => {
 	if (sessionToken) {
 		localStorage.setItem("sessionToken", sessionToken);
 		axios.defaults.headers.common.Authorization = `Bearer ${sessionToken}`;
@@ -45,7 +46,7 @@ const setSession = (sessionToken) => {
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-	const [user, setUser] = useState({});
+	const { user } = useContext(UserContext);
 
 	const [state, dispatch] = useReducer(authReducer, initialState);
 
@@ -65,12 +66,18 @@ export const AuthProvider = ({ children }) => {
 				} else {
 					dispatch({
 						type: LOGOUT,
+						payload: {
+							isLoggedIn: false,
+						},
 					});
 				}
 			} catch (err) {
 				console.error(err);
 				dispatch({
 					type: LOGOUT,
+					payload: {
+						isLoggedIn: false,
+					},
 				});
 			}
 		};
@@ -82,7 +89,9 @@ export const AuthProvider = ({ children }) => {
 		return <Loader />;
 	}
 
-	return <AuthContext.Provider value={{ ...state, user, setUser, setSession }}>{children}</AuthContext.Provider>;
+	const resetAuthState = () => {};
+
+	return <AuthContext.Provider value={{ ...state, resetAuthState }}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {
