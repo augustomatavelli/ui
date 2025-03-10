@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -27,10 +27,13 @@ const MainLayout = () => {
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
 	const downLG = useMediaQuery(theme.breakpoints.down("lg"));
+	const location = useLocation();
 
 	const { container, miniDrawer, menuOrientation } = useConfig();
 
 	const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
+
+	const shouldShowBreadcrumbs = location.pathname.includes("/helicopters/me");
 
 	// set media wise responsive drawer
 	useEffect(() => {
@@ -60,7 +63,7 @@ const MainLayout = () => {
 						flexDirection: "column",
 					}}
 				>
-					<Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
+					{shouldShowBreadcrumbs && <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />}
 					<Outlet />
 					{/* <Footer /> */}
 				</Container>
