@@ -191,7 +191,6 @@ const UserProfile = () => {
 								</Grid>
 							</Grid>
 						</Box>
-
 						<Divider />
 						<Box sx={{ p: 2.5 }}>
 							<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>

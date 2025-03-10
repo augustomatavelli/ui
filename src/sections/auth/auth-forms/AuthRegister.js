@@ -20,7 +20,6 @@ import { strengthColor, strengthIndicator } from "utils/password-strength";
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import InputMask from "react-input-mask";
-import AuthContext from "contexts/AuthContext";
 import useAuth from "hooks/useAuth";
 
 // ============================|| JWT - REGISTER ||============================ //

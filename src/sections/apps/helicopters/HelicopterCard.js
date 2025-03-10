@@ -11,11 +11,14 @@ import MainCard from "components/MainCard";
 
 // assets
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const HelicopterCard = ({ data }) => {
-	const { rab, category, image, membership, status, name, email, mobile } = data;
+	const { id_helicopter, rab, category, image, membership, status, name, email, mobile } = data;
 
 	const [open, setOpen] = useState(false);
+
+	const navigate = useNavigate();
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -25,9 +28,18 @@ const HelicopterCard = ({ data }) => {
 		setOpen(false);
 	};
 
+	const handleHelicopterDetailsPage = (helicopterId) => {
+		navigate(`/helicopters/${helicopterId}`);
+	};
+
 	return (
 		<>
-			<MainCard sx={{ height: 1, "& .MuiCardContent-root": { height: 1, display: "flex", flexDirection: "column" } }}>
+			<MainCard
+				sx={{ height: 1, cursor: "pointer", "& .MuiCardContent-root": { height: 1, display: "flex", flexDirection: "column" } }}
+				onClick={() => {
+					handleHelicopterDetailsPage(id_helicopter);
+				}}
+			>
 				<Grid id="print" container spacing={2.25}>
 					<Grid item xs={12} sx={{ p: 0, m: 0, height: "200px" }}>
 						<img
