@@ -12,7 +12,6 @@ import MainCard from "components/MainCard";
 import Transitions from "components/@extended/Transitions";
 
 import { ThemeMode } from "config";
-import useAuth from "hooks/useAuth";
 
 // assets
 import { UserOutlined } from "@ant-design/icons";

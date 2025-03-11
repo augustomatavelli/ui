@@ -216,7 +216,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
-												<InputLabel htmlFor="rab">Registro Aeronáutico Brasileiro (RAB)</InputLabel>
+												<InputLabel htmlFor="rab">Registro Aeronáutico Brasileiro</InputLabel>
 												<TextField fullWidth id="rab" placeholder="Digite o RAB" {...getFieldProps("rab")} error={Boolean(touched.rab && errors.rab)} helperText={touched.rab && errors.rab} />
 											</Stack>
 										</Grid>

@@ -1,8 +1,8 @@
-import { useEffect, useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // material-ui
-import { Box, Button, FormControl, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, Typography, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -15,7 +15,6 @@ import AnimateButton from "components/@extended/AnimateButton";
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { strengthColor, strengthIndicator } from "utils/password-strength";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
@@ -30,7 +29,6 @@ const AuthRegister = () => {
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
-	const [level, setLevel] = useState();
 	const [showPassword, setShowPassword] = useState(false);
 	const [typeDoc, setTypeDoc] = useState("cpf");
 	const [isPilot, setIsPilot] = useState(true);
@@ -42,15 +40,6 @@ const AuthRegister = () => {
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
 	};
-
-	const changePassword = (value) => {
-		const temp = strengthIndicator(value);
-		setLevel(strengthColor(temp));
-	};
-
-	useEffect(() => {
-		changePassword("");
-	}, []);
 
 	return (
 		<>
@@ -222,7 +211,7 @@ const AuthRegister = () => {
 												name="pilot"
 												onBlur={handleBlur}
 												onChange={handleChange}
-												placeholder="Digite o RAB"
+												placeholder="Digite o número do registro de piloto"
 												inputProps={{}}
 											/>
 											{touched.pilot && errors.pilot && (
@@ -247,7 +236,6 @@ const AuthRegister = () => {
 										onBlur={handleBlur}
 										onChange={(e) => {
 											handleChange(e);
-											changePassword(e.target.value);
 										}}
 										endAdornment={
 											<InputAdornment position="end">
