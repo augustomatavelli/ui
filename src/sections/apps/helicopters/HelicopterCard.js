@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 // material-ui
 import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
 
@@ -12,8 +12,11 @@ import MainCard from "components/MainCard";
 // assets
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import UserContext from "contexts/UserContext";
 
 const HelicopterCard = ({ data }) => {
+	const { user } = useContext(UserContext);
+
 	const { id_helicopter, rab, category, image, membership, status, name, email, mobile } = data;
 
 	const [open, setOpen] = useState(false);
@@ -89,32 +92,32 @@ const HelicopterCard = ({ data }) => {
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>
-						<Box>
-							<Box
-								sx={{
-									display: "flex",
-									flexWrap: "wrap",
-									listStyle: "none",
-									p: 0.5,
-									m: 0,
-								}}
-								component="ul"
-							>
-								<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
-									<Chip color={status === "A" ? "success" : "warning"} variant="filled" size="small" label={status === "A" ? "Aprovado" : "Pendente"} sx={{ fontWeight: "bold" }} />
-								</ListItem>
-								<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
-									<Chip color={membership === "S" ? "primary" : "secondary"} variant="filled" size="small" label={membership === "S" ? "Mensalista" : "Avulso"} sx={{ fontWeight: "bold" }} />
-								</ListItem>
-							</Box>
+						<Box
+							sx={{
+								display: "flex",
+								flexWrap: "wrap",
+								listStyle: "none",
+								p: 0,
+								m: 0,
+							}}
+							component="ul"
+						>
+							<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
+								<Chip color={status === "A" ? "success" : "warning"} variant="filled" size="small" label={status === "A" ? "Aprovado" : "Pendente"} sx={{ fontWeight: "bold" }} />
+							</ListItem>
+							<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
+								<Chip color={membership === "S" ? "primary" : "secondary"} variant="filled" size="small" label={membership === "S" ? "Mensalista" : "Avulso"} sx={{ fontWeight: "bold" }} />
+							</ListItem>
 						</Box>
 					</Grid>
 				</Grid>
-				<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
-					<Button variant="outlined" size="small" onClick={handleClickOpen} sx={{ width: "100%" }}>
-						Solicitar pouso
-					</Button>
-				</Stack>
+				{status === "A" && user.status === "A" && (
+					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
+						<Button variant="outlined" size="small" onClick={handleClickOpen} sx={{ width: "100%" }}>
+							Solicitar pouso
+						</Button>
+					</Stack>
+				)}
 			</MainCard>
 
 			{/* <CustomerPreview helicopter={data} open={open} onClose={handleClose} /> */}
@@ -123,7 +126,7 @@ const HelicopterCard = ({ data }) => {
 };
 
 HelicopterCard.propTypes = {
-	customer: PropTypes.object,
+	data: PropTypes.object,
 };
 
 export default HelicopterCard;

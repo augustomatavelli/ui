@@ -5,12 +5,14 @@ export const UserContext = createContext({});
 
 export const UserProvider = ({ children }) => {
 	const [user, setUser] = useState({});
+	const [searchUser, setSearchUser] = useState([]);
 
 	const resetUserStates = () => {
 		setUser({});
+		setSearchUser([]);
 	};
 
-	return <UserContext.Provider value={{ user, setUser, resetUserStates }}>{children}</UserContext.Provider>;
+	return <UserContext.Provider value={{ user, setUser, searchUser, setSearchUser, resetUserStates }}>{children}</UserContext.Provider>;
 };
 
 UserProvider.propTypes = {

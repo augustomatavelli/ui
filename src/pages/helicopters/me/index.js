@@ -124,10 +124,16 @@ const MyHelicopters = () => {
 					</Stack>
 				</Stack>
 			</Box>
-			<Grid container spacing={3}>
+			<Grid
+				container
+				sx={{
+					display: "grid",
+					gridTemplateColumns: "repeat(4, 1fr)",
+					gap: 2,
+				}}
+			>
 				{filteredHelicopters.length > 0 ? (
 					<>
-						{/* <AddHelicopterCard /> */}
 						{filteredHelicopters
 							.sort(function (a, b) {
 								if (sortBy === "Padrão") return b.id_helicopter < a.id_helicopter ? 1 : -1;
@@ -137,18 +143,17 @@ const MyHelicopters = () => {
 								if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);
 								return a;
 							})
-							.map((helicopter, index) => (
-								<Slide key={helicopter.id_helicopter} direction="up" in={true}>
-									<Grid item xs={12} sm={6} lg={3}>
-										<HelicopterCard data={helicopter} />
-									</Grid>
-								</Slide>
+							.map((helicopter) => (
+								<Grid key={helicopter.id_helicopter}>
+									<HelicopterCard data={helicopter} />
+								</Grid>
 							))}
 					</>
 				) : (
 					<EmptyUserCard title={"Não há nenhum helicóptero vinculado a você."} />
 				)}
 			</Grid>
+
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
 				<Pagination count={count} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>

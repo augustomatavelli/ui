@@ -7,12 +7,33 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
-	const { setUser } = useContext(UserContext);
+	const { setUser, setSearchUser } = useContext(UserContext);
 
 	const findOneUser = async () => {
 		try {
 			const response = await publicAxios.get("/users");
 			setUser(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	const findAllUsers = async (searchTerm, helicopterId) => {
+		try {
+			const response = await publicAxios.get(`/users/find-all?search=${searchTerm}&helicopterId=${helicopterId}`);
+			setSearchUser(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -51,7 +72,7 @@ const useUser = () => {
 		}
 	};
 
-	return { findOneUser, updatePassword };
+	return { findOneUser, updatePassword, findAllUsers };
 };
 
 export default useUser;

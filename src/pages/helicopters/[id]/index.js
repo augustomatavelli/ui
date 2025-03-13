@@ -11,9 +11,10 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddLinkUserHelicopter from "sections/apps/helicopters/AddLinkUserHelicopter";
+import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 
 const HelicopterDetails = () => {
-	const { findOneHelicopterById, addLinkUserHelicopter, removeLinkUserHelicopter } = useHelicopter();
+	const { findOneHelicopterById, removeLinkUserHelicopter } = useHelicopter();
 
 	const { helicopterDetails } = useContext(HelicopterContext);
 
@@ -39,33 +40,6 @@ const HelicopterDetails = () => {
 			})
 		);
 		window.history.back();
-	};
-
-	const handleAddLinkUserHelicopter = async (userId, helicopterId) => {
-		const payload = { userId: userId, helicopterId: helicopterId };
-
-		const response = await addLinkUserHelicopter(payload);
-		dispatch(
-			openSnackbar({
-				open: true,
-				message: response.message,
-				variant: "alert",
-				alert: {
-					color: "success",
-				},
-				close: false,
-			})
-		);
-		window.history.back();
-	};
-
-	const formatPhoneNumber = (number) => {
-		const cleaned = ("" + number).replace(/\D/g, "");
-		const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
-		if (match) {
-			return `(${match[1]}) ${match[2]}-${match[3]}`;
-		}
-		return number;
 	};
 
 	useEffect(() => {

@@ -20,7 +20,6 @@ import IconButton from "components/@extended/IconButton";
 import { CloseOutlined, LineOutlined, SearchOutlined } from "@ant-design/icons";
 
 export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter, ...other }) {
-	const count = preGlobalFilteredRows.length;
 	const [value, setValue] = useState(globalFilter);
 	const onChange = useAsyncDebounce((value) => {
 		setGlobalFilter(value || undefined);
@@ -33,7 +32,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
 				setValue(e.target.value);
 				onChange(e.target.value);
 			}}
-			placeholder={`Pesquisar...`}
+			placeholder={`Pesquisar aeronave...`}
 			id="start-adornment-email"
 			startAdornment={<SearchOutlined />}
 			{...other}

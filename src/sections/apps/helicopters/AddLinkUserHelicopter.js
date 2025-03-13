@@ -1,42 +1,18 @@
 import PropTypes from "prop-types";
 
 // material-ui
-import { Button, DialogActions, DialogContent, DialogTitle, Divider, Grid, Stack } from "@mui/material";
+import { Button, DialogActions, DialogTitle, Divider, Grid, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // third-party.png
-import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import AddLinkUserHelicopterTable from "sections/tables/helicopters/AddLinkUserHelicopter";
-import useHelicopter from "hooks/useHelicopter";
-import { dispatch } from "store";
-import { openSnackbar } from "store/reducers/snackbar";
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddLinkUserHelicopter = ({ setOpen }) => {
-	const { addLinkUserHelicopter } = useHelicopter();
-
-	const handleAddLinkUserHelicopter = async (userId, helicopterId) => {
-		const payload = { userId: userId, helicopterId: helicopterId };
-
-		const response = await addLinkUserHelicopter(payload);
-		dispatch(
-			openSnackbar({
-				open: true,
-				message: response.message,
-				variant: "alert",
-				alert: {
-					color: "success",
-				},
-				close: false,
-			})
-		);
-		window.history.back();
-	};
-
 	const AddUserHelicopterSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
 	});
@@ -68,7 +44,7 @@ const AddLinkUserHelicopter = ({ setOpen }) => {
 		},
 	});
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
+	const { handleSubmit } = formik;
 
 	return (
 		<>
@@ -77,11 +53,9 @@ const AddLinkUserHelicopter = ({ setOpen }) => {
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
 						<DialogTitle>Adicionar vínculo</DialogTitle>
 						<Divider />
-						<DialogContent sx={{ p: 2.5 }}>
-							<Grid container spacing={3}>
-								<AddLinkUserHelicopterTable />
-							</Grid>
-						</DialogContent>
+						<Grid spacing={1}>
+							<AddLinkUserHelicopterTable />
+						</Grid>
 						<Divider />
 						<DialogActions sx={{ p: 2.5 }}>
 							<Grid container justifyContent="flex-end" alignItems="center">
@@ -94,9 +68,6 @@ const AddLinkUserHelicopter = ({ setOpen }) => {
 											}}
 										>
 											Fechar
-										</Button>
-										<Button type="submit" variant="contained" disabled={isSubmitting}>
-											Vncular
 										</Button>
 									</Stack>
 								</Grid>
