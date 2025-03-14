@@ -14,10 +14,10 @@ import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 
-const HelicopterCard = ({ data }) => {
+const AircraftCard = ({ data }) => {
 	const { user } = useContext(UserContext);
 
-	const { id_helicopter, rab, category, image, membership, status, name, email, mobile } = data;
+	const { id_aircraft, rab, category, image, membership, status, name, email, mobile } = data;
 
 	const [open, setOpen] = useState(false);
 
@@ -31,8 +31,8 @@ const HelicopterCard = ({ data }) => {
 		setOpen(false);
 	};
 
-	const handleHelicopterDetailsPage = (helicopterId) => {
-		navigate(`/helicopters/${helicopterId}`);
+	const handleaircraftDetailsPage = (aircraftId) => {
+		navigate(`/aircrafts/${aircraftId}`);
 	};
 
 	return (
@@ -40,7 +40,7 @@ const HelicopterCard = ({ data }) => {
 			<MainCard
 				sx={{ height: 1, cursor: "pointer", "& .MuiCardContent-root": { height: 1, display: "flex", flexDirection: "column" } }}
 				onClick={() => {
-					handleHelicopterDetailsPage(id_helicopter);
+					handleaircraftDetailsPage(id_aircraft);
 				}}
 			>
 				<Grid id="print" container spacing={2.25}>
@@ -125,8 +125,8 @@ const HelicopterCard = ({ data }) => {
 	);
 };
 
-HelicopterCard.propTypes = {
+AircraftCard.propTypes = {
 	data: PropTypes.object,
 };
 
-export default HelicopterCard;
+export default AircraftCard;

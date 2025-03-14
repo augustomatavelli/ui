@@ -5,15 +5,15 @@ import MainLayout from "layout/MainLayout";
 import CommonLayout from "layout/CommonLayout";
 import Loadable from "components/Loadable";
 import AuthGuard from "utils/route-guard/AuthGuard";
+import MyAircrafts from "pages/aircrafts/me";
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("pages/dashboard/default")));
 
 // render - users
 const UserProfile = Loadable(lazy(() => import("pages/users/me")));
-// render - helicopters
-const MyHelicopters = Loadable(lazy(() => import("pages/helicopters/me")));
-const HelicopterDetails = Loadable(lazy(() => import("pages/helicopters/[id]")));
+// render - aircrafts
+const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -60,15 +60,15 @@ const MainRoutes = {
 					],
 				},
 				{
-					path: "helicopters",
+					path: "aircrafts",
 					children: [
 						{
 							path: "me",
-							element: <MyHelicopters />,
+							element: <MyAircrafts />,
 						},
 						{
 							path: ":id",
-							element: <HelicopterDetails />,
+							element: <AircraftDetails />,
 						},
 					],
 				},

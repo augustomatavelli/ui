@@ -8,7 +8,7 @@ import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
 import { PopupTransition } from "components/@extended/Transitions";
 
 // assets
-import AddHelicopter from "sections/apps/helicopters/AddHelicopter";
+import AddHelicopter from "sections/apps/aircrafts/AddAircraft";
 
 const AddHelicopterCard = () => {
 	const [add, setAdd] = useState(false);

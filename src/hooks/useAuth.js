@@ -4,7 +4,7 @@ import AuthContext, { setSession } from "contexts/AuthContext";
 import UseAxios from "./useAxios";
 import { openSnackbar } from "store/reducers/snackbar";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
-import HelicopterContext from "contexts/HelicopterContext";
+import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
 
@@ -14,7 +14,7 @@ const useAuth = () => {
 	const { authAxios } = UseAxios();
 
 	const { user, setUser, resetUserStates } = useContext(UserContext);
-	const { resetHelicopterStates } = useContext(HelicopterContext);
+	const { resetAircraftstates } = useContext(AircraftContext);
 	const { dispatch } = useContext(AuthContext);
 
 	const navigate = useNavigate();
@@ -36,7 +36,7 @@ const useAuth = () => {
 			localStorage.setItem("_status", userStatus);
 			setUser({ name: name });
 			setTimeout(() => {
-				navigate("/helicopters/me");
+				navigate("/aircrafts/me");
 			}, 1000);
 			return response.data;
 		} catch (error) {
@@ -85,7 +85,7 @@ const useAuth = () => {
 	const logout = () => {
 		localStorage.clear();
 		resetUserStates();
-		resetHelicopterStates();
+		resetAircraftstates();
 		dispatch({
 			type: LOGOUT,
 			payload: {

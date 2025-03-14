@@ -4,7 +4,7 @@ export const twitterColor = "#1DA1F2";
 export const facebookColor = "#3b5998";
 export const linkedInColor = "#0e76a8";
 
-export const APP_DEFAULT_PATH = "/helicopters/me";
+export const APP_DEFAULT_PATH = "/aircrafts/me";
 export const HORIZONTAL_MAX_ITEM = 6;
 export const DRAWER_WIDTH = 260;
 

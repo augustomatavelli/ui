@@ -44,13 +44,13 @@ import { openSnackbar } from "store/reducers/snackbar";
 
 // assets
 import { CameraOutlined } from "@ant-design/icons";
-import useHelicopter from "hooks/useHelicopter";
+import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
 import useScriptRef from "hooks/useScriptRef";
 
 // constant
-const getInitialValues = (helicopter) => {
-	const newHelicopter = {
+const getInitialValues = (aircraft) => {
+	const newAircraft = {
 		rab: "",
 		category: "",
 		name: "",
@@ -61,21 +61,21 @@ const getInitialValues = (helicopter) => {
 		image: "",
 	};
 
-	if (helicopter) {
-		newHelicopter.rab = helicopter.fatherName;
-		newHelicopter.location = helicopter.address;
-		return _.merge({}, newHelicopter, helicopter);
+	if (aircraft) {
+		newAircraft.rab = aircraft.fatherName;
+		newAircraft.location = aircraft.address;
+		return _.merge({}, newAircraft, aircraft);
 	}
 
-	return newHelicopter;
+	return newAircraft;
 };
 
 const allStatus = ["A", "B", "C", "D", "E"];
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const AddHelicopter = ({ helicopter, onCancel }) => {
-	const { createHelicopter } = useHelicopter();
+const AddAircraft = ({ aircraft, onCancel }) => {
+	const { createAircraft } = useAircraft();
 
 	const [openAlert, setOpenAlert] = useState(false);
 	const [isMembership, setIsMembership] = useState(true);
@@ -107,7 +107,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 
 	const theme = useTheme();
 
-	const HelicopterSchema = Yup.object().shape({
+	const AircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
 		category: Yup.string().required("Categoria é obrigatório"),
 		name: Yup.string().max(255).required("Nome é obrigatório"),
@@ -124,14 +124,14 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 	});
 
 	const formik = useFormik({
-		initialValues: getInitialValues(helicopter),
-		validationSchema: HelicopterSchema,
+		initialValues: getInitialValues(aircraft),
+		validationSchema: AircraftSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
 			try {
 				const { rab, category, membership, name, email, doc, phone } = values;
 				let base64Image = "";
 				base64Image = await readFile(selectedImage);
-				const newHelicopter = {
+				const newAircraft = {
 					rab: rab,
 					category: category,
 					image: selectedImage ? base64Image : "",
@@ -142,7 +142,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 				};
-				const response = await createHelicopter(newHelicopter);
+				const response = await createAircraft(newAircraft);
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -172,7 +172,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<DialogTitle>Adicionar Helicóptero</DialogTitle>
+						<DialogTitle>Adicionar Aeronave</DialogTitle>
 						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
@@ -310,7 +310,7 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 										</Grid>
 										<Grid item xs={12}>
 											<Stack spacing={1}>
-												<InputLabel htmlFor="membership">Helicóptero é mensalista?</InputLabel>
+												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>
 												<RadioGroup row value={isMembership} onChange={(e) => setIsMembership(e.target.value === "true")}>
 													<FormControlLabel value={true} control={<Radio />} label="Sim" />
 													<FormControlLabel value={false} control={<Radio />} label="Não" />
@@ -349,9 +349,9 @@ const AddHelicopter = ({ helicopter, onCancel }) => {
 	);
 };
 
-AddHelicopter.propTypes = {
-	helicopter: PropTypes.any,
+AddAircraft.propTypes = {
+	aircraft: PropTypes.any,
 	onCancel: PropTypes.func,
 };
 
-export default AddHelicopter;
+export default AddAircraft;

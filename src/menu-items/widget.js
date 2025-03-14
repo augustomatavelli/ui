@@ -20,10 +20,10 @@ const widget = {
 	type: "group",
 	children: [
 		{
-			id: "my helicopters",
-			title: <FormattedMessage id="Meus helicópteros" />,
+			id: "my aircrafts",
+			title: <FormattedMessage id="Minhas aeronaves" />,
 			type: "item",
-			url: "/helicopters/me",
+			url: "/aircrafts/me",
 			icon: icons.UnorderedListOutlined,
 		},
 		{

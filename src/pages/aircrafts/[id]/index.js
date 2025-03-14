@@ -4,30 +4,30 @@ import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog }
 // project import
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
-import HelicopterContext from "contexts/HelicopterContext";
-import useHelicopter from "hooks/useHelicopter";
+import AircraftContext from "contexts/AircraftContext";
+import useAircraft from "hooks/useAircraft";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { PopupTransition } from "components/@extended/Transitions";
-import AddLinkUserHelicopter from "sections/apps/helicopters/AddLinkUserHelicopter";
+import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
 import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 
-const HelicopterDetails = () => {
-	const { findOneHelicopterById, removeLinkUserHelicopter } = useHelicopter();
+const AircraftDetails = () => {
+	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
 
-	const { helicopterDetails } = useContext(HelicopterContext);
+	const { aircraftDetails } = useContext(AircraftContext);
 
 	const [open, setOpen] = useState(false);
 
 	const { id } = useParams();
 
-	const { id_helicopter, rab, category, image, membership, status, id_user_resp, name, email, mobile } = helicopterDetails;
+	const { id_aircraft, rab, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
-	const handleRemoveLinkUserHelicopter = async () => {
-		const response = await removeLinkUserHelicopter(id_helicopter);
+	const handleremoveLinkUserAircraft = async () => {
+		const response = await removeLinkUserAircraft(id_aircraft);
 		dispatch(
 			openSnackbar({
 				open: true,
@@ -43,19 +43,19 @@ const HelicopterDetails = () => {
 	};
 
 	useEffect(() => {
-		findOneHelicopterById(id);
+		findOneAircraftById(id);
 	}, [id]);
 
 	return (
 		<>
 			<Grid item xs={12} sm={7} md={8} xl={9}>
-				<MainCard title="Detalhes do helicóptero">
+				<MainCard title="Detalhes da aeronave">
 					<Grid container spacing={3}>
 						<Grid item xs={12} sm={4} md={3}>
 							<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 								<img
 									src={`data:image/jpeg;base64,${image}`}
-									alt="Helicopter"
+									alt="Aircraft"
 									style={{
 										width: "100%",
 										height: "200px",
@@ -63,7 +63,7 @@ const HelicopterDetails = () => {
 									}}
 								/>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-									{/* //TODO: só aparecer o botão caso for admin ou o responsável pelo helicóptero */}
+									{/* //TODO: só aparecer o botão caso for admin ou o responsável pela aeronave */}
 									{Number(userId) === id_user_resp && (
 										<Button
 											variant="contained"
@@ -75,7 +75,7 @@ const HelicopterDetails = () => {
 											Vincular
 										</Button>
 									)}
-									<Button variant="contained" color="warning" onClick={handleRemoveLinkUserHelicopter}>
+									<Button variant="contained" color="warning" onClick={handleremoveLinkUserAircraft}>
 										Desvincular
 									</Button>
 								</Stack>
@@ -181,10 +181,10 @@ const HelicopterDetails = () => {
 				open={open}
 				sx={{ "& .MuiDialog-paper": { p: 0 } }}
 			>
-				<AddLinkUserHelicopter setOpen={setOpen} />
+				<AddLinkUserAircraft setOpen={setOpen} />
 			</Dialog>
 		</>
 	);
 };
 
-export default HelicopterDetails;
+export default AircraftDetails;

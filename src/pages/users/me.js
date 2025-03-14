@@ -98,7 +98,7 @@ const UserProfile = () => {
 							setStatus({ success: true });
 							setSubmitting(false);
 							setTimeout(() => {
-								navigate("/helicopters/me");
+								navigate("/aircrafts/me");
 							}, 1000);
 						}
 					} catch (err) {

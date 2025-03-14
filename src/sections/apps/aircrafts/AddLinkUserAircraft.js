@@ -8,20 +8,20 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // third-party.png
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-import AddLinkUserHelicopterTable from "sections/tables/helicopters/AddLinkUserHelicopter";
+import AddLinkUserAircraftTable from "sections/tables/aircrafts/AddLinkUserAircraft";
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const AddLinkUserHelicopter = ({ setOpen }) => {
-	const AddUserHelicopterSchema = Yup.object().shape({
+const AddLinkUserAircraft = ({ setOpen }) => {
+	const AddUserAircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
 	});
 
 	const formik = useFormik({
-		validationSchema: AddUserHelicopterSchema,
+		validationSchema: AddUserAircraftSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
 			/* 	try {
-					const response = await createHelicopter(newHelicopter);
+					const response = await createAircraft(newHelicopter);
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -54,7 +54,7 @@ const AddLinkUserHelicopter = ({ setOpen }) => {
 						<DialogTitle>Adicionar vínculo</DialogTitle>
 						<Divider />
 						<Grid spacing={1}>
-							<AddLinkUserHelicopterTable />
+							<AddLinkUserAircraftTable />
 						</Grid>
 						<Divider />
 						<DialogActions sx={{ p: 2.5 }}>
@@ -80,9 +80,9 @@ const AddLinkUserHelicopter = ({ setOpen }) => {
 	);
 };
 
-AddLinkUserHelicopter.propTypes = {
+AddLinkUserAircraft.propTypes = {
 	helicopter: PropTypes.any,
 	onCancel: PropTypes.func,
 };
 
-export default AddLinkUserHelicopter;
+export default AddLinkUserAircraft;

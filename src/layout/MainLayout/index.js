@@ -33,7 +33,7 @@ const MainLayout = () => {
 
 	const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
-	const shouldShowBreadcrumbs = location.pathname.includes("/helicopters/me");
+	const shouldShowBreadcrumbs = location.pathname.includes("/aircrafts/me");
 
 	// set media wise responsive drawer
 	useEffect(() => {
