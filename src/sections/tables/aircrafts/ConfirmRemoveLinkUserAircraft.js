@@ -8,7 +8,7 @@ import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SearchUser from "sections/apps/aircrafts/SearchUser";
-import { PlusCircleFilled } from "@ant-design/icons";
+import { MinusCircleFilled } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -26,9 +26,9 @@ export const header = [
 
 // ==============================|| MUI TABLE - BASIC ||============================== //
 
-export default function AddLinkUserAircraftTable() {
+export default function ConfirmRemoveLinkUserAircraftTable() {
 	const { findAllUsers } = useUser();
-	const { addLinkUserAircraft } = useAircraft();
+	const { removeLinkUserAircraft } = useAircraft();
 
 	const { searchUser } = useContext(UserContext);
 	const { searchUserAircraftLink } = useContext(AircraftContext);
@@ -36,10 +36,8 @@ export default function AddLinkUserAircraftTable() {
 	const { id } = useParams();
 	const theme = useTheme();
 
-	const handleAddLinkUserAircraft = async (userId) => {
-		const payload = { userId: userId, aircraftId: Number(id) };
-
-		const response = await addLinkUserAircraft(payload);
+	const handleRemoveLinkUserAircraft = async (userId) => {
+		const response = await removeLinkUserAircraft(userId, Number(id));
 		dispatch(
 			openSnackbar({
 				open: true,
@@ -51,11 +49,11 @@ export default function AddLinkUserAircraftTable() {
 				close: false,
 			})
 		);
-		await findAllUsers(searchUserAircraftLink, Number(id), false);
+		await findAllUsers(searchUserAircraftLink, Number(id), true);
 	};
 
 	useEffect(() => {
-		findAllUsers(searchUserAircraftLink, Number(id), false);
+		findAllUsers(searchUserAircraftLink, Number(id), true);
 	}, [searchUserAircraftLink]);
 
 	return (
@@ -78,14 +76,14 @@ export default function AddLinkUserAircraftTable() {
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
 									<TableCell>
-										<PlusCircleFilled
+										<MinusCircleFilled
 											style={{
 												fontSize: 20,
-												color: theme.palette.primary.main,
+												color: theme.palette.error.main,
 												cursor: "pointer",
 											}}
 											onClick={() => {
-												handleAddLinkUserAircraft(user.id_user);
+												handleRemoveLinkUserAircraft(user.id_user);
 											}}
 										/>
 									</TableCell>

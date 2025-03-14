@@ -12,13 +12,17 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
 import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
+import ConfirmRemoveLinkUserAircraft from "sections/apps/aircrafts/ConfirmRemoveLinkUserAircraft";
+import UserContext from "contexts/UserContext";
 
 const AircraftDetails = () => {
 	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
 
-	const { aircraftDetails } = useContext(AircraftContext);
+	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
+	const { setSearchUser } = useContext(UserContext);
 
 	const [open, setOpen] = useState(false);
+	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
 
 	const { id } = useParams();
 
@@ -63,19 +67,30 @@ const AircraftDetails = () => {
 									}}
 								/>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-									{/* //TODO: só aparecer o botão caso for admin ou o responsável pela aeronave */}
 									{Number(userId) === id_user_resp && (
 										<Button
 											variant="contained"
 											color="primary"
 											onClick={() => {
 												setOpen(true);
+												setSearchUser([]);
 											}}
 										>
 											Vincular
 										</Button>
 									)}
-									<Button variant="contained" color="warning" onClick={handleremoveLinkUserAircraft}>
+									<Button
+										variant="contained"
+										color="warning"
+										onClick={() => {
+											if (Number(userId) !== id_user_resp) {
+												handleremoveLinkUserAircraft();
+											} else {
+												setOpenConfirmRemove(true);
+												setSearchUser([]);
+											}
+										}}
+									>
 										Desvincular
 									</Button>
 								</Stack>
@@ -162,7 +177,14 @@ const AircraftDetails = () => {
 							</List>
 							<Box sx={{ p: 2.5 }}>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
-									<Button variant="outlined" color="error" onClick={() => window.history.back()}>
+									<Button
+										variant="outlined"
+										color="error"
+										onClick={() => {
+											window.history.back();
+											setAircraftDetails({});
+										}}
+									>
 										Voltar
 									</Button>
 								</Stack>
@@ -182,6 +204,18 @@ const AircraftDetails = () => {
 				sx={{ "& .MuiDialog-paper": { p: 0 } }}
 			>
 				<AddLinkUserAircraft setOpen={setOpen} />
+			</Dialog>
+			<Dialog
+				maxWidth="sm"
+				fullWidth
+				TransitionComponent={PopupTransition}
+				onClose={() => {
+					setOpen(false);
+				}}
+				open={openConfirmRemove}
+				sx={{ "& .MuiDialog-paper": { p: 0 } }}
+			>
+				<ConfirmRemoveLinkUserAircraft setOpenConfirmRemove={setOpenConfirmRemove} />
 			</Dialog>
 		</>
 	);

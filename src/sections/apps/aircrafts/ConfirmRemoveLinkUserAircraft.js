@@ -1,25 +1,26 @@
 import PropTypes from "prop-types";
 import { useContext } from "react";
+
 // material-ui
 import { Button, DialogActions, DialogTitle, Divider, Grid, Stack } from "@mui/material";
 
 // third-party.png
-import AddLinkUserAircraftTable from "sections/tables/aircrafts/AddLinkUserAircraft";
+import ConfirmRemoveLinkUserAircraftTable from "sections/tables/aircrafts/ConfirmRemoveLinkUserAircraft";
 import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const AddLinkUserAircraft = ({ setOpen }) => {
+const ConfirmRemoveLinkUserAircraft = ({ setOpenConfirmRemove }) => {
 	const { setUserAircraftLink } = useContext(AircraftContext);
 	const { setSearchUser } = useContext(UserContext);
 
 	return (
 		<>
-			<DialogTitle>Adicionar vínculo</DialogTitle>
+			<DialogTitle>Remover vínculo</DialogTitle>
 			<Divider />
 			<Grid>
-				<AddLinkUserAircraftTable />
+				<ConfirmRemoveLinkUserAircraftTable />
 			</Grid>
 			<Divider />
 			<DialogActions sx={{ p: 2.5 }}>
@@ -29,7 +30,7 @@ const AddLinkUserAircraft = ({ setOpen }) => {
 							<Button
 								color="error"
 								onClick={() => {
-									setOpen(false);
+									setOpenConfirmRemove(false);
 									setUserAircraftLink("");
 									setSearchUser([]);
 								}}
@@ -44,9 +45,9 @@ const AddLinkUserAircraft = ({ setOpen }) => {
 	);
 };
 
-AddLinkUserAircraft.propTypes = {
+ConfirmRemoveLinkUserAircraft.propTypes = {
 	helicopter: PropTypes.any,
 	onCancel: PropTypes.func,
 };
 
-export default AddLinkUserAircraft;
+export default ConfirmRemoveLinkUserAircraft;

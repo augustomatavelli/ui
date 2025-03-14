@@ -30,9 +30,9 @@ const useUser = () => {
 		}
 	};
 
-	const findAllUsers = async (searchTerm, aircraftId) => {
+	const findAllUsers = async (searchTerm, aircraftId, hasAircraft) => {
 		try {
-			const response = await publicAxios.get(`/users/find-all?search=${searchTerm}&aircraftId=${aircraftId}`);
+			const response = await publicAxios.get(`/users/find-all?search=${searchTerm}&aircraftId=${aircraftId}&hasAircraft=${hasAircraft}`);
 			setSearchUser(response.data);
 		} catch (error) {
 			console.log(error);

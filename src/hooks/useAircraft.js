@@ -94,9 +94,9 @@ const useAircraft = () => {
 		}
 	};
 
-	const removeLinkUserAircraft = async (aircraftId) => {
+	const removeLinkUserAircraft = async (userId, aircraftId) => {
 		try {
-			const response = await publicAxios.delete(`/aircrafts/link/remove/${aircraftId}`);
+			const response = await publicAxios.delete(`/aircrafts/link/remove/${aircraftId}?userId=${userId}`);
 			return response.data;
 		} catch (error) {
 			console.log(error);

@@ -1,15 +1,23 @@
+import { useContext, useState } from "react";
+
 // material-ui
 import { Box, FormControl, InputAdornment, OutlinedInput } from "@mui/material";
 
 // assets
 import { SearchOutlined } from "@ant-design/icons";
+import AircraftContext from "contexts/AircraftContext";
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const SearchUser = ({ value, setValue }) => {
+const SearchUser = () => {
+	const { setUserAircraftLink } = useContext(AircraftContext);
+
+	const [inputValue, setInputValue] = useState("");
+
 	const handleChange = (event) => {
 		const value = event.target.value;
-		value.length > 3 && setValue(value);
+		setInputValue(value);
+		value.length > 3 && setUserAircraftLink(value);
 	};
 
 	return (
@@ -28,7 +36,7 @@ const SearchUser = ({ value, setValue }) => {
 						"aria-label": "search-user",
 					}}
 					placeholder="Pesquisar usuário..."
-					value={value}
+					value={inputValue}
 					onChange={handleChange}
 				/>
 			</FormControl>

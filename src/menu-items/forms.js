@@ -19,7 +19,7 @@ const forms = {
 	children: [
 		{
 			id: "my aircrafts",
-			title: <FormattedMessage id="Minhas aeronaves" />,
+			title: <FormattedMessage id="Minhas Aeronaves" />,
 			type: "item",
 			url: "/aircrafts/me",
 			icon: icons.UnorderedListOutlined,
