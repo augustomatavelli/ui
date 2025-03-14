@@ -11,9 +11,6 @@ import ScrollTop from "components/ScrollTop";
 import Snackbar from "components/@extended/Snackbar";
 import Notistack from "components/third-party/Notistack";
 
-import { dispatch } from "store";
-import { fetchMenu } from "store/reducers/menu";
-
 // auth provider
 
 // import { FirebaseProvider as AuthProvider } from 'contexts/FirebaseContext';

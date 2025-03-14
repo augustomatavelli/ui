@@ -4,7 +4,7 @@ import React from "react";
 import { useMemo, useState } from "react";
 
 // material-ui
-import { FormControl, MenuItem, OutlinedInput, Select, Slider, Stack, TextField, Tooltip } from "@mui/material";
+import { FormControl, MenuItem, OutlinedInput, Select, Slider, Stack, TextField, Tooltip, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
@@ -17,10 +17,14 @@ import { format } from "date-fns";
 import IconButton from "components/@extended/IconButton";
 
 // assets
-import { CloseOutlined, LineOutlined, SearchOutlined } from "@ant-design/icons";
+import { CloseOutlined, LineOutlined, SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter, ...other }) {
 	const [value, setValue] = useState(globalFilter);
+	const [hover, setHover] = useState(false);
+
+	const theme = useTheme();
+
 	const onChange = useAsyncDebounce((value) => {
 		setGlobalFilter(value || undefined);
 	}, 200);
@@ -35,6 +39,21 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
 			placeholder={`Pesquisar aeronave...`}
 			id="start-adornment-email"
 			startAdornment={<SearchOutlined />}
+			endAdornment={
+				<CloseCircleOutlined
+					style={{
+						cursor: "pointer",
+						fontSize: 15,
+						color: hover ? theme.palette.error.main : "inherit",
+					}}
+					onClick={() => {
+						setValue("");
+						setGlobalFilter("");
+					}}
+					onMouseEnter={() => setHover(true)}
+					onMouseLeave={() => setHover(false)}
+				/>
+			}
 			{...other}
 		/>
 	);

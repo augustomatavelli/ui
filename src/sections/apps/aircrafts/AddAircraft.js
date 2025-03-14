@@ -46,7 +46,6 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
-import useScriptRef from "hooks/useScriptRef";
 
 // constant
 const getInitialValues = (aircraft) => {
@@ -82,8 +81,6 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
 	const [typeDoc, setTypeDoc] = useState("cpf");
-
-	const scriptedRef = useScriptRef();
 
 	useEffect(() => {
 		if (selectedImage) {

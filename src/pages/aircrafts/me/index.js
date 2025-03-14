@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 
 // material-ui
-import { Grid, Stack, useMediaQuery, Button, FormControl, Select, MenuItem, Box, Dialog, Slide, Pagination, Typography } from "@mui/material";
+import { Grid, Stack, useMediaQuery, Button, FormControl, Select, MenuItem, Box, Dialog, Pagination, Typography } from "@mui/material";
 // project import
 import { PopupTransition } from "components/@extended/Transitions";
 import EmptyUserCard from "components/cards/skeleton/EmptyUserCard";
@@ -124,35 +124,36 @@ const MyAircrafts = () => {
 					</Stack>
 				</Stack>
 			</Box>
-			<Grid
-				container
-				sx={{
-					display: "grid",
-					gridTemplateColumns: "repeat(4, 1fr)",
-					gap: 2,
-				}}
-			>
-				{filteredAircrafts.length > 0 ? (
-					<>
-						{filteredAircrafts
-							.sort(function (a, b) {
-								if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
-								if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
-								if (sortBy === "Categoria") return a.category.localeCompare(b.category);
-								if (sortBy === "Email responsável") return a.email.localeCompare(b.email);
-								if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);
-								return a;
-							})
-							.map((aircraft) => (
-								<Grid key={aircraft.id_aircraft}>
-									<AircraftCard data={aircraft} />
-								</Grid>
-							))}
-					</>
-				) : (
+
+			{filteredAircrafts.length > 0 ? (
+				<Grid
+					container
+					sx={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: 2,
+					}}
+				>
+					{filteredAircrafts
+						.sort(function (a, b) {
+							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
+							if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
+							if (sortBy === "Categoria") return a.category.localeCompare(b.category);
+							if (sortBy === "Email responsável") return a.email.localeCompare(b.email);
+							if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);
+							return a;
+						})
+						.map((aircraft) => (
+							<Grid key={aircraft.id_aircraft}>
+								<AircraftCard data={aircraft} />
+							</Grid>
+						))}
+				</Grid>
+			) : (
+				<Grid container>
 					<EmptyUserCard title={"Não há nenhuma aeronave vinculada a você."} />
-				)}
-			</Grid>
+				</Grid>
+			)}
 
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
 				<Pagination count={count} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
