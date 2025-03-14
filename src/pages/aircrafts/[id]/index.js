@@ -31,7 +31,7 @@ const AircraftDetails = () => {
 	const userId = localStorage.getItem("_userId");
 
 	const handleremoveLinkUserAircraft = async () => {
-		const response = await removeLinkUserAircraft(id_aircraft);
+		const response = await removeLinkUserAircraft(userId, id_aircraft);
 		dispatch(
 			openSnackbar({
 				open: true,
