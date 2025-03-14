@@ -19,7 +19,7 @@ const AircraftDetails = () => {
 	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
 
 	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
-	const { setSearchUser } = useContext(UserContext);
+	const { setSearchUser, user } = useContext(UserContext);
 
 	const [open, setOpen] = useState(false);
 	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
@@ -67,7 +67,7 @@ const AircraftDetails = () => {
 									}}
 								/>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-									{Number(userId) === id_user_resp && (
+									{(Number(userId) === id_user_resp || user.type === "A") && (
 										<Button
 											variant="contained"
 											color="primary"
@@ -83,7 +83,7 @@ const AircraftDetails = () => {
 										variant="contained"
 										color="warning"
 										onClick={() => {
-											if (Number(userId) !== id_user_resp) {
+											if (Number(userId) !== id_user_resp && user.type !== "A") {
 												handleremoveLinkUserAircraft();
 											} else {
 												setOpenConfirmRemove(true);

@@ -7,4 +7,6 @@ export const ErrorMessages = {
 	email_not_found: "Email não encontrado",
 	failed_sent_email: "Falha ao enviar o email",
 	invalid_2fa_code: "Código inválido",
+	unauthorized_user: "Você não possui permissão",
+	invalid_token: "Token inválido",
 };

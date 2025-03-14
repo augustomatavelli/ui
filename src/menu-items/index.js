@@ -1,4 +1,5 @@
 // project import
+import admin from "./admin";
 import applications from "./applications";
 import forms from "./forms";
 
@@ -6,7 +7,7 @@ import forms from "./forms";
 
 //TODO: navegação do menu lateral
 const menuItems = {
-	items: [forms, applications],
+	items: [admin, forms, applications],
 };
 
 export default menuItems;
