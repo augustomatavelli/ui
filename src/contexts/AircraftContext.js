@@ -7,15 +7,19 @@ export const AircraftProvider = ({ children }) => {
 	const [aircrafts, setAircrafts] = useState([]);
 	const [aircraftDetails, setAircraftDetails] = useState({});
 	const [searchUserAircraftLink, setUserAircraftLink] = useState("");
+	const [aircraftsPending, setAircraftsPending] = useState([]);
 
 	const resetAircraftstates = () => {
 		setAircrafts([]);
 		setAircraftDetails({});
 		setUserAircraftLink("");
+		setAircraftsPending([]);
 	};
 
 	return (
-		<AircraftContext.Provider value={{ aircrafts, setAircrafts, aircraftDetails, setAircraftDetails, searchUserAircraftLink, setUserAircraftLink, resetAircraftstates }}>
+		<AircraftContext.Provider
+			value={{ aircrafts, setAircrafts, aircraftDetails, setAircraftDetails, searchUserAircraftLink, setUserAircraftLink, aircraftsPending, setAircraftsPending, resetAircraftstates }}
+		>
 			{children}
 		</AircraftContext.Provider>
 	);

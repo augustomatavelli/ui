@@ -7,7 +7,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
-	const { setUser, setSearchUser } = useContext(UserContext);
+	const { setUser, setSearchUser, setUsersPending } = useContext(UserContext);
 
 	const findOneUser = async () => {
 		try {
@@ -51,6 +51,27 @@ const useUser = () => {
 		}
 	};
 
+	const findAllPendingUsers = async () => {
+		try {
+			const response = await publicAxios.get("/users/find-all-pending");
+			setUsersPending(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
 	const updatePassword = async (data) => {
 		try {
 			const response = await publicAxios.patch("/users", data);
@@ -72,7 +93,7 @@ const useUser = () => {
 		}
 	};
 
-	return { findOneUser, updatePassword, findAllUsers };
+	return { findOneUser, updatePassword, findAllUsers, findAllPendingUsers };
 };
 
 export default useUser;

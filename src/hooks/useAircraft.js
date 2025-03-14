@@ -8,7 +8,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
-	const { setAircrafts, setAircraftDetails } = useContext(AircraftContext);
+	const { setAircrafts, setAircraftDetails, setAircraftsPending } = useContext(AircraftContext);
 
 	const createAircraft = async (data) => {
 		try {
@@ -35,6 +35,27 @@ const useAircraft = () => {
 		try {
 			const response = await publicAxios.get("/aircrafts");
 			setAircrafts(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	const findAllPendingAircrafts = async () => {
+		try {
+			const response = await publicAxios.get("/aircrafts/find-all-pending");
+			setAircraftsPending(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -115,7 +136,7 @@ const useAircraft = () => {
 		}
 	};
 
-	return { createAircraft, findAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft };
+	return { createAircraft, findAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllPendingAircrafts };
 };
 
 export default useAircraft;
