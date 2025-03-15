@@ -9,4 +9,5 @@ export const ErrorMessages = {
 	invalid_2fa_code: "Código inválido",
 	unauthorized_user: "Você não possui permissão",
 	invalid_token: "Token inválido",
+	forbidden: "Você não possui permissão",
 };
