@@ -48,7 +48,7 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
 	const { user } = useContext(UserContext);
 
-	const [state, dispatch] = useReducer(authReducer, initialState);
+	const [state, dispatchAuth] = useReducer(authReducer, initialState);
 
 	useEffect(() => {
 		const init = async () => {
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 				const sessionToken = window.localStorage.getItem("sessionToken");
 				if (sessionToken && verifyToken(sessionToken)) {
 					setSession(sessionToken);
-					dispatch({
+					dispatchAuth({
 						type: LOGIN,
 						payload: {
 							isLoggedIn: true,
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 						},
 					});
 				} else {
-					dispatch({
+					dispatchAuth({
 						type: LOGOUT,
 						payload: {
 							isLoggedIn: false,
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 				}
 			} catch (err) {
 				console.error(err);
-				dispatch({
+				dispatchAuth({
 					type: LOGOUT,
 					payload: {
 						isLoggedIn: false,
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
 	const resetAuthState = () => {};
 
-	return <AuthContext.Provider value={{ ...state, dispatch, resetAuthState }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ ...state, dispatchAuth, resetAuthState }}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {

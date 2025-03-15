@@ -7,6 +7,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
+import { dispatch } from "store";
 
 // ==============================|| AUTH HOOKS ||============================== //
 
@@ -15,7 +16,7 @@ const useAuth = () => {
 
 	const { user, setUser, resetUserStates } = useContext(UserContext);
 	const { resetAircraftstates } = useContext(AircraftContext);
-	const { dispatch } = useContext(AuthContext);
+	const { dispatchAuth } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ const useAuth = () => {
 			const response = await authAxios.post("/auth/login", data);
 			const { token, name, userType, userId, userStatus } = response.data;
 			setSession(token);
-			dispatch({
+			dispatchAuth({
 				type: LOGIN,
 				payload: {
 					isLoggedIn: true,
@@ -86,7 +87,7 @@ const useAuth = () => {
 		localStorage.clear();
 		resetUserStates();
 		resetAircraftstates();
-		dispatch({
+		dispatchAuth({
 			type: LOGOUT,
 			payload: {
 				isLoggedIn: false,

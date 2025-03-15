@@ -10,4 +10,8 @@ export const ErrorMessages = {
 	unauthorized_user: "Você não possui permissão",
 	invalid_token: "Token inválido",
 	forbidden: "Você não possui permissão",
+	user_password_invalid: "Usuário ou senha inválido",
+	aircraft_not_found: "Aeronave não encontrada",
+	email_domain_invalid: "Domínio de email inválido",
+	invalid_phone_number: "Número de celular inválido",
 };
