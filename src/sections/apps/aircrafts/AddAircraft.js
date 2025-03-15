@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -74,7 +74,7 @@ const allStatus = ["A", "B", "C", "D", "E"];
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddAircraft = ({ aircraft, onCancel }) => {
-	const { createAircraft } = useAircraft();
+	const { createAircraft, findAllAircrafts } = useAircraft();
 
 	const [openAlert, setOpenAlert] = useState(false);
 	const [isMembership, setIsMembership] = useState(true);
@@ -140,6 +140,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 				};
 				const response = await createAircraft(newAircraft);
+				await findAllAircrafts();
 				if (response) {
 					dispatch(
 						openSnackbar({

@@ -69,7 +69,6 @@ const MyAircrafts = () => {
 	const PER_PAGE = 10;
 	const count = Math.ceil(filteredAircrafts.length / PER_PAGE);
 
-	// search
 	useEffect(() => {
 		const newData = aircrafts.filter((value) => {
 			if (globalFilter) {
