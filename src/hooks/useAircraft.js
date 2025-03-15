@@ -52,9 +52,9 @@ const useAircraft = () => {
 		}
 	};
 
-	const findAllPendingAircrafts = async () => {
+	const findAllPendingAircrafts = async (search) => {
 		try {
-			const response = await publicAxios.get("/aircrafts/find-all-pending");
+			const response = await publicAxios.get(`/aircrafts/find-all-pending?search=${search}`);
 			setAircraftsPending(response.data);
 		} catch (error) {
 			console.log(error);
@@ -136,7 +136,28 @@ const useAircraft = () => {
 		}
 	};
 
-	return { createAircraft, findAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllPendingAircrafts };
+	const approveAircraft = async (data) => {
+		try {
+			const response = await publicAxios.patch("/aircrafts/approve", data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	return { createAircraft, findAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllPendingAircrafts, approveAircraft };
 };
 
 export default useAircraft;

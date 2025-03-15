@@ -1,14 +1,13 @@
-// third-party
 import { FormattedMessage } from "react-intl";
+import { ClockCircleOutlined, IdcardOutlined } from "@ant-design/icons";
+import { useContext } from "react";
+import UserContext from "contexts/UserContext";
 
-// assets
-import { ClockCircleOutlined } from "@ant-design/icons";
-// icons
+// Ícones
 const icons = {
 	ClockCircleOutlined,
+	IdcardOutlined,
 };
-
-// ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const admin = {
 	id: "group-admin",
@@ -34,3 +33,18 @@ const admin = {
 };
 
 export default admin;
+
+/* const useMenuAdmin = () => {
+	const { user } = useContext(UserContext);
+
+	if (user && user.type !== "A") {
+		return {
+			...admin,
+			children: [],
+		};
+	}
+
+	return admin;
+};
+
+export default useMenuAdmin; */

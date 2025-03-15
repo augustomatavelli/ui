@@ -1,8 +1,26 @@
+import UserContext from "contexts/UserContext";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router";
+import AircraftPendingTable from "sections/tables/aircrafts/AircraftsPending";
+
 const AricraftsPending = () => {
-	//TODO: Ao acessar a página, precisa verificar se o usuário for admin
-	//TODO: Só mostrar a página no menu lateral se o usuário for amdmin
-	//TODO: Carregar os dados de aeronaves pendentes
-	return <>Teste</>;
+	const { user } = useContext(UserContext);
+
+	const navigate = useNavigate();
+	//TODO: Só mostrar a página no menu lateral se o usuário for admin
+
+	useEffect(() => {
+		if (!user) return;
+		if (user.type !== "A") {
+			navigate("/aircrafts/me");
+		}
+	}, [user]);
+
+	return (
+		<>
+			<AircraftPendingTable />
+		</>
+	);
 };
 
 export default AricraftsPending;

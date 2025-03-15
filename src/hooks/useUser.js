@@ -51,9 +51,9 @@ const useUser = () => {
 		}
 	};
 
-	const findAllPendingUsers = async () => {
+	const findAllPendingUsers = async (search) => {
 		try {
-			const response = await publicAxios.get("/users/find-all-pending");
+			const response = await publicAxios.get(`/users/find-all-pending?search=${search}`);
 			setUsersPending(response.data);
 		} catch (error) {
 			console.log(error);
@@ -93,7 +93,28 @@ const useUser = () => {
 		}
 	};
 
-	return { findOneUser, updatePassword, findAllUsers, findAllPendingUsers };
+	const approveUser = async (data) => {
+		try {
+			const response = await publicAxios.patch("/users/approve", data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	return { findOneUser, updatePassword, findAllUsers, findAllPendingUsers, approveUser };
 };
 
 export default useUser;

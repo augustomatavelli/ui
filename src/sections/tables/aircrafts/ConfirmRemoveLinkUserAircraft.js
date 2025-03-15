@@ -75,7 +75,7 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 						{searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
-									<TableCell>
+									<TableCell align="center">
 										<MinusCircleFilled
 											style={{
 												fontSize: 20,

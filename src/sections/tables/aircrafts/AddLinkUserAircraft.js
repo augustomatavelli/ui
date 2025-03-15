@@ -77,7 +77,7 @@ export default function AddLinkUserAircraftTable() {
 						{searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
-									<TableCell>
+									<TableCell align="center">
 										<PlusCircleFilled
 											style={{
 												fontSize: 20,
