@@ -12,12 +12,8 @@ import { Formik } from "formik";
 
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { useContext } from "react";
-import UserContext from "contexts/UserContext";
 
 import useUser from "hooks/useUser";
-import { useNavigate } from "react-router";
-import useAuth from "hooks/useAuth";
 import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
 import MainCard from "components/MainCard";
@@ -25,10 +21,9 @@ import MainCard from "components/MainCard";
 // ==============================|| TAB - PERSONAL ||============================== //
 
 const CreateUser = () => {
-	const { createUser } = useAuth();
+	const { createUserByAdmin } = useUser();
 
 	const scriptedRef = useScriptRef();
-	const navigate = useNavigate();
 
 	const [typeDoc, setTypeDoc] = useState("cpf");
 	const [isPilot, setIsPilot] = useState(1);
@@ -57,7 +52,7 @@ const CreateUser = () => {
 						.required("Documento é obrigatório"),
 					pilot: isPilot === 1 ? Yup.string().max(255).required("Número do registro é obrigatório") : Yup.string().max(255),
 				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+				onSubmit={async (values, { setErrors, setStatus, setSubmitting, setValues, resetForm }) => {
 					try {
 						const payload = {
 							name: values.name,
@@ -65,11 +60,11 @@ const CreateUser = () => {
 							phone: values.phone.replace(/\D/g, ""),
 							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
 							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-							type: isPilot ? "P" : "C",
+							type: isPilot === 1 ? "P" : isPilot === 2 ? "R" : "C",
 							pilotRegister: values.pilot,
 						};
 
-						const response = await createUser(payload);
+						const response = await createUserByAdmin(payload);
 						if (scriptedRef.current) {
 							setStatus({ success: true });
 							setSubmitting(false);
@@ -84,16 +79,15 @@ const CreateUser = () => {
 									close: false,
 								})
 							);
-
 							setTimeout(() => {
-								navigate("/aircrafts/me", { replace: true });
-							}, 1500);
+								resetForm();
+							}, 500);
 						}
 					} catch (err) {
 						setErrors({});
 						console.error(err);
 						const message =
-							err.response.status === 409 ? "Usuário já cadastrado!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
+							err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
 							setErrors({ submit: message });

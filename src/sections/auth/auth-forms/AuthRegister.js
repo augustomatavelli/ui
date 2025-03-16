@@ -109,7 +109,7 @@ const AuthRegister = () => {
 						setErrors({});
 						console.error(err);
 						const message =
-							err.response.status === 409 ? "Usuário já cadastrado!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
+							err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
 							setErrors({ submit: message });

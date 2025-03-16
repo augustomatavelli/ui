@@ -9,6 +9,27 @@ const useUser = () => {
 	const { publicAxios } = UseAxios();
 	const { setUser, setSearchUser, setUsersPending } = useContext(UserContext);
 
+	const createUserByAdmin = async (data) => {
+		try {
+			const response = await publicAxios.post("/users/by-admin", data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
 	const findOneUser = async () => {
 		try {
 			const response = await publicAxios.get("/users");
@@ -114,7 +135,7 @@ const useUser = () => {
 		}
 	};
 
-	return { findOneUser, updatePassword, findAllUsers, findAllPendingUsers, approveUser };
+	return { findOneUser, updatePassword, findAllUsers, findAllPendingUsers, approveUser, createUserByAdmin };
 };
 
 export default useUser;
