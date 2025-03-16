@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box, Tooltip, Stack, Pagination } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box, Tooltip, Stack, Pagination, Grid } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -43,7 +43,13 @@ export default function AircraftPendingTable() {
 
 	return (
 		<MainCard>
-			<SearchAircraftPending setSearch={setSearch} />
+			<Grid sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+				<SearchAircraftPending setSearch={setSearch} />
+				<Stack spacing={2} sx={{ p: 2.5, width: "100%", mb: 1 }} alignItems="flex-end">
+					<Pagination count={totalAircraftPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+				</Stack>
+			</Grid>
+
 			<TableContainer>
 				<Table aria-label="simple table">
 					<TableHead>
@@ -117,9 +123,6 @@ export default function AircraftPendingTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-				<Pagination count={totalAircraftPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
-			</Stack>
 		</MainCard>
 	);
 }

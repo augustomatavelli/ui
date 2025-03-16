@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -42,7 +42,12 @@ export default function UserPendingTable() {
 
 	return (
 		<MainCard>
-			<SearchUserPending setSearch={setSearch} />
+			<Grid sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+				<SearchUserPending setSearch={setSearch} />
+				<Stack spacing={2} sx={{ p: 2.5, width: "100%", mb: 1 }} alignItems="flex-end">
+					<Pagination count={totalUserPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+				</Stack>
+			</Grid>
 			<TableContainer>
 				<Table aria-label="simple table">
 					<TableHead>
@@ -119,9 +124,6 @@ export default function UserPendingTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-				<Pagination count={totalUserPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
-			</Stack>
 		</MainCard>
 	);
 }
