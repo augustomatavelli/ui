@@ -13,6 +13,7 @@ const DashboardDefault = Loadable(lazy(() => import("pages/dashboard/default")))
 // render - users
 const UserProfile = Loadable(lazy(() => import("pages/users/me")));
 const UsersPending = Loadable(lazy(() => import("pages/users/pending")));
+const CreateUser = Loadable(lazy(() => import("pages/users/create")));
 // render - aircrafts
 const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
 const AricraftsPending = Loadable(lazy(() => import("pages/aircrafts/pending")));
@@ -62,6 +63,10 @@ const MainRoutes = {
 						{
 							path: "pending",
 							element: <UsersPending />,
+						},
+						{
+							path: "create",
+							element: <CreateUser />,
 						},
 					],
 				},

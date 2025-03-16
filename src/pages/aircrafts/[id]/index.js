@@ -67,18 +67,6 @@ const AircraftDetails = () => {
 									}}
 								/>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-									{(Number(userId) === id_user_resp || user.type === "A") && (
-										<Button
-											variant="contained"
-											color="primary"
-											onClick={() => {
-												setOpen(true);
-												setSearchUser([]);
-											}}
-										>
-											Vincular
-										</Button>
-									)}
 									<Button
 										variant="contained"
 										color="warning"
@@ -93,6 +81,18 @@ const AircraftDetails = () => {
 									>
 										Desvincular
 									</Button>
+									{(Number(userId) === id_user_resp || user.type === "A") && (
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={() => {
+												setOpen(true);
+												setSearchUser([]);
+											}}
+										>
+											Vincular
+										</Button>
+									)}
 								</Stack>
 							</Box>
 						</Grid>

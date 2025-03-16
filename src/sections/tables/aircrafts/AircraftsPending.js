@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box, Tooltip } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -59,28 +59,32 @@ export default function AircraftPendingTable() {
 								<TableRow hover key={aircraft.id_aircraft}>
 									<TableCell align="center">
 										<Box display="flex" gap={4} justifyContent="center">
-											<LikeFilled
-												style={{
-													fontSize: 20,
-													color: theme.palette.success.main,
-													cursor: "pointer",
-												}}
-												onClick={async () => {
-													await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
-													await findAllPendingAircrafts(search);
-												}}
-											/>
-											<DislikeFilled
-												style={{
-													fontSize: 20,
-													color: theme.palette.error.main,
-													cursor: "pointer",
-												}}
-												onClick={async () => {
-													await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
-													await findAllPendingAircrafts(search);
-												}}
-											/>
+											<Tooltip title="Aprovar">
+												<LikeFilled
+													style={{
+														fontSize: 20,
+														color: theme.palette.success.main,
+														cursor: "pointer",
+													}}
+													onClick={async () => {
+														await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
+														await findAllPendingAircrafts(search);
+													}}
+												/>
+											</Tooltip>
+											<Tooltip title="Rejeitar">
+												<DislikeFilled
+													style={{
+														fontSize: 20,
+														color: theme.palette.error.main,
+														cursor: "pointer",
+													}}
+													onClick={async () => {
+														await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
+														await findAllPendingAircrafts(search);
+													}}
+												/>
+											</Tooltip>
 										</Box>
 									</TableCell>
 									<TableCell align="center">{aircraft.rab}</TableCell>

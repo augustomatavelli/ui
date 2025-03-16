@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import { ClockCircleOutlined, IdcardOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, IdcardOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import UserContext from "contexts/UserContext";
 
@@ -7,6 +7,7 @@ import UserContext from "contexts/UserContext";
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
+	UserAddOutlined,
 };
 
 const admin = {
@@ -28,6 +29,13 @@ const admin = {
 			type: "item",
 			url: "/aircrafts/pending",
 			icon: icons.ClockCircleOutlined,
+		},
+		{
+			id: "create user",
+			title: <FormattedMessage id="Criar usuário" />,
+			type: "item",
+			url: "/users/create",
+			icon: icons.UserAddOutlined,
 		},
 	],
 };

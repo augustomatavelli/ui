@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -47,7 +47,7 @@ export default function UserPendingTable() {
 							<TableCell align="center">Email</TableCell>
 							<TableCell align="center">Celular</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
-							<TableCell align="center">Registro</TableCell>
+							<TableCell align="center">Registro de piloto</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -56,28 +56,32 @@ export default function UserPendingTable() {
 								<TableRow hover key={user.id_user}>
 									<TableCell align="center">
 										<Box display="flex" gap={4} justifyContent="center">
-											<LikeFilled
-												style={{
-													fontSize: 20,
-													color: theme.palette.success.main,
-													cursor: "pointer",
-												}}
-												onClick={async () => {
-													await approveUser({ id_user: user.id_user, approve: "S" });
-													await findAllPendingUsers(search);
-												}}
-											/>
-											<DislikeFilled
-												style={{
-													fontSize: 20,
-													color: theme.palette.error.main,
-													cursor: "pointer",
-												}}
-												onClick={async () => {
-													await approveUser({ id_user: user.id_user, approve: "N" });
-													await findAllPendingUsers(search);
-												}}
-											/>
+											<Tooltip title="Aprovar">
+												<LikeFilled
+													style={{
+														fontSize: 20,
+														color: theme.palette.success.main,
+														cursor: "pointer",
+													}}
+													onClick={async () => {
+														await approveUser({ id_user: user.id_user, approve: "S" });
+														await findAllPendingUsers(search);
+													}}
+												/>
+											</Tooltip>
+											<Tooltip title="Rejeitar">
+												<DislikeFilled
+													style={{
+														fontSize: 20,
+														color: theme.palette.error.main,
+														cursor: "pointer",
+													}}
+													onClick={async () => {
+														await approveUser({ id_user: user.id_user, approve: "N" });
+														await findAllPendingUsers(search);
+													}}
+												/>
+											</Tooltip>
 										</Box>
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>
