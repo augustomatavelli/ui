@@ -41,7 +41,7 @@ const allColumns = [
 const MyAircrafts = () => {
 	const { findAllAircrafts } = useAircraft();
 
-	const { aircrafts } = useContext(AircraftContext);
+	const { aircrafts, totalAircraft } = useContext(AircraftContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -61,30 +61,15 @@ const MyAircrafts = () => {
 		if (aircraft && !add) setAircraft(null);
 	};
 
-	const handleChangePage = (e, p) => {
-		setPage(p);
-		filteredAircrafts.jump(p);
+	const handleChangePage = (event, value) => {
+		setPage(value);
 	};
 
-	const PER_PAGE = 10;
-	const count = Math.ceil(filteredAircrafts.length / PER_PAGE);
-
 	useEffect(() => {
-		const newData = aircrafts.filter((value) => {
-			if (globalFilter) {
-				const filterLower = globalFilter.toLowerCase();
-				return value.rab.toLowerCase().includes(filterLower) || value.name.toLowerCase().includes(filterLower) || value.email.toLowerCase().includes(filterLower);
-			} else {
-				setfilteredAircrafts(aircrafts);
-			}
-			return true;
-		});
-		setfilteredAircrafts(newData);
-	}, [globalFilter, aircrafts]);
+		findAllAircrafts(globalFilter, page);
+	}, [globalFilter, page]);
 
-	useEffect(() => {
-		findAllAircrafts();
-	}, []);
+	useEffect(() => {}, [aircrafts]);
 
 	return (
 		<>
@@ -124,7 +109,7 @@ const MyAircrafts = () => {
 				</Stack>
 			</Box>
 
-			{filteredAircrafts.length > 0 ? (
+			{aircrafts.length > 0 ? (
 				<Grid
 					container
 					sx={{
@@ -133,7 +118,7 @@ const MyAircrafts = () => {
 						gap: 2,
 					}}
 				>
-					{filteredAircrafts
+					{aircrafts
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
 							if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
@@ -155,7 +140,7 @@ const MyAircrafts = () => {
 			)}
 
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-				<Pagination count={count} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+				<Pagination count={totalAircraft} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>

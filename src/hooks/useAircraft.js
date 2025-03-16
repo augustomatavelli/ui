@@ -8,7 +8,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
-	const { setAircrafts, setAircraftDetails, setAircraftsPending } = useContext(AircraftContext);
+	const { setAircrafts, setAircraftDetails, setAircraftsPending, setTotalAircraftPending, setTotalAircraft } = useContext(AircraftContext);
 
 	const createAircraft = async (data) => {
 		try {
@@ -31,10 +31,11 @@ const useAircraft = () => {
 		}
 	};
 
-	const findAllAircrafts = async () => {
+	const findAllAircrafts = async (search, page) => {
 		try {
-			const response = await publicAxios.get("/aircrafts");
-			setAircrafts(response.data);
+			const response = await publicAxios.get(`/aircrafts?search=${search}&page=${page}`);
+			setAircrafts(response.data.items);
+			setTotalAircraft(response.data.pagination.totalPages);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -52,10 +53,11 @@ const useAircraft = () => {
 		}
 	};
 
-	const findAllPendingAircrafts = async (search) => {
+	const findAllPendingAircrafts = async (search, page) => {
 		try {
-			const response = await publicAxios.get(`/aircrafts/find-all-pending?search=${search}`);
-			setAircraftsPending(response.data);
+			const response = await publicAxios.get(`/aircrafts/find-all-pending?search=${search}&page=${page}`);
+			setAircraftsPending(response.data.items);
+			setTotalAircraftPending(response.data.pagination.totalPages);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

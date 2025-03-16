@@ -8,17 +8,35 @@ export const AircraftProvider = ({ children }) => {
 	const [aircraftDetails, setAircraftDetails] = useState({});
 	const [searchUserAircraftLink, setUserAircraftLink] = useState("");
 	const [aircraftsPending, setAircraftsPending] = useState([]);
+	const [totalAircraftPending, setTotalAircraftPending] = useState(0);
+	const [totalAircraft, setTotalAircraft] = useState(0);
 
 	const resetAircraftstates = () => {
 		setAircrafts([]);
 		setAircraftDetails({});
 		setUserAircraftLink("");
 		setAircraftsPending([]);
+		setTotalAircraftPending(0);
+		setTotalAircraft(0);
 	};
 
 	return (
 		<AircraftContext.Provider
-			value={{ aircrafts, setAircrafts, aircraftDetails, setAircraftDetails, searchUserAircraftLink, setUserAircraftLink, aircraftsPending, setAircraftsPending, resetAircraftstates }}
+			value={{
+				aircrafts,
+				setAircrafts,
+				aircraftDetails,
+				setAircraftDetails,
+				searchUserAircraftLink,
+				setUserAircraftLink,
+				aircraftsPending,
+				setAircraftsPending,
+				totalAircraftPending,
+				setTotalAircraftPending,
+				totalAircraft,
+				setTotalAircraft,
+				resetAircraftstates,
+			}}
 		>
 			{children}
 		</AircraftContext.Provider>

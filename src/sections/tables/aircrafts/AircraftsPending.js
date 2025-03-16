@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box, Tooltip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, Box, Tooltip, Stack, Pagination } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -24,15 +24,20 @@ export const header = [
 export default function AircraftPendingTable() {
 	const { findAllPendingAircrafts, approveAircraft } = useAircraft();
 
-	const { aircraftsPending } = useContext(AircraftContext);
+	const { aircraftsPending, totalAircraftPending } = useContext(AircraftContext);
 
 	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(1);
 
 	const theme = useTheme();
 
+	const handleChangePage = (event, value) => {
+		setPage(value);
+	};
+
 	useEffect(() => {
-		findAllPendingAircrafts(search);
-	}, [search]);
+		findAllPendingAircrafts(search, page);
+	}, [search, page]);
 
 	useEffect(() => {}, [aircraftsPending]);
 
@@ -68,7 +73,7 @@ export default function AircraftPendingTable() {
 													}}
 													onClick={async () => {
 														await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
-														await findAllPendingAircrafts(search);
+														await findAllPendingAircrafts(search, page);
 													}}
 												/>
 											</Tooltip>
@@ -81,7 +86,7 @@ export default function AircraftPendingTable() {
 													}}
 													onClick={async () => {
 														await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
-														await findAllPendingAircrafts(search);
+														await findAllPendingAircrafts(search, page);
 													}}
 												/>
 											</Tooltip>
@@ -112,6 +117,9 @@ export default function AircraftPendingTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
+			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
+				<Pagination count={totalAircraftPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+			</Stack>
 		</MainCard>
 	);
 }

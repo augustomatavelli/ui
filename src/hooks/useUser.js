@@ -7,7 +7,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
-	const { setUser, setSearchUser, setUsersPending } = useContext(UserContext);
+	const { setUser, setSearchUser, setUsersPending, setTotalUserPending } = useContext(UserContext);
 
 	const createUserByAdmin = async (data) => {
 		try {
@@ -72,10 +72,11 @@ const useUser = () => {
 		}
 	};
 
-	const findAllPendingUsers = async (search) => {
+	const findAllPendingUsers = async (search, page) => {
 		try {
-			const response = await publicAxios.get(`/users/find-all-pending?search=${search}`);
-			setUsersPending(response.data);
+			const response = await publicAxios.get(`/users/find-all-pending?search=${search}&page=${page}`);
+			setUsersPending(response.data.items);
+			setTotalUserPending(response.data.pagination.totalPages);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

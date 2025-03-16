@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -23,15 +23,20 @@ export const header = [
 export default function UserPendingTable() {
 	const { findAllPendingUsers, approveUser } = useUser();
 
-	const { usersPending } = useContext(UserContext);
+	const { usersPending, totalUserPending } = useContext(UserContext);
 
 	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(1);
 
 	const theme = useTheme();
 
+	const handleChangePage = (event, value) => {
+		setPage(value);
+	};
+
 	useEffect(() => {
-		findAllPendingUsers(search);
-	}, [search]);
+		findAllPendingUsers(search, page);
+	}, [search, page]);
 
 	useEffect(() => {}, [usersPending]);
 
@@ -65,7 +70,7 @@ export default function UserPendingTable() {
 													}}
 													onClick={async () => {
 														await approveUser({ id_user: user.id_user, approve: "S" });
-														await findAllPendingUsers(search);
+														await findAllPendingUsers(search, page);
 													}}
 												/>
 											</Tooltip>
@@ -78,7 +83,7 @@ export default function UserPendingTable() {
 													}}
 													onClick={async () => {
 														await approveUser({ id_user: user.id_user, approve: "N" });
-														await findAllPendingUsers(search);
+														await findAllPendingUsers(search, page);
 													}}
 												/>
 											</Tooltip>
@@ -114,6 +119,9 @@ export default function UserPendingTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
+			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
+				<Pagination count={totalUserPending} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+			</Stack>
 		</MainCard>
 	);
 }
