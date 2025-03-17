@@ -24,6 +24,7 @@ import { AuthProvider } from "contexts/AuthContext";
 import reportWebVitals from "./reportWebVitals";
 import { AircraftProvider } from "contexts/AircraftContext";
 import { UserProvider } from "contexts/UserContext";
+import { LandingSiteProvider } from "contexts/LandingSiteContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -38,7 +39,9 @@ root.render(
 						<AuthProvider>
 							<UserProvider>
 								<AircraftProvider>
-									<App />
+									<LandingSiteProvider>
+										<App />
+									</LandingSiteProvider>
 								</AircraftProvider>
 							</UserProvider>
 						</AuthProvider>

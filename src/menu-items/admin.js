@@ -41,7 +41,7 @@ const admin = {
 			id: "create heliport",
 			title: <FormattedMessage id="Cadastrar heliporto" />,
 			type: "item",
-			url: "/heliports/create",
+			url: "/landing-sites/create",
 			icon: icons.EnvironmentOutlined,
 		},
 		{

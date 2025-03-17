@@ -17,6 +17,8 @@ const CreateUser = Loadable(lazy(() => import("pages/users/create")));
 // render - aircrafts
 const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
 const AricraftsPending = Loadable(lazy(() => import("pages/aircrafts/pending")));
+// render - users
+const CreateLandingSite = Loadable(lazy(() => import("pages/landing-sites/create")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -84,6 +86,15 @@ const MainRoutes = {
 						{
 							path: "pending",
 							element: <AricraftsPending />,
+						},
+					],
+				},
+				{
+					path: "landing-sites",
+					children: [
+						{
+							path: "create",
+							element: <CreateLandingSite />,
 						},
 					],
 				},

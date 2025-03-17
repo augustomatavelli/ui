@@ -93,9 +93,7 @@ const useAuth = () => {
 				isLoggedIn: false,
 			},
 		});
-		setTimeout(() => {
-			navigate("/");
-		}, 1000);
+		navigate("/");
 	};
 
 	return { login, createUser, logout };
