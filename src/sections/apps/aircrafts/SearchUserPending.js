@@ -53,6 +53,10 @@ const SearchUserPending = ({ setSearch }) => {
 					placeholder="Pesquisar usuário..."
 					value={inputValue}
 					onChange={handleChange}
+					sx={{
+						height: 40,
+						paddingY: 0,
+					}}
 				/>
 			</FormControl>
 		</Box>

@@ -53,6 +53,10 @@ const SearchAircraftPending = ({ setSearch }) => {
 					placeholder="Pesquisar aeronave..."
 					value={inputValue}
 					onChange={handleChange}
+					sx={{
+						height: 40,
+						paddingY: 0,
+					}}
 				/>
 			</FormControl>
 		</Box>

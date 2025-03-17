@@ -82,7 +82,7 @@ const AuthResetPassword = () => {
 						);
 
 						setTimeout(() => {
-							navigate(isLoggedIn ? "/auth/login" : "/login", { replace: true });
+							navigate(isLoggedIn ? "/auth/login" : "/", { replace: true });
 						}, 1500);
 					}
 				} catch (err) {

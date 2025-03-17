@@ -54,6 +54,10 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
 					onMouseLeave={() => setHover(false)}
 				/>
 			}
+			sx={{
+				height: 40,
+				paddingY: 0,
+			}}
 			{...other}
 		/>
 	);

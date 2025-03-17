@@ -20,7 +20,7 @@ const ForgotPassword = () => {
 				<Grid item xs={12}>
 					<Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
 						<Typography variant="h3">Esqueci minha senha</Typography>
-						<Typography component={Link} to={isLoggedIn ? "/auth/login" : "/login"} variant="body1" sx={{ textDecoration: "none" }} color="primary">
+						<Typography component={Link} to={isLoggedIn ? "/auth/login" : "/"} variant="body1" sx={{ textDecoration: "none" }} color="primary">
 							Voltar ao login
 						</Typography>
 					</Stack>

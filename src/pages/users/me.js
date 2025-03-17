@@ -50,7 +50,15 @@ const UserProfile = () => {
 			content={false}
 			title="Perfil"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
-			secondary={<Chip color="primary" variant="filled" size="medium" label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : "Comum"} sx={{ fontWeight: "bold" }} />}
+			secondary={
+				<Chip
+					color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "R" ? "primary" : "warning"}
+					variant="filled"
+					size="medium"
+					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "R" ? "Responsável" : "Comum"}
+					sx={{ fontWeight: "bold" }}
+				/>
+			}
 		>
 			<Formik
 				initialValues={{
@@ -135,7 +143,7 @@ const UserProfile = () => {
 								<Grid item xs={12} sm={6}>
 									<Stack spacing={1.25}>
 										<InputLabel htmlFor="personal-rab">Número do registro de piloto</InputLabel>
-										<TextField fullWidth value={values.rab ? values.rab : ""} name="rab" id="personal-rab" disabled />
+										<TextField fullWidth value={values.rab ? values.rab : "-"} name="rab" id="personal-rab" disabled />
 									</Stack>
 								</Grid>
 								<Grid item xs={12} sm={6}>

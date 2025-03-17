@@ -110,7 +110,7 @@ const CreateUser = () => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite seu nome..."
+											placeholder="Digite o nome..."
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -133,7 +133,7 @@ const CreateUser = () => {
 											name="email"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite seu email..."
+											placeholder="Digite o email..."
 											inputProps={{}}
 										/>
 										{touched.email && errors.email && (

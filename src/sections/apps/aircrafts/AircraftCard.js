@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 // material-ui
-import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography, Dialog } from "@mui/material";
 
 // third-party
 import { PatternFormat } from "react-number-format";
@@ -13,26 +13,24 @@ import MainCard from "components/MainCard";
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
+import AddRequest from "../requests/AddRequest";
+import { PopupTransition } from "components/@extended/Transitions";
 
 const AircraftCard = ({ data }) => {
 	const { user } = useContext(UserContext);
 
-	const { id_aircraft, rab, category, image, membership, status, name, email, mobile } = data;
+	const [addRequest, setAddRequest] = useState(false);
 
-	const [open, setOpen] = useState(false);
+	const { id_aircraft, rab, category, image, membership, status, name, email, mobile } = data;
 
 	const navigate = useNavigate();
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
-
-	const handleClose = () => {
-		setOpen(false);
-	};
-
 	const handleaircraftDetailsPage = (aircraftId) => {
 		navigate(`/aircrafts/${aircraftId}`);
+	};
+
+	const handleAddRequest = () => {
+		setAddRequest(!addRequest);
 	};
 
 	return (
@@ -113,14 +111,23 @@ const AircraftCard = ({ data }) => {
 				</Grid>
 				{status === "A" && user.status === "A" && (
 					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
-						<Button variant="outlined" size="small" onClick={handleClickOpen} sx={{ width: "100%" }}>
+						<Button
+							variant="outlined"
+							size="small"
+							onClick={(event) => {
+								event.stopPropagation();
+								handleAddRequest();
+							}}
+							sx={{ width: "100%" }}
+						>
 							Solicitar pouso
 						</Button>
 					</Stack>
 				)}
 			</MainCard>
-
-			{/* <CustomerPreview helicopter={data} open={open} onClose={handleClose} /> */}
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+				<AddRequest aircraft={data} handleAddRequest={handleAddRequest} />
+			</Dialog>
 		</>
 	);
 };

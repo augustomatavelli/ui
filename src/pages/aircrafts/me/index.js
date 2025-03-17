@@ -50,7 +50,6 @@ const MyAircrafts = () => {
 	const [add, setAdd] = useState(false);
 	const [aircraft, setAircraft] = useState(null);
 	const [page, setPage] = useState(1);
-	const [filteredAircrafts, setfilteredAircrafts] = useState([]);
 
 	const handleChange = (event) => {
 		setSortBy(event.target.value);
@@ -91,6 +90,10 @@ const MyAircrafts = () => {
 
 										return <Typography variant="subtitle2">Ordenar por ({sortBy})</Typography>;
 									}}
+									sx={{
+										height: 40,
+										paddingY: 0,
+									}}
 								>
 									{allColumns.map((column) => {
 										return (
@@ -101,7 +104,15 @@ const MyAircrafts = () => {
 									})}
 								</Select>
 							</FormControl>
-							<Button variant="contained" startIcon={<PlusOutlined />} onClick={handleAdd}>
+							<Button
+								variant="contained"
+								startIcon={<PlusOutlined />}
+								onClick={handleAdd}
+								sx={{
+									height: 40,
+									paddingY: 0,
+								}}
+							>
 								Adicionar Aeronave
 							</Button>
 						</Stack>

@@ -1,13 +1,13 @@
 import { FormattedMessage } from "react-intl";
-import { ClockCircleOutlined, IdcardOutlined, UserAddOutlined } from "@ant-design/icons";
-import { useContext } from "react";
-import UserContext from "contexts/UserContext";
-
+import { ClockCircleOutlined, IdcardOutlined, UserAddOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined } from "@ant-design/icons";
 // Ícones
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
 	UserAddOutlined,
+	EnvironmentOutlined,
+	AppstoreAddOutlined,
+	ToolOutlined,
 };
 
 const admin = {
@@ -36,6 +36,27 @@ const admin = {
 			type: "item",
 			url: "/users/create",
 			icon: icons.UserAddOutlined,
+		},
+		{
+			id: "create heliport",
+			title: <FormattedMessage id="Cadastrar heliporto" />,
+			type: "item",
+			url: "/heliports/create",
+			icon: icons.EnvironmentOutlined,
+		},
+		{
+			id: "create products",
+			title: <FormattedMessage id="Cadastrar produto" />,
+			type: "item",
+			url: "/products/create",
+			icon: icons.AppstoreAddOutlined,
+		},
+		{
+			id: "create services",
+			title: <FormattedMessage id="Cadastrar serviço" />,
+			type: "item",
+			url: "/services/create",
+			icon: icons.ToolOutlined,
 		},
 	],
 };
