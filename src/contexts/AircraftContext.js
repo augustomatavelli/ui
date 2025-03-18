@@ -4,37 +4,37 @@ import { createContext, useState } from "react";
 export const AircraftContext = createContext({});
 
 export const AircraftProvider = ({ children }) => {
-	const [aircrafts, setAircrafts] = useState([]);
+	const [searchAircrafts, setSearchAircrafts] = useState([]);
 	const [aircraftDetails, setAircraftDetails] = useState({});
 	const [searchUserAircraftLink, setUserAircraftLink] = useState("");
-	const [aircraftsPending, setAircraftsPending] = useState([]);
-	const [totalAircraftPending, setTotalAircraftPending] = useState(0);
-	const [totalAircraft, setTotalAircraft] = useState(0);
+	const [aircrafts, setAircrafts] = useState([]);
+	const [totalSearchaircrafts, setTotalAircrafts] = useState(0);
+	const [totalSearchAircrafts, setTotalSearchAircrafts] = useState(0);
 
 	const resetAircraftstates = () => {
-		setAircrafts([]);
+		setSearchAircrafts([]);
 		setAircraftDetails({});
 		setUserAircraftLink("");
-		setAircraftsPending([]);
-		setTotalAircraftPending(0);
-		setTotalAircraft(0);
+		setAircrafts([]);
+		setTotalAircrafts(0);
+		setTotalSearchAircrafts(0);
 	};
 
 	return (
 		<AircraftContext.Provider
 			value={{
-				aircrafts,
-				setAircrafts,
+				searchAircrafts,
+				setSearchAircrafts,
 				aircraftDetails,
 				setAircraftDetails,
 				searchUserAircraftLink,
 				setUserAircraftLink,
-				aircraftsPending,
-				setAircraftsPending,
-				totalAircraftPending,
-				setTotalAircraftPending,
-				totalAircraft,
-				setTotalAircraft,
+				aircrafts,
+				setAircrafts,
+				totalSearchaircrafts,
+				setTotalAircrafts,
+				totalSearchAircrafts,
+				setTotalSearchAircrafts,
 				resetAircraftstates,
 			}}
 		>

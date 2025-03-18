@@ -1,32 +1,8 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 // material-ui
-import { useTheme } from "@mui/material/styles";
-import {
-	Box,
-	Button,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Divider,
-	FormControl,
-	FormLabel,
-	Grid,
-	FormHelperText,
-	InputLabel,
-	ListItemText,
-	MenuItem,
-	OutlinedInput,
-	Select,
-	Stack,
-	TextField,
-	Typography,
-	RadioGroup,
-	FormControlLabel,
-	Radio,
-	Autocomplete,
-} from "@mui/material";
+import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Grid, InputLabel, Stack, TextField, Typography, Autocomplete } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -36,18 +12,11 @@ import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 
-// project imports
-/* import AlertCustomerDelete from "./AlertCustomerDelete"; */
-import Avatar from "components/@extended/Avatar";
-
-import { ThemeMode } from "config";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
 // assets
-import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
-import InputMask from "react-input-mask";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 
@@ -70,13 +39,13 @@ const getInitialValues = (aircraft) => {
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddRequest = ({ aircraft, handleAddRequest }) => {
-	const { createAircraft, findAllAircrafts } = useAircraft();
+	const { createAircraft, searchAllAircrafts } = useAircraft();
 	const { findAllLandingSites } = useLandingSite();
 
 	const { landingSites } = useContext(LandingSiteContext);
 
-	useEffect(async () => {
-		await findAllLandingSites("");
+	useEffect(() => {
+		findAllLandingSites("");
 	}, []);
 
 	console.log(landingSites);
@@ -94,7 +63,7 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 			try {
 				const newAircraft = {};
 				const response = await createAircraft(newAircraft);
-				await findAllAircrafts();
+				await searchAllAircrafts();
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -117,7 +86,7 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 		},
 	});
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
+	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values } = formik;
 
 	return (
 		<>

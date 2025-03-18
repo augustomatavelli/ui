@@ -39,9 +39,9 @@ const allColumns = [
 ];
 
 const MyAircrafts = () => {
-	const { findAllAircrafts } = useAircraft();
+	const { searchAllAircrafts } = useAircraft();
 
-	const { aircrafts, totalAircraft } = useContext(AircraftContext);
+	const { searchAircrafts, totalSearchAircrafts } = useContext(AircraftContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -65,17 +65,17 @@ const MyAircrafts = () => {
 	};
 
 	useEffect(() => {
-		findAllAircrafts(globalFilter, page);
+		searchAllAircrafts(globalFilter, page);
 	}, [globalFilter, page]);
 
-	useEffect(() => {}, [aircrafts]);
+	useEffect(() => {}, [searchAircrafts]);
 
 	return (
 		<>
 			<Box sx={{ position: "relative", marginBottom: 3 }}>
 				<Stack direction="row" alignItems="center">
 					<Stack direction={matchDownSM ? "column" : "row"} sx={{ width: "100%" }} spacing={1} justifyContent="space-between" alignItems="center">
-						<GlobalFilter preGlobalFilteredRows={aircrafts} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+						<GlobalFilter preGlobalFilteredRows={searchAircrafts} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
 						<Stack direction={matchDownSM ? "column" : "row"} alignItems="center" spacing={1}>
 							<FormControl sx={{ m: 1, minWidth: 120 }}>
 								<Select
@@ -120,7 +120,7 @@ const MyAircrafts = () => {
 				</Stack>
 			</Box>
 
-			{aircrafts.length > 0 ? (
+			{searchAircrafts.length > 0 ? (
 				<Grid
 					container
 					sx={{
@@ -129,7 +129,7 @@ const MyAircrafts = () => {
 						gap: 2,
 					}}
 				>
-					{aircrafts
+					{searchAircrafts
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
 							if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
@@ -151,7 +151,7 @@ const MyAircrafts = () => {
 			)}
 
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-				<Pagination count={totalAircraft} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+				<Pagination count={totalSearchAircrafts} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
