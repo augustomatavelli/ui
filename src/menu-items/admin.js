@@ -31,14 +31,21 @@ const admin = {
 			icon: icons.ClockCircleOutlined,
 		},
 		{
-			id: "create user",
+			id: "users",
 			title: <FormattedMessage id="Usuários" />,
 			type: "item",
 			url: "/users/create",
 			icon: icons.UserOutlined,
 		},
 		{
-			id: "create heliport",
+			id: "aircrafts",
+			title: <FormattedMessage id="Aeronaves" />,
+			type: "item",
+			url: "/aircrafts/create",
+			icon: icons.EnvironmentOutlined,
+		},
+		{
+			id: "landing sites",
 			title: <FormattedMessage id="Locais de pouso" />,
 			type: "item",
 			url: "/landing-sites/create",
