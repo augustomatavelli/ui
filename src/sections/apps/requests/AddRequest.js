@@ -160,11 +160,11 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
-												<InputLabel htmlFor="Local de pouso">Local de pouso</InputLabel>
+												<InputLabel htmlFor="Aeródromo">Aeródromo</InputLabel>
 												<Autocomplete
 													options={[]}
 													getOptionLabel={(option) => option.label}
-													renderInput={(params) => <TextField {...params} label="Selecione um local de pouso" />}
+													renderInput={(params) => <TextField {...params} label="Selecione um aeródromo" />}
 													isOptionEqualToValue={(option, value) => option.value === value.value}
 												/>
 											</Stack>

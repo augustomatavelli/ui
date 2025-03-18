@@ -2,11 +2,11 @@
 import { useState } from "react";
 
 // material-ui
-import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, Box } from "@mui/material";
+import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, DialogActions, Divider, DialogTitle, DialogContent } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
-import { Formik } from "formik";
+import { useFormik, Form, FormikProvider } from "formik";
 
 // project import
 
@@ -16,11 +16,24 @@ import { openSnackbar } from "store/reducers/snackbar";
 import useUser from "hooks/useUser";
 import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
-import MainCard from "components/MainCard";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+const getInitialValues = (user) => {
+	const newUser = {
+		name: "",
+		email: "",
+		phone: "",
+		doc: "",
+		pilot: "",
+	};
+
+	return newUser;
+};
 
 // ==============================|| TAB - PERSONAL ||============================== //
 
-const CreateUser = () => {
+const AddUser = ({ user, onCancel }) => {
 	const { createUserByAdmin } = useUser();
 
 	const scriptedRef = useScriptRef();
@@ -28,77 +41,78 @@ const CreateUser = () => {
 	const [typeDoc, setTypeDoc] = useState("cpf");
 	const [isPilot, setIsPilot] = useState(1);
 
-	return (
-		<MainCard content={false} title="Usuários" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
-			<Formik
-				initialValues={{
-					name: "",
-					email: "",
-					phone: "",
-					doc: "",
-					pilot: "",
-					submit: null,
-				}}
-				validationSchema={Yup.object().shape({
-					name: Yup.string().max(255).required("Nome é obrigatório"),
-					email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
-					phone: Yup.string()
-						.transform((value) => value.replace(/\D/g, ""))
-						.matches(/^\d{11}$/, "Número de celular inválido")
-						.required("Celular é obrigatório"),
-					doc: Yup.string()
-						.transform((value) => value.replace(/\D/g, ""))
-						.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
-						.required("Documento é obrigatório"),
-					pilot: isPilot === 1 ? Yup.string().max(255).required("Número do registro é obrigatório") : Yup.string().max(255),
-				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting, setValues, resetForm }) => {
-					try {
-						const payload = {
-							name: values.name,
-							email: values.email,
-							phone: values.phone.replace(/\D/g, ""),
-							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
-							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-							type: isPilot === 1 ? "P" : isPilot === 2 ? "R" : "C",
-							pilotRegister: values.pilot,
-						};
+	const NewUserSchema = Yup.object().shape({
+		name: Yup.string().max(255).required("Nome é obrigatório"),
+		email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
+		phone: Yup.string()
+			.transform((value) => value.replace(/\D/g, ""))
+			.matches(/^\d{11}$/, "Número de celular inválido")
+			.required("Celular é obrigatório"),
+		doc: Yup.string()
+			.transform((value) => value.replace(/\D/g, ""))
+			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
+			.required("Documento é obrigatório"),
+		pilot: isPilot === 1 ? Yup.string().max(255).required("Número do registro é obrigatório") : Yup.string().max(255),
+	});
 
-						const response = await createUserByAdmin(payload);
-						if (scriptedRef.current) {
-							setStatus({ success: true });
-							setSubmitting(false);
-							dispatch(
-								openSnackbar({
-									open: true,
-									message: response.message,
-									variant: "alert",
-									alert: {
-										color: "success",
-									},
-									close: false,
-								})
-							);
-							setTimeout(() => {
-								resetForm();
-							}, 500);
-						}
-					} catch (err) {
-						setErrors({});
-						console.error(err);
-						const message =
-							err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
-						if (scriptedRef.current) {
-							setStatus({ success: false });
-							setErrors({ submit: message });
-							setSubmitting(false);
-						}
-					}
-				}}
-			>
-				{({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-					<form noValidate onSubmit={handleSubmit}>
-						<Box sx={{ p: 2.5 }}>
+	const formik = useFormik({
+		initialValues: getInitialValues(user),
+		validationSchema: NewUserSchema,
+		onSubmit: async (values, { setSubmitting, setErrors, setStatus, resetForm }) => {
+			try {
+				const payload = {
+					name: values.name,
+					email: values.email,
+					phone: values.phone.replace(/\D/g, ""),
+					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
+					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
+					type: isPilot === 1 ? "P" : isPilot === 2 ? "R" : "C",
+					pilotRegister: values.pilot,
+				};
+
+				const response = await createUserByAdmin(payload);
+				if (scriptedRef.current) {
+					setStatus({ success: true });
+					setSubmitting(false);
+					dispatch(
+						openSnackbar({
+							open: true,
+							message: response.message,
+							variant: "alert",
+							alert: {
+								color: "success",
+							},
+							close: false,
+						})
+					);
+					setTimeout(() => {
+						resetForm();
+					}, 500);
+				}
+			} catch (err) {
+				setErrors({});
+				console.error(err);
+				const message =
+					err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
+				if (scriptedRef.current) {
+					setStatus({ success: false });
+					setErrors({ submit: message });
+					setSubmitting(false);
+				}
+			}
+		},
+	});
+
+	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
+
+	return (
+		<>
+			<FormikProvider value={formik}>
+				<LocalizationProvider dateAdapter={AdapterDateFns}>
+					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+						<DialogTitle>Criar usuário</DialogTitle>
+						<Divider />
+						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
@@ -203,23 +217,33 @@ const CreateUser = () => {
 										)}
 									</Stack>
 								</Grid>
-								{errors.submit && (
-									<Grid item xs={12}>
-										<FormHelperText error>{errors.submit}</FormHelperText>
-									</Grid>
-								)}
-								<Grid item xs={12}>
-									<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-										Criar
-									</Button>
+							</Grid>
+						</DialogContent>
+						{errors.submit && (
+							<Grid item xs={12}>
+								<FormHelperText error>{errors.submit}</FormHelperText>
+							</Grid>
+						)}
+						<Divider />
+						<DialogActions sx={{ p: 2.5 }}>
+							<Grid container justifyContent="flex-end" alignItems="center">
+								<Grid item>
+									<Stack direction="row" spacing={2} alignItems="center">
+										<Button color="error" onClick={onCancel}>
+											Fechar
+										</Button>
+										<Button type="submit" variant="contained" disabled={isSubmitting}>
+											Criar
+										</Button>
+									</Stack>
 								</Grid>
 							</Grid>
-						</Box>
-					</form>
-				)}
-			</Formik>
-		</MainCard>
+						</DialogActions>
+					</Form>
+				</LocalizationProvider>
+			</FormikProvider>
+		</>
 	);
 };
 
-export default CreateUser;
+export default AddUser;

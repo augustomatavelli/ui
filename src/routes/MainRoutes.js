@@ -5,20 +5,21 @@ import MainLayout from "layout/MainLayout";
 import CommonLayout from "layout/CommonLayout";
 import Loadable from "components/Loadable";
 import AuthGuard from "utils/route-guard/AuthGuard";
-import MyAircrafts from "pages/aircrafts/me";
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("pages/dashboard/default")));
 
 // render - users
 const UserProfile = Loadable(lazy(() => import("pages/users/me")));
-const UsersPending = Loadable(lazy(() => import("pages/users/pending")));
-const CreateUser = Loadable(lazy(() => import("pages/users/create")));
+const ListUsersForAdmin = Loadable(lazy(() => import("pages/users/admin")));
+
 // render - aircrafts
+const MyAircrafts = Loadable(lazy(() => import("pages/aircrafts/me")));
 const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
-const AricraftsPending = Loadable(lazy(() => import("pages/aircrafts/pending")));
+const ListAircraftsForAdmin = Loadable(lazy(() => import("pages/aircrafts/admin")));
+
 // render - users
-const CreateLandingSite = Loadable(lazy(() => import("pages/landing-sites/create")));
+const ListLandingSitesForAdmin = Loadable(lazy(() => import("pages/landing-sites/admin")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -63,12 +64,8 @@ const MainRoutes = {
 							element: <UserProfile />,
 						},
 						{
-							path: "pending",
-							element: <UsersPending />,
-						},
-						{
-							path: "create",
-							element: <CreateUser />,
+							path: "admin",
+							element: <ListUsersForAdmin />,
 						},
 					],
 				},
@@ -84,8 +81,8 @@ const MainRoutes = {
 							element: <AircraftDetails />,
 						},
 						{
-							path: "pending",
-							element: <AricraftsPending />,
+							path: "admin",
+							element: <ListAircraftsForAdmin />,
 						},
 					],
 				},
@@ -93,8 +90,8 @@ const MainRoutes = {
 					path: "landing-sites",
 					children: [
 						{
-							path: "create",
-							element: <CreateLandingSite />,
+							path: "admin",
+							element: <ListLandingSitesForAdmin />,
 						},
 					],
 				},

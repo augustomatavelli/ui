@@ -8,7 +8,7 @@ import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const SearchUserPending = ({ setSearch }) => {
+const SearchUserByAdmin = ({ setSearch }) => {
 	const [inputValue, setInputValue] = useState("");
 	const [hover, setHover] = useState(false);
 
@@ -63,4 +63,4 @@ const SearchUserPending = ({ setSearch }) => {
 	);
 };
 
-export default SearchUserPending;
+export default SearchUserByAdmin;

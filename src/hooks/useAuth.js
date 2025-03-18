@@ -57,32 +57,6 @@ const useAuth = () => {
 		}
 	};
 
-	const createUser = async (data) => {
-		try {
-			const response = await authAxios.post("/users", data);
-			const { token, userType, userId, userStatus } = response.data;
-			setSession(token);
-			localStorage.setItem("_userId", userId);
-			localStorage.setItem("_type", userType);
-			localStorage.setItem("_status", userStatus);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		}
-	};
-
 	const logout = () => {
 		localStorage.clear();
 		resetUserStates();
@@ -96,7 +70,7 @@ const useAuth = () => {
 		navigate("/");
 	};
 
-	return { login, createUser, logout };
+	return { login, logout };
 };
 
 export default useAuth;

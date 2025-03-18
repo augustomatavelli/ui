@@ -28,7 +28,7 @@ const CreateLandingSite = () => {
 	const scriptedRef = useScriptRef();
 
 	return (
-		<MainCard content={false} title="Criar local de pouso" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
+		<MainCard content={false} title="Criar aeródromo" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
 			<Formik
 				initialValues={{
 					name: "",
@@ -38,7 +38,7 @@ const CreateLandingSite = () => {
 				}}
 				validationSchema={Yup.object().shape({
 					name: Yup.string().max(255).required("Nome é obrigatório"),
-					type: Yup.string().required("Selecione um tipo de local de pouso"),
+					type: Yup.string().required("Selecione um tipo de aeródromo"),
 					capacity: Yup.number().min(1, "A capacidade deve ser pelo menos 1").required("Capacidade é obrigatória"),
 				})}
 				onSubmit={async (values, { setErrors, setStatus, setSubmitting, setValues, resetForm }) => {
@@ -71,11 +71,7 @@ const CreateLandingSite = () => {
 						setErrors({});
 						console.error(err);
 						const message =
-							err.response.status === 409
-								? "Local de pouso já existe!"
-								: err.response.status === 400
-								? "Erro ao cadastrar local de pouso! Confira se os dados estão corretos!"
-								: "Erro ao cadastrar local de pouso!";
+							err.response.status === 409 ? "Aeródromo já existe!" : err.response.status === 400 ? "Erro ao cadastrar aeródromo! Confira se os dados estão corretos!" : "Erro ao cadastrar aeródromo!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
 							setErrors({ submit: message });
@@ -98,7 +94,7 @@ const CreateLandingSite = () => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite o nome do local de pouso..."
+											placeholder="Digite o nome do aeródromo..."
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -111,7 +107,7 @@ const CreateLandingSite = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="email-signup">Tipo do local de pouso</InputLabel>
+										<InputLabel htmlFor="email-signup">Tipo do aeródromo</InputLabel>
 										<Select
 											value={values.type}
 											name="type"
@@ -141,7 +137,7 @@ const CreateLandingSite = () => {
 											name="capacity"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite a capacidade do local de pouso..."
+											placeholder="Digite a capacidade do aeródromo..."
 											inputProps={{}}
 										/>
 										{touched.capacity && errors.capacity && (

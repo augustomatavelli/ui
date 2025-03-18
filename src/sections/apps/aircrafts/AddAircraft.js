@@ -342,7 +342,6 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					</Form>
 				</LocalizationProvider>
 			</FormikProvider>
-			{/* {!isCreating && <AlertCustomerDelete title={customer.fatherName} open={openAlert} handleClose={handleAlertClose} />} */}
 		</>
 	);
 };

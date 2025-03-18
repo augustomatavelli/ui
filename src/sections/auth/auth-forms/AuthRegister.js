@@ -19,12 +19,12 @@ import { openSnackbar } from "store/reducers/snackbar";
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import InputMask from "react-input-mask";
-import useAuth from "hooks/useAuth";
+import useUser from "hooks/useUser";
 
 // ============================|| JWT - REGISTER ||============================ //
 
 const AuthRegister = () => {
-	const { createUser } = useAuth();
+	const { createUser } = useUser();
 
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();

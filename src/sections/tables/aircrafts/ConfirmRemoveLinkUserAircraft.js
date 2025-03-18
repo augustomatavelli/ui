@@ -5,9 +5,9 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
 import MainCard from "components/MainCard";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import SearchUser from "sections/apps/aircrafts/SearchUser";
+import SearchUser from "sections/apps/users/SearchUser";
 import { MinusCircleFilled } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
@@ -27,7 +27,7 @@ export const header = [
 // ==============================|| MUI TABLE - BASIC ||============================== //
 
 export default function ConfirmRemoveLinkUserAircraftTable() {
-	const { findAllUsers } = useUser();
+	const { searchAllUsers } = useUser();
 	const { removeLinkUserAircraft } = useAircraft();
 
 	const { searchUser } = useContext(UserContext);
@@ -49,11 +49,11 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 				close: false,
 			})
 		);
-		await findAllUsers(searchUserAircraftLink, Number(id), true);
+		await searchAllUsers(searchUserAircraftLink, Number(id), true);
 	};
 
 	useEffect(() => {
-		findAllUsers(searchUserAircraftLink, Number(id), true);
+		searchAllUsers(searchUserAircraftLink, Number(id), true);
 	}, [searchUserAircraftLink]);
 
 	return (
