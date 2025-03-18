@@ -1,8 +1,8 @@
 // material-ui
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // material-ui
-import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, Box } from "@mui/material";
+import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, Box, FormControl, MenuItem, Select, Typography } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -14,14 +14,16 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
 import useScriptRef from "hooks/useScriptRef";
-import InputMask from "react-input-mask";
 import MainCard from "components/MainCard";
 import useLandingSite from "hooks/useLandingSite";
+import LandingSiteContext from "contexts/LandingSiteContext";
 
 // ==============================|| TAB - PERSONAL ||============================== //
 
 const CreateLandingSite = () => {
 	const { createLandingSite } = useLandingSite();
+
+	const { landingSites } = useContext(LandingSiteContext);
 
 	const scriptedRef = useScriptRef();
 
@@ -31,13 +33,12 @@ const CreateLandingSite = () => {
 				initialValues={{
 					name: "",
 					type: "",
-					lat: "",
-					lon: "",
 					capacity: "",
 					submit: null,
 				}}
 				validationSchema={Yup.object().shape({
 					name: Yup.string().max(255).required("Nome é obrigatório"),
+					type: Yup.string().required("Selecione um tipo de local de pouso"),
 					capacity: Yup.number().min(1, "A capacidade deve ser pelo menos 1").required("Capacidade é obrigatória"),
 				})}
 				onSubmit={async (values, { setErrors, setStatus, setSubmitting, setValues, resetForm }) => {
@@ -45,11 +46,9 @@ const CreateLandingSite = () => {
 						const payload = {
 							name: values.name,
 							type: values.type,
-							lat: values.lat,
-							lon: values.lon,
 							capacity: values.capacity,
 						};
-						const response = "";
+						const response = await createLandingSite(payload);
 						if (scriptedRef.current) {
 							setStatus({ success: true });
 							setSubmitting(false);
@@ -99,7 +98,7 @@ const CreateLandingSite = () => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite o nome..."
+											placeholder="Digite o nome do local de pouso..."
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -113,21 +112,19 @@ const CreateLandingSite = () => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<InputLabel htmlFor="email-signup">Tipo do local de pouso</InputLabel>
-										<OutlinedInput
-											fullWidth
-											error={Boolean(touched.email && errors.email)}
-											id="email-login"
-											type="email"
-											value={values.email}
-											name="email"
-											onBlur={handleBlur}
+										<Select
+											value={values.type}
+											name="type"
 											onChange={handleChange}
-											placeholder="Digite o email..."
-											inputProps={{}}
-										/>
-										{touched.email && errors.email && (
-											<FormHelperText error id="helper-text-email-signup">
-												{errors.email}
+											displayEmpty
+											inputProps={{ "aria-label": "Without label" }}
+											renderValue={values.type ? undefined : () => <Typography variant="subtitle1">Selecione um tipo</Typography>}
+										>
+											<MenuItem value={"H"}>Heliporto</MenuItem>
+										</Select>
+										{touched.type && errors.type && (
+											<FormHelperText error id="helper-text-type-signup">
+												{errors.type}
 											</FormHelperText>
 										)}
 									</Stack>

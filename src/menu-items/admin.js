@@ -1,10 +1,10 @@
 import { FormattedMessage } from "react-intl";
-import { ClockCircleOutlined, IdcardOutlined, UserAddOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, IdcardOutlined, UserOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined } from "@ant-design/icons";
 // Ícones
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
-	UserAddOutlined,
+	UserOutlined,
 	EnvironmentOutlined,
 	AppstoreAddOutlined,
 	ToolOutlined,
@@ -32,14 +32,14 @@ const admin = {
 		},
 		{
 			id: "create user",
-			title: <FormattedMessage id="Criar usuário" />,
+			title: <FormattedMessage id="Usuários" />,
 			type: "item",
 			url: "/users/create",
-			icon: icons.UserAddOutlined,
+			icon: icons.UserOutlined,
 		},
 		{
 			id: "create heliport",
-			title: <FormattedMessage id="Cadastrar heliporto" />,
+			title: <FormattedMessage id="Locais de pouso" />,
 			type: "item",
 			url: "/landing-sites/create",
 			icon: icons.EnvironmentOutlined,

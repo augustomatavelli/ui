@@ -4,17 +4,11 @@ import { createContext, useState } from "react";
 export const LandingSiteContext = createContext({});
 
 export const LandingSiteProvider = ({ children }) => {
-	const resetLandingSitestates = () => {};
+	const [landingSites, setLandingSites] = useState([]);
 
-	return (
-		<LandingSiteContext.Provider
-			value={{
-				resetLandingSitestates,
-			}}
-		>
-			{children}
-		</LandingSiteContext.Provider>
-	);
+	const resetLandingSiteStates = () => {};
+
+	return <LandingSiteContext.Provider value={{ landingSites, setLandingSites, resetLandingSiteStates }}>{children}</LandingSiteContext.Provider>;
 };
 
 LandingSiteProvider.propTypes = {

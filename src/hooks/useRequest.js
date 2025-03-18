@@ -1,18 +1,15 @@
 import UseAxios from "./useAxios";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import { useContext } from "react";
-import LandingSiteContext from "contexts/LandingSiteContext";
+import RequestContext from "contexts/RequestContext";
 
-const useLandingSite = () => {
+const useRequest = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLandingSites } = useContext(LandingSiteContext);
+	const { setRequests } = useContext(RequestContext);
 
-	const createLandingSite = async (data) => {
+	const createRequest = async (data) => {
 		try {
-			const response = await publicAxios.post("/landing-sites", data);
+			const response = await publicAxios.post("/requests", data);
 			return response.data;
 		} catch (error) {
 			console.log(error);
@@ -32,10 +29,10 @@ const useLandingSite = () => {
 		}
 	};
 
-	const findAllLandingSites = async (search) => {
+	const findAllRequests = async (search) => {
 		try {
-			const response = await publicAxios.get(`/landing-sites/find-all?search=${search}`);
-			setLandingSites(response.data);
+			const response = await publicAxios.get(`/requests/find-all?search=${search}`);
+			setRequests(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -53,7 +50,7 @@ const useLandingSite = () => {
 		}
 	};
 
-	return { createLandingSite, findAllLandingSites };
+	return { createRequest, findAllRequests };
 };
 
-export default useLandingSite;
+export default useRequest;

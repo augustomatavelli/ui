@@ -48,6 +48,8 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
+import LandingSiteContext from "contexts/LandingSiteContext";
+import useLandingSite from "hooks/useLandingSite";
 
 // constant
 const getInitialValues = (aircraft) => {
@@ -69,15 +71,15 @@ const getInitialValues = (aircraft) => {
 
 const AddRequest = ({ aircraft, handleAddRequest }) => {
 	const { createAircraft, findAllAircrafts } = useAircraft();
+	const { findAllLandingSites } = useLandingSite();
 
-	const theme = useTheme();
+	const { landingSites } = useContext(LandingSiteContext);
 
-	const options = [
-		{ label: "Opção 1", value: 1 },
-		{ label: "Opção 2", value: 2 },
-		{ label: "Opção 3", value: 3 },
-		{ label: "Opção 4", value: 4 },
-	];
+	useEffect(async () => {
+		await findAllLandingSites("");
+	}, []);
+
+	console.log(landingSites);
 
 	const AircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
@@ -160,7 +162,7 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 											<Stack spacing={1.25}>
 												<InputLabel htmlFor="Local de pouso">Local de pouso</InputLabel>
 												<Autocomplete
-													options={options}
+													options={[]}
 													getOptionLabel={(option) => option.label}
 													renderInput={(params) => <TextField {...params} label="Selecione um local de pouso" />}
 													isOptionEqualToValue={(option, value) => option.value === value.value}

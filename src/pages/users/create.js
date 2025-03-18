@@ -29,7 +29,7 @@ const CreateUser = () => {
 	const [isPilot, setIsPilot] = useState(1);
 
 	return (
-		<MainCard content={false} title="Criar usuário" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
+		<MainCard content={false} title="Usuários" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
 			<Formik
 				initialValues={{
 					name: "",
