@@ -14,4 +14,5 @@ export const ErrorMessages = {
 	aircraft_not_found: "Aeronave não encontrada",
 	email_domain_invalid: "Domínio de email inválido",
 	invalid_phone_number: "Número de celular inválido",
+	validation_error: "Erro na validação dos dados. Verifique os campos e tente novamente",
 };
