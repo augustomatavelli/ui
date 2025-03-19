@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import { ClockCircleOutlined, IdcardOutlined, UserOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, IdcardOutlined, UserOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined, ScheduleOutlined } from "@ant-design/icons";
 // Ícones
 const icons = {
 	ClockCircleOutlined,
@@ -8,6 +8,7 @@ const icons = {
 	EnvironmentOutlined,
 	AppstoreAddOutlined,
 	ToolOutlined,
+	ScheduleOutlined,
 };
 
 const admin = {
@@ -38,17 +39,24 @@ const admin = {
 			icon: icons.EnvironmentOutlined,
 		},
 		{
-			id: "create products",
+			id: "requests",
+			title: <FormattedMessage id="Solicitações" />,
+			type: "item",
+			url: "/requests/admin",
+			icon: icons.ScheduleOutlined,
+		},
+		{
+			id: "products",
 			title: <FormattedMessage id="Produtos" />,
 			type: "item",
-			url: "/products/create",
+			url: "/products/admin",
 			icon: icons.AppstoreAddOutlined,
 		},
 		{
-			id: "create services",
+			id: "services",
 			title: <FormattedMessage id="Serviços" />,
 			type: "item",
-			url: "/services/create",
+			url: "/services/admin",
 			icon: icons.ToolOutlined,
 		},
 	],

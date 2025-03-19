@@ -18,8 +18,11 @@ const MyAircrafts = Loadable(lazy(() => import("pages/aircrafts/me")));
 const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
 const ListAircraftsForAdmin = Loadable(lazy(() => import("pages/aircrafts/admin")));
 
-// render - users
+// render - aeródromos
 const ListLandingSitesForAdmin = Loadable(lazy(() => import("pages/landing-sites/admin")));
+
+// render - solicitações
+const ListRequestsForAdmin = Loadable(lazy(() => import("pages/requests/admin")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -92,6 +95,15 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: <ListLandingSitesForAdmin />,
+						},
+					],
+				},
+				{
+					path: "requests",
+					children: [
+						{
+							path: "admin",
+							element: <ListRequestsForAdmin />,
 						},
 					],
 				},

@@ -16,49 +16,61 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
 // assets
-import useAircraft from "hooks/useAircraft";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
+import useRequest from "hooks/useRequest";
 
 // constant
 const getInitialValues = (aircraft) => {
-	const newAircraft = {
-		rab: "",
-		imagem: "",
+	const newRequest = {
+		id_aircraft: aircraft.id_aircraft,
+		id_landing_site: "",
+		amount: "",
+		schedule_date: "",
+		rab: aircraft.rab,
+		category: aircraft.category,
+		image: aircraft.image,
 	};
 
-	if (aircraft) {
-		newAircraft.rab = aircraft.fatherName;
-		newAircraft.location = aircraft.address;
-		return _.merge({}, newAircraft, aircraft);
-	}
-
-	return newAircraft;
+	return newRequest;
 };
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddRequest = ({ aircraft, handleAddRequest }) => {
-	const { createAircraft } = useAircraft();
-	const { findAllLandingSites } = useLandingSite();
+	const { createRequest } = useRequest();
+
+	const { searchAllLandingSites } = useLandingSite();
+
+	const { searchLandingSites } = useContext(LandingSiteContext);
 
 	useEffect(() => {
-		findAllLandingSites("");
+		searchAllLandingSites();
 	}, []);
 
-	const AircraftSchema = Yup.object().shape({
-		rab: Yup.string().max(255).required("RAB é obrigatório"),
+	const RequestSchema = Yup.object().shape({
+		id_aircraft: Yup.number(),
+		id_landing_site: Yup.number(),
+		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
+		schedule_date: Yup.date().required("Data e hora previstos é obrigatório"),
 	});
-	//TODO: Previsão de pouso (data e horário estimado - UTC e local)
+
 	//TODO: Pergunta se vai querer agendar a decolagem. Se sim, mostrar outro input de data
 	//TODO: Necessidade de abastecimento? (Sim/Não). Se sim, mostrar um input de number para digitar a quantidade de litros
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
-		validationSchema: AircraftSchema,
+		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
+			const { id_aircraft, id_landing_site, amount, schedule_date } = values;
 			try {
-				const newAircraft = {};
-				const response = await createAircraft(newAircraft);
+				const newRequest = {
+					aircraftId: id_aircraft,
+					landingSiteId: id_landing_site,
+					amount: amount,
+					schedule_date: schedule_date,
+				};
+				console.log(newRequest);
+				const response = await createRequest(newRequest);
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -126,10 +138,11 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 											<Stack spacing={1.25}>
 												<InputLabel htmlFor="Aeródromo">Aeródromo</InputLabel>
 												<Autocomplete
-													options={[]}
+													options={searchLandingSites}
 													getOptionLabel={(option) => option.label}
-													renderInput={(params) => <TextField {...params} label="Selecione um aeródromo" />}
 													isOptionEqualToValue={(option, value) => option.value === value.value}
+													renderInput={(params) => <TextField {...params} />}
+													onChange={(event, value) => formik.setFieldValue("id_landing_site", value.value)}
 												/>
 											</Stack>
 										</Grid>
@@ -137,13 +150,13 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 											<Stack spacing={1.25}>
 												<InputLabel>Previsão de chegada</InputLabel>
 												<DateTimePicker
-													value={formik.values.dueDate}
-													onChange={(date) => formik.setFieldValue("dueDate", date)}
+													value={formik.values.schedule_date}
+													onChange={(date) => formik.setFieldValue("schedule_date", date)}
 													format="dd/MM/yyyy HH:mm"
 													slotProps={{
 														textField: {
-															error: Boolean(formik.touched.dueDate && formik.errors.dueDate),
-															helperText: formik.touched.dueDate && formik.errors.dueDate,
+															error: Boolean(formik.touched.schedule_date && formik.errors.schedule_date),
+															helperText: formik.touched.schedule_date && formik.errors.schedule_date,
 														},
 													}}
 												/>
@@ -157,9 +170,9 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 													id="amount"
 													type="number"
 													placeholder="Quantidade de passageiros..."
-													{...getFieldProps("name")}
-													error={Boolean(touched.name && errors.name)}
-													helperText={touched.name && errors.name}
+													{...getFieldProps("amount")}
+													error={Boolean(touched.amount && errors.amount)}
+													helperText={touched.amount && errors.amount}
 													inputProps={{ min: 0 }}
 												/>
 											</Stack>
@@ -177,7 +190,7 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 											Fechar
 										</Button>
 										<Button type="submit" variant="contained" disabled={isSubmitting}>
-											Solicitar
+											Agendar
 										</Button>
 									</Stack>
 								</Grid>

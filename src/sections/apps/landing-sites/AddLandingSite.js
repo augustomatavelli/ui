@@ -38,7 +38,7 @@ const AddLandingSite = ({ user, onCancel }) => {
 	const NewLandingSiteSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
 		type: Yup.string().max(255).required("Selecione um tipo"),
-		capacity: Yup.number().min(1, "O valor tem que ser maior que 0").required("Capacidade é obrigatórias"),
+		capacity: Yup.number().min(1, "O valor tem que ser maior que 0").required("Capacidade é obrigatória"),
 	});
 
 	const formik = useFormik({

@@ -21,7 +21,7 @@ const AircraftCard = ({ data }) => {
 
 	const [addRequest, setAddRequest] = useState(false);
 
-	const { id_aircraft, rab, category, image, membership, status, name, email, mobile } = data;
+	const { id_aircraft, rab, category, image, membership, status, name, email, mobile, hasRequest } = data;
 
 	const navigate = useNavigate();
 
@@ -109,7 +109,7 @@ const AircraftCard = ({ data }) => {
 						</Box>
 					</Grid>
 				</Grid>
-				{status === "A" && user.status === "A" && (
+				{status === "A" && user.status === "A" && !hasRequest && (
 					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
 						<Button
 							variant="outlined"
