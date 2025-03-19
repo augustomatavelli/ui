@@ -17,7 +17,6 @@ const useLandingSite = () => {
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			console.log(err);
 			dispatch(
 				openSnackbar({
 					open: true,
