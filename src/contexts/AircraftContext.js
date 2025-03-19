@@ -5,11 +5,11 @@ export const AircraftContext = createContext({});
 
 export const AircraftProvider = ({ children }) => {
 	const [searchAircrafts, setSearchAircrafts] = useState([]);
+	const [totalSearchAircrafts, setTotalSearchAircrafts] = useState(0);
 	const [aircraftDetails, setAircraftDetails] = useState({});
 	const [searchUserAircraftLink, setUserAircraftLink] = useState("");
 	const [aircrafts, setAircrafts] = useState([]);
-	const [totalSearchaircrafts, setTotalAircrafts] = useState(0);
-	const [totalSearchAircrafts, setTotalSearchAircrafts] = useState(0);
+	const [totalAircrafts, setTotalAircrafts] = useState(0);
 
 	const resetAircraftstates = () => {
 		setSearchAircrafts([]);
@@ -31,7 +31,7 @@ export const AircraftProvider = ({ children }) => {
 				setUserAircraftLink,
 				aircrafts,
 				setAircrafts,
-				totalSearchaircrafts,
+				totalAircrafts,
 				setTotalAircrafts,
 				totalSearchAircrafts,
 				setTotalSearchAircrafts,

@@ -2,28 +2,29 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
 
 // project imports
-import UserContext from "contexts/UserContext";
-import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
-import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
-import AddUser from "sections/apps/users/AddUser";
+import AircraftContext from "contexts/AircraftContext";
+import useAircraft from "hooks/useAircraft";
+import AddAircraft from "sections/apps/aircrafts/AddAircraft";
+import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin";
 
 export const header = [
 	{ label: "", key: "icon" },
+	{ label: "RAB", key: "rab" },
+	{ label: "Categoria", key: "category" },
 	{ label: "Nome", key: "name" },
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
-	{ label: "Tipo", key: "type" },
 ];
 
-export default function UsersTable() {
-	const { findAllUsers, approveUser } = useUser();
+export default function AircraftsTable() {
+	const { findAllAircrafts, approveAircraft } = useAircraft();
 
-	const { users, totalUser } = useContext(UserContext);
+	const { aircrafts, totalAircrafts } = useContext(AircraftContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -37,22 +38,22 @@ export default function UsersTable() {
 
 	const handleAdd = async () => {
 		setOpen(!open);
-		await findAllUsers(search, page);
+		await findAllAircrafts(search, page);
 	};
 
 	useEffect(() => {
-		findAllUsers(search, page);
+		findAllAircrafts(search, page);
 	}, [search, page]);
 
-	useEffect(() => {}, [users]);
+	useEffect(() => {}, [aircrafts]);
 
 	return (
 		<>
 			<TableContainer>
 				<Grid sx={{ p: 2.5, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-					<SearchUserByAdmin setSearch={setSearch} />
+					<SearchAircraftByAdmin setSearch={setSearch} />
 					<Stack spacing={2} sx={{ width: "100%", mb: 1 }} alignItems="center" justifyContent="flex-end" display="flex" direction="row">
-						<Pagination count={totalUser} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+						<Pagination count={totalAircrafts} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 						<Button
 							variant="contained"
 							startIcon={<PlusOutlined />}
@@ -62,7 +63,7 @@ export default function UsersTable() {
 								paddingY: 0,
 							}}
 						>
-							Criar usuário
+							Criar aeronave
 						</Button>
 					</Stack>
 				</Grid>
@@ -70,19 +71,19 @@ export default function UsersTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
+							<TableCell align="center">RAB</TableCell>
+							<TableCell align="center">Categoria</TableCell>
 							<TableCell align="center">Nome</TableCell>
 							<TableCell align="center">Email</TableCell>
 							<TableCell align="center">Celular</TableCell>
-							<TableCell align="center">Tipo de usuário</TableCell>
-							<TableCell align="center">Registro de piloto</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{users.length > 0 ? (
-							users.map((user) => (
-								<TableRow hover key={user.id_user}>
+						{aircrafts.length > 0 ? (
+							aircrafts.map((aircraft) => (
+								<TableRow hover key={aircraft.id_aircraft}>
 									<TableCell align="center">
-										{user.status === "P" ? (
+										{aircraft.status === "P" ? (
 											<Box display="flex" gap={4} justifyContent="center">
 												<Tooltip title="Aprovar">
 													<LikeFilled
@@ -92,8 +93,8 @@ export default function UsersTable() {
 															cursor: "pointer",
 														}}
 														onClick={async () => {
-															await approveUser({ id_user: user.id_user, approve: "S" });
-															await findAllUsers(search, page);
+															await approveAircraft({ id_user: aircraft.id_user, approve: "S" });
+															await findAllAircrafts(search, page);
 														}}
 													/>
 												</Tooltip>
@@ -105,8 +106,8 @@ export default function UsersTable() {
 															cursor: "pointer",
 														}}
 														onClick={async () => {
-															await approveUser({ id_user: user.id_user, approve: "N" });
-															await findAllUsers(search, page);
+															await approveAircraft({ id_user: aircraft.id_user, approve: "N" });
+															await findAllAircrafts(search, page);
 														}}
 													/>
 												</Tooltip>
@@ -115,30 +116,23 @@ export default function UsersTable() {
 											"-"
 										)}
 									</TableCell>
-									<TableCell align="center">{user.name}</TableCell>
-									<TableCell align="center">{user.email}</TableCell>
-									<TableCell align="center">{formatPhoneNumber(user.mobile)}</TableCell>
-									<TableCell align="center">
-										<Chip
-											color={user.type === "P" ? "success" : user.type === "R" ? "primary" : user.type === "A" ? "info" : "warning"}
-											variant="filled"
-											size="small"
-											label={user.type === "P" ? "Piloto" : user.type === "R" ? "Responsável" : user.type === "A" ? "Administrador" : "Comum"}
-										/>
-									</TableCell>
-									<TableCell align="center">{user.pilot_register ? user.pilot_register : "-"}</TableCell>
+									<TableCell align="center">{aircraft.rab}</TableCell>
+									<TableCell align="center">{aircraft.category}</TableCell>
+									<TableCell align="center">{aircraft.name}</TableCell>
+									<TableCell align="center">{aircraft.email}</TableCell>
+									<TableCell align="center">{formatPhoneNumber(aircraft.mobile)}</TableCell>
 								</TableRow>
 							))
 						) : search ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum usuário encontrado</Typography>
+									<Typography variant="h5">Nenhuma aeronave encontrada</Typography>
 								</TableCell>
 							</TableRow>
 						) : (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum usuário cadastrado</Typography>
+									<Typography variant="h5">Nenhuma aeronave cadastrada</Typography>
 								</TableCell>
 							</TableRow>
 						)}
@@ -147,7 +141,7 @@ export default function UsersTable() {
 			</TableContainer>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddUser onCancel={handleAdd} />
+				<AddAircraft onCancel={handleAdd} />
 			</Dialog>
 		</>
 	);

@@ -8,7 +8,7 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 const useLandingSite = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLandingSites } = useContext(LandingSiteContext);
+	const { setLandingSites, setTotalLandingSites } = useContext(LandingSiteContext);
 
 	const createLandingSite = async (data) => {
 		try {
@@ -32,10 +32,11 @@ const useLandingSite = () => {
 		}
 	};
 
-	const findAllLandingSites = async (search) => {
+	const findAllLandingSites = async (search, page) => {
 		try {
-			const response = await publicAxios.get(`/landing-sites/find-all?search=${search}`);
-			setLandingSites(response.data);
+			const response = await publicAxios.get(`/landing-sites/admin/find-all?search=${search}&page=${page}`);
+			setLandingSites(response.data.items);
+			setTotalLandingSites(response.data.pagination.totalPages);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

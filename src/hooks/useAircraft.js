@@ -54,7 +54,7 @@ const useAircraft = () => {
 
 	const searchAllAircrafts = async (search, page) => {
 		try {
-			const response = await publicAxios.get(`/aircrafts/search?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/aircrafts?search=${search}&page=${page}`);
 			setSearchAircrafts(response.data.items);
 			setTotalSearchAircrafts(response.data.pagination.totalPages);
 		} catch (error) {

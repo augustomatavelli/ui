@@ -33,7 +33,7 @@ const getInitialValues = (user) => {
 
 // ==============================|| TAB - PERSONAL ||============================== //
 
-const AddUser = ({ user, onCancel }) => {
+const AddLandingSite = ({ user, onCancel }) => {
 	const { createUserByAdmin } = useUser();
 
 	const scriptedRef = useScriptRef();
@@ -247,4 +247,4 @@ const AddUser = ({ user, onCancel }) => {
 	);
 };
 
-export default AddUser;
+export default AddLandingSite;

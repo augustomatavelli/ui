@@ -39,16 +39,12 @@ const getInitialValues = (aircraft) => {
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
 const AddRequest = ({ aircraft, handleAddRequest }) => {
-	const { createAircraft, searchAllAircrafts } = useAircraft();
+	const { createAircraft } = useAircraft();
 	const { findAllLandingSites } = useLandingSite();
-
-	const { landingSites } = useContext(LandingSiteContext);
 
 	useEffect(() => {
 		findAllLandingSites("");
 	}, []);
-
-	console.log(landingSites);
 
 	const AircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
@@ -63,7 +59,6 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 			try {
 				const newAircraft = {};
 				const response = await createAircraft(newAircraft);
-				await searchAllAircrafts();
 				if (response) {
 					dispatch(
 						openSnackbar({

@@ -140,7 +140,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 				};
 				const response = await createAircraft(newAircraft);
-				await searchAllAircrafts();
+				await searchAllAircrafts("", 1);
 				if (response) {
 					dispatch(
 						openSnackbar({
