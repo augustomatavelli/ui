@@ -8,15 +8,19 @@ export const UserProvider = ({ children }) => {
 	const [searchUser, setSearchUser] = useState([]);
 	const [users, setUsers] = useState([]);
 	const [totalUser, setTotalUser] = useState(0);
+	const [usersResp, setUsersResp] = useState([]);
 
 	const resetUserStates = () => {
 		setUser({});
 		setSearchUser([]);
 		setUsers([]);
 		setTotalUser(0);
+		setUsersResp([]);
 	};
 
-	return <UserContext.Provider value={{ user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, resetUserStates }}>{children}</UserContext.Provider>;
+	return (
+		<UserContext.Provider value={{ user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, usersResp, setUsersResp, resetUserStates }}>{children}</UserContext.Provider>
+	);
 };
 
 UserProvider.propTypes = {

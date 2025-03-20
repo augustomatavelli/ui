@@ -1,11 +1,12 @@
 import { FormattedMessage } from "react-intl";
-import { ClockCircleOutlined, IdcardOutlined, UserOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined, ScheduleOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, IdcardOutlined, UserOutlined, EnvironmentOutlined, AppstoreAddOutlined, ToolOutlined, ScheduleOutlined, UnorderedListOutlined } from "@ant-design/icons";
 // Ícones
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
 	UserOutlined,
 	EnvironmentOutlined,
+	UnorderedListOutlined,
 	AppstoreAddOutlined,
 	ToolOutlined,
 	ScheduleOutlined,
@@ -15,7 +16,7 @@ const admin = {
 	id: "group-admin",
 	title: <FormattedMessage id="Admin" />,
 	icon: icons.IdcardOutlined,
-	type: "group",
+	type: "admin",
 	children: [
 		{
 			id: "users",
@@ -29,7 +30,7 @@ const admin = {
 			title: <FormattedMessage id="Aeronaves" />,
 			type: "item",
 			url: "/aircrafts/admin",
-			icon: icons.EnvironmentOutlined,
+			icon: icons.UnorderedListOutlined,
 		},
 		{
 			id: "landing sites",

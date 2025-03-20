@@ -2,12 +2,13 @@
 import admin from "./admin";
 import forms from "./forms";
 import reports from "./reports";
+import staff from "./staff";
 
 // ==============================|| MENU ITEMS ||============================== //
 
 //TODO: navegação do menu lateral
 const menuItems = {
-	items: [admin, forms, reports],
+	items: [admin, forms, staff, reports],
 };
 
 export default menuItems;

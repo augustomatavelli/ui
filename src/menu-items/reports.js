@@ -14,7 +14,7 @@ const reports = {
 	id: "reports",
 	title: <FormattedMessage id="Relatórios" />,
 	icon: icons.AppstoreAddOutlined,
-	type: "group",
+	type: "reports",
 	children: [],
 };
 

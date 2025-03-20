@@ -77,29 +77,77 @@ const Navigation = () => {
 	}
 
 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
-		switch (item.type) {
-			case "group":
-				return (
-					<NavGroup
-						key={item.id}
-						setSelectedItems={setSelectedItems}
-						setSelectedLevel={setSelectedLevel}
-						selectedLevel={selectedLevel}
-						selectedItems={selectedItems}
-						lastItem={lastItem}
-						remItems={remItems}
-						lastItemId={lastItemId}
-						item={item}
-					/>
-				);
-			default:
-				return (
-					<Typography key={item.id} variant="h6" color="error" align="center">
-						Fix - Navigation Group
-					</Typography>
-				);
-		}
+		return (
+			<NavGroup
+				key={item.id}
+				setSelectedItems={setSelectedItems}
+				setSelectedLevel={setSelectedLevel}
+				selectedLevel={selectedLevel}
+				selectedItems={selectedItems}
+				lastItem={lastItem}
+				remItems={remItems}
+				lastItemId={lastItemId}
+				item={item}
+			/>
+		);
 	});
+
+	/* 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+		switch (user.type) {
+			case "A":
+				if (item.type === "admin" || item.type === "staff") {
+					return (
+						<NavGroup
+							key={item.id}
+							setSelectedItems={setSelectedItems}
+							setSelectedLevel={setSelectedLevel}
+							selectedLevel={selectedLevel}
+							selectedItems={selectedItems}
+							lastItem={lastItem}
+							remItems={remItems}
+							lastItemId={lastItemId}
+							item={item}
+						/>
+					);
+				}
+				break;
+			case "P":
+			case "R":
+				if (item.type === "user") {
+					return (
+						<NavGroup
+							key={item.id}
+							setSelectedItems={setSelectedItems}
+							setSelectedLevel={setSelectedLevel}
+							selectedLevel={selectedLevel}
+							selectedItems={selectedItems}
+							lastItem={lastItem}
+							remItems={remItems}
+							lastItemId={lastItemId}
+							item={item}
+						/>
+					);
+				}
+				break;
+			case "C":
+				if (item.type === "staff") {
+					return (
+						<NavGroup
+							key={item.id}
+							setSelectedItems={setSelectedItems}
+							setSelectedLevel={setSelectedLevel}
+							selectedLevel={selectedLevel}
+							selectedItems={selectedItems}
+							lastItem={lastItem}
+							remItems={remItems}
+							lastItemId={lastItemId}
+							item={item}
+						/>
+					);
+				}
+				break;
+		}
+	}); */
 
 	return (
 		<Box

@@ -120,7 +120,7 @@ const AuthResetPassword = () => {
 											</IconButton>
 										</InputAdornment>
 									}
-									placeholder="Digite sua senha nova"
+									placeholder="Digite sua senha nova..."
 								/>
 								{touched.password && errors.password && (
 									<FormHelperText error id="helper-text-password-reset">
@@ -141,7 +141,7 @@ const AuthResetPassword = () => {
 									name="confirmPassword"
 									onBlur={handleBlur}
 									onChange={handleChange}
-									placeholder="Digite novamente sua senha nova"
+									placeholder="Digite novamente sua senha nova..."
 								/>
 								{touched.confirmPassword && errors.confirmPassword && (
 									<FormHelperText error id="helper-text-confirm-password-reset">

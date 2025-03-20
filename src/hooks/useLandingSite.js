@@ -8,7 +8,7 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 const useLandingSite = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLandingSites, setTotalLandingSites, setSearchLandingSites } = useContext(LandingSiteContext);
+	const { setLandingSites, setTotalLandingSites, setSearchLandingSites, setUf } = useContext(LandingSiteContext);
 
 	const createLandingSite = async (data) => {
 		try {
@@ -74,7 +74,28 @@ const useLandingSite = () => {
 		}
 	};
 
-	return { createLandingSite, findAllLandingSites, searchAllLandingSites };
+	const findUf = async () => {
+		try {
+			const response = await publicAxios.get(`/landing-sites/uf`);
+			setUf(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	return { createLandingSite, findAllLandingSites, searchAllLandingSites, findUf };
 };
 
 export default useLandingSite;

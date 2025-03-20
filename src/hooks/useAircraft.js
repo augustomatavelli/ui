@@ -5,10 +5,13 @@ import AircraftContext from "contexts/AircraftContext";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import UserContext from "contexts/UserContext";
 
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
+
 	const { setSearchAircrafts, setAircraftDetails, setAircrafts, setTotalAircrafts, setTotalSearchAircrafts } = useContext(AircraftContext);
+	const { setUsersResp } = useContext(UserContext);
 
 	const createAircraft = async (data) => {
 		try {
@@ -57,6 +60,7 @@ const useAircraft = () => {
 			const response = await publicAxios.get(`/aircrafts?search=${search}&page=${page}`);
 			setSearchAircrafts(response.data.items);
 			setTotalSearchAircrafts(response.data.pagination.totalPages);
+			setUsersResp(response.data.usersResp);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
