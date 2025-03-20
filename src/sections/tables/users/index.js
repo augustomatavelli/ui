@@ -112,7 +112,7 @@ export default function UsersTable() {
 												</Tooltip>
 											</Box>
 										) : (
-											"-"
+											<Chip color="success" variant="filled" size="small" label="Ativo" />
 										)}
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>

@@ -50,6 +50,7 @@ const MyAircrafts = () => {
 	const [add, setAdd] = useState(false);
 	const [aircraft, setAircraft] = useState(null);
 	const [page, setPage] = useState(1);
+	const [reload, setReload] = useState(false);
 
 	const handleChange = (event) => {
 		setSortBy(event.target.value);
@@ -58,6 +59,7 @@ const MyAircrafts = () => {
 	const handleAdd = () => {
 		setAdd(!add);
 		if (aircraft && !add) setAircraft(null);
+		searchAllAircrafts(globalFilter, page);
 	};
 
 	const handleChangePage = (event, value) => {
@@ -66,7 +68,7 @@ const MyAircrafts = () => {
 
 	useEffect(() => {
 		searchAllAircrafts(globalFilter, page);
-	}, [globalFilter, page]);
+	}, [globalFilter, page, reload]);
 
 	useEffect(() => {}, [searchAircrafts]);
 
@@ -140,7 +142,7 @@ const MyAircrafts = () => {
 						})
 						.map((aircraft) => (
 							<Grid key={aircraft.id_aircraft}>
-								<AircraftCard data={aircraft} />
+								<AircraftCard data={aircraft} setReload={setReload} reload={reload} />
 							</Grid>
 						))}
 				</Grid>

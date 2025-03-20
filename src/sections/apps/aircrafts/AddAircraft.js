@@ -207,7 +207,52 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 												</Stack>
 											</Box>
 										</FormLabel>
-										<TextField type="file" id="change-avtar" placeholder="Outlined" variant="outlined" sx={{ display: "none" }} onChange={(e) => setSelectedImage(e.target.files?.[0])} />
+										<TextField
+											type="file"
+											id="change-avtar"
+											placeholder="Outlined"
+											variant="outlined"
+											sx={{ display: "none" }}
+											onChange={(e) => {
+												const file = e.target.files?.[0];
+												if (file) {
+													const validFormats = ["image/png", "image/jpeg"];
+													const maxSize = 2 * 1024 * 1024; // 2MB
+
+													if (!validFormats.includes(file.type)) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
+
+													if (file.size > maxSize) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "O tamanho máximo permitido é 2MB",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
+
+													setSelectedImage(file);
+												}
+											}}
+										/>
 									</Stack>
 								</Grid>
 								<Grid item xs={12} md={8}>

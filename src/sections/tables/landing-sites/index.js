@@ -67,6 +67,8 @@ export default function LandingSitesTable() {
 						<TableRow>
 							<TableCell align="center">Nome</TableCell>
 							<TableCell align="center">Tipo</TableCell>
+							<TableCell align="center">Endereço</TableCell>
+							<TableCell align="center">Cidade/Estado</TableCell>
 							<TableCell align="center">Capacidade</TableCell>
 						</TableRow>
 					</TableHead>
@@ -76,6 +78,8 @@ export default function LandingSitesTable() {
 								<TableRow hover key={e.id_landing_site}>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{e.type === "H" ? "Heliporto" : "-"}</TableCell>
+									<TableCell align="center">{e.endereco}</TableCell>
+									<TableCell align="center">{e.cidade}</TableCell>
 									<TableCell align="center">{e.capacity}</TableCell>
 								</TableRow>
 							))

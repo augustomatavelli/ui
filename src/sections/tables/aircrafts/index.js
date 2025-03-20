@@ -113,7 +113,7 @@ export default function AircraftsTable() {
 												</Tooltip>
 											</Box>
 										) : (
-											"-"
+											<Chip color="success" variant="filled" size="small" label="Ativo" />
 										)}
 									</TableCell>
 									<TableCell align="center">{aircraft.rab}</TableCell>

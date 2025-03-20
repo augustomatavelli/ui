@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // material-ui
 import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography, Dialog } from "@mui/material";
 
@@ -16,7 +16,7 @@ import UserContext from "contexts/UserContext";
 import AddRequest from "../requests/AddRequest";
 import { PopupTransition } from "components/@extended/Transitions";
 
-const AircraftCard = ({ data }) => {
+const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
 
 	const [addRequest, setAddRequest] = useState(false);
@@ -30,6 +30,7 @@ const AircraftCard = ({ data }) => {
 	};
 
 	const handleAddRequest = () => {
+		setReload(!reload);
 		setAddRequest(!addRequest);
 	};
 
@@ -109,7 +110,7 @@ const AircraftCard = ({ data }) => {
 						</Box>
 					</Grid>
 				</Grid>
-				{status === "A" && user.status === "A" && !hasRequest && (
+				{status === "A" && user.status === "A" && hasRequest === 0 && (
 					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
 						<Button
 							variant="outlined"

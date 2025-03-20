@@ -69,7 +69,6 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 					amount: amount,
 					schedule_date: schedule_date,
 				};
-				console.log(newRequest);
 				const response = await createRequest(newRequest);
 				if (response) {
 					dispatch(
