@@ -1,38 +1,30 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
-import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import AddRequest from "sections/apps/requests/AddRequest";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 
-export default function RequestsTable() {
-	const { findAllRequests } = useRequest();
+export default function MyRequestsTable() {
+	const { searchAllRequests } = useRequest();
 
-	const { requests, totalRequests } = useContext(RequestContext);
+	const { searchRequests, totalSearchRequests } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
-	const [open, setOpen] = useState(false);
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
-	const handleAdd = async () => {
-		setOpen(!open);
-		await findAllRequests(search, page);
-	};
-
 	useEffect(() => {
-		findAllRequests(search, page);
+		searchAllRequests(search, page);
 	}, [search, page]);
 
-	useEffect(() => {}, [requests]);
+	useEffect(() => {}, [searchRequests]);
 
 	return (
 		<>
@@ -40,15 +32,13 @@ export default function RequestsTable() {
 				<Grid sx={{ p: 2.5, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 					<SearchRequestByAdmin setSearch={setSearch} />
 					<Stack spacing={2} sx={{ width: "100%", mb: 1 }} alignItems="center" justifyContent="flex-end" display="flex" direction="row">
-						<Pagination count={totalRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+						<Pagination count={totalSearchRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell align="center">Solicitado por</TableCell>
-							<TableCell align="center">Tipo de usuário</TableCell>
 							<TableCell align="center">Aeronave</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
@@ -59,20 +49,11 @@ export default function RequestsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{requests.length > 0 ? (
-							requests.map((e) => (
+						{searchRequests.length > 0 ? (
+							searchRequests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
-									</TableCell>
-									<TableCell align="center">{e.user}</TableCell>
-									<TableCell align="center">
-										<Chip
-											color={e.type === "P" ? "success" : e.type === "R" ? "primary" : e.type === "A" ? "info" : "warning"}
-											variant="filled"
-											size="small"
-											label={e.type === "P" ? "Piloto" : e.type === "R" ? "Responsável" : e.type === "A" ? "Administrador" : "Comum"}
-										/>
 									</TableCell>
 									<TableCell align="center">{e.rab}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
@@ -92,13 +73,13 @@ export default function RequestsTable() {
 							))
 						) : search ? (
 							<TableRow>
-								<TableCell colSpan={10} align="center">
+								<TableCell colSpan={8} align="center">
 									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>
 								</TableCell>
 							</TableRow>
 						) : (
 							<TableRow>
-								<TableCell colSpan={10} align="center">
+								<TableCell colSpan={8} align="center">
 									<Typography variant="h5">Nenhuma solicitação cadastrada</Typography>
 								</TableCell>
 							</TableRow>
@@ -106,10 +87,6 @@ export default function RequestsTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddRequest onCancel={handleAdd} />
-			</Dialog>
 		</>
 	);
 }

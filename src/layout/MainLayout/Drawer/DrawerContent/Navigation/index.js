@@ -76,7 +76,7 @@ const Navigation = () => {
 		}));
 	}
 
-	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+	/* const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
 		return (
 			<NavGroup
 				key={item.id}
@@ -90,12 +90,42 @@ const Navigation = () => {
 				item={item}
 			/>
 		);
-	});
+	}); */
 
-	/* 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
 		switch (user.type) {
 			case "A":
-				if (item.type === "admin" || item.type === "staff") {
+				return (
+					<NavGroup
+						key={item.id}
+						setSelectedItems={setSelectedItems}
+						setSelectedLevel={setSelectedLevel}
+						selectedLevel={selectedLevel}
+						selectedItems={selectedItems}
+						lastItem={lastItem}
+						remItems={remItems}
+						lastItemId={lastItemId}
+						item={item}
+					/>
+				); /* 
+				if (item.type === "admin") {
+					return (
+						<NavGroup
+							key={item.id}
+							setSelectedItems={setSelectedItems}
+							setSelectedLevel={setSelectedLevel}
+							selectedLevel={selectedLevel}
+							selectedItems={selectedItems}
+							lastItem={lastItem}
+							remItems={remItems}
+							lastItemId={lastItemId}
+							item={item}
+						/>
+					);
+				} */
+				break;
+			case "P":
+				if (item.type === "user") {
 					return (
 						<NavGroup
 							key={item.id}
@@ -111,9 +141,8 @@ const Navigation = () => {
 					);
 				}
 				break;
-			case "P":
 			case "R":
-				if (item.type === "user") {
+				if (item.type === "userResp") {
 					return (
 						<NavGroup
 							key={item.id}
@@ -147,7 +176,7 @@ const Navigation = () => {
 				}
 				break;
 		}
-	}); */
+	});
 
 	return (
 		<Box

@@ -4,22 +4,16 @@ import UserContext from "contexts/UserContext";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
-import AuthContext from "contexts/AuthContext";
+import { setSession } from "contexts/AuthContext";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setSession } = useContext(AuthContext);
 	const { setUser, setSearchUser, setUsers, setTotalUser } = useContext(UserContext);
 
 	const createUser = async (data) => {
 		try {
 			const response = await publicAxios.post("/users", data);
-			const { token, userType, userId, userStatus } = response.data;
-			setSession(token);
-			localStorage.setItem("_userId", userId);
-			localStorage.setItem("_type", userType);
-			localStorage.setItem("_status", userStatus);
 			return response.data;
 		} catch (error) {
 			console.log(error);

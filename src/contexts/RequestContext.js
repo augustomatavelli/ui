@@ -8,16 +8,36 @@ export const RequestProvider = ({ children }) => {
 	const [totalRequests, setTotalRequests] = useState(0);
 	const [searchRequests, setSearchRequests] = useState([]);
 	const [totalSearchRequests, setTotalSearchRequests] = useState(0);
+	const [searchAircraftsRequests, setSearchAircraftsRequests] = useState([]);
+	const [totalSearchAircraftsRequests, setTotalSearchAircraftsRequests] = useState(0);
 
 	const resetRequestStates = () => {
 		setRequests([]);
 		setTotalRequests(0);
 		setSearchRequests([]);
 		setTotalSearchRequests(0);
+		setSearchAircraftsRequests([]);
+		setTotalSearchAircraftsRequests(0);
 	};
 
 	return (
-		<RequestContext.Provider value={{ requests, setRequests, totalRequests, setTotalRequests, searchRequests, setSearchRequests, totalSearchRequests, setTotalSearchRequests, resetRequestStates }}>
+		<RequestContext.Provider
+			value={{
+				requests,
+				setRequests,
+				totalRequests,
+				setTotalRequests,
+				searchRequests,
+				setSearchRequests,
+				totalSearchRequests,
+				setTotalSearchRequests,
+				searchAircraftsRequests,
+				setSearchAircraftsRequests,
+				totalSearchAircraftsRequests,
+				setTotalSearchAircraftsRequests,
+				resetRequestStates,
+			}}
+		>
 			{children}
 		</RequestContext.Provider>
 	);

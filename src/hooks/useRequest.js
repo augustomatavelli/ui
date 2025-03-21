@@ -8,7 +8,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useRequest = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setRequests, setTotalRequests, setSearchRequests, setTotalSearchRequests } = useContext(RequestContext);
+	const { setRequests, setTotalRequests, setSearchRequests, setTotalSearchRequests, setSearchAircraftsRequests, setTotalSearchAircraftsRequests } = useContext(RequestContext);
 
 	const createRequest = async (data) => {
 		try {
@@ -33,9 +33,31 @@ const useRequest = () => {
 
 	const searchAllRequests = async (search, page) => {
 		try {
-			const response = await publicAxios.post(`/requests?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/requests?search=${search}&page=${page}`);
 			setSearchRequests(response.data.items);
 			setTotalSearchRequests(response.data.pagination.totalPages);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	const searchMyAircraftsRequests = async (search, page) => {
+		try {
+			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}`);
+			setSearchAircraftsRequests(response.data.items);
+			setTotalSearchAircraftsRequests(response.data.pagination.totalPages);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -75,7 +97,7 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests };
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests };
 };
 
 export default useRequest;

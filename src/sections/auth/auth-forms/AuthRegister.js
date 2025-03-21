@@ -100,10 +100,7 @@ const AuthRegister = () => {
 									close: false,
 								})
 							);
-
-							setTimeout(() => {
-								navigate("/aircrafts/me", { replace: true });
-							}, 1500);
+							navigate("/", { replace: true });
 						}
 					} catch (err) {
 						setErrors({});

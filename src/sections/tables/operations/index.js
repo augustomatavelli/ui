@@ -10,7 +10,7 @@ import AddRequest from "sections/apps/requests/AddRequest";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 
-export default function RequestsTable() {
+export default function OperationsTable() {
 	const { findAllRequests } = useRequest();
 
 	const { requests, totalRequests } = useContext(RequestContext);

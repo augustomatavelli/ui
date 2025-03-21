@@ -13,11 +13,11 @@ const icons = {
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
-const forms = {
-	id: "group-forms",
+const formsResp = {
+	id: "group-formsResp",
 	title: <FormattedMessage id="Usuários" />,
 	icon: icons.IdcardOutlined,
-	type: "user",
+	type: "userResp",
 	children: [
 		{
 			id: "my aircrafts",
@@ -33,7 +33,14 @@ const forms = {
 			url: "/requests/me",
 			icon: icons.FileTextOutlined,
 		},
+		{
+			id: "my request by aircraft",
+			title: <FormattedMessage id="Solicitações de aeronaves" />,
+			type: "item",
+			url: "/requests/my-aircrafts",
+			icon: icons.ScheduleOutlined,
+		},
 	],
 };
 
-export default forms;
+export default formsResp;

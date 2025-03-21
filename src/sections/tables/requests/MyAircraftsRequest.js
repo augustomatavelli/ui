@@ -1,38 +1,30 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
-import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import AddRequest from "sections/apps/requests/AddRequest";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 
-export default function RequestsTable() {
-	const { findAllRequests } = useRequest();
+export default function MyAircraftsRequestsTable() {
+	const { searchMyAircraftsRequests } = useRequest();
 
-	const { requests, totalRequests } = useContext(RequestContext);
+	const { searchAircraftsRequests, totalSearchAircraftsRequests } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
-	const [open, setOpen] = useState(false);
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
-	const handleAdd = async () => {
-		setOpen(!open);
-		await findAllRequests(search, page);
-	};
-
 	useEffect(() => {
-		findAllRequests(search, page);
+		searchMyAircraftsRequests(search, page);
 	}, [search, page]);
 
-	useEffect(() => {}, [requests]);
+	useEffect(() => {}, [searchAircraftsRequests]);
 
 	return (
 		<>
@@ -40,7 +32,7 @@ export default function RequestsTable() {
 				<Grid sx={{ p: 2.5, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 					<SearchRequestByAdmin setSearch={setSearch} />
 					<Stack spacing={2} sx={{ width: "100%", mb: 1 }} alignItems="center" justifyContent="flex-end" display="flex" direction="row">
-						<Pagination count={totalRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+						<Pagination count={totalSearchAircraftsRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
 				<Table aria-label="simple table">
@@ -59,8 +51,8 @@ export default function RequestsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{requests.length > 0 ? (
-							requests.map((e) => (
+						{searchAircraftsRequests.length > 0 ? (
+							searchAircraftsRequests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
@@ -106,10 +98,6 @@ export default function RequestsTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddRequest onCancel={handleAdd} />
-			</Dialog>
 		</>
 	);
 }

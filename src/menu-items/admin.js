@@ -54,10 +54,10 @@ const admin = {
 			icon: icons.AppstoreAddOutlined,
 		},
 		{
-			id: "services",
+			id: "operations",
 			title: <FormattedMessage id="Serviços" />,
 			type: "item",
-			url: "/services/admin",
+			url: "/operations/admin",
 			icon: icons.ToolOutlined,
 		},
 	],

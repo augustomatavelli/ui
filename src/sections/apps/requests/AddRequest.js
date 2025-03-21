@@ -26,7 +26,8 @@ const getInitialValues = (aircraft) => {
 		id_aircraft: aircraft.id_aircraft,
 		id_landing_site: "",
 		amount: "",
-		schedule_date: "",
+		landing_date: "",
+		takeoff_date: "",
 		rab: aircraft.rab,
 		category: aircraft.category,
 		image: aircraft.image,
@@ -52,7 +53,8 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 		id_aircraft: Yup.number(),
 		id_landing_site: Yup.number(),
 		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
-		schedule_date: Yup.date().required("Data e hora previstos é obrigatório"),
+		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
+		takeoff_date: Yup.date().optional(),
 	});
 
 	//TODO: Pergunta se vai querer agendar a decolagem. Se sim, mostrar outro input de data
@@ -61,13 +63,14 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 		initialValues: getInitialValues(aircraft),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, amount, schedule_date } = values;
+			const { id_aircraft, id_landing_site, amount, landing_date, takeoff_date } = values;
 			try {
 				const newRequest = {
 					aircraftId: id_aircraft,
 					landingSiteId: id_landing_site,
 					amount: amount,
-					schedule_date: schedule_date,
+					landing_date: landing_date,
+					takeoff_date: takeoff_date,
 				};
 				const response = await createRequest(newRequest);
 				if (response) {
@@ -99,8 +102,6 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<DialogTitle>Solicitar pouso</DialogTitle>
-						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
 								<Grid item xs={12} md={3} sx={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 2 }}>
@@ -147,15 +148,31 @@ const AddRequest = ({ aircraft, handleAddRequest }) => {
 										</Grid>
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
-												<InputLabel>Previsão de chegada</InputLabel>
+												<InputLabel>Previsão de pouso</InputLabel>
 												<DateTimePicker
-													value={formik.values.schedule_date}
-													onChange={(date) => formik.setFieldValue("schedule_date", date)}
+													value={formik.values.landing_date}
+													onChange={(date) => formik.setFieldValue("landing_date", date)}
 													format="dd/MM/yyyy HH:mm"
 													slotProps={{
 														textField: {
-															error: Boolean(formik.touched.schedule_date && formik.errors.schedule_date),
-															helperText: formik.touched.schedule_date && formik.errors.schedule_date,
+															error: Boolean(formik.touched.landing_date && formik.errors.landing_date),
+															helperText: formik.touched.landing_date && formik.errors.landing_date,
+														},
+													}}
+												/>
+											</Stack>
+										</Grid>
+										<Grid item xs={12}>
+											<Stack spacing={1.25}>
+												<InputLabel>Previsão de decolagem</InputLabel>
+												<DateTimePicker
+													value={formik.values.takeoff_date}
+													onChange={(date) => formik.setFieldValue("takeoff_date", date)}
+													format="dd/MM/yyyy HH:mm"
+													slotProps={{
+														textField: {
+															error: Boolean(formik.touched.takeoff_date && formik.errors.takeoff_date),
+															helperText: formik.touched.takeoff_date && formik.errors.takeoff_date,
 														},
 													}}
 												/>

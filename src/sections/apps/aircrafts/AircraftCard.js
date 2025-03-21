@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 import AddRequest from "../requests/AddRequest";
 import { PopupTransition } from "components/@extended/Transitions";
+import CreateRequestStepper from "../requests";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
@@ -127,6 +128,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 				)}
 			</MainCard>
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+				{/* <CreateRequestStepper /> */}
 				<AddRequest aircraft={data} handleAddRequest={handleAddRequest} />
 			</Dialog>
 		</>
