@@ -76,10 +76,10 @@ const allStatus = ["A", "B", "C", "D", "E"];
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const AddAircraft = ({ aircraft, onCancel }) => {
+const AddAircraft = ({ aircraft, onCancel, resp }) => {
 	const { createAircraft, searchAllAircrafts } = useAircraft();
 
-	const { usersResp } = useContext(UserContext);
+	const { usersResp, user } = useContext(UserContext);
 
 	const [isMembership, setIsMembership] = useState(true);
 	const [selectedImage, setSelectedImage] = useState(undefined);
@@ -134,12 +134,12 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					name: name,
-					email: email,
-					phone: phone,
-					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
-					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
-					isNewUserResp: toggleCheckbox,
+					name: resp === 1 ? user.name : name,
+					email: resp === 1 ? user.email : email,
+					phone: resp === 1 ? user.mobile : phone,
+					cpf: resp === 1 ? user.cpf || user.cnpj || (typeDoc === "cpf" ? doc.replace(/\D/g, "") : "") : typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
+					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
+					isNewUserResp: resp === 1 ? false : toggleCheckbox,
 				};
 				const response = await createAircraft(newAircraft);
 				await searchAllAircrafts("", 1);

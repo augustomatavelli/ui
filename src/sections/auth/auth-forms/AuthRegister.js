@@ -80,7 +80,7 @@ const AuthRegister = () => {
 							phone: values.phone.replace(/\D/g, ""),
 							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
 							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-							type: isPilot ? "P" : "C",
+							type: isPilot ? "P" : "R",
 							pilotRegister: values.pilot,
 							password: values.password,
 						};
@@ -123,7 +123,31 @@ const AuthRegister = () => {
 						<Grid container spacing={3}>
 							<Grid item xs={12}>
 								<Stack spacing={1}>
-									<InputLabel htmlFor="firstname-signup">Nome completo</InputLabel>
+									<InputLabel htmlFor="doc-signup">Documento</InputLabel>
+									<RadioGroup
+										row
+										value={typeDoc}
+										onChange={(e) => {
+											setTypeDoc(e.target.value);
+											e.target.value === "cpf" ? setIsPilot(true) : setIsPilot(false);
+										}}
+									>
+										<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
+										<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
+									</RadioGroup>
+									<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+										{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento..." />}
+									</InputMask>
+									{touched.doc && errors.doc && (
+										<FormHelperText error id="helper-text-doc-signup">
+											{errors.doc}
+										</FormHelperText>
+									)}
+								</Stack>
+							</Grid>
+							<Grid item xs={12}>
+								<Stack spacing={1}>
+									<InputLabel htmlFor="firstname-signup">{typeDoc === "cpf" ? "Nome completo" : "Razão social"}</InputLabel>
 									<OutlinedInput
 										id="name-login"
 										type="name"
@@ -131,7 +155,7 @@ const AuthRegister = () => {
 										name="name"
 										onBlur={handleBlur}
 										onChange={handleChange}
-										placeholder="Digite seu nome"
+										placeholder={typeDoc === "cpf" ? "Digite seu nome..." : "Digite a razão social..."}
 										fullWidth
 										error={Boolean(touched.name && errors.name)}
 									/>
@@ -166,23 +190,6 @@ const AuthRegister = () => {
 							</Grid>
 							<Grid item xs={12}>
 								<Stack spacing={1}>
-									<InputLabel htmlFor="doc-signup">Documento</InputLabel>
-									<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
-										<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
-										<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
-									</RadioGroup>
-									<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
-										{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento" />}
-									</InputMask>
-									{touched.doc && errors.doc && (
-										<FormHelperText error id="helper-text-doc-signup">
-											{errors.doc}
-										</FormHelperText>
-									)}
-								</Stack>
-							</Grid>
-							<Grid item xs={12}>
-								<Stack spacing={1}>
 									<InputLabel htmlFor="phone-signup">Celular</InputLabel>
 									<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur}>
 										{() => <OutlinedInput fullWidth error={Boolean(touched.phone && errors.phone)} id="phone-signup" name="phone" placeholder="Digite o número do celular" />}
@@ -194,35 +201,29 @@ const AuthRegister = () => {
 									)}
 								</Stack>
 							</Grid>
-							<Grid item xs={12}>
-								<Stack spacing={1}>
-									<InputLabel htmlFor="pilot-signup">Você é piloto?</InputLabel>
-									<RadioGroup row value={isPilot} onChange={(e) => setIsPilot(e.target.value === "true")}>
-										<FormControlLabel value={true} control={<Radio />} label="Sim" />
-										<FormControlLabel value={false} control={<Radio />} label="Não" />
-									</RadioGroup>
-									{isPilot && (
-										<>
-											<OutlinedInput
-												fullWidth
-												error={Boolean(touched.pilot && errors.pilot)}
-												id="pilot-signup"
-												value={values.pilot}
-												name="pilot"
-												onBlur={handleBlur}
-												onChange={handleChange}
-												placeholder="Digite o número do registro de piloto"
-												inputProps={{}}
-											/>
-											{touched.pilot && errors.pilot && (
-												<FormHelperText error id="helper-text-pilot-signup">
-													{errors.pilot}
-												</FormHelperText>
-											)}
-										</>
-									)}
-								</Stack>
-							</Grid>
+							{typeDoc === "cpf" && (
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<InputLabel htmlFor="pilot-signup">Registro de piloto</InputLabel>
+										<OutlinedInput
+											fullWidth
+											error={Boolean(touched.pilot && errors.pilot)}
+											id="pilot-signup"
+											value={values.pilot}
+											name="pilot"
+											onBlur={handleBlur}
+											onChange={handleChange}
+											placeholder="Digite o número do registro de piloto..."
+											inputProps={{}}
+										/>
+										{touched.pilot && errors.pilot && (
+											<FormHelperText error id="helper-text-pilot-signup">
+												{errors.pilot}
+											</FormHelperText>
+										)}
+									</Stack>
+								</Grid>
+							)}
 							<Grid item xs={12}>
 								<Stack spacing={1}>
 									<InputLabel htmlFor="password-signup">Senha</InputLabel>

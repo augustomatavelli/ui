@@ -14,6 +14,7 @@ import AircraftCard from "sections/apps/aircrafts/AircraftCard";
 import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import AircraftContext from "contexts/AircraftContext";
 import useAircraft from "hooks/useAircraft";
+import UserContext from "contexts/UserContext";
 
 const allColumns = [
 	{
@@ -42,6 +43,7 @@ const MyAircrafts = () => {
 	const { searchAllAircrafts } = useAircraft();
 
 	const { searchAircrafts, totalSearchAircrafts } = useContext(AircraftContext);
+	const { user } = useContext(UserContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -106,22 +108,23 @@ const MyAircrafts = () => {
 									})}
 								</Select>
 							</FormControl>
-							<Button
-								variant="contained"
-								startIcon={<PlusOutlined />}
-								onClick={handleAdd}
-								sx={{
-									height: 40,
-									paddingY: 0,
-								}}
-							>
-								Adicionar Aeronave
-							</Button>
+							{user.type === "R" && (
+								<Button
+									variant="contained"
+									startIcon={<PlusOutlined />}
+									onClick={handleAdd}
+									sx={{
+										height: 40,
+										paddingY: 0,
+									}}
+								>
+									Adicionar Aeronave
+								</Button>
+							)}
 						</Stack>
 					</Stack>
 				</Stack>
 			</Box>
-
 			{searchAircrafts.length > 0 ? (
 				<Grid
 					container
@@ -151,13 +154,12 @@ const MyAircrafts = () => {
 					<EmptyUserCard title={"Não há nenhuma aeronave vinculada a você."} />
 				</Grid>
 			)}
-
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
 				<Pagination count={totalSearchAircrafts} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddAircraft aircraft={aircraft} onCancel={handleAdd} />
+				<AddAircraft aircraft={aircraft} onCancel={handleAdd} resp={1} />
 			</Dialog>
 		</>
 	);

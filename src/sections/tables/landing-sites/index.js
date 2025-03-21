@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, Chip } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -65,10 +65,11 @@ export default function LandingSitesTable() {
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
+							<TableCell />
 							<TableCell align="center">Nome</TableCell>
 							<TableCell align="center">Tipo</TableCell>
 							<TableCell align="center">Endereço</TableCell>
-							<TableCell align="center">Cidade/Estado</TableCell>
+							<TableCell align="center">Cidade / Estado</TableCell>
 							<TableCell align="center">Capacidade</TableCell>
 						</TableRow>
 					</TableHead>
@@ -76,6 +77,9 @@ export default function LandingSitesTable() {
 						{landingSites.length > 0 ? (
 							landingSites.map((e) => (
 								<TableRow hover key={e.id_landing_site}>
+									<TableCell align="center">
+										<Chip color={e.status === "P" ? "warning" : "success"} variant="filled" size="small" label={e.status === "P" ? "Pendente" : "Ativo"} />
+									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{e.type === "H" ? "Heliporto" : "-"}</TableCell>
 									<TableCell align="center">{e.endereco}</TableCell>

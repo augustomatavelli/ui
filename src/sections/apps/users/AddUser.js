@@ -117,7 +117,38 @@ const AddUser = ({ user, onCancel }) => {
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="firstname-signup">Nome completo</InputLabel>
+										<InputLabel htmlFor="doc-signup">Documento</InputLabel>
+										<RadioGroup
+											row
+											value={typeDoc}
+											onChange={(e) => {
+												const newTypeDoc = e.target.value;
+												if (newTypeDoc !== typeDoc) {
+													setTypeDoc(newTypeDoc);
+													if (newTypeDoc === "cpf" && isPilot !== 1) {
+														setIsPilot(1);
+													} else if (newTypeDoc === "cnpj" && isPilot !== 2) {
+														setIsPilot(2);
+													}
+												}
+											}}
+										>
+											<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
+											<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
+										</RadioGroup>
+										<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+											{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento..." />}
+										</InputMask>
+										{touched.doc && errors.doc && (
+											<FormHelperText error id="helper-text-doc-signup">
+												{errors.doc}
+											</FormHelperText>
+										)}
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<InputLabel htmlFor="firstname-signup">{typeDoc === "cpf" ? "Nome completo" : "Razão social"}</InputLabel>
 										<OutlinedInput
 											id="name-login"
 											type="name"
@@ -125,7 +156,7 @@ const AddUser = ({ user, onCancel }) => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite o nome..."
+											placeholder={typeDoc === "cpf" ? "Digite seu nome..." : "Digite a razão social..."}
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -160,23 +191,6 @@ const AddUser = ({ user, onCancel }) => {
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="doc-signup">Documento</InputLabel>
-										<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
-											<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
-											<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
-										</RadioGroup>
-										<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
-											{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento..." />}
-										</InputMask>
-										{touched.doc && errors.doc && (
-											<FormHelperText error id="helper-text-doc-signup">
-												{errors.doc}
-											</FormHelperText>
-										)}
-									</Stack>
-								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1}>
 										<InputLabel htmlFor="phone-signup">Celular</InputLabel>
 										<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur}>
 											{() => <OutlinedInput fullWidth error={Boolean(touched.phone && errors.phone)} id="phone-signup" name="phone" placeholder="Digite o número do celular..." />}
@@ -191,7 +205,21 @@ const AddUser = ({ user, onCancel }) => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<InputLabel htmlFor="pilot-signup">Escolha o tipo de usuário</InputLabel>
-										<RadioGroup row value={isPilot} onChange={(e) => setIsPilot(Number(e.target.value))}>
+										<RadioGroup
+											row
+											value={isPilot}
+											onChange={(e) => {
+												const newIsPilot = Number(e.target.value);
+												if (newIsPilot !== isPilot) {
+													setIsPilot(newIsPilot);
+													if (newIsPilot === 2 && typeDoc !== "cnpj") {
+														setTypeDoc("cnpj");
+													} else if ((newIsPilot === 1 || newIsPilot === 3) && typeDoc !== "cpf") {
+														setTypeDoc("cpf");
+													}
+												}
+											}}
+										>
 											<FormControlLabel value={1} control={<Radio />} label="Piloto" />
 											<FormControlLabel value={2} control={<Radio />} label="Responsável" />
 											<FormControlLabel value={3} control={<Radio />} label="Comum" />

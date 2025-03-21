@@ -39,7 +39,7 @@ const AddLandingSite = ({ onCancel }) => {
 	const { createLandingSite, findUf } = useLandingSite();
 
 	const { uf } = useContext(LandingSiteContext);
-	console.log(uf);
+
 	const scriptedRef = useScriptRef();
 
 	useEffect(() => {
@@ -49,7 +49,9 @@ const AddLandingSite = ({ onCancel }) => {
 	const NewLandingSiteSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
 		type: Yup.string().max(255).required("Selecione um tipo"),
+		ciad: Yup.string().max(255).required("CIAD é obrigatório"),
 		address: Yup.string().max(255).required("Endereço é obrigatório"),
+		number: Yup.string().optional(),
 		city: Yup.string().max(255).required("Cidade é obrigatória"),
 		uf: Yup.string().max(255).required("Selecione um estado"),
 		capacity: Yup.number().min(1, "O valor tem que ser maior que 0").required("Capacidade é obrigatória"),
@@ -63,7 +65,12 @@ const AddLandingSite = ({ onCancel }) => {
 				const payload = {
 					name: values.name,
 					type: values.type,
+					ciad: values.ciad,
 					capacity: values.capacity,
+					address: values.address,
+					number: values.number,
+					city: values.city,
+					uf: values.uf,
 				};
 
 				const response = await createLandingSite(payload);
@@ -128,6 +135,27 @@ const AddLandingSite = ({ onCancel }) => {
 										{touched.name && errors.name && (
 											<FormHelperText error id="helper-text-name-signup">
 												{errors.name}
+											</FormHelperText>
+										)}
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<InputLabel htmlFor="ciad">CIAD</InputLabel>
+										<OutlinedInput
+											id="ciad"
+											type="text"
+											value={values.ciad}
+											name="ciad"
+											onBlur={handleBlur}
+											onChange={handleChange}
+											placeholder="Digite o nome..."
+											fullWidth
+											error={Boolean(touched.ciad && errors.ciad)}
+										/>
+										{touched.ciad && errors.ciad && (
+											<FormHelperText error id="helper-text-ciad-signup">
+												{errors.ciad}
 											</FormHelperText>
 										)}
 									</Stack>

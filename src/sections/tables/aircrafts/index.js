@@ -93,7 +93,7 @@ export default function AircraftsTable() {
 															cursor: "pointer",
 														}}
 														onClick={async () => {
-															await approveAircraft({ id_user: aircraft.id_user, approve: "S" });
+															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
 															await findAllAircrafts(search, page);
 														}}
 													/>
@@ -106,7 +106,7 @@ export default function AircraftsTable() {
 															cursor: "pointer",
 														}}
 														onClick={async () => {
-															await approveAircraft({ id_user: aircraft.id_user, approve: "N" });
+															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
 															await findAllAircrafts(search, page);
 														}}
 													/>

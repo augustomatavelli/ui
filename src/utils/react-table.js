@@ -57,6 +57,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
 			sx={{
 				height: 40,
 				paddingY: 0,
+				width: "50%",
 			}}
 			{...other}
 		/>
