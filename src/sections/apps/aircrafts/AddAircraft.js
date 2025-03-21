@@ -108,7 +108,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 	const AircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
 		category: Yup.string().required("Categoria é obrigatório"),
-		name: Yup.string().max(255).required("Nome é obrigatório"),
+		/* name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
@@ -117,7 +117,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 		phone: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
-			.required("Celular é obrigatório"),
+			.required("Celular é obrigatório"), */
 		membership: Yup.string().max(255),
 	});
 
@@ -134,12 +134,12 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					name: resp === 1 ? user.name : name,
+					/* name: resp === 1 ? user.name : name,
 					email: resp === 1 ? user.email : email,
 					phone: resp === 1 ? user.mobile : phone,
 					cpf: resp === 1 ? user.cpf || user.cnpj || (typeDoc === "cpf" ? doc.replace(/\D/g, "") : "") : typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
-					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
-					isNewUserResp: resp === 1 ? false : toggleCheckbox,
+					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "", */
+					isNewUserResp: false,
 				};
 				const response = await createAircraft(newAircraft);
 				await searchAllAircrafts("", 1);
@@ -297,7 +297,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 												)}
 											</Stack>
 										</Grid>
-										<Grid item xs={12}>
+										{/* <Grid item xs={12}>
 											<FormControlLabel
 												control={
 													<Checkbox
@@ -431,7 +431,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 													</Stack>
 												</Grid>
 											</>
-										)}
+										)} */}
 										<Grid item xs={12}>
 											<Stack spacing={1}>
 												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>

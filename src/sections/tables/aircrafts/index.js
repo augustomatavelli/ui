@@ -129,7 +129,7 @@ export default function AircraftsTable() {
 									<Typography variant="h5">Nenhuma aeronave encontrada</Typography>
 								</TableCell>
 							</TableRow>
-						) : (
+						) : (	
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhuma aeronave cadastrada</Typography>
