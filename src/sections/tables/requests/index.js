@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import AddRequest from "sections/apps/requests/AddRequest";
+import AddRequest from "sections/apps/requests/ScheduleForm";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 

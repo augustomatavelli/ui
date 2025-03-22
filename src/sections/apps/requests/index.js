@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Divider } from "@mui/material";
+import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
-import MainCard from "components/MainCard";
+import ScheduleForm from "./ScheduleForm";
+import { useNavigate } from "react-router";
+import ProductsOperationsForm from "./ProductsOperationsForm";
+import { RequestResume } from "./RequestResume";
 
-const CreateRequestStepper = () => {
+const CreateRequestStepper = ({ aircraft }) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [errorIndex, setErrorIndex] = useState(null);
+	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
+	const [isFormValidSecond, setIsFormValidSecond] = useState(false);
 
 	const steps = ["Agendamento", "Produtos e Serviços", "Resumo"];
+
+	const navigate = useNavigate();
 
 	const handleNext = () => {
 		setActiveStep(activeStep + 1);
@@ -15,12 +22,19 @@ const CreateRequestStepper = () => {
 	};
 
 	const handleBack = () => {
+		if (activeStep === 0) {
+			navigate("/aircrafts/me");
+		}
 		setActiveStep(activeStep - 1);
 	};
 
+	const handleFormValidation = (isValid) => {
+		activeStep === 0 ? setIsFormValidFirst(isValid) : setIsFormValidSecond(isValid);
+	};
+
 	return (
-		<MainCard title="Solicitar pouso">
-			<Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+		<Grid sx={{ py: "20px", px: "50px" }}>
+			<Stepper activeStep={activeStep} sx={{ mt: 3, mb: 5 }}>
 				{steps.map((label, index) => {
 					const labelProps = {};
 
@@ -41,24 +55,53 @@ const CreateRequestStepper = () => {
 					);
 				})}
 			</Stepper>
-			{activeStep === 0 && <Grid>Passo 1</Grid>}
-			{activeStep === 1 && <Grid>Passo 2</Grid>}
-			{activeStep === 2 && <Grid>Passo 3</Grid>}
-			<Stack direction="row" justifyContent={activeStep !== 0 ? "space-between" : "flex-end"}>
-				{activeStep !== 0 && (
-					<Button onClick={handleBack} sx={{ my: 3, ml: 1 }}>
-						Back
-					</Button>
-				)}
+			<Grid container spacing={3} sx={{ alignItems: "center", display: "flex", justifyContent: "space-around", p: 2.5 }}>
+				<Grid item xs={12} md={3} sx={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 2 }}>
+					<Box
+						sx={{
+							width: "100%",
+							height: "250px",
+							borderRadius: "50%",
+							overflow: "hidden",
+							border: "2px solid #ccc",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							backgroundColor: "#f0f0f0",
+						}}
+					>
+						<img
+							src={`data:image/jpeg;base64,${aircraft.image}`}
+							alt="Helicopter"
+							style={{
+								width: "100%",
+								height: "100%",
+								objectFit: "fill",
+							}}
+						/>
+					</Box>
+
+					<Typography variant="h4">{aircraft.rab}</Typography>
+					<Typography variant="h5">Categoria {aircraft.category}</Typography>
+				</Grid>
+				{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
+				{activeStep === 1 && <ProductsOperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+				{activeStep === 2 && <RequestResume aircraft={aircraft} />}
+			</Grid>
+			<Divider />
+			<Stack direction="row" justifyContent="space-between">
+				<Button onClick={handleBack} color="error" sx={{ my: 3, ml: 1 }}>
+					Voltar
+				</Button>
 				{activeStep < steps.length - 1 && (
 					<AnimateButton>
-						<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }}>
-							Next
+						<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
+							Próximo
 						</Button>
 					</AnimateButton>
 				)}
 			</Stack>
-		</MainCard>
+		</Grid>
 	);
 };
 

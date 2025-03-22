@@ -13,12 +13,13 @@ import MainCard from "components/MainCard";
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
-import AddRequest from "../requests/AddRequest";
+import AddRequest from "../requests/ScheduleForm";
 import { PopupTransition } from "components/@extended/Transitions";
-import CreateRequestStepper from "../requests";
+import AircraftContext from "contexts/AircraftContext";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
+	const { setRequestAircraft } = useContext(AircraftContext);
 
 	const [addRequest, setAddRequest] = useState(false);
 
@@ -79,13 +80,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 										<ListItemIcon>
 											<PhoneOutlined />
 										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Typography color="secondary">
-													<PatternFormat displayType="text" format="(##) #####-####" mask="_" defaultValue={mobile} />
-												</Typography>
-											}
-										/>
+										<ListItemText primary={<Typography color="secondary">{mobile}</Typography>} />
 									</ListItem>
 								</List>
 							</Grid>
@@ -119,6 +114,8 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							onClick={(event) => {
 								event.stopPropagation();
 								handleAddRequest();
+								setRequestAircraft(data);
+								navigate("/requests/create");
 							}}
 							sx={{ width: "100%" }}
 						>
@@ -127,10 +124,9 @@ const AircraftCard = ({ data, setReload, reload }) => {
 					</Stack>
 				)}
 			</MainCard>
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				{/* <CreateRequestStepper /> */}
+			{/* 	<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddRequest aircraft={data} handleAddRequest={handleAddRequest} />
-			</Dialog>
+			</Dialog> */}
 		</>
 	);
 };

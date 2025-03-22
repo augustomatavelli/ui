@@ -4,7 +4,6 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
 // project imports
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
-import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AircraftContext from "contexts/AircraftContext";
@@ -120,7 +119,7 @@ export default function AircraftsTable() {
 									<TableCell align="center">{aircraft.category}</TableCell>
 									<TableCell align="center">{aircraft.name}</TableCell>
 									<TableCell align="center">{aircraft.email}</TableCell>
-									<TableCell align="center">{formatPhoneNumber(aircraft.mobile)}</TableCell>
+									<TableCell align="center">{aircraft.mobile}</TableCell>
 								</TableRow>
 							))
 						) : search ? (
@@ -129,7 +128,7 @@ export default function AircraftsTable() {
 									<Typography variant="h5">Nenhuma aeronave encontrada</Typography>
 								</TableCell>
 							</TableRow>
-						) : (	
+						) : (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhuma aeronave cadastrada</Typography>

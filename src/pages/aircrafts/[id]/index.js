@@ -11,7 +11,6 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
-import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 import ConfirmRemoveLinkUserAircraft from "sections/apps/aircrafts/ConfirmRemoveLinkUserAircraft";
 import UserContext from "contexts/UserContext";
 
@@ -147,7 +146,7 @@ const AircraftDetails = () => {
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
 												<Typography color="secondary">Celular do responsável</Typography>
-												<Typography>{formatPhoneNumber(mobile)}</Typography>
+												<Typography>{mobile}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>

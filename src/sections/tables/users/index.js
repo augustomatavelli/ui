@@ -6,7 +6,6 @@ import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
-import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
@@ -117,7 +116,7 @@ export default function UsersTable() {
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>
 									<TableCell align="center">{user.email}</TableCell>
-									<TableCell align="center">{formatPhoneNumber(user.mobile)}</TableCell>
+									<TableCell align="center">{user.mobile}</TableCell>
 									<TableCell align="center">
 										<Chip
 											color={user.type === "P" ? "success" : user.type === "R" ? "primary" : user.type === "A" ? "info" : "warning"}

@@ -12,7 +12,6 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
 import AircraftContext from "contexts/AircraftContext";
 
 export const header = [
@@ -53,9 +52,11 @@ export default function AddLinkUserAircraftTable() {
 		);
 		await searchAllUsers(searchUserAircraftLink, Number(id), false);
 	};
-
+	console.log(searchUser);
 	useEffect(() => {
-		searchAllUsers(searchUserAircraftLink, Number(id), false);
+		if (searchUserAircraftLink) {
+			searchAllUsers(searchUserAircraftLink, Number(id), false);
+		}
 	}, [searchUserAircraftLink]);
 
 	return (
@@ -91,7 +92,7 @@ export default function AddLinkUserAircraftTable() {
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>
 									<TableCell align="center">{user.email}</TableCell>
-									<TableCell align="center">{formatPhoneNumber(user.mobile)}</TableCell>
+									<TableCell align="center">{user.mobile}</TableCell>
 									<TableCell align="center">
 										<Chip color="primary" variant="filled" size="small" label={user.type === "P" ? "S" : "N"} />
 									</TableCell>
