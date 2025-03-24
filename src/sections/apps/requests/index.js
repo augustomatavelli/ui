@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
 import ScheduleForm from "./ScheduleForm";
 import { useNavigate } from "react-router";
 import ProductsOperationsForm from "./ProductsOperationsForm";
 import { RequestResume } from "./RequestResume";
+import RequestContext from "contexts/RequestContext";
 
 const CreateRequestStepper = ({ aircraft }) => {
+	const { setRequestResume } = useContext(RequestContext);
+
 	const [activeStep, setActiveStep] = useState(0);
 	const [errorIndex, setErrorIndex] = useState(null);
 	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
@@ -28,7 +31,8 @@ const CreateRequestStepper = ({ aircraft }) => {
 		setActiveStep(activeStep - 1);
 	};
 
-	const handleFormValidation = (isValid) => {
+	const handleFormValidation = (isValid, values) => {
+		setRequestResume((prev) => ({ ...prev, ...values }));
 		activeStep === 0 ? setIsFormValidFirst(isValid) : setIsFormValidSecond(isValid);
 	};
 
@@ -55,7 +59,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 					);
 				})}
 			</Stepper>
-			<Grid container spacing={3} sx={{ alignItems: "center", display: "flex", justifyContent: "space-around", p: 2.5 }}>
+			<Grid container spacing={3} sx={{ alignItems: "center", display: "flex", justifyContent: "space-between", p: 2.5 }}>
 				<Grid item xs={12} md={3} sx={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 2 }}>
 					<Box
 						sx={{
@@ -84,9 +88,11 @@ const CreateRequestStepper = ({ aircraft }) => {
 					<Typography variant="h4">{aircraft.rab}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
-				{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
-				{activeStep === 1 && <ProductsOperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-				{activeStep === 2 && <RequestResume aircraft={aircraft} />}
+				<Grid item sx={{ alignItems: "center", display: "flex", justifyContent: "flex-end", width: "75%" }}>
+					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{activeStep === 1 && <ProductsOperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{activeStep === 2 && <RequestResume aircraft={aircraft} />}
+				</Grid>
 			</Grid>
 			<Divider />
 			<Stack direction="row" justifyContent="space-between">

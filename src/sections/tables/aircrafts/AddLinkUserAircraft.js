@@ -29,7 +29,7 @@ export default function AddLinkUserAircraftTable() {
 	const { searchAllUsers } = useUser();
 	const { addLinkUserAircraft } = useAircraft();
 
-	const { searchUser } = useContext(UserContext);
+	const { searchUser, setSearchUser } = useContext(UserContext);
 	const { searchUserAircraftLink } = useContext(AircraftContext);
 
 	const { id } = useParams();
@@ -52,10 +52,12 @@ export default function AddLinkUserAircraftTable() {
 		);
 		await searchAllUsers(searchUserAircraftLink, Number(id), false);
 	};
-	console.log(searchUser);
+
 	useEffect(() => {
 		if (searchUserAircraftLink) {
 			searchAllUsers(searchUserAircraftLink, Number(id), false);
+		} else {
+			setSearchUser([]);
 		}
 	}, [searchUserAircraftLink]);
 

@@ -5,95 +5,39 @@ import { useContext, useEffect } from "react";
 import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Grid, InputLabel, Stack, TextField, Typography, Autocomplete } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateTimePicker } from "@mui/x-date-pickers";
 
 // third-party.png
 import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-import { dispatch } from "store";
-import { openSnackbar } from "store/reducers/snackbar";
-
-// assets
-import LandingSiteContext from "contexts/LandingSiteContext";
-import useLandingSite from "hooks/useLandingSite";
-import useRequest from "hooks/useRequest";
+import RequestContext from "contexts/RequestContext";
 
 // constant
-const getInitialValues = (aircraft) => {
-	const newRequest = {
-		id_aircraft: aircraft.id_aircraft,
-		id_landing_site: "",
-		amount: "",
-		landing_date: "",
-		takeoff_date: "",
-	};
+const getInitialValues = () => {
+	const newRequest = {};
 
 	return newRequest;
 };
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const ProductsOperationsForm = ({ aircraft, onValidate }) => {
-	const { createRequest } = useRequest();
+const ProductsOperationsForm = ({ onValidate }) => {
+	const { requestResume } = useContext(RequestContext);
 
-	const { searchAllLandingSites } = useLandingSite();
+	const RequestSchema = Yup.object().shape({});
 
-	const { searchLandingSites } = useContext(LandingSiteContext);
-
-	useEffect(() => {
-		searchAllLandingSites();
-	}, []);
-
-	const RequestSchema = Yup.object().shape({
-		id_aircraft: Yup.number(),
-		id_landing_site: Yup.number(),
-		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
-		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
-		takeoff_date: Yup.date().optional(),
-	});
-
-	//TODO: Pergunta se vai querer agendar a decolagem. Se sim, mostrar outro input de data
-	//TODO: Necessidade de abastecimento? (Sim/Não). Se sim, mostrar um input de number para digitar a quantidade de litros
 	const formik = useFormik({
-		initialValues: getInitialValues(aircraft),
+		initialValues: getInitialValues(),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, amount, landing_date, takeoff_date } = values;
-			try {
-				const newRequest = {
-					aircraftId: id_aircraft,
-					landingSiteId: id_landing_site,
-					amount: amount,
-					landing_date: landing_date,
-					takeoff_date: takeoff_date,
-				};
-				const response = await createRequest(newRequest);
-				if (response) {
-					dispatch(
-						openSnackbar({
-							open: true,
-							message: response.message,
-							variant: "alert",
-							alert: {
-								color: "success",
-							},
-							close: false,
-						})
-					);
-					setStatus({ success: true });
-					setSubmitting(false);
-				}
-			} catch (error) {
-				console.error(error);
-			}
+			const {} = values;
 		},
 	});
 
 	useEffect(() => {
-		onValidate(formik.isValid && formik.dirty);
-	}, [formik.isValid, formik.dirty]);
+		console.log(requestResume);
+		onValidate(true, values);
+	}, [formik.isValid, formik.dirty, formik.values]);
 
 	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values } = formik;
 
@@ -175,6 +119,7 @@ const ProductsOperationsForm = ({ aircraft, onValidate }) => {
 ProductsOperationsForm.propTypes = {
 	aircraft: PropTypes.any,
 	onCancel: PropTypes.func,
+	onValidate: PropTypes.func.isRequired,
 };
 
 export default ProductsOperationsForm;

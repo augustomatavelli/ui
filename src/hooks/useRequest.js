@@ -97,7 +97,28 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests };
+	const updateStatus = async (requestId) => {
+		try {
+			const response = await publicAxios.patch(`/requests/admin/update-status/${requestId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		}
+	};
+
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus };
 };
 
 export default useRequest;

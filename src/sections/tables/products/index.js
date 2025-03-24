@@ -69,7 +69,7 @@ export default function ProductsTable() {
 					<TableBody>
 						{products.length > 0 ? (
 							products.map((e) => (
-								<TableRow hover key={e.product}>
+								<TableRow hover key={e.id_product}>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_product}`} />
 									</TableCell>
@@ -77,7 +77,14 @@ export default function ProductsTable() {
 									<TableCell align="center">
 										<Chip color={e.category_name === "Bebida" ? "success" : "warning"} variant="filled" size="small" label={e.category_name} />
 									</TableCell>
-									<TableCell align="center">{e.price}</TableCell>
+									<TableCell align="center">
+										{new Intl.NumberFormat("pt-BR", {
+											style: "currency",
+											currency: "BRL",
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										}).format(e.price)}
+									</TableCell>
 									<TableCell align="center">{e.unit}</TableCell>
 									<TableCell align="center">
 										<Chip color={e.status === "D" ? "success" : "error"} variant="filled" size="small" label={e.status === "D" ? "Disponível" : "Indisponível"} />

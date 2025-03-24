@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, useTheme } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -11,13 +11,15 @@ import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 
 export default function RequestsTable() {
-	const { findAllRequests } = useRequest();
+	const { findAllRequests, updateStatus } = useRequest();
 
 	const { requests, totalRequests } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+
+	const theme = useTheme();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -47,6 +49,7 @@ export default function RequestsTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
+							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
 							<TableCell align="center">Aeronave</TableCell>
@@ -63,7 +66,21 @@ export default function RequestsTable() {
 							requests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">
-										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
+										<Chip color="secondary" variant="outlined" size="small" label={`# ${e.id_request}`} />
+									</TableCell>
+									<TableCell align="center">
+										{e.status !== "F" && (
+											<Button
+												variant="contained"
+												size="small"
+												onClick={async () => {
+													await updateStatus(e.id_request);
+													await findAllRequests(search, page);
+												}}
+											>
+												Finalizar
+											</Button>
+										)}
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
 									<TableCell align="center">
@@ -92,13 +109,13 @@ export default function RequestsTable() {
 							))
 						) : search ? (
 							<TableRow>
-								<TableCell colSpan={10} align="center">
+								<TableCell colSpan={11} align="center">
 									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>
 								</TableCell>
 							</TableRow>
 						) : (
 							<TableRow>
-								<TableCell colSpan={10} align="center">
+								<TableCell colSpan={11} align="center">
 									<Typography variant="h5">Nenhuma solicitação cadastrada</Typography>
 								</TableCell>
 							</TableRow>

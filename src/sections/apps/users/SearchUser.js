@@ -17,7 +17,7 @@ const SearchUser = () => {
 	const handleChange = (event) => {
 		const value = event.target.value;
 		setInputValue(value);
-		value.length > 3 && setUserAircraftLink(value);
+		(value.length > 3 || value.length === 0) && setUserAircraftLink(value);
 	};
 
 	return (

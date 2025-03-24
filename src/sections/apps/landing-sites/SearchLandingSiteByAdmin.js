@@ -17,7 +17,7 @@ const SearchLandingSiteByAdmin = ({ setSearch }) => {
 	const handleChange = (event) => {
 		const value = event.target.value;
 		setInputValue(value);
-		value.length > 3 && setSearch(value);
+		(value.length > 3 || value.length === 0) && setSearch(value);
 	};
 
 	return (

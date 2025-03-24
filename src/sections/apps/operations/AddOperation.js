@@ -16,45 +16,45 @@ import { openSnackbar } from "store/reducers/snackbar";
 import useScriptRef from "hooks/useScriptRef";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import ProductsContext from "contexts/ProductsContext";
-import useProduct from "hooks/useProduct";
+import useOperation from "hooks/useOperation";
+import OperationsContext from "contexts/OperationContext";
 
 const getInitialValues = () => {
-	const newProduct = {
+	const newOperation = {
 		name: "",
 		price: "",
 		unit: "",
 		category: "",
 	};
 
-	return newProduct;
+	return newOperation;
 };
 
 // ==============================|| TAB - PERSONAL ||============================== //
 
-const AddProduct = ({ onCancel }) => {
-	const { createProduct, findCategories } = useProduct();
+const AddOperation = ({ onCancel }) => {
+	const { createOperation, findCategories } = useOperation();
 
-	const { categories } = useContext(ProductsContext);
+	const { categories } = useContext(OperationsContext);
 
 	const scriptedRef = useScriptRef();
 
-	const units = ["g", "kg", "L", "un", "pacote", "fardo", "lata", "garrafa"];
+	const units = ["L", "un"];
 
 	useEffect(() => {
 		findCategories();
 	}, []);
 
-	const NewProductSchema = Yup.object().shape({
+	const NewOperationSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
-		price: Yup.string().max(255).required("Preço é obrigatório"),
+		price: Yup.string().max(255).required("Preço	 é obrigatório"),
 		unit: Yup.string().max(255).required("Unidade é obrigatória"),
 		category: Yup.string().max(255).required("Categoria é obrigatória"),
 	});
 
 	const formik = useFormik({
 		initialValues: getInitialValues(),
-		validationSchema: NewProductSchema,
+		validationSchema: NewOperationSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus, resetForm }) => {
 			try {
 				const payload = {
@@ -63,7 +63,7 @@ const AddProduct = ({ onCancel }) => {
 					unit: values.unit,
 					id_category: Number(values.category),
 				};
-				const response = await createProduct(payload);
+				const response = await createOperation(payload);
 				if (scriptedRef.current) {
 					setStatus({ success: true });
 					setSubmitting(false);
@@ -87,7 +87,7 @@ const AddProduct = ({ onCancel }) => {
 				setErrors({});
 				console.error(err);
 				const message =
-					err.response.status === 409 ? "Produto já existe!" : err.response.status === 400 ? "Erro ao cadastrar produto! Confira se os dados estão corretos!" : "Erro ao cadastrar produto!";
+					err.response.status === 409 ? "Serviço já existe!" : err.response.status === 400 ? "Erro ao cadastrar serviço! Confira se os dados estão corretos!" : "Erro ao cadastrar serviço!";
 				if (scriptedRef.current) {
 					setStatus({ success: false });
 					setErrors({ submit: message });
@@ -104,7 +104,7 @@ const AddProduct = ({ onCancel }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<DialogTitle>Criar produto</DialogTitle>
+						<DialogTitle>Criar serviço</DialogTitle>
 						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
@@ -223,4 +223,4 @@ const AddProduct = ({ onCancel }) => {
 	);
 };
 
-export default AddProduct;
+export default AddOperation;

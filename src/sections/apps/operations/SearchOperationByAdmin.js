@@ -8,7 +8,7 @@ import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const SearchProductByAdmin = ({ setSearch }) => {
+const SearchOperationByAdmin = ({ setSearch }) => {
 	const [inputValue, setInputValue] = useState("");
 	const [hover, setHover] = useState(false);
 
@@ -50,7 +50,7 @@ const SearchProductByAdmin = ({ setSearch }) => {
 					inputProps={{
 						"aria-label": "search-user",
 					}}
-					placeholder="Pesquisar produto..."
+					placeholder="Pesquisar serviço..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{
@@ -63,4 +63,4 @@ const SearchProductByAdmin = ({ setSearch }) => {
 	);
 };
 
-export default SearchProductByAdmin;
+export default SearchOperationByAdmin;

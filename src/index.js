@@ -27,6 +27,7 @@ import { UserProvider } from "contexts/UserContext";
 import { LandingSiteProvider } from "contexts/LandingSiteContext";
 import { RequestProvider } from "contexts/RequestContext";
 import { ProductsProvider } from "contexts/ProductsContext";
+import { OperationsProvider } from "contexts/OperationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -44,7 +45,9 @@ root.render(
 									<LandingSiteProvider>
 										<RequestProvider>
 											<ProductsProvider>
-												<App />
+												<OperationsProvider>
+													<App />
+												</OperationsProvider>
 											</ProductsProvider>
 										</RequestProvider>
 									</LandingSiteProvider>
