@@ -59,7 +59,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 					);
 				})}
 			</Stepper>
-			<Grid container spacing={3} sx={{ alignItems: "center", display: "flex", justifyContent: "space-between", p: 2.5 }}>
+			<Grid container spacing={3} sx={{ alignItems: "flex-start", display: "flex", justifyContent: "space-between", p: 2.5 }}>
 				<Grid item xs={12} md={3} sx={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 2 }}>
 					<Box
 						sx={{
@@ -88,7 +88,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 					<Typography variant="h4">{aircraft.rab}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
-				<Grid item sx={{ alignItems: "center", display: "flex", justifyContent: "flex-end", width: "75%" }}>
+				<Grid item xs={12} md={8} sx={{ alignItems: "center", display: "flex", justifyContent: "flex-end", width: "75%" }}>
 					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
 					{activeStep === 1 && <ProductsOperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
 					{activeStep === 2 && <RequestResume aircraft={aircraft} />}

@@ -41,7 +41,7 @@ const ProductsOperationsForm = ({ onValidate }) => {
 	const handleRemoverProduto = (id) => {
 		setProductSelected((prev) => prev.filter((p) => p.id !== id));
 	};
-
+	
 	const RequestSchema = Yup.object().shape({});
 
 	const formik = useFormik({
@@ -64,7 +64,7 @@ const ProductsOperationsForm = ({ onValidate }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<Grid item xs={12} md={8}>
+						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								{products.length > 0 && (
 									<Stack direction="row" spacing={2} sx={{ mt: 2, overflowX: "auto", p: 1 }}>
@@ -88,65 +88,6 @@ const ProductsOperationsForm = ({ onValidate }) => {
 										))}
 									</Stack>
 								)}
-								{/* <Grid item xs={12}>
-										<Stack spacing={1.25}>
-											<InputLabel htmlFor="Aeródromo">Aeródromo</InputLabel>
-											<Autocomplete
-												options={searchLandingSites}
-												getOptionLabel={(option) => option.label}
-												isOptionEqualToValue={(option, value) => option.value === value.value}
-												renderInput={(params) => <TextField {...params} />}
-												onChange={(event, value) => formik.setFieldValue("id_landing_site", value.value)}
-											/>
-										</Stack>
-									</Grid>
-									<Grid item xs={12}>
-										<Stack spacing={1.25}>
-											<InputLabel>Previsão de pouso</InputLabel>
-											<DateTimePicker
-												value={formik.values.landing_date}
-												onChange={(date) => formik.setFieldValue("landing_date", date)}
-												format="dd/MM/yyyy HH:mm"
-												slotProps={{
-													textField: {
-														error: Boolean(formik.touched.landing_date && formik.errors.landing_date),
-														helperText: formik.touched.landing_date && formik.errors.landing_date,
-													},
-												}}
-											/>
-										</Stack>
-									</Grid>
-									<Grid item xs={12}>
-										<Stack spacing={1.25}>
-											<InputLabel>Previsão de decolagem</InputLabel>
-											<DateTimePicker
-												value={formik.values.takeoff_date}
-												onChange={(date) => formik.setFieldValue("takeoff_date", date)}
-												format="dd/MM/yyyy HH:mm"
-												slotProps={{
-													textField: {
-														error: Boolean(formik.touched.takeoff_date && formik.errors.takeoff_date),
-														helperText: formik.touched.takeoff_date && formik.errors.takeoff_date,
-													},
-												}}
-											/>
-										</Stack>
-									</Grid>
-									<Grid item xs={12}>
-										<Stack spacing={1.25}>
-											<InputLabel htmlFor="Número de passageiros">Número de passageiros</InputLabel>
-											<TextField
-												fullWidth
-												id="amount"
-												type="number"
-												placeholder="Quantidade de passageiros..."
-												{...getFieldProps("amount")}
-												error={Boolean(touched.amount && errors.amount)}
-												helperText={touched.amount && errors.amount}
-												inputProps={{ min: 0 }}
-											/>
-										</Stack>
-									</Grid> */}
 							</Grid>
 						</Grid>
 					</Form>

@@ -78,7 +78,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 		<>
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+					<Form autoComplete="off" noValidate onSubmit={handleSubmit} fullWidth>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
