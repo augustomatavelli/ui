@@ -52,7 +52,7 @@ export default function RequestsTable() {
 							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
-							<TableCell align="center">Aeronave</TableCell>
+							<TableCell align="center">RAB</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
 							<TableCell align="center">Passageiros</TableCell>

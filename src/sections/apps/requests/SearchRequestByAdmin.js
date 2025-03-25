@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // material-ui
-import { Box, FormControl, InputAdornment, OutlinedInput, useTheme } from "@mui/material";
+import { Box, FormControl, Button, OutlinedInput, useTheme } from "@mui/material";
 
 // assets
 import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
@@ -15,22 +15,24 @@ const SearchRequestByAdmin = ({ setSearch }) => {
 	const theme = useTheme();
 
 	const handleChange = (event) => {
-		const value = event.target.value;
-		setInputValue(value);
-		(value.length > 3 || value.length === 0) && setSearch(value);
+		setInputValue(event.target.value);
+	};
+
+	const handleClick = (event) => {
+		event.preventDefault();
+		const searchValue = inputValue.trim();
+		if (searchValue.length > 3 || searchValue.length === 0) {
+			setSearch(searchValue);
+		}
 	};
 
 	return (
 		<Box sx={{ width: "100%", mb: 1 }}>
-			<FormControl sx={{ width: { xs: "100%" } }}>
+			<FormControl component="form" onSubmit={handleClick} sx={{ display: "flex", flexDirection: "row", gap: 1, width: "100%" }}>
 				<OutlinedInput
 					size="small"
 					id="header-search"
-					startAdornment={
-						<InputAdornment position="start">
-							<SearchOutlined />
-						</InputAdornment>
-					}
+					fullWidth
 					endAdornment={
 						<CloseCircleOutlined
 							style={{
@@ -46,18 +48,14 @@ const SearchRequestByAdmin = ({ setSearch }) => {
 							onMouseLeave={() => setHover(false)}
 						/>
 					}
-					aria-describedby="header-search-text"
-					inputProps={{
-						"aria-label": "search-user",
-					}}
-					placeholder="Pesquisar solicitação..."
+					placeholder="Pesquisar solicitação pelo número, nome do usuário, RAB, aeródromo..."
 					value={inputValue}
 					onChange={handleChange}
-					sx={{
-						height: 40,
-						paddingY: 0,
-					}}
+					sx={{ height: 40, paddingY: 0 }}
 				/>
+				<Button variant="contained" type="submit" sx={{ height: 40 }}>
+					<SearchOutlined style={{ fontSize: 18 }} />
+				</Button>
 			</FormControl>
 		</Box>
 	);

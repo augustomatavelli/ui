@@ -1,11 +1,11 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, TextField } from "@mui/material";
 
 // project imports
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
-import { LikeFilled, DislikeFilled } from "@ant-design/icons";
+import { LikeFilled, DislikeFilled, SearchOutlined, CloseOutlined } from "@ant-design/icons";
 import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
@@ -17,6 +17,7 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 	{ label: "Tipo", key: "type" },
+	{ label: "Registro piloto", key: "pilot_register" },
 ];
 
 export default function UsersTable() {

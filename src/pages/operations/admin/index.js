@@ -18,7 +18,7 @@ const ListOperationsForAdmin = () => {
 	}, []);
 
 	return (
-		<MainCard content={false} title="Solicitações de pouso" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
+		<MainCard content={false} title="Serviços" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
 			<OperationsTable />
 		</MainCard>
 	);

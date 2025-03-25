@@ -18,7 +18,7 @@ const ListProductsForAdmin = () => {
 	}, []);
 
 	return (
-		<MainCard content={false} title="Solicitações de pouso" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
+		<MainCard content={false} title="Produtos" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
 			<ProductsTable />
 		</MainCard>
 	);
