@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button, Tooltip } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -7,6 +7,8 @@ import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
+import { useNavigate } from "react-router";
+import { EyeOutlined } from "@ant-design/icons";
 
 export default function MyAircraftsRequestsTable() {
 	const { searchMyAircraftsRequests } = useRequest();
@@ -15,6 +17,8 @@ export default function MyAircraftsRequestsTable() {
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
+
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -39,6 +43,7 @@ export default function MyAircraftsRequestsTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
+							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
 							<TableCell align="center">Aeronave</TableCell>
@@ -55,6 +60,18 @@ export default function MyAircraftsRequestsTable() {
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
+									</TableCell>
+									<TableCell align="center">
+										<Tooltip title="Visualizar detalhes">
+											<EyeOutlined
+												style={{
+													fontSize: "20px",
+												}}
+												onClick={() => {
+													navigate(`/requests/${e.id_request}`);
+												}}
+											/>
+										</Tooltip>
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
 									<TableCell align="center">

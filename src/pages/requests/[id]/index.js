@@ -1,58 +1,72 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
-import AircraftContext from "contexts/AircraftContext";
-import useAircraft from "hooks/useAircraft";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
-import { dispatch } from "store";
-import { openSnackbar } from "store/reducers/snackbar";
-import { PopupTransition } from "components/@extended/Transitions";
-import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
-import ConfirmRemoveLinkUserAircraft from "sections/apps/aircrafts/ConfirmRemoveLinkUserAircraft";
-import UserContext from "contexts/UserContext";
+import RequestContext from "contexts/RequestContext";
+import useRequest from "hooks/useRequest";
+import dayjs from "dayjs";
+import { UpOutlined, DownOutlined } from "@ant-design/icons";
 
 const RequestDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
+	const { findOneRequestById } = useRequest();
 
-	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
-	const { setSearchUser, user } = useContext(UserContext);
+	const { requestDetails, setRequestDetails } = useContext(RequestContext);
 
-	const [open, setOpen] = useState(false);
-	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
+	const [openOperations, setOpenOperations] = useState(false);
+	const [openProducts, setOpenProducts] = useState(false);
 
 	const { id } = useParams();
 
-	const { id_aircraft, rab, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
-
-	const userId = localStorage.getItem("_userId");
+	const { id_request, landing_date, takeoff_date, status, created_at, user, type, rab, landing_site, products, services } = requestDetails;
 
 	useEffect(() => {
-		findOneAircraftById(id);
+		if (id) {
+			findOneRequestById(id);
+		}
 	}, [id]);
-
 	return (
 		<>
-			<Grid item xs={12} sm={7} md={8} xl={9}>
-				<MainCard title="Detalhes da solicitação">
+			<Grid item xs={12}>
+				<MainCard
+					title="Detalhes da solicitação"
+					secondary={
+						<Chip
+							color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : "error"}
+							variant="filled"
+							size="medium"
+							label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : "Rejeitado"}
+							sx={{ fontWeight: "bold" }}
+						/>
+					}
+				>
 					<Grid container spacing={3}>
-						<Grid item xs={12} sm={4} md={3}>
-							<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-								<img
-									src={`data:image/jpeg;base64,${image}`}
-									alt="Aircraft"
-									style={{
-										width: "100%",
-										height: "200px",
-										objectFit: "contain",
-									}}
-								/>
-							</Box>
-						</Grid>
-						<Grid item xs={12} sm={8} md={9}>
+						<Grid item xs={12}>
 							<List sx={{ py: 0 }}>
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<Typography color="secondary">Número da solicitação</Typography>
+												<Typography>{`# ${id_request}`}</Typography>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<Typography color="secondary">Aeródromo</Typography>
+												<Typography>{landing_site}</Typography>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
 								<ListItem>
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
@@ -68,8 +82,8 @@ const RequestDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">Categoria</Typography>
-												<Typography>{category}</Typography>
+												<Typography color="secondary">Data agendada para pouso</Typography>
+												<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
@@ -79,8 +93,9 @@ const RequestDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">Nome do responsável</Typography>
-												<Typography>{name}</Typography>
+												<Typography color="secondary">Data agendada para decolagem</Typography>
+
+												<Typography>{takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
@@ -90,8 +105,8 @@ const RequestDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">Email do responsável</Typography>
-												<Typography>{email}</Typography>
+												<Typography color="secondary">Solicitado por</Typography>
+												<Typography>{user}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
@@ -101,35 +116,73 @@ const RequestDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">Celular do responsável</Typography>
-												<Typography>{mobile}</Typography>
+												<Typography color="secondary">Aberta em</Typography>
+												<Typography>{dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
 								</ListItem>
 								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Situação</Typography>
-												<Typography>{status === "A" ? "Ativo" : status === "P" ? "Pendente" : "Inativo"}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Mensalista</Typography>
-												<Typography>{membership === "S" ? "Sim" : "Não"}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
+								{services && services.length > 0 && (
+									<>
+										<ListItem>
+											<Grid container spacing={3} alignItems="center">
+												<Grid item xs={6}>
+													<Typography color="secondary">Serviços</Typography>
+												</Grid>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" onClick={() => setOpenOperations(!openOperations)} color="secondary">
+														{openOperations ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openOperations}>
+														<Box sx={{ padding: 0 }}>
+															<Table>
+																<List sx={{ padding: 0 }}>
+																	{services.map((e) => (
+																		<ListItem key={e.id_service}>{`${e.amount}x ${e.name}`}</ListItem>
+																	))}
+																</List>
+															</Table>
+														</Box>
+													</Collapse>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
+									</>
+								)}
+								{products && products.length > 0 && (
+									<>
+										<ListItem>
+											<Grid container spacing={3} alignItems="center">
+												<Grid item xs={6}>
+													<Typography color="secondary">Produtos</Typography>
+												</Grid>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" onClick={() => setOpenProducts(!openProducts)} color="secondary">
+														{openProducts ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openProducts}>
+														<Box sx={{ padding: 0 }}>
+															<Table>
+																<List sx={{ padding: 0 }}>
+																	{products.map((e) => (
+																		<ListItem key={e.id_product}>{`${e.amount}x ${e.name}`}</ListItem>
+																	))}
+																</List>
+															</Table>
+														</Box>
+													</Collapse>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
+									</>
+								)}
 							</List>
 							<Box sx={{ p: 2.5 }}>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
@@ -137,8 +190,8 @@ const RequestDetails = () => {
 										variant="outlined"
 										color="error"
 										onClick={() => {
+											setRequestDetails({});
 											window.history.back();
-											setAircraftDetails({});
 										}}
 									>
 										Voltar
