@@ -86,7 +86,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values } = formik;
 
 	return (
-		<>
+		<Grid sx={{ width: "100%" }}>
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -117,7 +117,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 								</Grid>
 								{searchProducts.length > 0 && (
 									<Grid item xs={12}>
-										<Stack spacing={1.25} sx={{ width: "100%" }}>
+										<Stack spacing={1.25}>
 											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
 												<InputLabel>Se desejar, pode adicionar produtos</InputLabel>
 											</Grid>
@@ -128,7 +128,6 @@ const TakeoffProductsForm = ({ onValidate }) => {
 														overflowX: "auto",
 														padding: "1rem",
 														whiteSpace: "nowrap",
-														width: "100%",
 														"&::-webkit-scrollbar": {
 															height: "8px",
 														},
@@ -197,7 +196,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 					</Form>
 				</LocalizationProvider>
 			</FormikProvider>
-		</>
+		</Grid>
 	);
 };
 

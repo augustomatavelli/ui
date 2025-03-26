@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
-import { UpOutlined, DownOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
 
 const RequestDetails = () => {
 	const { findOneRequestById } = useRequest();
@@ -81,9 +81,11 @@ const RequestDetails = () => {
 								<ListItem>
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Data agendada para pouso</Typography>
-												<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
+											<Stack direction="row" alignItems="center" spacing={1}>
+												<Stack spacing={0.5}>
+													<Typography color="secondary">Data agendada para pouso</Typography>
+													<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
+												</Stack>
 											</Stack>
 										</Grid>
 									</Grid>
