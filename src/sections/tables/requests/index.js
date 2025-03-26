@@ -55,7 +55,6 @@ export default function RequestsTable() {
 							<TableCell align="center">RAB</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
-							<TableCell align="center">Passageiros</TableCell>
 							<TableCell align="center">Decolagem</TableCell>
 							<TableCell align="center">Status</TableCell>
 							<TableCell align="center">Data solicitação</TableCell>
@@ -94,7 +93,6 @@ export default function RequestsTable() {
 									<TableCell align="center">{e.rab}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
-									<TableCell align="center">{e.passengers}</TableCell>
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">
 										<Chip

@@ -3,19 +3,25 @@ import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider
 import AnimateButton from "components/@extended/AnimateButton";
 import ScheduleForm from "./ScheduleForm";
 import { useNavigate } from "react-router";
-import ProductsOperationsForm from "./ProductsOperationsForm";
 import { RequestResume } from "./RequestResume";
 import RequestContext from "contexts/RequestContext";
+import TakeoffProductsForm from "./TakeoffProductsForm";
+import OperationsForm from "./OperationsForm";
+import useRequest from "hooks/useRequest";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 
 const CreateRequestStepper = ({ aircraft }) => {
-	const { setRequestResume } = useContext(RequestContext);
+	const { createRequest } = useRequest();
+
+	const { setRequestResume, requestResume } = useContext(RequestContext);
 
 	const [activeStep, setActiveStep] = useState(0);
 	const [errorIndex, setErrorIndex] = useState(null);
 	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
 	const [isFormValidSecond, setIsFormValidSecond] = useState(false);
 
-	const steps = ["Agendamento", "Produtos e Serviços", "Resumo"];
+	const steps = ["Agendamento", "Serviços", "Produtos", "Resumo"];
 
 	const navigate = useNavigate();
 
@@ -26,6 +32,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 
 	const handleBack = () => {
 		if (activeStep === 0) {
+			setRequestResume({});
 			navigate("/aircrafts/me");
 		}
 		setActiveStep(activeStep - 1);
@@ -34,6 +41,22 @@ const CreateRequestStepper = ({ aircraft }) => {
 	const handleFormValidation = (isValid, values) => {
 		setRequestResume((prev) => ({ ...prev, ...values }));
 		activeStep === 0 ? setIsFormValidFirst(isValid) : setIsFormValidSecond(isValid);
+	};
+
+	const handleCreateRequest = async () => {
+		const response = await createRequest(requestResume);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		navigate("/aircrafts/me");
 	};
 
 	return (
@@ -59,8 +82,9 @@ const CreateRequestStepper = ({ aircraft }) => {
 					);
 				})}
 			</Stepper>
-			<Grid container spacing={3} sx={{ alignItems: "flex-start", display: "flex", justifyContent: "space-between", p: 2.5 }}>
-				<Grid item xs={12} md={3} sx={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 2 }}>
+			<Grid container spacing={5} sx={{ alignItems: "flex-start", display: "flex", justifyContent: "center", p: 2.5, width: "100%" }}>
+				{/* Imagem fixa ocupando 25% */}
+				<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
 					<Box
 						sx={{
 							width: "100%",
@@ -84,26 +108,35 @@ const CreateRequestStepper = ({ aircraft }) => {
 							}}
 						/>
 					</Box>
-
 					<Typography variant="h4">{aircraft.rab}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
-				<Grid item xs={12} md={8} sx={{ alignItems: "center", display: "flex", justifyContent: "flex-end", width: "75%" }}>
+
+				{/* Formulário ocupando o resto */}
+				<Grid item xs={12} md={9} container sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
 					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{activeStep === 1 && <ProductsOperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{activeStep === 2 && <RequestResume aircraft={aircraft} />}
+					{activeStep === 1 && <OperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{activeStep === 2 && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{activeStep === 3 && <RequestResume aircraft={aircraft} />}
 				</Grid>
 			</Grid>
+
 			<Divider />
 			<Stack direction="row" justifyContent="space-between">
 				<Button onClick={handleBack} color="error" sx={{ my: 3, ml: 1 }}>
 					Voltar
 				</Button>
-				{activeStep < steps.length - 1 && (
+				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
-						<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
-							Próximo
-						</Button>
+						{activeStep != 3 ? (
+							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
+								Próximo
+							</Button>
+						) : (
+							<Button variant="contained" onClick={handleCreateRequest} sx={{ my: 3, ml: 1 }}>
+								Confirmar
+							</Button>
+						)}
 					</AnimateButton>
 				)}
 			</Stack>

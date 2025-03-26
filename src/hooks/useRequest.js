@@ -12,6 +12,7 @@ const useRequest = () => {
 
 	const createRequest = async (data) => {
 		try {
+			console.log(data);
 			const response = await publicAxios.post("/requests", data);
 			return response.data;
 		} catch (error) {

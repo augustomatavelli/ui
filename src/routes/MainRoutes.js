@@ -158,7 +158,7 @@ const MainRoutes = {
 							path: "create",
 							element: (
 								<AuthGuard requiredUserType="['R', 'P']">
-									<CreateRequest />,
+									<CreateRequest />
 								</AuthGuard>
 							),
 						},

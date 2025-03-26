@@ -6,6 +6,7 @@ import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox } from "@mui
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 // third-party.png
 import _ from "lodash";
@@ -17,52 +18,47 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 import RequestContext from "contexts/RequestContext";
 
-// constant
-const getInitialValues = (aircraft) => {
-	const newRequest = {
-		id_aircraft: aircraft.id_aircraft,
-		id_landing_site: "",
-		amount: "",
-		landing_date: "",
-		takeoff_date: "",
-	};
-
-	return newRequest;
-};
-
-// ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
-
 const ScheduleForm = ({ aircraft, onValidate }) => {
 	const { searchAllLandingSites } = useLandingSite();
 
 	const { searchLandingSites } = useContext(LandingSiteContext);
-	const { setRequestResume } = useContext(RequestContext);
+	const { setRequestResume, requestResume } = useContext(RequestContext);
 
-	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
+	// constant
+	const getInitialValues = (aircraft) => {
+		const newRequest = {
+			id_aircraft: aircraft.id_aircraft,
+			id_landing_site: "",
+			name_landing_site: "",
+			amount: "",
+			landing_date: "",
+		};
 
+		return newRequest;
+	};
+	console.log(requestResume);
 	useEffect(() => {
 		searchAllLandingSites();
 	}, []);
 
 	const RequestSchema = Yup.object().shape({
 		id_aircraft: Yup.number(),
-		id_landing_site: Yup.number(),
+		id_landing_site: Yup.number().required(),
+		name_landing_site: Yup.string().required(),
 		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
 		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
-		takeoff_date: Yup.date().optional(),
 	});
-
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, amount, landing_date, takeoff_date } = values;
+			const { id_aircraft, id_landing_site, name_landing_site, amount, landing_date } = values;
 			const newRequest = {
-				aircraftId: id_aircraft,
-				landingSiteId: id_landing_site,
+				id_aircraft: id_aircraft,
+				id_landing_site: id_landing_site,
+				name_landing_site: name_landing_site,
 				amount: amount,
 				landing_date: landing_date,
-				takeoff_date: takeoff_date,
 			};
 			setRequestResume(newRequest);
 		},
@@ -75,29 +71,34 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 	const { errors, touched, handleSubmit, getFieldProps } = formik;
 
 	return (
-		<>
+		<Grid sx={{ width: "100%" }}>
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<Form autoComplete="off" noValidate onSubmit={handleSubmit} fullWidth>
+					<Form autoComplete="off" onSubmit={handleSubmit}>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
-									<Stack spacing={1.25}>
+									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<InputLabel htmlFor="Aeródromo">Aeródromo</InputLabel>
 										<Autocomplete
 											options={searchLandingSites}
 											getOptionLabel={(option) => option.label}
 											isOptionEqualToValue={(option, value) => option.value === value.value}
 											renderInput={(params) => <TextField {...params} />}
-											onChange={(event, value) => formik.setFieldValue("id_landing_site", value ? value.value : "")}
+											onChange={(event, value) => {
+												formik.setFieldValue("id_landing_site", value ? value.value : "");
+												formik.setFieldValue("name_landing_site", value ? value.label : "");
+											}}
 										/>
 									</Stack>
 								</Grid>
 								<Grid item xs={12}>
-									<Stack spacing={1.25}>
+									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<InputLabel>Previsão de pouso</InputLabel>
 										<DateTimePicker
 											value={formik.values.landing_date}
+											disablePast
+											minDateTime={dayjs()}
 											onChange={(date) => formik.setFieldValue("landing_date", date)}
 											slotProps={{
 												textField: {
@@ -110,33 +111,13 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 									</Stack>
 								</Grid>
 								<Grid item xs={12}>
-									<Stack spacing={1.25}>
-										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={(event) => setTakeoffCheckbox(event.target.checked)} />
-											<InputLabel>Já deseja agendar a decolagem?</InputLabel>
-										</Grid>
-
-										<DateTimePicker
-											value={formik.values.takeoff_date}
-											onChange={(date) => formik.setFieldValue("takeoff_date", date)}
-											format="dd/MM/yyyy HH:mm"
-											disabled={!takeoffCheckbox}
-											slotProps={{
-												textField: {
-													error: Boolean(formik.touched.takeoff_date && formik.errors.takeoff_date),
-													helperText: formik.touched.takeoff_date && formik.errors.takeoff_date,
-												},
-											}}
-										/>
-									</Stack>
-								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1.25}>
+									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<InputLabel htmlFor="Número de passageiros">Número de passageiros</InputLabel>
 										<TextField
 											fullWidth
 											id="amount"
 											type="number"
+											value={Number(formik.values.amount)}
 											placeholder="Quantidade de passageiros..."
 											{...getFieldProps("amount")}
 											error={Boolean(touched.amount && errors.amount)}
@@ -150,7 +131,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 					</Form>
 				</LocalizationProvider>
 			</FormikProvider>
-		</>
+		</Grid>
 	);
 };
 
