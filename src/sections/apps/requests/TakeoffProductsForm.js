@@ -143,7 +143,31 @@ const TakeoffProductsForm = ({ onValidate }) => {
 													{searchProducts.map((e) => (
 														<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
 															<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-																<Typography variant="subtitle1">{e.name}</Typography>
+																<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
+																	<Box
+																		sx={{
+																			width: "100%",
+																			height: "50px",
+																			overflow: "hidden",
+																			display: "flex",
+																			alignItems: "center",
+																			justifyContent: "center",
+																			backgroundColor: "#f0f0f0",
+																		}}
+																	>
+																		<img
+																			src={`data:image/jpeg;base64,${e.image}`}
+																			alt="Product"
+																			style={{
+																				width: "100%",
+																				height: "100%",
+																				objectFit: "fill",
+																			}}
+																		/>
+																	</Box>
+																	<Typography variant="subtitle1">{e.name}</Typography>
+																</Grid>
+
 																<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 																	<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
 																		<MinusCircleFilled />

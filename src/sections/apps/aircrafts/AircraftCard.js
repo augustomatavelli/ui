@@ -48,7 +48,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 					<Grid item xs={12} sx={{ p: 0, m: 0, height: "200px" }}>
 						<img
 							src={`data:image/jpeg;base64,${image}`}
-							alt="Helicopter"
+							alt="Aircraft"
 							style={{
 								width: "100%",
 								height: "100%",
