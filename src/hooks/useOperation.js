@@ -8,10 +8,11 @@ import OperationsContext from "contexts/OperationContext";
 const useOperation = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setSearchOperations, setOperations, setTotalOperations, setCategories } = useContext(OperationsContext);
+	const { setLoadingOperation, setSearchOperations, setOperations, setTotalOperations, setCategories } = useContext(OperationsContext);
 
 	const createOperation = async (data) => {
 		try {
+			setLoadingOperation(true);
 			const response = await publicAxios.post("/operations", data);
 			return response.data;
 		} catch (error) {
@@ -28,11 +29,14 @@ const useOperation = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingOperation(false);
 		}
 	};
 
 	const searchAllOperations = async () => {
 		try {
+			setLoadingOperation(true);
 			const response = await publicAxios.get(`/operations`);
 			setSearchOperations(response.data);
 		} catch (error) {
@@ -49,11 +53,14 @@ const useOperation = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingOperation(false);
 		}
 	};
 
 	const findAllOperations = async (search, page) => {
 		try {
+			setLoadingOperation(true);
 			const response = await publicAxios.get(`/operations/admin/find-all?search=${search}&page=${page}`);
 			setOperations(response.data.items);
 			setTotalOperations(response.data.pagination.totalPages);
@@ -71,11 +78,14 @@ const useOperation = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingOperation(false);
 		}
 	};
 
 	const findCategories = async () => {
 		try {
+			setLoadingOperation(true);
 			const response = await publicAxios.get(`/operations/categories`);
 			setCategories(response.data);
 		} catch (error) {
@@ -92,6 +102,8 @@ const useOperation = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingOperation(false);
 		}
 	};
 

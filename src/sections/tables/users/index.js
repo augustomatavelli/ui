@@ -10,6 +10,7 @@ import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddUser from "sections/apps/users/AddUser";
+import Loader from "components/Loader";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -23,7 +24,7 @@ export const header = [
 export default function UsersTable() {
 	const { findAllUsers, approveUser } = useUser();
 
-	const { users, totalUser } = useContext(UserContext);
+	const { users, totalUser, loadingUser } = useContext(UserContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);

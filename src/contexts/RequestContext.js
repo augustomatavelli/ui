@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 export const RequestContext = createContext({});
 
 export const RequestProvider = ({ children }) => {
+	const [loadingRequest, setLoadingRequest] = useState(false);
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
 	const [searchRequests, setSearchRequests] = useState([]);
@@ -14,6 +15,7 @@ export const RequestProvider = ({ children }) => {
 	const [requestDetails, setRequestDetails] = useState({});
 
 	const resetRequestStates = () => {
+		setLoadingRequest(false);
 		setRequests([]);
 		setTotalRequests(0);
 		setSearchRequests([]);
@@ -27,6 +29,8 @@ export const RequestProvider = ({ children }) => {
 	return (
 		<RequestContext.Provider
 			value={{
+				loadingRequest,
+				setLoadingRequest,
 				requests,
 				setRequests,
 				totalRequests,

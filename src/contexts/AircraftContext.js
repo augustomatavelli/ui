@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 export const AircraftContext = createContext({});
 
 export const AircraftProvider = ({ children }) => {
+	const [loadingAircraft, setLoadingAircraft] = useState(false);
 	const [searchAircrafts, setSearchAircrafts] = useState([]);
 	const [totalSearchAircrafts, setTotalSearchAircrafts] = useState(0);
 	const [aircraftDetails, setAircraftDetails] = useState({});
@@ -13,6 +14,7 @@ export const AircraftProvider = ({ children }) => {
 	const [requestAircraft, setRequestAircraft] = useState({});
 
 	const resetAircraftstates = () => {
+		setLoadingAircraft(false);
 		setSearchAircrafts([]);
 		setAircraftDetails({});
 		setUserAircraftLink("");
@@ -25,6 +27,8 @@ export const AircraftProvider = ({ children }) => {
 	return (
 		<AircraftContext.Provider
 			value={{
+				loadingAircraft,
+				setLoadingAircraft,
 				searchAircrafts,
 				setSearchAircrafts,
 				aircraftDetails,

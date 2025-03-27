@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 export const UserContext = createContext({});
 
 export const UserProvider = ({ children }) => {
+	const [loadingUser, setLoadingUser] = useState(false);
 	const [user, setUser] = useState({});
 	const [searchUser, setSearchUser] = useState([]);
 	const [users, setUsers] = useState([]);
@@ -11,6 +12,7 @@ export const UserProvider = ({ children }) => {
 	const [usersResp, setUsersResp] = useState([]);
 
 	const resetUserStates = () => {
+		setLoadingUser(false);
 		setUser({});
 		setSearchUser([]);
 		setUsers([]);
@@ -19,7 +21,9 @@ export const UserProvider = ({ children }) => {
 	};
 
 	return (
-		<UserContext.Provider value={{ user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, usersResp, setUsersResp, resetUserStates }}>{children}</UserContext.Provider>
+		<UserContext.Provider value={{ loadingUser, setLoadingUser, user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, usersResp, setUsersResp, resetUserStates }}>
+			{children}
+		</UserContext.Provider>
 	);
 };
 

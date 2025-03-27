@@ -1,24 +1,16 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 // material-ui
-import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Grid, InputLabel, Stack, TextField, Typography, Autocomplete, Card, CardContent, IconButton } from "@mui/material";
+import { Box, Grid, InputLabel, Stack, TextField, Typography, Card, CardContent } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // third-party.png
-import _ from "lodash";
-import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import RequestContext from "contexts/RequestContext";
 import OperationsContext from "contexts/OperationContext";
 import useOperation from "hooks/useOperation";
-// constant
-const getInitialValues = () => {
-	const newRequest = {};
-
-	return newRequest;
-};
 
 const OperationsForm = ({ onValidate }) => {
 	const { searchAllOperations } = useOperation();
@@ -29,7 +21,6 @@ const OperationsForm = ({ onValidate }) => {
 	console.log(searchOperations);
 
 	const handleChangeAmount = (id, name, newAmount) => {
-		console.log(id, name, newAmount);
 		setRequestResume((prev) => {
 			const operations = prev.operations || [];
 			const existingProduct = operations.find((p) => p.id_service === id);
@@ -46,12 +37,7 @@ const OperationsForm = ({ onValidate }) => {
 		});
 	};
 
-	const formik = useFormik({
-		initialValues: getInitialValues(),
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const {} = values;
-		},
-	});
+	const formik = useFormik({});
 
 	useEffect(() => {
 		onValidate(true, values);
@@ -62,7 +48,7 @@ const OperationsForm = ({ onValidate }) => {
 		searchAllOperations();
 	}, []);
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values } = formik;
+	const { handleSubmit, values } = formik;
 
 	return (
 		<>
@@ -77,19 +63,26 @@ const OperationsForm = ({ onValidate }) => {
 											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
 												<InputLabel>Se desejar, pode adicionar serviços</InputLabel>
 											</Grid>
-											<Grid container spacing={3}>
-												<Stack
-													direction="row"
-													spacing={2}
+											<Grid spacing={3}>
+												<Box
 													sx={{
+														display: "flex",
 														overflowX: "auto",
-														p: 1,
+														padding: "1rem",
 														whiteSpace: "nowrap",
-														maxWidth: "100%",
+														"&::-webkit-scrollbar": {
+															height: "8px",
+														},
+														"&::-webkit-scrollbar-thumb": {
+															backgroundColor: "#888",
+														},
+														"&::-webkit-scrollbar-thumb:hover": {
+															backgroundColor: "#555",
+														},
 													}}
 												>
 													{searchOperations.map((e) => (
-														<Card key={e.id_service} sx={{ minWidth: 150 }}>
+														<Card key={e.id_service} sx={{ minWidth: 200, marginRight: "1rem" }}>
 															<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 																<Typography variant="subtitle1">{e.name}</Typography>
 																<TextField
@@ -103,7 +96,7 @@ const OperationsForm = ({ onValidate }) => {
 															</CardContent>
 														</Card>
 													))}
-												</Stack>
+												</Box>
 											</Grid>
 										</Stack>
 									</Grid>

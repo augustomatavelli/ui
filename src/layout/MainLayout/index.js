@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useContext, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 // material-ui
@@ -18,11 +18,15 @@ import useConfig from "hooks/useConfig";
 import { dispatch } from "store";
 import { openDrawer } from "store/reducers/menu";
 import useUser from "hooks/useUser";
+import UserContext from "contexts/UserContext";
+import Loader from "components/Loader";
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
 	const { findOneUser } = useUser();
+
+	const { loadingUser } = useContext(UserContext);
 
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
@@ -47,7 +51,12 @@ const MainLayout = () => {
 		findOneUser();
 	}, []);
 
-	return (
+	return loadingUser ? (
+		<Suspense fallback={<Loader />}>
+			<Header />
+			<Outlet />
+		</Suspense>
+	) : (
 		<Box sx={{ display: "flex", width: "100%" }}>
 			<Header />
 			{!isHorizontal ? <Drawer /> : <HorizontalBar />}

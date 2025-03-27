@@ -8,11 +8,12 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useRequest = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setRequests, setTotalRequests, setSearchRequests, setTotalSearchRequests, setSearchAircraftsRequests, setTotalSearchAircraftsRequests, setRequestDetails } = useContext(RequestContext);
+	const { setLoadingRequest, setRequests, setTotalRequests, setSearchRequests, setTotalSearchRequests, setSearchAircraftsRequests, setTotalSearchAircraftsRequests, setRequestDetails } =
+		useContext(RequestContext);
 
 	const createRequest = async (data) => {
 		try {
-			console.log(data);
+			setLoadingRequest(true);
 			const response = await publicAxios.post("/requests", data);
 			return response.data;
 		} catch (error) {
@@ -29,11 +30,14 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(false);
 		}
 	};
 
 	const searchAllRequests = async (search, page) => {
 		try {
+			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests?search=${search}&page=${page}`);
 			setSearchRequests(response.data.items);
 			setTotalSearchRequests(response.data.pagination.totalPages);
@@ -51,11 +55,14 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(false);
 		}
 	};
 
 	const searchMyAircraftsRequests = async (search, page) => {
 		try {
+			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}`);
 			setSearchAircraftsRequests(response.data.items);
 			setTotalSearchAircraftsRequests(response.data.pagination.totalPages);
@@ -73,11 +80,14 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(true);
 		}
 	};
 
 	const findAllRequests = async (search, page) => {
 		try {
+			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}`);
 			setRequests(response.data.items);
 			setTotalRequests(response.data.pagination.totalPages);
@@ -95,11 +105,14 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(false);
 		}
 	};
 
 	const updateStatus = async (requestId) => {
 		try {
+			setLoadingRequest(true);
 			const response = await publicAxios.patch(`/requests/admin/update-status/${requestId}`);
 			return response.data;
 		} catch (error) {
@@ -116,14 +129,16 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(false);
 		}
 	};
 
 	const findOneRequestById = async (requestId) => {
 		try {
+			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests/details/${requestId}`);
 			setRequestDetails(response.data);
-			console.log(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -138,6 +153,8 @@ const useRequest = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingRequest(false);
 		}
 	};
 

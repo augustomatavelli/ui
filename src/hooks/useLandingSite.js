@@ -8,10 +8,11 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 const useLandingSite = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLandingSites, setTotalLandingSites, setSearchLandingSites, setUf } = useContext(LandingSiteContext);
+	const { setLoadingLandingSite, setLandingSites, setTotalLandingSites, setSearchLandingSites, setUf } = useContext(LandingSiteContext);
 
 	const createLandingSite = async (data) => {
 		try {
+			setLoadingLandingSite(true);
 			const response = await publicAxios.post("/landing-sites", data);
 			return response.data;
 		} catch (error) {
@@ -28,11 +29,14 @@ const useLandingSite = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingLandingSite(false);
 		}
 	};
 
 	const searchAllLandingSites = async () => {
 		try {
+			setLoadingLandingSite(true);
 			const response = await publicAxios.get(`/landing-sites`);
 			setSearchLandingSites(response.data);
 		} catch (error) {
@@ -49,11 +53,14 @@ const useLandingSite = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingLandingSite(false);
 		}
 	};
 
 	const findAllLandingSites = async (search, page) => {
 		try {
+			setLoadingLandingSite(true);
 			const response = await publicAxios.get(`/landing-sites/admin/find-all?search=${search}&page=${page}`);
 			setLandingSites(response.data.items);
 			setTotalLandingSites(response.data.pagination.totalPages);
@@ -71,11 +78,14 @@ const useLandingSite = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingLandingSite(false);
 		}
 	};
 
 	const findUf = async () => {
 		try {
+			setLoadingLandingSite(true);
 			const response = await publicAxios.get(`/landing-sites/uf`);
 			setUf(response.data);
 		} catch (error) {
@@ -92,6 +102,8 @@ const useLandingSite = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingLandingSite(false);
 		}
 	};
 

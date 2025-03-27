@@ -8,19 +8,11 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
 
 // third-party.png
-import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import RequestContext from "contexts/RequestContext";
 import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
-
-// constant
-const getInitialValues = () => {
-	const newRequest = {};
-
-	return newRequest;
-};
 
 const TakeoffProductsForm = ({ onValidate }) => {
 	const { searchAllProducts } = useProduct();
@@ -68,12 +60,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 		}
 	};
 
-	const formik = useFormik({
-		initialValues: getInitialValues(),
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const {} = values;
-		},
-	});
+	const formik = useFormik({});
 
 	useEffect(() => {
 		onValidate(true, values);
@@ -83,7 +70,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 		searchAllProducts();
 	}, []);
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, values } = formik;
+	const { handleSubmit, values } = formik;
 
 	return (
 		<Grid sx={{ width: "100%" }}>
@@ -166,7 +153,6 @@ const TakeoffProductsForm = ({ onValidate }) => {
 																	</Box>
 																	<Typography variant="subtitle1">{e.name}</Typography>
 																</Grid>
-
 																<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 																	<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
 																		<MinusCircleFilled />

@@ -8,14 +8,22 @@ import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
 import { dispatch } from "store";
+import LandingSiteContext from "contexts/LandingSiteContext";
+import OperationsContext from "contexts/OperationContext";
+import ProductsContext from "contexts/ProductsContext";
+import RequestContext from "contexts/RequestContext";
 
 // ==============================|| AUTH HOOKS ||============================== //
 
 const useAuth = () => {
 	const { authAxios } = UseAxios();
 
-	const { user, setUser, resetUserStates } = useContext(UserContext);
 	const { resetAircraftstates } = useContext(AircraftContext);
+	const { resetLandingSiteStates } = useContext(LandingSiteContext);
+	const { resetOperationStates } = useContext(OperationsContext);
+	const { resetProductStates } = useContext(ProductsContext);
+	const { resetRequestStates } = useContext(RequestContext);
+	const { user, setUser, resetUserStates } = useContext(UserContext);
 	const { dispatchAuth } = useContext(AuthContext);
 
 	const navigate = useNavigate();
@@ -61,6 +69,10 @@ const useAuth = () => {
 		localStorage.clear();
 		resetUserStates();
 		resetAircraftstates();
+		resetLandingSiteStates();
+		resetOperationStates();
+		resetProductStates();
+		resetRequestStates();
 		dispatchAuth({
 			type: LOGOUT,
 			payload: {

@@ -9,10 +9,11 @@ import ProductsContext from "contexts/ProductsContext";
 const useProduct = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setSearchProducts, setProducts, setTotalProducts, setCategories } = useContext(ProductsContext);
+	const { setLoadingProduct, setSearchProducts, setProducts, setTotalProducts, setCategories } = useContext(ProductsContext);
 
 	const createProduct = async (data) => {
 		try {
+			setLoadingProduct(true);
 			const response = await publicAxios.post("/products", data);
 			return response.data;
 		} catch (error) {
@@ -29,11 +30,14 @@ const useProduct = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingProduct(false);
 		}
 	};
 
 	const searchAllProducts = async () => {
 		try {
+			setLoadingProduct(true);
 			const response = await publicAxios.get(`/products`);
 			setSearchProducts(response.data);
 		} catch (error) {
@@ -50,11 +54,14 @@ const useProduct = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingProduct(false);
 		}
 	};
 
 	const findAllProducts = async (search, page) => {
 		try {
+			setLoadingProduct(true);
 			const response = await publicAxios.get(`/products/admin/find-all?search=${search}&page=${page}`);
 			setProducts(response.data.items);
 			setTotalProducts(response.data.pagination.totalPages);
@@ -72,11 +79,14 @@ const useProduct = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingProduct(false);
 		}
 	};
 
 	const findCategories = async () => {
 		try {
+			setLoadingProduct(true);
 			const response = await publicAxios.get(`/products/categories`);
 			setCategories(response.data);
 		} catch (error) {
@@ -93,6 +103,8 @@ const useProduct = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingProduct(false);
 		}
 	};
 

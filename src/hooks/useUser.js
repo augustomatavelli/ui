@@ -4,15 +4,15 @@ import UserContext from "contexts/UserContext";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
-import { setSession } from "contexts/AuthContext";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setUser, setSearchUser, setUsers, setTotalUser } = useContext(UserContext);
+	const { setLoadingUser, setUser, setSearchUser, setUsers, setTotalUser } = useContext(UserContext);
 
 	const createUser = async (data) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.post("/users", data);
 			return response.data;
 		} catch (error) {
@@ -29,11 +29,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const createUserByAdmin = async (data) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.post("/users/admin/create", data);
 			return response.data;
 		} catch (error) {
@@ -50,11 +53,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const findOneUser = async () => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.get("/users/find-one");
 			setUser(response.data);
 		} catch (error) {
@@ -71,11 +77,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const searchAllUsers = async (searchTerm, aircraftId, hasAircraft) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.get(`/users/search?search=${searchTerm}&aircraftId=${aircraftId}&hasAircraft=${hasAircraft}`);
 			setSearchUser(response.data);
 		} catch (error) {
@@ -92,11 +101,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const findAllUsers = async (search, page) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.get(`/users/admin/find-all?search=${search}&page=${page}`);
 			setUsers(response.data.items);
 			setTotalUser(response.data.pagination.totalPages);
@@ -114,11 +126,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const updatePassword = async (data) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.patch("/users/update-password", data);
 			return response.data;
 		} catch (error) {
@@ -135,11 +150,14 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
 	const approveUser = async (data) => {
 		try {
+			setLoadingUser(true);
 			const response = await publicAxios.patch("/users/admin/approve", data);
 			return response.data;
 		} catch (error) {
@@ -156,6 +174,8 @@ const useUser = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingUser(false);
 		}
 	};
 
