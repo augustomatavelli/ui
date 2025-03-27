@@ -13,6 +13,7 @@ import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import AircraftContext from "contexts/AircraftContext";
+import Loader from "components/Loader";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -29,7 +30,7 @@ export default function AddLinkUserAircraftTable() {
 	const { searchAllUsers } = useUser();
 	const { addLinkUserAircraft } = useAircraft();
 
-	const { searchUser, setSearchUser } = useContext(UserContext);
+	const { searchUser, setSearchUser, loadingUser } = useContext(UserContext);
 	const { searchUserAircraftLink } = useContext(AircraftContext);
 
 	const { id } = useParams();
@@ -77,7 +78,9 @@ export default function AddLinkUserAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchUser.length > 0 ? (
+						{loadingUser ? (
+							<Loader />
+						) : searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
 									<TableCell align="center">

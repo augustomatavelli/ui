@@ -79,7 +79,9 @@ export default function UsersTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{users.length > 0 ? (
+						{loadingUser ? (
+							<Loader />
+						) : users.length > 0 ? (
 							users.map((user) => (
 								<TableRow hover key={user.id_user}>
 									<TableCell align="center">
