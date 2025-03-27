@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // project import
 import Routes from "routes";
@@ -10,6 +10,8 @@ import RTLLayout from "components/RTLLayout";
 import ScrollTop from "components/ScrollTop";
 import Snackbar from "components/@extended/Snackbar";
 import Notistack from "components/third-party/Notistack";
+import { LoadingProvider } from "contexts/LoadingContext";
+import UserContext from "contexts/UserContext";
 
 // auth provider
 
@@ -20,6 +22,8 @@ import Notistack from "components/third-party/Notistack";
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
 const App = () => {
+	const { loadingUser } = useContext(UserContext);
+
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -34,8 +38,10 @@ const App = () => {
 				<Locales>
 					<ScrollTop>
 						<Notistack>
-							<Routes />
-							<Snackbar />
+							<LoadingProvider loadingUser={loadingUser}>
+								<Routes />
+								<Snackbar />
+							</LoadingProvider>
 						</Notistack>
 					</ScrollTop>
 				</Locales>
