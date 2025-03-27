@@ -21,7 +21,7 @@ const RequestDetails = () => {
 	const { id } = useParams();
 
 	const { id_request, landing_date, takeoff_date, status, created_at, user, type, rab, landing_site, products, services } = requestDetails;
-
+	console.log(requestDetails);
 	useEffect(() => {
 		if (id) {
 			findOneRequestById(id);
@@ -143,7 +143,7 @@ const RequestDetails = () => {
 															<Table>
 																<List sx={{ padding: 0 }}>
 																	{services.map((e) => (
-																		<ListItem key={e.id_service}>{`${e.amount}x ${e.name}`}</ListItem>
+																		<ListItem key={e.id_service}>{`${e.name} ${e.amount}L`}</ListItem>
 																	))}
 																</List>
 															</Table>

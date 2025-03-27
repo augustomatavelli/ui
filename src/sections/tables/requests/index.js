@@ -65,7 +65,7 @@ export default function RequestsTable() {
 							requests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">
-										<Chip color="secondary" variant="outlined" size="small" label={`# ${e.id_request}`} />
+										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
 									<TableCell align="center">
 										{e.status !== "F" && (
