@@ -1,4 +1,4 @@
-import { Suspense, useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 // material-ui
@@ -18,15 +18,11 @@ import useConfig from "hooks/useConfig";
 import { dispatch } from "store";
 import { openDrawer } from "store/reducers/menu";
 import useUser from "hooks/useUser";
-import UserContext from "contexts/UserContext";
-import Loader from "components/Loader";
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
 	const { findOneUser } = useUser();
-
-	const { loadingUser } = useContext(UserContext);
 
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
@@ -57,26 +53,20 @@ const MainLayout = () => {
 			{!isHorizontal ? <Drawer /> : <HorizontalBar />}
 			<Box component="main" sx={{ width: "calc(100% - 260px)", flexGrow: 1, p: { xs: 2, sm: 3 } }}>
 				<Toolbar sx={{ mt: isHorizontal ? 8 : "inherit" }} />
-				{loadingUser ? (
-					<Suspense fallback={<Loader />}>
-						<Outlet />
-					</Suspense>
-				) : (
-					<Container
-						maxWidth={container ? "xl" : false}
-						sx={{
-							...(container && { px: { xs: 0, sm: 2 } }),
-							position: "relative",
-							minHeight: "calc(100vh - 110px)",
-							display: "flex",
-							flexDirection: "column",
-						}}
-					>
-						{shouldShowBreadcrumbs && <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />}
-						<Outlet />
-						{/* <Footer /> */}
-					</Container>
-				)}
+				<Container
+					maxWidth={container ? "xl" : false}
+					sx={{
+						...(container && { px: { xs: 0, sm: 2 } }),
+						position: "relative",
+						minHeight: "calc(100vh - 110px)",
+						display: "flex",
+						flexDirection: "column",
+					}}
+				>
+					{shouldShowBreadcrumbs && <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />}
+					<Outlet />
+					{/* <Footer /> */}
+				</Container>
 			</Box>
 		</Box>
 	);
