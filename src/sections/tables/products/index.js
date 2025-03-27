@@ -9,11 +9,12 @@ import useProduct from "hooks/useProduct";
 import ProductsContext from "contexts/ProductsContext";
 import SearchProductByAdmin from "sections/apps/products/SearchProductByAdmin";
 import AddProduct from "sections/apps/products/AddProduct";
+import Loader from "components/Loader";
 
 export default function ProductsTable() {
 	const { findAllProducts } = useProduct();
 
-	const { products, totalProducts } = useContext(ProductsContext);
+	const { products, totalProducts, loadingProduct } = useContext(ProductsContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -67,7 +68,9 @@ export default function ProductsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{products.length > 0 ? (
+						{loadingProduct ? (
+							<Loader />
+						) : products.length > 0 ? (
 							products.map((e) => (
 								<TableRow hover key={e.id_product}>
 									<TableCell align="center">

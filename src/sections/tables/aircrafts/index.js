@@ -10,6 +10,7 @@ import AircraftContext from "contexts/AircraftContext";
 import useAircraft from "hooks/useAircraft";
 import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin";
+import Loader from "components/Loader";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -23,7 +24,7 @@ export const header = [
 export default function AircraftsTable() {
 	const { findAllAircrafts, approveAircraft } = useAircraft();
 
-	const { aircrafts, totalAircrafts } = useContext(AircraftContext);
+	const { aircrafts, totalAircrafts, loadingAircraft } = useContext(AircraftContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -78,7 +79,9 @@ export default function AircraftsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{aircrafts.length > 0 ? (
+						{loadingAircraft ? (
+							<Loader />
+						) : aircrafts.length > 0 ? (
 							aircrafts.map((aircraft) => (
 								<TableRow hover key={aircraft.id_aircraft}>
 									<TableCell align="center">

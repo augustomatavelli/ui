@@ -9,11 +9,12 @@ import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import { EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import Loader from "components/Loader";
 
 export default function MyRequestsTable() {
 	const { searchAllRequests } = useRequest();
 
-	const { searchRequests, totalSearchRequests } = useContext(RequestContext);
+	const { searchRequests, totalSearchRequests, loadingRequest } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -53,7 +54,9 @@ export default function MyRequestsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchRequests.length > 0 ? (
+						{loadingRequest ? (
+							<Loader />
+						) : searchRequests.length > 0 ? (
 							searchRequests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">

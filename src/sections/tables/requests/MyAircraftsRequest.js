@@ -9,11 +9,12 @@ import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import { EyeOutlined } from "@ant-design/icons";
+import Loader from "components/Loader";
 
 export default function MyAircraftsRequestsTable() {
 	const { searchMyAircraftsRequests } = useRequest();
 
-	const { searchAircraftsRequests, totalSearchAircraftsRequests } = useContext(RequestContext);
+	const { searchAircraftsRequests, totalSearchAircraftsRequests, loadingRequest } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -55,7 +56,9 @@ export default function MyAircraftsRequestsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchAircraftsRequests.length > 0 ? (
+						{loadingRequest ? (
+							<Loader />
+						) : searchAircraftsRequests.length > 0 ? (
 							searchAircraftsRequests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">

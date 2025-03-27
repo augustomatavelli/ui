@@ -17,7 +17,7 @@ import UserContext from "contexts/UserContext";
 const AircraftDetails = () => {
 	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
 
-	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
+	const { aircraftDetails, setAircraftDetails, loadingAircraft } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
 
 	const [open, setOpen] = useState(false);

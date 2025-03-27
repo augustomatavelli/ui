@@ -37,7 +37,11 @@ export default function UsersTable() {
 	};
 
 	const handleAdd = async () => {
-		setOpen(!open);
+		setOpen(true);
+	};
+
+	const handleClose = async () => {
+		setOpen(false);
 		await findAllUsers(search, page);
 	};
 
@@ -150,7 +154,7 @@ export default function UsersTable() {
 			</TableContainer>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddUser onCancel={handleAdd} />
+				<AddUser onCancel={handleClose} />
 			</Dialog>
 		</>
 	);

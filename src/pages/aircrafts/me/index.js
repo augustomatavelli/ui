@@ -15,6 +15,7 @@ import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import AircraftContext from "contexts/AircraftContext";
 import useAircraft from "hooks/useAircraft";
 import UserContext from "contexts/UserContext";
+import Loader from "components/Loader";
 
 const allColumns = [
 	{
@@ -42,7 +43,7 @@ const allColumns = [
 const MyAircrafts = () => {
 	const { searchAllAircrafts } = useAircraft();
 
-	const { searchAircrafts, totalSearchAircrafts } = useContext(AircraftContext);
+	const { searchAircrafts, totalSearchAircrafts, loadingAircraft } = useContext(AircraftContext);
 	const { user } = useContext(UserContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -125,7 +126,9 @@ const MyAircrafts = () => {
 					</Stack>
 				</Stack>
 			</Box>
-			{searchAircrafts.length > 0 ? (
+			{loadingAircraft ? (
+				<Loader />
+			) : searchAircrafts.length > 0 ? (
 				<Grid
 					container
 					sx={{

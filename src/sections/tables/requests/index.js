@@ -9,11 +9,12 @@ import RequestContext from "contexts/RequestContext";
 import AddRequest from "sections/apps/requests/ScheduleForm";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
+import Loader from "components/Loader";
 
 export default function RequestsTable() {
 	const { findAllRequests, updateStatus } = useRequest();
 
-	const { requests, totalRequests } = useContext(RequestContext);
+	const { requests, totalRequests, loadingRequest } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -61,7 +62,9 @@ export default function RequestsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{requests.length > 0 ? (
+						{loadingRequest ? (
+							<Loader />
+						) : requests.length > 0 ? (
 							requests.map((e) => (
 								<TableRow hover key={e.id_request}>
 									<TableCell align="center">

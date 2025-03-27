@@ -9,11 +9,12 @@ import OperationsContext from "contexts/OperationContext";
 import SearchOperationByAdmin from "sections/apps/operations/SearchOperationByAdmin";
 import AddOperation from "sections/apps/operations/AddOperation";
 import { PlusOutlined } from "@ant-design/icons";
+import Loader from "components/Loader";
 
 export default function OperationsTable() {
 	const { findAllOperations } = useOperation();
 
-	const { operations, totalOperations } = useContext(OperationsContext);
+	const { operations, totalOperations, loadingOperation } = useContext(OperationsContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -67,7 +68,9 @@ export default function OperationsTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{operations.length > 0 ? (
+						{loadingOperation ? (
+							<Loader />
+						) : operations.length > 0 ? (
 							operations.map((e) => (
 								<TableRow hover key={e.id_service}>
 									<TableCell align="center">

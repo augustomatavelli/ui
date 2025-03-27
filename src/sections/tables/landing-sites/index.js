@@ -9,6 +9,7 @@ import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import AddLandingSite from "sections/apps/landing-sites/AddLandingSite";
 import SearchLandingSiteByAdmin from "sections/apps/landing-sites/SearchLandingSiteByAdmin";
+import Loader from "components/Loader";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -21,7 +22,7 @@ export const header = [
 export default function LandingSitesTable() {
 	const { findAllLandingSites } = useLandingSite();
 
-	const { landingSites, totalLandingSites } = useContext(LandingSiteContext);
+	const { landingSites, totalLandingSites, loadingLandingSite } = useContext(LandingSiteContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -74,7 +75,9 @@ export default function LandingSitesTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{landingSites.length > 0 ? (
+						{loadingLandingSite ? (
+							<Loader />
+						) : landingSites.length > 0 ? (
 							landingSites.map((e) => (
 								<TableRow hover key={e.id_landing_site}>
 									<TableCell align="center">
