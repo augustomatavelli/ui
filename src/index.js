@@ -28,6 +28,7 @@ import { LandingSiteProvider } from "contexts/LandingSiteContext";
 import { RequestProvider } from "contexts/RequestContext";
 import { ProductsProvider } from "contexts/ProductsContext";
 import { OperationsProvider } from "contexts/OperationContext";
+import { LoadingProvider } from "contexts/LoadingContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -38,23 +39,25 @@ root.render(
 		<PersistGate loading={null} persistor={persister}>
 			<ConfigProvider>
 				<BrowserRouter>
-					<JWTProvider>
-						<AuthProvider>
-							<UserProvider>
-								<AircraftProvider>
-									<LandingSiteProvider>
-										<RequestProvider>
-											<ProductsProvider>
-												<OperationsProvider>
-													<App />
-												</OperationsProvider>
-											</ProductsProvider>
-										</RequestProvider>
-									</LandingSiteProvider>
-								</AircraftProvider>
-							</UserProvider>
-						</AuthProvider>
-					</JWTProvider>
+					<LoadingProvider>
+						<JWTProvider>
+							<AuthProvider>
+								<UserProvider>
+									<AircraftProvider>
+										<LandingSiteProvider>
+											<RequestProvider>
+												<ProductsProvider>
+													<OperationsProvider>
+														<App />
+													</OperationsProvider>
+												</ProductsProvider>
+											</RequestProvider>
+										</LandingSiteProvider>
+									</AircraftProvider>
+								</UserProvider>
+							</AuthProvider>
+						</JWTProvider>
+					</LoadingProvider>
 				</BrowserRouter>
 			</ConfigProvider>
 		</PersistGate>
