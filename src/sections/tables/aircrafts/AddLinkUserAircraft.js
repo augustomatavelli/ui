@@ -78,7 +78,9 @@ export default function AddLinkUserAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchUser.length > 0 ? (
+						{loadingUser ? (
+							<Loader />
+						) : searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
 									<TableCell align="center">
