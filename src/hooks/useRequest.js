@@ -81,7 +81,7 @@ const useRequest = () => {
 				})
 			);
 		} finally {
-			setLoadingRequest(true);
+			setLoadingRequest(false);
 		}
 	};
 

@@ -13,12 +13,13 @@ import RequestContext from "contexts/RequestContext";
 import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
+import Loader from "components/Loader";
 
 const TakeoffProductsForm = ({ onValidate }) => {
 	const { searchAllProducts } = useProduct();
 
 	const { requestResume, setRequestResume } = useContext(RequestContext);
-	const { searchProducts } = useContext(ProductsContext);
+	const { searchProducts, loadingProduct } = useContext(ProductsContext);
 
 	const [takeoffCheckbox, setTakeoffCheckbox] = useState(requestResume.takeoff_date ? true : false);
 
@@ -102,80 +103,84 @@ const TakeoffProductsForm = ({ onValidate }) => {
 										/>
 									</Stack>
 								</Grid>
-								{searchProducts.length > 0 && (
-									<Grid item xs={12}>
-										<Stack spacing={1.25}>
-											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-												<InputLabel>Se desejar, pode adicionar produtos</InputLabel>
-											</Grid>
-											<Grid spacing={3}>
-												<Box
-													sx={{
-														display: "flex",
-														overflowX: "auto",
-														padding: "1rem",
-														whiteSpace: "nowrap",
-														"&::-webkit-scrollbar": {
-															height: "8px",
-														},
-														"&::-webkit-scrollbar-thumb": {
-															backgroundColor: "#888",
-														},
-														"&::-webkit-scrollbar-thumb:hover": {
-															backgroundColor: "#555",
-														},
-													}}
-												>
-													{searchProducts.map((e) => (
-														<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
-															<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-																<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
-																	<Box
-																		sx={{
-																			width: "100%",
-																			height: "50px",
-																			overflow: "hidden",
-																			display: "flex",
-																			alignItems: "center",
-																			justifyContent: "center",
-																			backgroundColor: "#f0f0f0",
-																		}}
-																	>
-																		<img
-																			src={`data:image/jpeg;base64,${e.image}`}
-																			alt="Product"
-																			style={{
+								{loadingProduct ? (
+									<Loader />
+								) : (
+									searchProducts.length > 0 && (
+										<Grid item xs={12}>
+											<Stack spacing={1.25}>
+												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
+													<InputLabel>Se desejar, pode adicionar produtos</InputLabel>
+												</Grid>
+												<Grid spacing={3}>
+													<Box
+														sx={{
+															display: "flex",
+															overflowX: "auto",
+															padding: "1rem",
+															whiteSpace: "nowrap",
+															"&::-webkit-scrollbar": {
+																height: "8px",
+															},
+															"&::-webkit-scrollbar-thumb": {
+																backgroundColor: "#888",
+															},
+															"&::-webkit-scrollbar-thumb:hover": {
+																backgroundColor: "#555",
+															},
+														}}
+													>
+														{searchProducts.map((e) => (
+															<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
+																<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+																	<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
+																		<Box
+																			sx={{
 																				width: "100%",
-																				height: "100%",
-																				objectFit: "fill",
+																				height: "50px",
+																				overflow: "hidden",
+																				display: "flex",
+																				alignItems: "center",
+																				justifyContent: "center",
+																				backgroundColor: "#f0f0f0",
 																			}}
+																		>
+																			<img
+																				src={`data:image/jpeg;base64,${e.image}`}
+																				alt="Product"
+																				style={{
+																					width: "100%",
+																					height: "100%",
+																					objectFit: "fill",
+																				}}
+																			/>
+																		</Box>
+																		<Typography variant="subtitle1">{e.name}</Typography>
+																	</Grid>
+																	<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+																		<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
+																			<MinusCircleFilled />
+																		</IconButton>
+																		<TextField
+																			type="number"
+																			value={requestResume.products && requestResume.products.length > 0 ? requestResume.products.find((p) => p.id_product === e.id_product)?.amount : 0}
+																			onChange={(el) => handleChangeAmount(e.id_product, e.name, Number(el.target.value))}
+																			inputProps={{ min: 0 }}
+																			size="small"
+																			sx={{ width: 80, mt: 1 }}
 																		/>
-																	</Box>
-																	<Typography variant="subtitle1">{e.name}</Typography>
-																</Grid>
-																<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-																	<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
-																		<MinusCircleFilled />
-																	</IconButton>
-																	<TextField
-																		type="number"
-																		value={requestResume.products && requestResume.products.length > 0 ? requestResume.products.find((p) => p.id_product === e.id_product)?.amount : 0}
-																		onChange={(el) => handleChangeAmount(e.id_product, e.name, Number(el.target.value))}
-																		inputProps={{ min: 0 }}
-																		size="small"
-																		sx={{ width: 80, mt: 1 }}
-																	/>
-																	<IconButton onClick={() => handleAddProduct(e.id_product, e.name)} color="success" sx={{ mt: 1, fontSize: 20 }}>
-																		<PlusCircleFilled />
-																	</IconButton>
-																</Grid>
-															</CardContent>
-														</Card>
-													))}
-												</Box>
-											</Grid>
-										</Stack>
-									</Grid>
+																		<IconButton onClick={() => handleAddProduct(e.id_product, e.name)} color="success" sx={{ mt: 1, fontSize: 20 }}>
+																			<PlusCircleFilled />
+																		</IconButton>
+																	</Grid>
+																</CardContent>
+															</Card>
+														))}
+													</Box>
+												</Grid>
+											</Stack>
+										</Grid>
+									)
 								)}
 							</Grid>
 						</Grid>

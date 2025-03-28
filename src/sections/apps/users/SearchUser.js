@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 
 // material-ui
-import { Box, FormControl, InputAdornment, OutlinedInput } from "@mui/material";
+import { Box, FormControl, Button, OutlinedInput } from "@mui/material";
 
 // assets
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import AircraftContext from "contexts/AircraftContext";
+import { useTheme } from "@emotion/react";
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
@@ -13,28 +14,43 @@ const SearchUser = () => {
 	const { setUserAircraftLink } = useContext(AircraftContext);
 
 	const [inputValue, setInputValue] = useState("");
+	const [hover, setHover] = useState(false);
+
+	const theme = useTheme();
 
 	const handleChange = (event) => {
-		const value = event.target.value;
-		setInputValue(value);
-		(value.length > 3 || value.length === 0) && setUserAircraftLink(value);
+		setInputValue(event.target.value);
+	};
+
+	const handleClick = (event) => {
+		event.preventDefault();
+		const searchValue = inputValue.trim();
+		setUserAircraftLink(searchValue);
 	};
 
 	return (
 		<Box sx={{ width: "100%", mb: 1 }}>
-			<FormControl sx={{ width: { xs: "100%" } }}>
+			<FormControl component="form" onSubmit={handleClick} sx={{ display: "flex", flexDirection: "row", gap: 1, width: "100%" }}>
 				<OutlinedInput
 					size="small"
 					id="header-search"
-					startAdornment={
-						<InputAdornment position="start">
-							<SearchOutlined />
-						</InputAdornment>
+					fullWidth
+					endAdornment={
+						<CloseCircleOutlined
+							style={{
+								cursor: "pointer",
+								fontSize: 15,
+								color: hover ? theme.palette.error.main : "inherit",
+							}}
+							onClick={() => {
+								setUserAircraftLink("");
+								setInputValue("");
+							}}
+							onMouseEnter={() => setHover(true)}
+							onMouseLeave={() => setHover(false)}
+						/>
 					}
 					aria-describedby="header-search-text"
-					inputProps={{
-						"aria-label": "search-user",
-					}}
 					placeholder="Pesquisar usuário..."
 					value={inputValue}
 					onChange={handleChange}
@@ -43,6 +59,9 @@ const SearchUser = () => {
 						paddingY: 0,
 					}}
 				/>
+				<Button variant="contained" type="submit" sx={{ height: 40 }}>
+					<SearchOutlined style={{ fontSize: 18 }} />
+				</Button>
 			</FormControl>
 		</Box>
 	);

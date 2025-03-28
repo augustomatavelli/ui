@@ -15,9 +15,7 @@ const SearchUserByAdmin = ({ setSearch }) => {
 	const handleClick = (event) => {
 		event.preventDefault();
 		const searchValue = inputValue.trim();
-		if (searchValue.length > 3 || searchValue.length === 0) {
-			setSearch(searchValue);
-		}
+		setSearch(searchValue);
 	};
 
 	return (
