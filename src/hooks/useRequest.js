@@ -85,6 +85,30 @@ const useRequest = () => {
 		}
 	};
 
+	const updateRequest = async (requestId, data) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.patch(`/requests?requestId=${requestId}`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
 	const findAllRequests = async (search, page) => {
 		try {
 			setLoadingRequest(true);
@@ -158,7 +182,7 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById };
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest };
 };
 
 export default useRequest;

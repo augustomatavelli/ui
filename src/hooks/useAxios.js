@@ -14,6 +14,8 @@ const UseAxios = () => {
 
 		if (token) {
 			config.headers["Authorization"] = `Bearer ${token}`;
+		} else {
+			logout();
 		}
 
 		return config;

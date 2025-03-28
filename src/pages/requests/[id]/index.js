@@ -10,18 +10,53 @@ import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
 import { UpOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 const RequestDetails = () => {
-	const { findOneRequestById } = useRequest();
+	const { findOneRequestById, updateRequest } = useRequest();
 
 	const { requestDetails, setRequestDetails, loadingRequest } = useContext(RequestContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
+	const [editRequest, setEditRequest] = useState({});
+	const [openEditInput, setOpenEditInput] = useState({});
 
 	const { id } = useParams();
 
 	const { id_request, landing_date, takeoff_date, status, created_at, user, type, rab, landing_site, products, services } = requestDetails;
+
+	const handleOpenEditInput = (field) => {
+		setOpenEditInput((prev) => {
+			const newState = { ...prev };
+
+			if (newState[field]) {
+				delete newState[field];
+			} else {
+				newState[field] = 1;
+			}
+
+			return newState;
+		});
+	};
+
+	const handleEditRequest = (e, field) => {
+		setEditRequest((prev) => ({
+			...prev,
+			[field]: e ? dayjs(e).format("YYYY-MM-DD HH:mm") : null,
+		}));
+	};
+
+	const handleEditSave = async () => {
+		await updateRequest(id, editRequest);
+		setEditRequest({});
+		setOpenEditInput({});
+		await findOneRequestById(id);
+	};
+
+	console.log(editRequest);
 	console.log(requestDetails);
 	useEffect(() => {
 		if (id) {
@@ -89,11 +124,34 @@ const RequestDetails = () => {
 										<ListItem>
 											<Grid container spacing={3}>
 												<Grid item xs={12} md={6}>
-													<Stack direction="row" alignItems="center" spacing={1}>
-														<Stack spacing={0.5}>
+													<Stack spacing={1}>
+														<Stack direction="row" alignItems="center" spacing={1.5}>
 															<Typography color="secondary">Data agendada para pouso</Typography>
-															<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
+															<EditOutlined
+																style={{ cursor: "pointer" }}
+																onClick={() => {
+																	handleOpenEditInput("landingDateField");
+																}}
+															/>
 														</Stack>
+														{openEditInput["landingDateField"] ? (
+															<LocalizationProvider dateAdapter={AdapterDateFns}>
+																<DateTimePicker
+																	value={landing_date ? dayjs(landing_date).toDate() : null}
+																	disablePast
+																	minDateTime={dayjs()}
+																	onChange={(e) => {
+																		handleEditRequest(e, "landing_date");
+																	}}
+																	slotProps={{
+																		field: { format: "dd/MM/yyyy HH:mm" },
+																		textField: { error: false },
+																	}}
+																/>
+															</LocalizationProvider>
+														) : (
+															<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
+														)}
 													</Stack>
 												</Grid>
 											</Grid>
@@ -102,9 +160,33 @@ const RequestDetails = () => {
 										<ListItem>
 											<Grid container spacing={3}>
 												<Grid item xs={12} md={6}>
-													<Stack spacing={0.5}>
-														<Typography color="secondary">Data agendada para decolagem</Typography>
-														<Typography>{takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
+													<Stack spacing={1}>
+														<Stack direction="row" alignItems="center" spacing={1.5}>
+															<Typography color="secondary">Data agendada para decolagem</Typography>
+															<EditOutlined
+																style={{ cursor: "pointer" }}
+																onClick={() => {
+																	handleOpenEditInput("takeoffDateField");
+																}}
+															/>
+														</Stack>
+														{openEditInput["takeoffDateField"] ? (
+															<LocalizationProvider dateAdapter={AdapterDateFns}>
+																<DateTimePicker
+																	value={takeoff_date ? dayjs(takeoff_date).toDate() : null}
+																	disablePast
+																	minDateTime={dayjs()}
+																	onChange={(e) => {
+																		handleEditRequest(e, "takeoff_date");
+																	}}
+																	slotProps={{
+																		field: { format: "dd/MM/yyyy HH:mm" },
+																	}}
+																/>
+															</LocalizationProvider>
+														) : (
+															<Typography>{takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
+														)}
 													</Stack>
 												</Grid>
 											</Grid>
@@ -194,7 +276,7 @@ const RequestDetails = () => {
 										)}
 									</List>
 									<Box sx={{ p: 2.5 }}>
-										<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
+										<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
 											<Button
 												variant="outlined"
 												color="error"
@@ -205,6 +287,11 @@ const RequestDetails = () => {
 											>
 												Voltar
 											</Button>
+											{Object.keys(editRequest).length > 0 && Object.keys(openEditInput).length > 0 && (
+												<Button variant="contained" onClick={handleEditSave}>
+													Salvar
+												</Button>
+											)}
 										</Stack>
 									</Box>
 								</>
