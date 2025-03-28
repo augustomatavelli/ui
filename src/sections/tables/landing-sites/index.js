@@ -10,6 +10,7 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 import AddLandingSite from "sections/apps/landing-sites/AddLandingSite";
 import SearchLandingSiteByAdmin from "sections/apps/landing-sites/SearchLandingSiteByAdmin";
 import Loader from "components/Loader";
+import { useNavigate } from "react-router";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -28,6 +29,8 @@ export default function LandingSitesTable() {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
 
+	const navigate = useNavigate();
+
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
@@ -35,6 +38,10 @@ export default function LandingSitesTable() {
 	const handleAdd = async () => {
 		setOpen(!open);
 		await findAllLandingSites(search, page);
+	};
+
+	const handleRedirect = (landingSiteId) => {
+		navigate(`/landing-sites/${landingSiteId}`);
 	};
 
 	useEffect(() => {
@@ -79,7 +86,14 @@ export default function LandingSitesTable() {
 							<Loader />
 						) : landingSites.length > 0 ? (
 							landingSites.map((e) => (
-								<TableRow hover key={e.id_landing_site}>
+								<TableRow
+									hover
+									key={e.id_landing_site}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(e.id_landing_site);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color={e.status === "P" ? "warning" : "success"} variant="filled" size="small" label={e.status === "P" ? "Pendente" : "Ativo"} />
 									</TableCell>

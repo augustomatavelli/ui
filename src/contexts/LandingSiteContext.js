@@ -9,6 +9,7 @@ export const LandingSiteProvider = ({ children }) => {
 	const [totalLandingSites, setTotalLandingSites] = useState(0);
 	const [searchLandingSites, setSearchLandingSites] = useState([]);
 	const [uf, setUf] = useState([]);
+	const [landingSiteDetails, setLandingSiteDetails] = useState({});
 
 	const resetLandingSiteStates = () => {
 		setLoadingLandingSite(false);
@@ -16,6 +17,7 @@ export const LandingSiteProvider = ({ children }) => {
 		setTotalLandingSites(0);
 		setSearchLandingSites([]);
 		setUf([]);
+		setLandingSiteDetails({});
 	};
 
 	return (
@@ -31,6 +33,8 @@ export const LandingSiteProvider = ({ children }) => {
 				setSearchLandingSites,
 				uf,
 				setUf,
+				landingSiteDetails,
+				setLandingSiteDetails,
 				resetLandingSiteStates,
 			}}
 		>

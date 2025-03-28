@@ -12,6 +12,7 @@ const DashboardDefault = Loadable(lazy(() => import("pages/dashboard/default")))
 // render - users
 const UserProfile = Loadable(lazy(() => import("pages/users/me")));
 const ListUsersForAdmin = Loadable(lazy(() => import("pages/users/admin")));
+const UserDetails = Loadable(lazy(() => import("pages/users/[id]")));
 
 // render - aircrafts
 const MyAircrafts = Loadable(lazy(() => import("pages/aircrafts/me")));
@@ -20,6 +21,7 @@ const ListAircraftsForAdmin = Loadable(lazy(() => import("pages/aircrafts/admin"
 
 // render - aeródromos
 const ListLandingSitesForAdmin = Loadable(lazy(() => import("pages/landing-sites/admin")));
+const LandingSiteDetails = Loadable(lazy(() => import("pages/landing-sites/[id]")));
 
 // render - solicitações
 const ListRequestsForAdmin = Loadable(lazy(() => import("pages/requests/admin")));
@@ -84,6 +86,14 @@ const MainRoutes = {
 								</AuthGuard>
 							),
 						},
+						{
+							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A']">
+									<UserDetails />
+								</AuthGuard>
+							),
+						},
 					],
 				},
 				{
@@ -100,8 +110,8 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['R', 'P']">
-									<AircraftDetails />,
+								<AuthGuard requiredUserType="['A', 'R', 'P']">
+									<AircraftDetails />
 								</AuthGuard>
 							),
 						},
@@ -109,7 +119,7 @@ const MainRoutes = {
 							path: "admin",
 							element: (
 								<AuthGuard requiredUserType="['A']">
-									<ListAircraftsForAdmin />,
+									<ListAircraftsForAdmin />
 								</AuthGuard>
 							),
 						},
@@ -122,7 +132,15 @@ const MainRoutes = {
 							path: "admin",
 							element: (
 								<AuthGuard requiredUserType="['A']">
-									<ListLandingSitesForAdmin />,
+									<ListLandingSitesForAdmin />
+								</AuthGuard>
+							),
+						},
+						{
+							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A']">
+									<LandingSiteDetails />
 								</AuthGuard>
 							),
 						},
@@ -135,7 +153,7 @@ const MainRoutes = {
 							path: "admin",
 							element: (
 								<AuthGuard requiredUserType="['A']">
-									<ListRequestsForAdmin />,
+									<ListRequestsForAdmin />
 								</AuthGuard>
 							),
 						},
@@ -143,7 +161,7 @@ const MainRoutes = {
 							path: "me",
 							element: (
 								<AuthGuard requiredUserType="['P', 'R']">
-									<ListMyRequests />,
+									<ListMyRequests />
 								</AuthGuard>
 							),
 						},
@@ -151,7 +169,7 @@ const MainRoutes = {
 							path: "my-aircrafts",
 							element: (
 								<AuthGuard requiredUserType="['R']">
-									<ListMyAircraftsRequests />,
+									<ListMyAircraftsRequests />
 								</AuthGuard>
 							),
 						},
@@ -166,7 +184,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['R', 'P', 'A']">
+								<AuthGuard requiredUserType="[, 'A', 'R', 'P']">
 									<RequestDetails />
 								</AuthGuard>
 							),

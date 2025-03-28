@@ -34,13 +34,15 @@ const RequestDetails = () => {
 				<MainCard
 					title="Detalhes da solicitação"
 					secondary={
-						<Chip
-							color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : "error"}
-							variant="filled"
-							size="medium"
-							label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : "Rejeitado"}
-							sx={{ fontWeight: "bold" }}
-						/>
+						loadingRequest && (
+							<Chip
+								color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : "error"}
+								variant="filled"
+								size="medium"
+								label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : "Rejeitado"}
+								sx={{ fontWeight: "bold" }}
+							/>
+						)
 					}
 				>
 					<Grid container spacing={3}>

@@ -8,7 +8,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useUser = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingUser, setUser, setSearchUser, setUsers, setTotalUser } = useContext(UserContext);
+	const { setLoadingUser, setUser, setSearchUser, setUsers, setTotalUser, setUserDetails } = useContext(UserContext);
 
 	const createUser = async (data) => {
 		try {
@@ -63,6 +63,30 @@ const useUser = () => {
 			setLoadingUser(true);
 			const response = await publicAxios.get("/users/find-one");
 			setUser(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingUser(false);
+		}
+	};
+
+	const findOneUserById = async (userId) => {
+		try {
+			setLoadingUser(true);
+			const response = await publicAxios.get(`/users/find-one/${userId}`);
+			setUserDetails(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -179,7 +203,7 @@ const useUser = () => {
 		}
 	};
 
-	return { findOneUser, updatePassword, searchAllUsers, findAllUsers, approveUser, createUserByAdmin, createUser };
+	return { findOneUser, updatePassword, searchAllUsers, findAllUsers, approveUser, createUserByAdmin, createUser, findOneUserById };
 };
 
 export default useUser;

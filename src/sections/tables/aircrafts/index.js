@@ -11,6 +11,7 @@ import useAircraft from "hooks/useAircraft";
 import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin";
 import Loader from "components/Loader";
+import { useNavigate } from "react-router";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -31,6 +32,7 @@ export default function AircraftsTable() {
 	const [open, setOpen] = useState(false);
 
 	const theme = useTheme();
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -39,6 +41,10 @@ export default function AircraftsTable() {
 	const handleAdd = async () => {
 		setOpen(!open);
 		await findAllAircrafts(search, page);
+	};
+
+	const handleRedirect = (aircraftId) => {
+		navigate(`/aircrafts/${aircraftId}`);
 	};
 
 	useEffect(() => {
@@ -83,7 +89,14 @@ export default function AircraftsTable() {
 							<Loader />
 						) : aircrafts.length > 0 ? (
 							aircrafts.map((aircraft) => (
-								<TableRow hover key={aircraft.id_aircraft}>
+								<TableRow
+									hover
+									key={aircraft.id_aircraft}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(aircraft.id_aircraft);
+									}}
+								>
 									<TableCell align="center">
 										{aircraft.status === "P" ? (
 											<Box display="flex" gap={4} justifyContent="center">

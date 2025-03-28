@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
 	const [users, setUsers] = useState([]);
 	const [totalUser, setTotalUser] = useState(0);
 	const [usersResp, setUsersResp] = useState([]);
+	const [userDetails, setUserDetails] = useState({});
 
 	const resetUserStates = () => {
 		setLoadingUser(false);
@@ -18,10 +19,13 @@ export const UserProvider = ({ children }) => {
 		setUsers([]);
 		setTotalUser(0);
 		setUsersResp([]);
+		setUserDetails({});
 	};
 
 	return (
-		<UserContext.Provider value={{ loadingUser, setLoadingUser, user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, usersResp, setUsersResp, resetUserStates }}>
+		<UserContext.Provider
+			value={{ loadingUser, setLoadingUser, user, setUser, searchUser, setSearchUser, users, setUsers, totalUser, setTotalUser, usersResp, setUsersResp, userDetails, setUserDetails, resetUserStates }}
+		>
 			{children}
 		</UserContext.Provider>
 	);

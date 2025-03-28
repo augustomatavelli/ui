@@ -123,6 +123,28 @@ const AircraftDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
+												<Typography color="secondary">Situação</Typography>
+												<Typography>{status === "A" ? "Ativo" : status === "P" ? "Pendente" : "Inativo"}</Typography>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<Typography color="secondary">Mensalista</Typography>
+												<Typography>{membership === "S" ? "Sim" : "Não"}</Typography>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
 												<Typography color="secondary">Nome do responsável</Typography>
 												<Typography>{name}</Typography>
 											</Stack>
@@ -147,28 +169,6 @@ const AircraftDetails = () => {
 											<Stack spacing={0.5}>
 												<Typography color="secondary">Celular do responsável</Typography>
 												<Typography>{mobile}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Situação</Typography>
-												<Typography>{status === "A" ? "Ativo" : status === "P" ? "Pendente" : "Inativo"}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Mensalista</Typography>
-												<Typography>{membership === "S" ? "Sim" : "Não"}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>

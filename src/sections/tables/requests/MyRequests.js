@@ -25,6 +25,10 @@ export default function MyRequestsTable() {
 		setPage(value);
 	};
 
+	const handleRedirect = (requestId) => {
+		navigate(`/requests/${requestId}`);
+	};
+
 	useEffect(() => {
 		searchAllRequests(search, page);
 	}, [search, page]);
@@ -44,7 +48,6 @@ export default function MyRequestsTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell />
 							<TableCell align="center">Aeronave</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
@@ -58,21 +61,16 @@ export default function MyRequestsTable() {
 							<Loader />
 						) : searchRequests.length > 0 ? (
 							searchRequests.map((e) => (
-								<TableRow hover key={e.id_request}>
+								<TableRow
+									hover
+									key={e.id_request}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(e.id_request);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
-									</TableCell>
-									<TableCell align="center">
-										<Tooltip title="Visualizar detalhes">
-											<EyeOutlined
-												style={{
-													fontSize: "20px",
-												}}
-												onClick={() => {
-													navigate(`/requests/${e.id_request}`);
-												}}
-											/>
-										</Tooltip>
 									</TableCell>
 									<TableCell align="center">{e.rab}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>

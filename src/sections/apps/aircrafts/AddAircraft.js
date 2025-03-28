@@ -108,7 +108,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 	const AircraftSchema = Yup.object().shape({
 		rab: Yup.string().max(255).required("RAB é obrigatório"),
 		category: Yup.string().required("Categoria é obrigatório"),
-		/* name: Yup.string().max(255).required("Nome é obrigatório"),
+		name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
@@ -117,7 +117,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 		phone: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
-			.required("Celular é obrigatório"), */
+			.required("Celular é obrigatório"),
 		membership: Yup.string().max(255),
 	});
 
@@ -134,11 +134,11 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					/* name: resp === 1 ? user.name : name,
+					name: resp === 1 ? user.name : name,
 					email: resp === 1 ? user.email : email,
 					phone: resp === 1 ? user.mobile : phone,
 					cpf: resp === 1 ? user.cpf || user.cnpj || (typeDoc === "cpf" ? doc.replace(/\D/g, "") : "") : typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
-					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "", */
+					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 					isNewUserResp: false,
 				};
 				const response = await createAircraft(newAircraft);
@@ -297,7 +297,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 												)}
 											</Stack>
 										</Grid>
-										{/* <Grid item xs={12}>
+										<Grid item xs={12}>
 											<FormControlLabel
 												control={
 													<Checkbox
@@ -313,7 +313,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 													/>
 												}
 												label="Cadastrar novo responsável"
-												style={{ display: "flex", alignItems: "center" }}
+												style={{ display: "flex", alignItems: "center", gap: 2 }}
 											/>
 										</Grid>
 										{!toggleCheckbox && !showUserResp ? (
@@ -407,31 +407,37 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 												<Grid item xs={12}>
 													<Stack spacing={1}>
 														<InputLabel htmlFor="phone-signup">Celular</InputLabel>
-														<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur} disabled={showUserResp && !toggleCheckbox}>
-															{() => (
-																<OutlinedInput
-																	fullWidth
-																	error={Boolean(touched.phone && errors.phone)}
-																	id="phone-signup"
-																	name="phone"
-																	placeholder="Digite o número do celular"
-																	sx={{
-																		"& .MuiInputBase-input": {
-																			color: showUserResp && !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
-																		},
-																	}}
-																/>
-															)}
-														</InputMask>
-														{touched.phone && errors.phone && (
-															<FormHelperText error id="helper-text-phone-signup">
-																{errors.phone}
-															</FormHelperText>
+														{showUserResp && !toggleCheckbox ? (
+															<TextField fullWidth id="phone-signup" {...getFieldProps("phone")} disabled={showUserResp && !toggleCheckbox} />
+														) : (
+															<>
+																<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur} disabled={showUserResp && !toggleCheckbox}>
+																	{() => (
+																		<OutlinedInput
+																			fullWidth
+																			error={Boolean(touched.phone && errors.phone)}
+																			id="phone-signup"
+																			name="phone"
+																			placeholder="Digite o número do celular do responsável"
+																			sx={{
+																				"& .MuiInputBase-input": {
+																					color: showUserResp && !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
+																				},
+																			}}
+																		/>
+																	)}
+																</InputMask>
+																{touched.phone && errors.phone && (
+																	<FormHelperText error id="helper-text-phone-signup">
+																		{errors.phone}
+																	</FormHelperText>
+																)}
+															</>
 														)}
 													</Stack>
 												</Grid>
 											</>
-										)} */}
+										)}
 										<Grid item xs={12}>
 											<Stack spacing={1}>
 												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>

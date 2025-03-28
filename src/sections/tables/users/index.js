@@ -11,6 +11,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddUser from "sections/apps/users/AddUser";
 import Loader from "components/Loader";
+import { useNavigate } from "react-router";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -31,6 +32,7 @@ export default function UsersTable() {
 	const [open, setOpen] = useState(false);
 
 	const theme = useTheme();
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -43,6 +45,10 @@ export default function UsersTable() {
 	const handleClose = async () => {
 		setOpen(false);
 		await findAllUsers(search, page);
+	};
+
+	const handleRedirect = (userId) => {
+		navigate(`/users/${userId}`);
 	};
 
 	useEffect(() => {
@@ -87,7 +93,14 @@ export default function UsersTable() {
 							<Loader />
 						) : users.length > 0 ? (
 							users.map((user) => (
-								<TableRow hover key={user.id_user}>
+								<TableRow
+									hover
+									key={user.id_user}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(user.id_user);
+									}}
+								>
 									<TableCell align="center">
 										{user.status === "P" ? (
 											<Box display="flex" gap={4} justifyContent="center">
