@@ -13,7 +13,7 @@ import LogoHeliforte from "../../assets/images/LogoHeliforte.svg";
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = ({ reverse, isIcon, sx, to }) => (
-	<ButtonBase disableRipple component={Link} to={!to ? APP_DEFAULT_PATH : to} sx={sx}>
+	<ButtonBase disableRipple component={Link} to={!to ? APP_DEFAULT_PATH : to} sx={{ width: "100%", mr: isIcon ? 0 : 3 }}>
 		{isIcon ? <img src={LogoHeliforte} alt="Logo" width="50" height="40" /> : <img src={LogoHeliforte} alt="Logo" width="150" height="40" />}
 		{/* {isIcon ? <LogoIcon /> : <LogoMain reverse={reverse} />} */}
 	</ButtonBase>

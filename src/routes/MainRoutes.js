@@ -29,6 +29,7 @@ const ListMyRequests = Loadable(lazy(() => import("pages/requests/me")));
 const ListMyAircraftsRequests = Loadable(lazy(() => import("pages/requests/my-aircrafts")));
 const CreateRequest = Loadable(lazy(() => import("pages/requests/create")));
 const RequestDetails = Loadable(lazy(() => import("pages/requests/[id]")));
+const LiveRequests = Loadable(lazy(() => import("pages/requests/live")));
 
 // render - produtos
 const ListProductsForAdmin = Loadable(lazy(() => import("pages/products/admin")));
@@ -216,6 +217,16 @@ const MainRoutes = {
 							),
 						},
 					],
+				},
+			],
+		},
+		{
+			path: "/live-requests",
+			element: <CommonLayout />,
+			children: [
+				{
+					path: "",
+					element: <LiveRequests />,
 				},
 			],
 		},

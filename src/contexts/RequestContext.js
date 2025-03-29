@@ -13,6 +13,7 @@ export const RequestProvider = ({ children }) => {
 	const [totalSearchAircraftsRequests, setTotalSearchAircraftsRequests] = useState(0);
 	const [requestResume, setRequestResume] = useState({});
 	const [requestDetails, setRequestDetails] = useState({});
+	const [liveRequests, setLiveRequests] = useState([]);
 
 	const resetRequestStates = () => {
 		setLoadingRequest(false);
@@ -24,6 +25,7 @@ export const RequestProvider = ({ children }) => {
 		setTotalSearchAircraftsRequests(0);
 		setRequestResume({});
 		setRequestDetails({});
+		setLiveRequests([]);
 	};
 
 	return (
@@ -47,6 +49,8 @@ export const RequestProvider = ({ children }) => {
 				setRequestResume,
 				requestDetails,
 				setRequestDetails,
+				liveRequests,
+				setLiveRequests,
 				resetRequestStates,
 			}}
 		>

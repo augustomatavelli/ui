@@ -8,8 +8,17 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useRequest = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingRequest, setRequests, setTotalRequests, setSearchRequests, setTotalSearchRequests, setSearchAircraftsRequests, setTotalSearchAircraftsRequests, setRequestDetails } =
-		useContext(RequestContext);
+	const {
+		setLoadingRequest,
+		setRequests,
+		setTotalRequests,
+		setSearchRequests,
+		setTotalSearchRequests,
+		setSearchAircraftsRequests,
+		setTotalSearchAircraftsRequests,
+		setRequestDetails,
+		setLiveRequests,
+	} = useContext(RequestContext);
 
 	const createRequest = async (data) => {
 		try {
@@ -109,6 +118,30 @@ const useRequest = () => {
 		}
 	};
 
+	const findAllLiveRequests = async (search, page) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.get(`/requests/dashboard/live`);
+			setLiveRequests(response.data.items);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
 	const findAllRequests = async (search, page) => {
 		try {
 			setLoadingRequest(true);
@@ -182,7 +215,7 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest };
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests };
 };
 
 export default useRequest;
