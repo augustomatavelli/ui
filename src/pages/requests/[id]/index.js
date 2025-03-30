@@ -123,12 +123,17 @@ const RequestDetails = () => {
 	const handleDeleteService = () => {};
 
 	const handleDeleteProduct = (id) => {
+		if (Object.keys(openEditInput).length === 0) {
+			handleOpenEditInput("products");
+		}
 		setEditRequest((prev) => ({
 			...prev,
-			products: prev.products.filter((product) => product.id_product !== id),
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: 0 } : p)),
 		}));
 	};
 
+	useEffect(() => {}, [editRequest]);
+	console.log(editRequest);
 	useEffect(() => {
 		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products] }));
 	}, [requestDetails]);
