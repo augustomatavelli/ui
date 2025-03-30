@@ -150,7 +150,7 @@ const RequestDetails = () => {
 				<MainCard
 					title="Detalhes da solicitação"
 					secondary={
-						loadingRequest && (
+						!loadingRequest && (
 							<Chip
 								color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : "error"}
 								variant="filled"
@@ -325,7 +325,6 @@ const RequestDetails = () => {
 																					))}
 																				</List>
 																			</Table>
-
 																			<Grid sx={{ mt: 2 }}>
 																				<Button
 																					variant="contained"
@@ -390,6 +389,8 @@ const RequestDetails = () => {
 																				</Button>
 																			</Grid>
 																		</>
+																	) : loadingProduct ? (
+																		<Loader />
 																	) : (
 																		<ProductsList
 																			searchProducts={searchProducts}
