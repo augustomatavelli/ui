@@ -26,7 +26,7 @@ const RequestDetails = () => {
 	const { searchAllOperations } = useOperation();
 
 	const { requestDetails, setRequestDetails, loadingRequest } = useContext(RequestContext);
-	const { searchProducts } = useContext(ProductsContext);
+	const { searchProducts, loadingProduct } = useContext(ProductsContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
