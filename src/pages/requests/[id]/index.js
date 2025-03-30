@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table, Card, CardContent, IconButton, TextField } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -8,25 +8,46 @@ import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
-import { UpOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined, MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import Loader from "components/Loader";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import ProductsContext from "contexts/ProductsContext";
+import useProduct from "hooks/useProduct";
+import useOperation from "hooks/useOperation";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
+import { ProductsList } from "sections/apps/requests/ProductsList";
 
 const RequestDetails = () => {
 	const { findOneRequestById, updateRequest } = useRequest();
+	const { searchAllProducts } = useProduct();
+	const { searchAllOperations } = useOperation();
 
 	const { requestDetails, setRequestDetails, loadingRequest } = useContext(RequestContext);
+	const { searchProducts } = useContext(ProductsContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
 	const [editRequest, setEditRequest] = useState({});
 	const [openEditInput, setOpenEditInput] = useState({});
+	const [openAddProducts, setOpenAddProducts] = useState(false);
+	const [openAddServices, setOpenAddServices] = useState(false);
 
 	const { id } = useParams();
 
 	const { id_request, landing_date, takeoff_date, status, created_at, user, type, rab, landing_site, products, services } = requestDetails;
+
+	const resetStates = () => {
+		setRequestDetails({});
+		setOpenEditInput({});
+		setOpenOperations(false);
+		setOpenProducts(false);
+		setEditRequest({});
+		setOpenAddProducts(false);
+		setOpenAddServices(false);
+	};
 
 	const handleOpenEditInput = (field) => {
 		setOpenEditInput((prev) => {
@@ -50,19 +71,74 @@ const RequestDetails = () => {
 	};
 
 	const handleEditSave = async () => {
-		await updateRequest(id, editRequest);
+		const response = await updateRequest(id, editRequest);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
 		setEditRequest({});
 		setOpenEditInput({});
+		setOpenAddProducts(false);
 		await findOneRequestById(id);
 	};
 
-	console.log(editRequest);
-	console.log(requestDetails);
+	const handleAddProduct = (newProduct, name) => {
+		setEditRequest((prev) => {
+			const products = prev.products || [];
+			const existingProduct = products.find((p) => p.id_product === newProduct);
+			if (!existingProduct) {
+				return {
+					...prev,
+					products: [...products, { id_product: newProduct, name: name, amount: 1 }],
+				};
+			}
+			return {
+				...prev,
+				products: products.map((p) => (p.id_product === newProduct ? { ...p, amount: p.amount + 1 } : p)),
+			};
+		});
+	};
+
+	const handleChangeAmount = (id, newAmount) => {
+		setEditRequest((prev) => ({
+			...prev,
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: newAmount } : p)),
+		}));
+	};
+
+	const handleRemoveProduct = (id) => {
+		setEditRequest((prev) => ({
+			...prev,
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: Math.max(0, p.amount - 1) } : p)),
+		}));
+	};
+
+	const handleDeleteService = () => {};
+
+	const handleDeleteProduct = (id) => {
+		setEditRequest((prev) => ({
+			...prev,
+			products: prev.products.filter((product) => product.id_product !== id),
+		}));
+	};
+
+	useEffect(() => {
+		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products] }));
+	}, [requestDetails]);
+
 	useEffect(() => {
 		if (id) {
 			findOneRequestById(id);
 		}
 	}, [id]);
+
 	return (
 		<>
 			<Grid item xs={12}>
@@ -86,7 +162,6 @@ const RequestDetails = () => {
 								<Loader />
 							) : (
 								<>
-									{" "}
 									<List sx={{ py: 0 }}>
 										<ListItem>
 											<Grid container spacing={3}>
@@ -229,13 +304,40 @@ const RequestDetails = () => {
 														<Grid item xs={12}>
 															<Collapse in={openOperations}>
 																<Box sx={{ padding: 0 }}>
-																	<Table>
-																		<List sx={{ padding: 0 }}>
-																			{services.map((e) => (
-																				<ListItem key={e.id_service}>{`${e.name} ${e.amount}L`}</ListItem>
-																			))}
-																		</List>
-																	</Table>
+																	{!openAddServices ? (
+																		<>
+																			<Table>
+																				<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
+																					{services.map((e) => (
+																						<Chip
+																							label={`${e.name} ${e.amount}L`}
+																							onDelete={() => {
+																								handleDeleteService();
+																							}}
+																							key={e.id_service}
+																							sx={{ alignSelf: "start" }}
+																						/>
+																					))}
+																				</List>
+																			</Table>
+
+																			<Grid sx={{ mt: 2 }}>
+																				<Button
+																					variant="contained"
+																					size="small"
+																					startIcon={<PlusOutlined />}
+																					onClick={async () => {
+																						await searchAllOperations();
+																						setOpenAddServices(true);
+																					}}
+																				>
+																					Adicionar
+																				</Button>
+																			</Grid>
+																		</>
+																	) : (
+																		<></>
+																	)}
 																</Box>
 															</Collapse>
 														</Grid>
@@ -244,7 +346,7 @@ const RequestDetails = () => {
 												<Divider />
 											</>
 										)}
-										{products && products.length > 0 && (
+										{editRequest.products && editRequest.products.length > 0 && (
 											<>
 												<ListItem>
 													<Grid container spacing={3} alignItems="center">
@@ -259,13 +361,39 @@ const RequestDetails = () => {
 														<Grid item xs={12}>
 															<Collapse in={openProducts}>
 																<Box sx={{ padding: 0 }}>
-																	<Table>
-																		<List sx={{ padding: 0 }}>
-																			{products.map((e) => (
-																				<ListItem key={e.id_product}>{`${e.amount}x ${e.name}`}</ListItem>
-																			))}
-																		</List>
-																	</Table>
+																	{!openAddProducts ? (
+																		<>
+																			<Table>
+																				<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
+																					{editRequest.products.map((e) => (
+																						<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
+																					))}
+																				</List>
+																			</Table>
+																			<Grid sx={{ mt: 2 }}>
+																				<Button
+																					variant="contained"
+																					size="small"
+																					startIcon={<PlusOutlined />}
+																					onClick={async () => {
+																						await searchAllProducts();
+																						handleOpenEditInput("products");
+																						setOpenAddProducts(true);
+																					}}
+																				>
+																					Adicionar
+																				</Button>
+																			</Grid>
+																		</>
+																	) : (
+																		<ProductsList
+																			searchProducts={searchProducts}
+																			requestObject={editRequest}
+																			handleAddProduct={handleAddProduct}
+																			handleChangeAmount={handleChangeAmount}
+																			handleRemoveProduct={handleRemoveProduct}
+																		/>
+																	)}
 																</Box>
 															</Collapse>
 														</Grid>
@@ -281,7 +409,7 @@ const RequestDetails = () => {
 												variant="outlined"
 												color="error"
 												onClick={() => {
-													setRequestDetails({});
+													resetStates();
 													window.history.back();
 												}}
 											>

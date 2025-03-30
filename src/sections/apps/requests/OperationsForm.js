@@ -18,7 +18,6 @@ const OperationsForm = ({ onValidate }) => {
 
 	const { requestResume, setRequestResume } = useContext(RequestContext);
 	const { searchOperations, loadingOperation } = useContext(OperationsContext);
-	console.log(searchOperations);
 	const [checked, setChecked] = useState({});
 
 	const handleChange = useCallback(

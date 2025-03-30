@@ -14,6 +14,7 @@ import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import Loader from "components/Loader";
+import { ProductsList } from "./ProductsList";
 
 const TakeoffProductsForm = ({ onValidate }) => {
 	const { searchAllProducts } = useProduct();
@@ -112,8 +113,14 @@ const TakeoffProductsForm = ({ onValidate }) => {
 												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
 													<InputLabel>Se desejar, pode adicionar produtos</InputLabel>
 												</Grid>
-												<Grid spacing={3}>
-													<Box
+												<ProductsList
+													searchProducts={searchProducts}
+													requestObject={requestResume}
+													handleAddProduct={handleAddProduct}
+													handleChangeAmount={handleChangeAmount}
+													handleRemoveProduct={handleRemoveProduct}
+												/>
+												{/* <Box
 														sx={{
 															display: "flex",
 															overflowX: "auto",
@@ -176,8 +183,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 																</CardContent>
 															</Card>
 														))}
-													</Box>
-												</Grid>
+													</Box> */}
 											</Stack>
 										</Grid>
 									)
