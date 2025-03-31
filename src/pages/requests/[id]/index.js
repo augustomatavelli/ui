@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table, Card, CardContent, IconButton, TextField } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
-import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined, MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -106,7 +106,7 @@ const RequestDetails = () => {
 		});
 	};
 
-	const handleChangeAmount = (id, newAmount) => {
+	const handleChangeProductAmount = (id, newAmount) => {
 		setEditRequest((prev) => ({
 			...prev,
 			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: newAmount } : p)),
@@ -120,8 +120,6 @@ const RequestDetails = () => {
 		}));
 	};
 
-	const handleDeleteService = () => {};
-
 	const handleDeleteProduct = (id) => {
 		if (Object.keys(openEditInput).length === 0) {
 			handleOpenEditInput("products");
@@ -132,7 +130,8 @@ const RequestDetails = () => {
 		}));
 	};
 
-	useEffect(() => {}, [editRequest]);
+	const handleDeleteService = () => {};
+
 	console.log(editRequest);
 	useEffect(() => {
 		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products] }));
@@ -294,120 +293,112 @@ const RequestDetails = () => {
 											</Grid>
 										</ListItem>
 										<Divider />
-										{services && services.length > 0 && (
-											<>
-												<ListItem>
-													<Grid container spacing={3} alignItems="center">
-														<Grid item xs={6}>
-															<Typography color="secondary">Serviços</Typography>
-														</Grid>
-														<Grid item xs={6} display="flex" justifyContent="flex-end">
-															<Button type="secondary" onClick={() => setOpenOperations(!openOperations)} color="secondary">
-																{openOperations ? <UpOutlined /> : <DownOutlined />}
-															</Button>
-														</Grid>
-														<Grid item xs={12}>
-															<Collapse in={openOperations}>
-																<Box sx={{ padding: 0 }}>
-																	{!openAddServices ? (
-																		<>
-																			<Table>
-																				<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																					{services.map((e) => (
-																						<Chip
-																							label={`${e.name} ${e.amount}L`}
-																							onDelete={() => {
-																								handleDeleteService();
-																							}}
-																							key={e.id_service}
-																							sx={{ alignSelf: "start" }}
-																						/>
-																					))}
-																				</List>
-																			</Table>
-																			<Grid sx={{ mt: 2 }}>
-																				<Button
-																					variant="contained"
-																					size="small"
-																					startIcon={<PlusOutlined />}
-																					onClick={async () => {
-																						await searchAllOperations();
-																						setOpenAddServices(true);
+										<ListItem>
+											<Grid container spacing={3} alignItems="center">
+												<Grid item xs={6}>
+													<Typography color="secondary">Serviços</Typography>
+												</Grid>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" onClick={() => setOpenOperations(!openOperations)} color="secondary">
+														{openOperations ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openOperations}>
+														<Box sx={{ padding: 0 }}>
+															{!openAddServices ? (
+																<>
+																	<Table>
+																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
+																			{services.map((e) => (
+																				<Chip
+																					label={`${e.name} ${e.amount}L`}
+																					onDelete={() => {
+																						handleDeleteService();
 																					}}
-																				>
-																					Adicionar
-																				</Button>
-																			</Grid>
-																		</>
-																	) : (
-																		<></>
-																	)}
-																</Box>
-															</Collapse>
-														</Grid>
-													</Grid>
-												</ListItem>
-												<Divider />
-											</>
-										)}
-										{editRequest.products && editRequest.products.length > 0 && (
-											<>
-												<ListItem>
-													<Grid container spacing={3} alignItems="center">
-														<Grid item xs={6}>
-															<Typography color="secondary">Produtos</Typography>
-														</Grid>
-														<Grid item xs={6} display="flex" justifyContent="flex-end">
-															<Button type="secondary" onClick={() => setOpenProducts(!openProducts)} color="secondary">
-																{openProducts ? <UpOutlined /> : <DownOutlined />}
-															</Button>
-														</Grid>
-														<Grid item xs={12}>
-															<Collapse in={openProducts}>
-																<Box sx={{ padding: 0 }}>
-																	{!openAddProducts ? (
-																		<>
-																			<Table>
-																				<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																					{editRequest.products.map((e) => (
-																						<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
-																					))}
-																				</List>
-																			</Table>
-																			<Grid sx={{ mt: 2 }}>
-																				<Button
-																					variant="contained"
-																					size="small"
-																					startIcon={<PlusOutlined />}
-																					onClick={async () => {
-																						await searchAllProducts();
-																						handleOpenEditInput("products");
-																						setOpenAddProducts(true);
-																					}}
-																				>
-																					Adicionar
-																				</Button>
-																			</Grid>
-																		</>
-																	) : loadingProduct ? (
-																		<Loader />
-																	) : (
-																		<ProductsList
-																			searchProducts={searchProducts}
-																			requestObject={editRequest}
-																			handleAddProduct={handleAddProduct}
-																			handleChangeAmount={handleChangeAmount}
-																			handleRemoveProduct={handleRemoveProduct}
-																		/>
-																	)}
-																</Box>
-															</Collapse>
-														</Grid>
-													</Grid>
-												</ListItem>
-												<Divider />
-											</>
-										)}
+																					key={e.id_service}
+																					sx={{ alignSelf: "start" }}
+																				/>
+																			))}
+																		</List>
+																	</Table>
+																	<Grid sx={{ mt: 2 }}>
+																		<Button
+																			variant="contained"
+																			size="small"
+																			startIcon={<PlusOutlined />}
+																			onClick={async () => {
+																				await searchAllOperations();
+																				setOpenAddServices(true);
+																			}}
+																		>
+																			Adicionar
+																		</Button>
+																	</Grid>
+																</>
+															) : (
+																<></>
+															)}
+														</Box>
+													</Collapse>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
+										<ListItem>
+											<Grid container spacing={3} alignItems="center">
+												<Grid item xs={6}>
+													<Typography color="secondary">Produtos</Typography>
+												</Grid>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" onClick={() => setOpenProducts(!openProducts)} color="secondary">
+														{openProducts ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openProducts}>
+														<Box sx={{ padding: 0 }}>
+															{!openAddProducts ? (
+																<>
+																	<Table>
+																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
+																			{editRequest.products.map((e) => (
+																				<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
+																			))}
+																		</List>
+																	</Table>
+																	<Grid sx={{ mt: 2 }}>
+																		<Button
+																			variant="contained"
+																			size="small"
+																			startIcon={<PlusOutlined />}
+																			onClick={async () => {
+																				await searchAllProducts();
+																				handleOpenEditInput("products");
+																				setOpenAddProducts(true);
+																			}}
+																		>
+																			Adicionar
+																		</Button>
+																	</Grid>
+																</>
+															) : loadingProduct ? (
+																<Loader />
+															) : (
+																<ProductsList
+																	searchProducts={searchProducts}
+																	requestObject={editRequest}
+																	handleAddProduct={handleAddProduct}
+																	handleChangeProductAmount={handleChangeProductAmount}
+																	handleRemoveProduct={handleRemoveProduct}
+																/>
+															)}
+														</Box>
+													</Collapse>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
 									</List>
 									<Box sx={{ p: 2.5 }}>
 										<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
