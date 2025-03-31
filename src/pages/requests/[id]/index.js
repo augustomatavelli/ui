@@ -310,16 +310,17 @@ const RequestDetails = () => {
 																<>
 																	<Table>
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{services.map((e) => (
-																				<Chip
-																					label={`${e.name} ${e.amount}L`}
-																					onDelete={() => {
-																						handleDeleteService();
-																					}}
-																					key={e.id_service}
-																					sx={{ alignSelf: "start" }}
-																				/>
-																			))}
+																			{editRequest.services.length > 0 &&
+																				services.map((e) => (
+																					<Chip
+																						label={`${e.name} ${e.amount}L`}
+																						onDelete={() => {
+																							handleDeleteService();
+																						}}
+																						key={e.id_service}
+																						sx={{ alignSelf: "start" }}
+																					/>
+																				))}
 																		</List>
 																	</Table>
 																	<Grid sx={{ mt: 2 }}>
@@ -362,9 +363,10 @@ const RequestDetails = () => {
 																<>
 																	<Table>
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{editRequest.products.map((e) => (
-																				<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
-																			))}
+																			{editRequest.products.length > 0 &&
+																				editRequest.products.map((e) => (
+																					<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
+																				))}
 																		</List>
 																	</Table>
 																	<Grid sx={{ mt: 2 }}>
