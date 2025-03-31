@@ -310,8 +310,9 @@ const RequestDetails = () => {
 																<>
 																	<Table>
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{editRequest.services.length > 0 &&
-																				services.map((e) => (
+																			{editRequest.services &&
+																				editRequest.services.length > 0 &&
+																				editRequest.services.map((e) => (
 																					<Chip
 																						label={`${e.name} ${e.amount}L`}
 																						onDelete={() => {
@@ -363,7 +364,8 @@ const RequestDetails = () => {
 																<>
 																	<Table>
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{editRequest.products.length > 0 &&
+																			{editRequest.products &&
+																				editRequest.products.length > 0 &&
 																				editRequest.products.map((e) => (
 																					<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
 																				))}

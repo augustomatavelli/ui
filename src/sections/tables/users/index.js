@@ -146,7 +146,7 @@ export default function UsersTable() {
 											label={user.type === "P" ? "Piloto" : user.type === "R" ? "Responsável" : user.type === "A" ? "Administrador" : "Comum"}
 										/>
 									</TableCell>
-									<TableCell align="center">{user.pilot_register ? user.pilot_register : "-"}</TableCell>
+									<TableCell align="center">{user?.pilot_register ?? <Typography>-</Typography>}</TableCell>
 								</TableRow>
 							))
 						) : search ? (
