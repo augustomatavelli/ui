@@ -1,9 +1,9 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table, CircularProgress } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
@@ -19,6 +19,8 @@ import useOperation from "hooks/useOperation";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { ProductsList } from "sections/apps/requests/ProductsList";
+import OperationsContext from "contexts/OperationContext";
+import { OperationsList } from "sections/apps/requests/OperationsList";
 
 const RequestDetails = () => {
 	const { findOneRequestById, updateRequest } = useRequest();
@@ -27,6 +29,7 @@ const RequestDetails = () => {
 
 	const { requestDetails, setRequestDetails, loadingRequest } = useContext(RequestContext);
 	const { searchProducts, loadingProduct } = useContext(ProductsContext);
+	const { searchOperations, loadingService } = useContext(OperationsContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
@@ -34,6 +37,7 @@ const RequestDetails = () => {
 	const [openEditInput, setOpenEditInput] = useState({});
 	const [openAddProducts, setOpenAddProducts] = useState(false);
 	const [openAddServices, setOpenAddServices] = useState(false);
+	const [checked, setChecked] = useState({});
 
 	const { id } = useParams();
 
@@ -47,6 +51,7 @@ const RequestDetails = () => {
 		setEditRequest({});
 		setOpenAddProducts(false);
 		setOpenAddServices(false);
+		setChecked({});
 	};
 
 	const handleOpenEditInput = (field) => {
@@ -86,6 +91,7 @@ const RequestDetails = () => {
 		setEditRequest({});
 		setOpenEditInput({});
 		setOpenAddProducts(false);
+		setOpenAddServices(false);
 		await findOneRequestById(id);
 	};
 
@@ -121,20 +127,69 @@ const RequestDetails = () => {
 	};
 
 	const handleDeleteProduct = (id) => {
-		if (Object.keys(openEditInput).length === 0) {
-			handleOpenEditInput("products");
-		}
 		setEditRequest((prev) => ({
 			...prev,
 			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: 0 } : p)),
 		}));
 	};
 
-	const handleDeleteService = () => {};
+	const handleDeleteService = (id) => {
+		setEditRequest((prev) => ({
+			...prev,
+			services: prev.services.map((p) => (p.id_service === id ? { ...p, amount: 0 } : p)),
+		}));
+	};
 
+	const handleCheckboxChange = (e) => {
+		const { name } = e;
+		setChecked((prev) => {
+			const newChecked = { ...prev, [name]: !prev[name] };
+			handleChange(e.id_service, e.name, newChecked[name] ? 1 : 0, e.unit);
+			return newChecked;
+		});
+	};
+
+	const handleChange = useCallback(
+		(id, name, newAmount, unit) => {
+			setEditRequest((prev) => {
+				const services = prev.services || [];
+				if (newAmount === 0) {
+					return {
+						...prev,
+						services: services.map((p) => (p.id_service === id ? { ...p, amount: Math.max(0, p.amount - 1) } : p)),
+					};
+				}
+				const existingService = services.find((p) => p.id_service === id);
+				if (!existingService) {
+					return {
+						...prev,
+						services: [...services, { id_service: id, name: name, amount: newAmount, unit: unit }],
+					};
+				}
+
+				return {
+					...prev,
+					services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount, unit: unit } : p)),
+				};
+			});
+		},
+		[setEditRequest]
+	);
+
+	console.log(requestDetails);
 	console.log(editRequest);
+	console.log(openEditInput);
 	useEffect(() => {
-		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products] }));
+		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products], services: [...requestDetails.services] }));
+		requestDetails.services &&
+			requestDetails.services.length > 0 &&
+			requestDetails.services.forEach((e) =>
+				setChecked((prev) => {
+					const newChecked = { ...prev, [e.name]: !prev[e.name] };
+					handleChange(e.id_service, e.name, newChecked[e.name] ? 1 : 0, e.unit);
+					return newChecked;
+				})
+			);
 	}, [requestDetails]);
 
 	useEffect(() => {
@@ -312,16 +367,20 @@ const RequestDetails = () => {
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
 																			{editRequest.services &&
 																				editRequest.services.length > 0 &&
-																				editRequest.services.map((e) => (
-																					<Chip
-																						label={`${e.name} ${e.amount}L`}
-																						onDelete={() => {
-																							handleDeleteService();
-																						}}
-																						key={e.id_service}
-																						sx={{ alignSelf: "start" }}
-																					/>
-																				))}
+																				editRequest.services.map(
+																					(e) =>
+																						e.amount > 0 && (
+																							<Chip
+																								label={e.unit === "un" ? `${e.name}` : `${e.name} ${e.amount}${e.unit}`}
+																								onDelete={() => {
+																									handleOpenEditInput("services");
+																									handleDeleteService(e.id_service);
+																								}}
+																								key={e.id_service}
+																								sx={{ alignSelf: "start" }}
+																							/>
+																						)
+																				)}
 																		</List>
 																	</Table>
 																	<Grid sx={{ mt: 2 }}>
@@ -331,6 +390,7 @@ const RequestDetails = () => {
 																			startIcon={<PlusOutlined />}
 																			onClick={async () => {
 																				await searchAllOperations();
+																				handleOpenEditInput("services");
 																				setOpenAddServices(true);
 																			}}
 																		>
@@ -338,8 +398,17 @@ const RequestDetails = () => {
 																		</Button>
 																	</Grid>
 																</>
+															) : loadingService ? (
+																<CircularProgress size={20} />
 															) : (
-																<></>
+																<OperationsList
+																	checked={checked}
+																	setChecked={setChecked}
+																	searchOperations={searchOperations}
+																	requestObject={editRequest}
+																	handleChange={handleChange}
+																	handleCheckboxChange={handleCheckboxChange}
+																/>
 															)}
 														</Box>
 													</Collapse>
@@ -366,9 +435,20 @@ const RequestDetails = () => {
 																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
 																			{editRequest.products &&
 																				editRequest.products.length > 0 &&
-																				editRequest.products.map((e) => (
-																					<Chip label={`${e.amount}x ${e.name}`} onDelete={() => handleDeleteProduct(e.id_product)} key={e.id_product} sx={{ alignSelf: "start" }} />
-																				))}
+																				editRequest.products.map(
+																					(e) =>
+																						e.amount > 0 && (
+																							<Chip
+																								label={`${e.amount}x ${e.name}`}
+																								onDelete={() => {
+																									handleOpenEditInput("products");
+																									handleDeleteProduct(e.id_product);
+																								}}
+																								key={e.id_product}
+																								sx={{ alignSelf: "start" }}
+																							/>
+																						)
+																				)}
 																		</List>
 																	</Table>
 																	<Grid sx={{ mt: 2 }}>
@@ -377,8 +457,8 @@ const RequestDetails = () => {
 																			size="small"
 																			startIcon={<PlusOutlined />}
 																			onClick={async () => {
-																				await searchAllProducts();
 																				handleOpenEditInput("products");
+																				await searchAllProducts();
 																				setOpenAddProducts(true);
 																			}}
 																		>
@@ -387,7 +467,7 @@ const RequestDetails = () => {
 																	</Grid>
 																</>
 															) : loadingProduct ? (
-																<Loader />
+																<CircularProgress size={20} />
 															) : (
 																<ProductsList
 																	searchProducts={searchProducts}

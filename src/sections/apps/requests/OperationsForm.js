@@ -12,6 +12,7 @@ import RequestContext from "contexts/RequestContext";
 import OperationsContext from "contexts/OperationContext";
 import useOperation from "hooks/useOperation";
 import Loader from "components/Loader";
+import { OperationsList } from "./OperationsList";
 
 const OperationsForm = ({ onValidate }) => {
 	const { searchAllOperations } = useOperation();
@@ -21,27 +22,26 @@ const OperationsForm = ({ onValidate }) => {
 	const [checked, setChecked] = useState({});
 
 	const handleChange = useCallback(
-		(id, name, newAmount) => {
+		(id, name, newAmount, unit) => {
 			setRequestResume((prev) => {
-				const operations = prev.operations || [];
+				const services = prev.services || [];
 				if (newAmount === 0) {
 					return {
 						...prev,
-						operations: operations.filter((p) => p.id_service !== id),
+						services: services.filter((p) => p.id_service !== id),
 					};
 				}
-
-				const existingService = operations.find((p) => p.id_service === id);
+				const existingService = services.find((p) => p.id_service === id);
 				if (!existingService) {
 					return {
 						...prev,
-						operations: [...operations, { id_service: id, name: name, amount: newAmount }],
+						services: [...services, { id_service: id, name: name, amount: newAmount, unit: unit }],
 					};
 				}
 
 				return {
 					...prev,
-					operations: operations.map((p) => (p.id_service === id ? { ...p, amount: newAmount } : p)),
+					services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount, unit: unit } : p)),
 				};
 			});
 		},
@@ -49,10 +49,10 @@ const OperationsForm = ({ onValidate }) => {
 	);
 
 	const handleCheckboxChange = (e) => {
-		const { name } = e.target;
+		const { name } = e;
 		setChecked((prev) => {
 			const newChecked = { ...prev, [name]: !prev[name] };
-			handleChange(e.id_service, e.name, newChecked[name] ? 1 : 0);
+			handleChange(e.id_service, e.name, newChecked[name] ? 1 : 0, e.unit);
 			return newChecked;
 		});
 	};
@@ -69,7 +69,6 @@ const OperationsForm = ({ onValidate }) => {
 	}, []);
 
 	const { handleSubmit, values } = formik;
-
 	return (
 		<>
 			<FormikProvider value={formik}>
@@ -84,12 +83,14 @@ const OperationsForm = ({ onValidate }) => {
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
 												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-													<InputLabel>Se desejar, pode adicionar serviços</InputLabel>
+													<InputLabel>Adicione serviços (opcional)</InputLabel>
 												</Grid>
 												<Grid container spacing={3}>
-													{searchOperations.map((e) => (
+													<OperationsList checked={checked} searchOperations={searchOperations} requestObject={requestResume} handleChange={handleChange} handleCheckboxChange={handleCheckboxChange} />
+													{/* {searchOperations.map((e) => (
 														<Grid item xs={12} key={e.id_service}>
 															<Stack spacing={1.25} sx={{ width: "100%" }}>
+																
 																{e.unit === "un" ? (
 																	<Grid sx={{ display: "flex", alignItems: "center", width: "100%", gap: 1 }}>
 																		<Checkbox
@@ -103,7 +104,7 @@ const OperationsForm = ({ onValidate }) => {
 																						return { ...prev, [e.name]: true };
 																					}
 																				});
-																				handleChange(e.id_service, e.name, checked[e.name] ? 0 : 1);
+																				handleChange(e.id_service, e.name, checked[e.name] ? 0 : 1, e.unit);
 																			}}
 																		/>
 																		<Typography>{e.name}</Typography>
@@ -134,7 +135,7 @@ const OperationsForm = ({ onValidate }) => {
 																			onChange={(el) => {
 																				const value = parseFloat(el.target.value);
 																				if (!isNaN(value) && value > 0) {
-																					handleChange(e.id_service, e.name, value);
+																					handleChange(e.id_service, e.name, value, e.unit);
 																				}
 																			}}
 																		/>
@@ -142,7 +143,7 @@ const OperationsForm = ({ onValidate }) => {
 																)}
 															</Stack>
 														</Grid>
-													))}
+													))} */}
 												</Grid>
 											</Stack>
 										</Grid>

@@ -10,6 +10,8 @@ import AddRequest from "sections/apps/requests/ScheduleForm";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import Loader from "components/Loader";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 
 export default function RequestsTable() {
 	const { findAllRequests, updateStatus } = useRequest();
@@ -76,7 +78,18 @@ export default function RequestsTable() {
 												variant="contained"
 												size="small"
 												onClick={async () => {
-													await updateStatus(e.id_request);
+													const response = await updateStatus(e.id_request);
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: response.message,
+															variant: "alert",
+															alert: {
+																color: "success",
+															},
+															close: false,
+														})
+													);
 													await findAllRequests(search, page);
 												}}
 											>

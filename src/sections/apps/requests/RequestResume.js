@@ -41,7 +41,7 @@ export const RequestResume = ({}) => {
 							{requestResume.takeoff_date ? dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
 						</TableCell>
 					</TableRow>
-					{requestResume.operations && requestResume.operations.length > 0 && (
+					{requestResume.services && requestResume.services.length > 0 && (
 						<>
 							<TableRow>
 								<TableCell sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>Serviços</TableCell>
@@ -57,8 +57,8 @@ export const RequestResume = ({}) => {
 										<Box sx={{ padding: 0 }}>
 											<Table>
 												<List sx={{ padding: 0, opacity: 0.5 }}>
-													{requestResume.operations.map((e) => (
-														<ListItem key={e.id_operation}>{`${e.name}  ${e.amount}L`}</ListItem>
+													{requestResume.services.map((e) => (
+														<ListItem key={e.id_operation}>{e.unit === "un" ? `${e.name}` : `${e.name} ${e.amount}${e.unit}`}</ListItem>
 													))}
 												</List>
 											</Table>

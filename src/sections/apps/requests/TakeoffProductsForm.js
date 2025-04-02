@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 
 // material-ui
-import { Grid, InputLabel, Stack, Checkbox, Card, CardContent, Typography, TextField, IconButton, Box } from "@mui/material";
+import { Grid, InputLabel, Stack, Checkbox, Card, CardContent, Typography, TextField, IconButton, Box, CircularProgress } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -85,7 +85,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 									<Stack spacing={1.25}>
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
 											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} />
-											<InputLabel>Já deseja agendar a decolagem?</InputLabel>
+											<InputLabel>Já deseja agendar a decolagem? (opcional)</InputLabel>
 										</Grid>
 										<DateTimePicker
 											value={requestResume ? requestResume.takeoff_date : formik.values.takeoff_date}
@@ -105,13 +105,13 @@ const TakeoffProductsForm = ({ onValidate }) => {
 									</Stack>
 								</Grid>
 								{loadingProduct ? (
-									<Loader />
+									<CircularProgress size={20} />
 								) : (
 									searchProducts.length > 0 && (
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
 												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-													<InputLabel>Se desejar, pode adicionar produtos</InputLabel>
+													<InputLabel>Adicione produtos (opcional)</InputLabel>
 												</Grid>
 												<ProductsList
 													searchProducts={searchProducts}

@@ -3,10 +3,13 @@
 import { destroyCookie } from "nookies";
 import { parseCookies } from "nookies";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const UseAxios = () => {
 	const authAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 	const publicAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
+
+	const navigate = useNavigate();
 
 	const insertAuthorization = async (config) => {
 		const cookies = parseCookies();
@@ -26,10 +29,12 @@ const UseAxios = () => {
 		destroyCookie(null, "sessionToken", {
 			path: "/",
 		});
+		navigate("/");
 	};
 
 	const invalidAuthorization = async (error) => {
-		if (error?.response?.status == 401) {
+		console.log(error);
+		if (error?.response?.status == 401 || error?.response?.status == 403) {
 			logout();
 		}
 

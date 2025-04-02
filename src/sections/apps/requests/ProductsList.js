@@ -2,7 +2,7 @@
 import { Grid, Card, CardContent, Typography, TextField, IconButton, Box } from "@mui/material";
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 
-export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, handleChangeAmount, handleRemoveProduct }) => {
+export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, handleChangeProductAmount, handleRemoveProduct }) => {
 	return (
 		<Grid>
 			<Box
@@ -55,8 +55,12 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 								</IconButton>
 								<TextField
 									type="number"
-									value={requestObject.products && requestObject.products.length > 0 ? requestObject.products.find((p) => p.id_product === e.id_product)?.amount : 0}
-									onChange={(el) => handleChangeAmount(e.id_product, e.name, Number(el.target.value))}
+									value={requestObject.products && requestObject.products.length > 0 ? (requestObject.products.find((p) => p.id_product === e.id_product)?.amount ?? "") : ""}
+									onChange={(el) => {
+										const rawValue = el.target.value;
+										const newValue = rawValue === "" ? "" : Math.max(0, Number(rawValue));
+										handleChangeProductAmount(e.id_product, newValue);
+									}}
 									inputProps={{ min: 0 }}
 									size="small"
 									sx={{ width: 80, mt: 1 }}
