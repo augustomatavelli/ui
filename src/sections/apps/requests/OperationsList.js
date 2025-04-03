@@ -3,8 +3,6 @@ import { Grid, Card, CardContent, Typography, TextField, Box, Checkbox } from "@
 import { FaGasPump, FaTaxi } from "react-icons/fa";
 
 export const OperationsList = ({ checked, setChecked, searchOperations, requestObject, handleChange, handleCheckboxChange }) => {
-	console.log(requestObject);
-
 	return (
 		<Grid>
 			<Box

@@ -141,10 +141,10 @@ const RequestDetails = () => {
 	};
 
 	const handleCheckboxChange = (e) => {
-		const { name } = e;
+		const { name, amount, unit } = e;
 		setChecked((prev) => {
 			const newChecked = { ...prev, [name]: !prev[name] };
-			handleChange(e.id_service, e.name, newChecked[name] ? 1 : 0, e.unit);
+			handleChange(e.id_service, e.name, unit === "un" ? 1 : amount, e.unit);
 			return newChecked;
 		});
 	};
@@ -156,7 +156,7 @@ const RequestDetails = () => {
 				if (newAmount === 0) {
 					return {
 						...prev,
-						services: services.map((p) => (p.id_service === id ? { ...p, amount: Math.max(0, p.amount - 1) } : p)),
+						services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount } : p)),
 					};
 				}
 				const existingService = services.find((p) => p.id_service === id);
@@ -176,9 +176,6 @@ const RequestDetails = () => {
 		[setEditRequest]
 	);
 
-	console.log(requestDetails);
-	console.log(editRequest);
-	console.log(openEditInput);
 	useEffect(() => {
 		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products], services: [...requestDetails.services] }));
 		requestDetails.services &&
@@ -186,7 +183,6 @@ const RequestDetails = () => {
 			requestDetails.services.forEach((e) =>
 				setChecked((prev) => {
 					const newChecked = { ...prev, [e.name]: !prev[e.name] };
-					handleChange(e.id_service, e.name, newChecked[e.name] ? 1 : 0, e.unit);
 					return newChecked;
 				})
 			);
@@ -363,26 +359,24 @@ const RequestDetails = () => {
 														<Box sx={{ padding: 0 }}>
 															{!openAddServices ? (
 																<>
-																	<Table>
-																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{editRequest.services &&
-																				editRequest.services.length > 0 &&
-																				editRequest.services.map(
-																					(e) =>
-																						e.amount > 0 && (
-																							<Chip
-																								label={e.unit === "un" ? `${e.name}` : `${e.name} ${e.amount}${e.unit}`}
-																								onDelete={() => {
-																									handleOpenEditInput("services");
-																									handleDeleteService(e.id_service);
-																								}}
-																								key={e.id_service}
-																								sx={{ alignSelf: "start" }}
-																							/>
-																						)
-																				)}
-																		</List>
-																	</Table>
+																	<List sx={{ padding: 0, display: "flex", gap: 1, width: "fit-content" }}>
+																		{editRequest.services &&
+																			editRequest.services.length > 0 &&
+																			editRequest.services.map(
+																				(e) =>
+																					e.amount > 0 && (
+																						<Chip
+																							label={e.unit === "un" ? `${e.name}` : `${e.name} ${e.amount}${e.unit}`}
+																							onDelete={() => {
+																								handleOpenEditInput("services");
+																								handleDeleteService(e.id_service);
+																							}}
+																							key={e.id_service}
+																							sx={{ alignSelf: "start", borderRadius: "16px" }}
+																						/>
+																					)
+																			)}
+																	</List>
 																	<Grid sx={{ mt: 2 }}>
 																		<Button
 																			variant="contained"
@@ -431,26 +425,24 @@ const RequestDetails = () => {
 														<Box sx={{ padding: 0 }}>
 															{!openAddProducts ? (
 																<>
-																	<Table>
-																		<List sx={{ padding: 0, display: "flex", flexDirection: "column", gap: 1, width: "fit-content" }}>
-																			{editRequest.products &&
-																				editRequest.products.length > 0 &&
-																				editRequest.products.map(
-																					(e) =>
-																						e.amount > 0 && (
-																							<Chip
-																								label={`${e.amount}x ${e.name}`}
-																								onDelete={() => {
-																									handleOpenEditInput("products");
-																									handleDeleteProduct(e.id_product);
-																								}}
-																								key={e.id_product}
-																								sx={{ alignSelf: "start" }}
-																							/>
-																						)
-																				)}
-																		</List>
-																	</Table>
+																	<List sx={{ padding: 0, display: "flex", gap: 1, width: "fit-content" }}>
+																		{editRequest.products &&
+																			editRequest.products.length > 0 &&
+																			editRequest.products.map(
+																				(e) =>
+																					e.amount > 0 && (
+																						<Chip
+																							label={`${e.amount}x ${e.name}`}
+																							onDelete={() => {
+																								handleOpenEditInput("products");
+																								handleDeleteProduct(e.id_product);
+																							}}
+																							key={e.id_product}
+																							sx={{ alignSelf: "start", borderRadius: "16px" }}
+																						/>
+																					)
+																			)}
+																	</List>
 																	<Grid sx={{ mt: 2 }}>
 																		<Button
 																			variant="contained"

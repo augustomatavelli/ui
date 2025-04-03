@@ -36,7 +36,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 
 		return newRequest;
 	};
-	console.log(requestResume);
+
 	useEffect(() => {
 		searchAllLandingSites();
 	}, []);

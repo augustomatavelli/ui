@@ -63,7 +63,6 @@ const OperationsForm = ({ onValidate }) => {
 		onValidate(true, values);
 	}, [formik.isValid, formik.dirty, formik.values]);
 
-	console.log(requestResume);
 	useEffect(() => {
 		searchAllOperations();
 	}, []);

@@ -12,7 +12,7 @@ export const RequestResume = ({}) => {
 	const [openProducts, setOpenProducts] = useState(false);
 
 	useEffect(() => {}, []);
-	console.log(requestResume);
+
 	return (
 		<TableContainer>
 			<Table sx={{ minWidth: "auto" }} size="small" aria-label="simple table">
