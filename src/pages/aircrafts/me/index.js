@@ -130,14 +130,7 @@ const MyAircrafts = () => {
 			{loadingAircraft ? (
 				<Loader />
 			) : searchAircrafts.length > 0 ? (
-				<Grid
-					container
-					sx={{
-						display: "grid",
-						gridTemplateColumns: "repeat(4, 1fr)",
-						gap: 5,
-					}}
-				>
+				<Grid container spacing={2}>
 					{searchAircrafts
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
@@ -148,7 +141,7 @@ const MyAircrafts = () => {
 							return a;
 						})
 						.map((aircraft) => (
-							<Grid key={aircraft.id_aircraft}>
+							<Grid item key={aircraft.id_aircraft} xs={12} sm={6} md={4} lg={3}>
 								<AircraftCard data={aircraft} setReload={setReload} reload={reload} />
 							</Grid>
 						))}
