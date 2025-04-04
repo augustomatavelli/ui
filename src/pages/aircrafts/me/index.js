@@ -16,6 +16,7 @@ import AircraftContext from "contexts/AircraftContext";
 import useAircraft from "hooks/useAircraft";
 import UserContext from "contexts/UserContext";
 import Loader from "components/Loader";
+import SearchAircraft from "sections/apps/aircrafts/SearchAircraft";
 
 const allColumns = [
 	{
@@ -49,11 +50,11 @@ const MyAircrafts = () => {
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
 	const [sortBy, setSortBy] = useState("");
-	const [globalFilter, setGlobalFilter] = useState("");
 	const [add, setAdd] = useState(false);
 	const [aircraft, setAircraft] = useState(null);
 	const [page, setPage] = useState(1);
 	const [reload, setReload] = useState(false);
+	const [search, setSearch] = useState("");
 
 	const handleChange = (event) => {
 		setSortBy(event.target.value);
@@ -62,7 +63,7 @@ const MyAircrafts = () => {
 	const handleAdd = () => {
 		setAdd(!add);
 		if (aircraft && !add) setAircraft(null);
-		searchAllAircrafts(globalFilter, page);
+		searchAllAircrafts(search, page);
 	};
 
 	const handleChangePage = (event, value) => {
@@ -70,8 +71,8 @@ const MyAircrafts = () => {
 	};
 
 	useEffect(() => {
-		searchAllAircrafts(globalFilter, page);
-	}, [globalFilter, page, reload]);
+		searchAllAircrafts(search, page);
+	}, [search, page, reload]);
 
 	useEffect(() => {}, [searchAircrafts]);
 
@@ -80,7 +81,7 @@ const MyAircrafts = () => {
 			<Box sx={{ position: "relative", marginBottom: 3 }}>
 				<Stack direction="row" alignItems="center">
 					<Stack direction={matchDownSM ? "column" : "row"} sx={{ width: "100%" }} spacing={1} justifyContent="space-between" alignItems="center">
-						<GlobalFilter preGlobalFilteredRows={searchAircrafts} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+						<SearchAircraft setSearch={setSearch} />
 						<Stack direction={matchDownSM ? "column" : "row"} alignItems="center" spacing={1}>
 							<FormControl sx={{ m: 1, minWidth: 120 }}>
 								<Select

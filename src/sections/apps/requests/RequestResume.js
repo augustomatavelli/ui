@@ -43,7 +43,7 @@ export const RequestResume = ({}) => {
 					</TableRow>
 					{requestResume.services && requestResume.services.length > 0 && (
 						<>
-							<TableRow>
+							<TableRow onClick={() => setOpenOperations(!openOperations)} sx={{ cursor: "pointer" }}>
 								<TableCell sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>Serviços</TableCell>
 								<TableCell align="right" sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>
 									<Button type="secondary" onClick={() => setOpenOperations(!openOperations)} color="secondary">
@@ -70,7 +70,7 @@ export const RequestResume = ({}) => {
 					)}
 					{requestResume.products && requestResume.products.length > 0 && (
 						<>
-							<TableRow>
+							<TableRow onClick={() => setOpenProducts(!openProducts)} sx={{ cursor: "pointer" }}>
 								<TableCell sx={{ borderBottom: openProducts && "none", opacity: 0.5 }}>Produtos</TableCell>
 								<TableCell align="right" sx={{ borderBottom: openProducts && "none", opacity: 0.5 }}>
 									<Button type="secondary" onClick={() => setOpenProducts(!openProducts)} color="secondary">

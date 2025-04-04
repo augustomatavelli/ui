@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 
 // material-ui
-import { Grid, InputLabel, Stack, Checkbox, Card, CardContent, Typography, TextField, IconButton, Box, CircularProgress } from "@mui/material";
+import { Grid, InputLabel, Stack, Checkbox, Card, CardContent, Typography, TextField, IconButton, Box, CircularProgress, Skeleton } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -104,89 +104,29 @@ const TakeoffProductsForm = ({ onValidate }) => {
 										/>
 									</Stack>
 								</Grid>
-								{loadingProduct ? (
-									<CircularProgress size={20} />
-								) : (
-									searchProducts.length > 0 && (
-										<Grid item xs={12}>
-											<Stack spacing={1.25}>
-												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-													<InputLabel>Adicione produtos (opcional)</InputLabel>
-												</Grid>
+								{searchProducts.length > 0 && (
+									<Grid item xs={12}>
+										<Stack spacing={1.25}>
+											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
+												<InputLabel>Adicione produtos (opcional)</InputLabel>
+											</Grid>
+											{loadingProduct ? (
+												Array.from({ length: 5 }).map((_, index) => (
+													<Grid key={index} sx={{ display: "flex" }}>
+														<Skeleton variant="rectangular" width={200} height={50} />
+													</Grid>
+												))
+											) : (
 												<ProductsList
 													searchProducts={searchProducts}
 													requestObject={requestResume}
 													handleAddProduct={handleAddProduct}
-													handleChangeAmount={handleChangeAmount}
+													handleChangeProductAmount={handleChangeAmount}
 													handleRemoveProduct={handleRemoveProduct}
 												/>
-												{/* <Box
-														sx={{
-															display: "flex",
-															overflowX: "auto",
-															padding: "1rem",
-															whiteSpace: "nowrap",
-															"&::-webkit-scrollbar": {
-																height: "8px",
-															},
-															"&::-webkit-scrollbar-thumb": {
-																backgroundColor: "#888",
-															},
-															"&::-webkit-scrollbar-thumb:hover": {
-																backgroundColor: "#555",
-															},
-														}}
-													>
-														{searchProducts.map((e) => (
-															<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
-																<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-																	<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
-																		<Box
-																			sx={{
-																				width: "100%",
-																				height: "50px",
-																				overflow: "hidden",
-																				display: "flex",
-																				alignItems: "center",
-																				justifyContent: "center",
-																				backgroundColor: "#f0f0f0",
-																			}}
-																		>
-																			<img
-																				src={`data:image/jpeg;base64,${e.image}`}
-																				alt="Product"
-																				style={{
-																					width: "100%",
-																					height: "100%",
-																					objectFit: "fill",
-																				}}
-																			/>
-																		</Box>
-																		<Typography variant="subtitle1">{e.name}</Typography>
-																	</Grid>
-																	<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-																		<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
-																			<MinusCircleFilled />
-																		</IconButton>
-																		<TextField
-																			type="number"
-																			value={requestResume.products && requestResume.products.length > 0 ? requestResume.products.find((p) => p.id_product === e.id_product)?.amount : 0}
-																			onChange={(el) => handleChangeAmount(e.id_product, e.name, Number(el.target.value))}
-																			inputProps={{ min: 0 }}
-																			size="small"
-																			sx={{ width: 80, mt: 1 }}
-																		/>
-																		<IconButton onClick={() => handleAddProduct(e.id_product, e.name)} color="success" sx={{ mt: 1, fontSize: 20 }}>
-																			<PlusCircleFilled />
-																		</IconButton>
-																	</Grid>
-																</CardContent>
-															</Card>
-														))}
-													</Box> */}
-											</Stack>
-										</Grid>
-									)
+											)}
+										</Stack>
+									</Grid>
 								)}
 							</Grid>
 						</Grid>

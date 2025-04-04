@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, Table, CircularProgress } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -344,7 +344,7 @@ const RequestDetails = () => {
 											</Grid>
 										</ListItem>
 										<Divider />
-										<ListItem>
+										<ListItem onClick={() => setOpenOperations(!openOperations)} sx={{ cursor: "pointer" }}>
 											<Grid container spacing={3} alignItems="center">
 												<Grid item xs={6}>
 													<Typography color="secondary">Serviços</Typography>
@@ -410,7 +410,7 @@ const RequestDetails = () => {
 											</Grid>
 										</ListItem>
 										<Divider />
-										<ListItem>
+										<ListItem onClick={() => setOpenProducts(!openProducts)} sx={{ cursor: "pointer" }}>
 											<Grid container spacing={3} alignItems="center">
 												<Grid item xs={6}>
 													<Typography color="secondary">Produtos</Typography>
@@ -458,16 +458,42 @@ const RequestDetails = () => {
 																		</Button>
 																	</Grid>
 																</>
-															) : loadingProduct ? (
-																<CircularProgress size={20} />
 															) : (
-																<ProductsList
-																	searchProducts={searchProducts}
-																	requestObject={editRequest}
-																	handleAddProduct={handleAddProduct}
-																	handleChangeProductAmount={handleChangeProductAmount}
-																	handleRemoveProduct={handleRemoveProduct}
-																/>
+																<Grid>
+																	<Box
+																		sx={{
+																			display: "flex",
+																			overflowX: "auto",
+																			padding: "1rem",
+																			whiteSpace: "nowrap",
+																			"&::-webkit-scrollbar": {
+																				height: "8px",
+																			},
+																			"&::-webkit-scrollbar-thumb": {
+																				backgroundColor: "#888",
+																			},
+																			"&::-webkit-scrollbar-thumb:hover": {
+																				backgroundColor: "#555",
+																			},
+																		}}
+																	>
+																		{loadingProduct ? (
+																			Array.from({ length: 5 }).map((_, index) => (
+																				<Grid key={index} sx={{ display: "flex" }}>
+																					<Skeleton variant="rectangular" width={200} height={50} />
+																				</Grid>
+																			))
+																		) : (
+																			<ProductsList
+																				searchProducts={searchProducts}
+																				requestObject={editRequest}
+																				handleAddProduct={handleAddProduct}
+																				handleChangeProductAmount={handleChangeProductAmount}
+																				handleRemoveProduct={handleRemoveProduct}
+																			/>
+																		)}
+																	</Box>
+																</Grid>
 															)}
 														</Box>
 													</Collapse>

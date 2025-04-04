@@ -1,19 +1,23 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import Loader from "components/Loader";
 import dayjs from "dayjs";
+import { UpOutlined, DownOutlined } from "@ant-design/icons";
+import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
 
 const UserDetails = () => {
 	const { findOneUserById } = useUser();
 
 	const { loadingUser, userDetails, setUserDetails } = useContext(UserContext);
+
+	const [openUserAircrafts, setOpenUserAircrafts] = useState(false);
 
 	const { id } = useParams();
 
@@ -107,6 +111,54 @@ const UserDetails = () => {
 													<Typography> {dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
 												</Stack>
 											</Grid>
+										</Grid>
+									</ListItem>
+									<Divider />
+									<ListItem onClick={() => setOpenUserAircrafts(!openUserAircrafts)} sx={{ cursor: "pointer" }}>
+										<Grid container spacing={3}>
+											<Grid item xs={6}>
+												<Typography color="secondary">Aeronaves</Typography>
+											</Grid>
+											<>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" color="secondary">
+														{openUserAircrafts ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openUserAircrafts}>
+														<Box sx={{ padding: 0 }}>
+															<Grid>
+																<Box
+																	sx={{
+																		display: "flex",
+																		overflowX: "auto",
+																		padding: "1rem",
+																		whiteSpace: "nowrap",
+																		"&::-webkit-scrollbar": {
+																			height: "8px",
+																		},
+																		"&::-webkit-scrollbar-thumb": {
+																			backgroundColor: "#888",
+																		},
+																		"&::-webkit-scrollbar-thumb:hover": {
+																			backgroundColor: "#555",
+																		},
+																	}}
+																>
+																	{userDetails.aircrafts && userDetails.aircrafts.length > 0 ? (
+																		<UserAircraftsList data={userDetails.aircrafts} />
+																	) : (
+																		<Grid sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+																			<Typography variant="subtitle1">Usuário não possui nenhuma aeronave vinculada</Typography>
+																		</Grid>
+																	)}
+																</Box>
+															</Grid>
+														</Box>
+													</Collapse>
+												</Grid>
+											</>
 										</Grid>
 									</ListItem>
 									<Divider />
