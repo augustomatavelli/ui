@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import Loader from "components/Loader";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
+import { useNavigate } from "react-router";
 
 export default function RequestsTable() {
 	const { findAllRequests, updateStatus } = useRequest();
@@ -22,7 +23,7 @@ export default function RequestsTable() {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
 
-	const theme = useTheme();
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -31,6 +32,10 @@ export default function RequestsTable() {
 	const handleAdd = async () => {
 		setOpen(!open);
 		await findAllRequests(search, page);
+	};
+
+	const handleRedirect = (requestId) => {
+		navigate(`/requests/${requestId}`);
 	};
 
 	useEffect(() => {
@@ -68,7 +73,14 @@ export default function RequestsTable() {
 							<Loader />
 						) : requests.length > 0 ? (
 							requests.map((e) => (
-								<TableRow hover key={e.id_request}>
+								<TableRow
+									hover
+									key={e.id_request}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(e.id_request);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
@@ -77,7 +89,8 @@ export default function RequestsTable() {
 											<Button
 												variant="contained"
 												size="small"
-												onClick={async () => {
+												onClick={async (event) => {
+													event.stopPropagation();
 													const response = await updateStatus(e.id_request);
 													dispatch(
 														openSnackbar({

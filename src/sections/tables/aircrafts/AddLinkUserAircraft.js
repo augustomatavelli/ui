@@ -31,7 +31,7 @@ export default function AddLinkUserAircraftTable() {
 	const { addLinkUserAircraft } = useAircraft();
 
 	const { searchUser, setSearchUser, loadingUser } = useContext(UserContext);
-	const { searchUserAircraftLink } = useContext(AircraftContext);
+	const { searchUserAircraftLink, loadingAircraft } = useContext(AircraftContext);
 
 	const { id } = useParams();
 	const theme = useTheme();
@@ -78,7 +78,7 @@ export default function AddLinkUserAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingUser ? (
+						{loadingUser || loadingAircraft ? (
 							<Loader />
 						) : searchUser.length > 0 ? (
 							searchUser.map((user) => (

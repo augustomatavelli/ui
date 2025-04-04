@@ -111,7 +111,8 @@ export default function UsersTable() {
 															color: theme.palette.success.main,
 															cursor: "pointer",
 														}}
-														onClick={async () => {
+														onClick={async (event) => {
+															event.stopPropagation();
 															await approveUser({ id_user: user.id_user, approve: "S" });
 															await findAllUsers(search, page);
 														}}
@@ -124,7 +125,8 @@ export default function UsersTable() {
 															color: theme.palette.error.main,
 															cursor: "pointer",
 														}}
-														onClick={async () => {
+														onClick={async (event) => {
+															event.stopPropagation();
 															await approveUser({ id_user: user.id_user, approve: "N" });
 															await findAllUsers(search, page);
 														}}

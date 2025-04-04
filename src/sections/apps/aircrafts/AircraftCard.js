@@ -16,6 +16,7 @@ import UserContext from "contexts/UserContext";
 import AddRequest from "../requests/ScheduleForm";
 import { PopupTransition } from "components/@extended/Transitions";
 import AircraftContext from "contexts/AircraftContext";
+import { borderColor } from "@mui/system";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
@@ -39,7 +40,24 @@ const AircraftCard = ({ data, setReload, reload }) => {
 	return (
 		<>
 			<MainCard
-				sx={{ height: 1, cursor: "pointer", "& .MuiCardContent-root": { height: 1, display: "flex", flexDirection: "column" } }}
+				sx={{
+					height: 1,
+					cursor: "pointer",
+					border: 2,
+					borderRadius: 2,
+					borderColor: status === "A" && user.status === "A" && hasRequest === 0 ? "primary.main" : "warning.main",
+					boxShadow: 3,
+					transition: "all 0.3s ease-in-out",
+					"&:hover": {
+						boxShadow: 4,
+						transform: "scale(1.03)",
+					},
+					"& .MuiCardContent-root": {
+						height: 1,
+						display: "flex",
+						flexDirection: "column",
+					},
+				}}
 				onClick={() => {
 					handleaircraftDetailsPage(id_aircraft);
 				}}
@@ -106,8 +124,8 @@ const AircraftCard = ({ data, setReload, reload }) => {
 						</Box>
 					</Grid>
 				</Grid>
-				{status === "A" && user.status === "A" && hasRequest === 0 && (
-					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ mt: "auto", mb: 0, pt: 2.25 }}>
+				{status === "A" && user.status === "A" && hasRequest === 0 ? (
+					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ pt: 2.25 }}>
 						<Button
 							variant="outlined"
 							size="small"
@@ -122,6 +140,12 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							Solicitar pouso
 						</Button>
 					</Stack>
+				) : hasRequest === 1 ? (
+					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ pt: 2.25 }}>
+						<Chip label="Solicitação em aberto" color="warning" variant="filled" />
+					</Stack>
+				) : (
+					<></>
 				)}
 			</MainCard>
 			{/* 	<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>

@@ -165,13 +165,20 @@ const AddProduct = ({ onCancel }) => {
 												cursor: "pointer",
 											}}
 										>
-											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }} />
+											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+												{!avatar && (
+													<Stack spacing={0.5} alignItems="center">
+														<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+														<Typography sx={{ color: "secondary.lighter" }}>Carregar imagem</Typography>
+													</Stack>
+												)}
+											</Avatar>
 											<Box
 												sx={{
 													position: "absolute",
 													top: 0,
 													left: 0,
-													backgroundColor: theme.palette.mode === ThemeMode.DARK ? "rgba(255, 255, 255, .75)" : "rgba(0,0,0,.65)",
+													backgroundColor: "rgba(0,0,0,.25)",
 													width: "100%",
 													height: "100%",
 													opacity: 0,
@@ -179,12 +186,7 @@ const AddProduct = ({ onCancel }) => {
 													alignItems: "center",
 													justifyContent: "center",
 												}}
-											>
-												<Stack spacing={0.5} alignItems="center">
-													<CameraOutlined style={{ color: theme.palette.secondary.lighter, fontSize: "2rem" }} />
-													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
-												</Stack>
-											</Box>
+											/>
 										</FormLabel>
 										<TextField
 											type="file"
@@ -269,7 +271,11 @@ const AddProduct = ({ onCancel }) => {
 													renderValue={values.category ? undefined : () => <Typography variant="subtitle1">Selecione uma categoria</Typography>}
 												>
 													{categories.map((e) => {
-														return <MenuItem value={e.id_category}>{e.name}</MenuItem>;
+														return (
+															<MenuItem key={e.id_category} value={e.id_category}>
+																{e.name}
+															</MenuItem>
+														);
 													})}
 												</Select>
 												{touched.category && errors.category && (

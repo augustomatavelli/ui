@@ -44,7 +44,6 @@ export default function MyAircraftsRequestsTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
 							<TableCell align="center">Aeronave</TableCell>
@@ -60,21 +59,16 @@ export default function MyAircraftsRequestsTable() {
 							<Loader />
 						) : searchAircraftsRequests.length > 0 ? (
 							searchAircraftsRequests.map((e) => (
-								<TableRow hover key={e.id_request}>
+								<TableRow
+									hover
+									key={e.id_request}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										navigate(`/requests/${e.id_request}`);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
-									</TableCell>
-									<TableCell align="center">
-										<Tooltip title="Visualizar detalhes">
-											<EyeOutlined
-												style={{
-													fontSize: "20px",
-												}}
-												onClick={() => {
-													navigate(`/requests/${e.id_request}`);
-												}}
-											/>
-										</Tooltip>
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
 									<TableCell align="center">

@@ -31,7 +31,7 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 	const { removeLinkUserAircraft } = useAircraft();
 
 	const { searchUser, loadingUser } = useContext(UserContext);
-	const { searchUserAircraftLink } = useContext(AircraftContext);
+	const { searchUserAircraftLink, loadingAircraft } = useContext(AircraftContext);
 
 	const { id } = useParams();
 	const theme = useTheme();
@@ -72,7 +72,7 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingUser ? (
+						{loadingUser || loadingAircraft ? (
 							<Loader />
 						) : searchUser.length > 0 ? (
 							searchUser.map((user) => (

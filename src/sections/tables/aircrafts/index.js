@@ -107,7 +107,8 @@ export default function AircraftsTable() {
 															color: theme.palette.success.main,
 															cursor: "pointer",
 														}}
-														onClick={async () => {
+														onClick={async (event) => {
+															event.stopPropagation();
 															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
 															await findAllAircrafts(search, page);
 														}}
@@ -120,7 +121,8 @@ export default function AircraftsTable() {
 															color: theme.palette.error.main,
 															cursor: "pointer",
 														}}
-														onClick={async () => {
+														onClick={async (event) => {
+															event.stopPropagation();
 															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
 															await findAllAircrafts(search, page);
 														}}

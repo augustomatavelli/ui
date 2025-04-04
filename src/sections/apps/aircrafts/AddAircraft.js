@@ -27,6 +27,7 @@ import {
 	Autocomplete,
 	Checkbox,
 	useTheme,
+	Avatar,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -38,7 +39,6 @@ import { useFormik, Form, FormikProvider } from "formik";
 
 // project imports
 /* import AlertCustomerDelete from "./AlertCustomerDelete"; */
-import Avatar from "components/@extended/Avatar";
 
 import { ThemeMode } from "config";
 import { dispatch } from "store";
@@ -172,7 +172,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<DialogTitle>Adicionar Aeronave</DialogTitle>
+						<DialogTitle>Criar Aeronave</DialogTitle>
 						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
@@ -188,13 +188,20 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 												cursor: "pointer",
 											}}
 										>
-											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }} />
+											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+												{!avatar && (
+													<Stack spacing={0.5} alignItems="center">
+														<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+														<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
+													</Stack>
+												)}
+											</Avatar>
 											<Box
 												sx={{
 													position: "absolute",
 													top: 0,
 													left: 0,
-													backgroundColor: theme.palette.mode === ThemeMode.DARK ? "rgba(255, 255, 255, .75)" : "rgba(0,0,0,.65)",
+													backgroundColor: "rgba(0,0,0,.25)",
 													width: "100%",
 													height: "100%",
 													opacity: 0,
@@ -202,12 +209,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 													alignItems: "center",
 													justifyContent: "center",
 												}}
-											>
-												<Stack spacing={0.5} alignItems="center">
-													<CameraOutlined style={{ color: theme.palette.secondary.lighter, fontSize: "2rem" }} />
-													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
-												</Stack>
-											</Box>
+											/>
 										</FormLabel>
 										<TextField
 											type="file"
