@@ -12,6 +12,7 @@ import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin";
 import Loader from "components/Loader";
 import { useNavigate } from "react-router";
+import UserContext from "contexts/UserContext";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -23,9 +24,10 @@ export const header = [
 ];
 
 export default function AircraftsTable() {
-	const { findAllAircrafts, approveAircraft } = useAircraft();
+	const { findAllAircrafts, approveAircraft, searchAllAircrafts } = useAircraft();
 
 	const { aircrafts, totalAircrafts, loadingAircraft } = useContext(AircraftContext);
+	const { user } = useContext(UserContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -40,7 +42,7 @@ export default function AircraftsTable() {
 
 	const handleAdd = async () => {
 		setOpen(!open);
-		await findAllAircrafts(search, page);
+		user.type === "A" ? await findAllAircrafts(search, page) : await searchAllAircrafts(search, page);
 	};
 
 	const handleRedirect = (aircraftId) => {
@@ -48,7 +50,7 @@ export default function AircraftsTable() {
 	};
 
 	useEffect(() => {
-		findAllAircrafts(search, page);
+		user.type === "A" ? findAllAircrafts(search, page) : searchAllAircrafts(search, page);
 	}, [search, page]);
 
 	useEffect(() => {}, [aircrafts]);

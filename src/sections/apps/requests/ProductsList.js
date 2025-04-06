@@ -31,7 +31,14 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 					<Typography variant="subtitle1">{e.name}</Typography>
 				</Grid>
 				<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-					<IconButton onClick={() => handleRemoveProduct(e.id_product, e.name)} color="error" sx={{ mt: 1, fontSize: 20 }}>
+					<IconButton
+						onClick={(event) => {
+							event.stopPropagation();
+							handleRemoveProduct(e.id_product, e.name);
+						}}
+						color="error"
+						sx={{ mt: 1, fontSize: 20 }}
+					>
 						<MinusCircleFilled />
 					</IconButton>
 					<TextField
@@ -42,11 +49,20 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 							const newValue = rawValue === "" ? "" : Math.max(0, Number(rawValue));
 							handleChangeProductAmount(e.id_product, newValue);
 						}}
+						onClick={(el) => el.stopPropagation()}
+						onFocus={(el) => el.stopPropagation()}
 						inputProps={{ min: 0 }}
 						size="small"
 						sx={{ width: 80, mt: 1 }}
 					/>
-					<IconButton onClick={() => handleAddProduct(e.id_product, e.name)} color="success" sx={{ mt: 1, fontSize: 20 }}>
+					<IconButton
+						onClick={(event) => {
+							event.stopPropagation();
+							handleAddProduct(e.id_product, e.name);
+						}}
+						color="success"
+						sx={{ mt: 1, fontSize: 20 }}
+					>
 						<PlusCircleFilled />
 					</IconButton>
 				</Grid>

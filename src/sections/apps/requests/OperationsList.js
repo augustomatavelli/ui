@@ -25,7 +25,7 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 				{searchOperations.map((e) => (
 					<Card key={e.id_service} sx={{ minWidth: 200, marginRight: "1rem", position: "relative", paddingTop: "16px" }}>
 						<Box sx={{ position: "absolute", top: 8, left: 8 }}>
-							<Checkbox checked={checked[e.name]} onChange={() => handleCheckboxChange(e)} />
+							<Checkbox checked={checked[e.name]} onChange={() => handleCheckboxChange(e)} onClick={(event) => event.stopPropagation()} />
 						</Box>
 						<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 							<Grid
@@ -62,6 +62,8 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 										const newValue = rawValue === "" ? "" : Math.max(0, Number(rawValue));
 										handleChange(e.id_service, e.name, newValue, e.unit);
 									}}
+									onClick={(e) => e.stopPropagation()}
+									onFocus={(e) => e.stopPropagation()}
 									inputProps={{ min: 0 }}
 									size="small"
 									sx={{ width: 80, mt: 1 }}

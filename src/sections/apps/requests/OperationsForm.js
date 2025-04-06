@@ -49,10 +49,10 @@ const OperationsForm = ({ onValidate }) => {
 	);
 
 	const handleCheckboxChange = (e) => {
-		const { name } = e;
+		const { name, amount, unit } = e;
 		setChecked((prev) => {
 			const newChecked = { ...prev, [name]: !prev[name] };
-			handleChange(e.id_service, e.name, newChecked[name] ? 1 : 0, e.unit);
+			handleChange(e.id_service, e.name, unit === "un" ? 1 : amount, e.unit);
 			return newChecked;
 		});
 	};
@@ -86,63 +86,6 @@ const OperationsForm = ({ onValidate }) => {
 												</Grid>
 												<Grid container spacing={3}>
 													<OperationsList checked={checked} searchOperations={searchOperations} requestObject={requestResume} handleChange={handleChange} handleCheckboxChange={handleCheckboxChange} />
-													{/* {searchOperations.map((e) => (
-														<Grid item xs={12} key={e.id_service}>
-															<Stack spacing={1.25} sx={{ width: "100%" }}>
-																
-																{e.unit === "un" ? (
-																	<Grid sx={{ display: "flex", alignItems: "center", width: "100%", gap: 1 }}>
-																		<Checkbox
-																			checked={checked[e.name]}
-																			onChange={() => {
-																				setChecked((prev) => {
-																					if (prev[e.name]) {
-																						const { [e.name]: removed, ...rest } = prev;
-																						return rest;
-																					} else {
-																						return { ...prev, [e.name]: true };
-																					}
-																				});
-																				handleChange(e.id_service, e.name, checked[e.name] ? 0 : 1, e.unit);
-																			}}
-																		/>
-																		<Typography>{e.name}</Typography>
-																	</Grid>
-																) : (
-																	<Grid sx={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "flex-start", gap: 1 }}>
-																		<Checkbox
-																			checked={checked[e.name] || false}
-																			onClick={() =>
-																				setChecked((prev) => {
-																					if (prev[e.name]) {
-																						const { [e.name]: removed, ...rest } = prev;
-																						return rest;
-																					} else {
-																						return { ...prev, [e.name]: true };
-																					}
-																				})
-																			}
-																		/>
-																		<InputLabel htmlFor="Número de passageiros">Deseja {e.name.toLowerCase()}?</InputLabel>
-																		<TextField
-																			id="amount"
-																			type="number"
-																			value={e.amount}
-																			placeholder="Digite um valor..."
-																			inputProps={{ min: 0 }}
-																			disabled={!checked[e.name] || false}
-																			onChange={(el) => {
-																				const value = parseFloat(el.target.value);
-																				if (!isNaN(value) && value > 0) {
-																					handleChange(e.id_service, e.name, value, e.unit);
-																				}
-																			}}
-																		/>
-																	</Grid>
-																)}
-															</Stack>
-														</Grid>
-													))} */}
 												</Grid>
 											</Stack>
 										</Grid>

@@ -50,7 +50,6 @@ import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
 import UserContext from "contexts/UserContext";
 
-// constant
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
 		rab: "",
@@ -76,17 +75,17 @@ const allStatus = ["A", "B", "C", "D", "E"];
 
 // ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
 
-const AddAircraft = ({ aircraft, onCancel, resp }) => {
-	const { createAircraft, searchAllAircrafts } = useAircraft();
+const AddAircraft = ({ aircraft, onCancel }) => {
+	const { createAircraft, searchAllAircrafts, findAllAircrafts } = useAircraft();
 
 	const { usersResp, user } = useContext(UserContext);
 
-	const [isMembership, setIsMembership] = useState(true);
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
 	const [typeDoc, setTypeDoc] = useState("cpf");
 	const [toggleCheckbox, setToggleCheckbox] = useState(false);
 	const [showUserResp, setShowUserResp] = useState(false);
+	const [selectedUserResp, setSelectedUserResp] = useState(false);
 
 	const theme = useTheme();
 
@@ -118,15 +117,26 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
 			.required("Celular é obrigatório"),
-		membership: Yup.string().max(255),
+		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
+	});
+
+	const AircraftNewUserSchema = Yup.object().shape({
+		rab: Yup.string().max(255).required("RAB é obrigatório"),
+		category: Yup.string().required("Categoria é obrigatório"),
+		name: Yup.string(),
+		doc: Yup.string(),
+		email: Yup.string(),
+		phone: Yup.string(),
+		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
 	});
 
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
-		validationSchema: AircraftSchema,
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
+		validationSchema: selectedUserResp ? AircraftNewUserSchema : AircraftSchema,
+		onSubmit: async (values, { setSubmitting, setErrors, setStatus, errors }) => {
 			try {
 				const { rab, category, membership, name, email, doc, phone } = values;
+
 				let base64Image = "";
 				base64Image = await readFile(selectedImage);
 				const newAircraft = {
@@ -134,15 +144,15 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					name: resp === 1 ? user.name : name,
-					email: resp === 1 ? user.email : email,
-					phone: resp === 1 ? user.mobile : phone,
-					cpf: resp === 1 ? user.cpf || user.cnpj || (typeDoc === "cpf" ? doc.replace(/\D/g, "") : "") : typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
-					cnpj: resp === 1 ? user.cnpj || user.cpf || (typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "") : typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
-					isNewUserResp: false,
+					name: name,
+					email: email,
+					phone: phone,
+					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
+					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
+					isNewUserResp: showUserResp,
 				};
+				console.log(newAircraft);
 				const response = await createAircraft(newAircraft);
-				await searchAllAircrafts("", 1);
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -155,6 +165,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 							close: false,
 						})
 					);
+					user.type === "A" ? await findAllAircrafts("", 1) : await searchAllAircrafts("", 1);
 					setStatus({ success: true });
 					setSubmitting(false);
 					onCancel();
@@ -306,7 +317,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 														checked={toggleCheckbox}
 														onChange={() => {
 															setToggleCheckbox(!toggleCheckbox);
-															setShowUserResp(false);
+															setShowUserResp(true);
 															setFieldValue("name", "");
 															setFieldValue("email", "");
 															setFieldValue("phone", "");
@@ -318,7 +329,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 												style={{ display: "flex", alignItems: "center", gap: 2 }}
 											/>
 										</Grid>
-										{!toggleCheckbox && !showUserResp ? (
+										{!toggleCheckbox && !selectedUserResp && (
 											<Grid item xs={12}>
 												<Stack spacing={1.25}>
 													<InputLabel htmlFor="responsible">Responsável</InputLabel>
@@ -332,7 +343,8 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 																setFieldValue("phone", selectedUser.mobile);
 																setFieldValue("doc", selectedUser.cpf ? selectedUser.cpf : selectedUser.cnpj);
 																selectedUser.cpf ? setTypeDoc("cpf") : setTypeDoc("cnpj");
-																setShowUserResp(!showUserResp);
+																setShowUserResp(false);
+																setSelectedUserResp(true);
 																setToggleCheckbox(false);
 															}
 														}}
@@ -340,7 +352,8 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 													/>
 												</Stack>
 											</Grid>
-										) : (
+										)}
+										{(selectedUserResp || (!selectedUserResp && toggleCheckbox)) && (
 											<>
 												<Grid item xs={12}>
 													<Stack spacing={1.25}>
@@ -352,7 +365,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 															{...getFieldProps("name")}
 															error={Boolean(touched.name && errors.name)}
 															helperText={touched.name && errors.name}
-															disabled={showUserResp && !toggleCheckbox}
+															disabled={!toggleCheckbox}
 														/>
 													</Stack>
 												</Grid>
@@ -360,16 +373,10 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 													<Stack spacing={1}>
 														<InputLabel htmlFor="doc-signup">Documento do responsável</InputLabel>
 														<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
-															<FormControlLabel value="cpf" control={<Radio disabled={showUserResp && !toggleCheckbox} />} label="CPF" />
-															<FormControlLabel value="cnpj" control={<Radio disabled={showUserResp && !toggleCheckbox} />} label="CNPJ" />
+															<FormControlLabel value="cpf" control={<Radio disabled={!toggleCheckbox} />} label="CPF" />
+															<FormControlLabel value="cnpj" control={<Radio disabled={!toggleCheckbox} />} label="CNPJ" />
 														</RadioGroup>
-														<InputMask
-															mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"}
-															value={values.doc}
-															onChange={handleChange}
-															onBlur={handleBlur}
-															disabled={showUserResp && !toggleCheckbox}
-														>
+														<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur} disabled={!toggleCheckbox}>
 															{() => (
 																<OutlinedInput
 																	fullWidth
@@ -379,7 +386,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 																	placeholder="Digite o número do documento"
 																	sx={{
 																		"& .MuiInputBase-input": {
-																			color: showUserResp && !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
+																			color: !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
 																		},
 																	}}
 																/>
@@ -402,18 +409,18 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 															{...getFieldProps("email")}
 															error={Boolean(touched.email && errors.email)}
 															helperText={touched.email && errors.email}
-															disabled={showUserResp && !toggleCheckbox}
+															disabled={!toggleCheckbox}
 														/>
 													</Stack>
 												</Grid>
 												<Grid item xs={12}>
 													<Stack spacing={1}>
 														<InputLabel htmlFor="phone-signup">Celular</InputLabel>
-														{showUserResp && !toggleCheckbox ? (
-															<TextField fullWidth id="phone-signup" {...getFieldProps("phone")} disabled={showUserResp && !toggleCheckbox} />
+														{!toggleCheckbox ? (
+															<TextField fullWidth id="phone-signup" {...getFieldProps("phone")} disabled={!toggleCheckbox} />
 														) : (
 															<>
-																<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur} disabled={showUserResp && !toggleCheckbox}>
+																<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur} disabled={!toggleCheckbox}>
 																	{() => (
 																		<OutlinedInput
 																			fullWidth
@@ -423,7 +430,7 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 																			placeholder="Digite o número do celular do responsável"
 																			sx={{
 																				"& .MuiInputBase-input": {
-																					color: showUserResp && !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
+																					color: !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
 																				},
 																			}}
 																		/>
@@ -443,9 +450,9 @@ const AddAircraft = ({ aircraft, onCancel, resp }) => {
 										<Grid item xs={12}>
 											<Stack spacing={1}>
 												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>
-												<RadioGroup row value={isMembership} onChange={(e) => setIsMembership(e.target.value === "true")}>
-													<FormControlLabel value={true} control={<Radio />} label="Sim" />
-													<FormControlLabel value={false} control={<Radio />} label="Não" />
+												<RadioGroup row name="membership" value={formik.values.membership} onChange={(e) => formik.setFieldValue("membership", Number(e.target.value))}>
+													<FormControlLabel value={1} control={<Radio />} label="Sim" />
+													<FormControlLabel value={0} control={<Radio />} label="Não" />
 												</RadioGroup>
 												{touched.membership && errors.membership && (
 													<FormHelperText error id="membership">

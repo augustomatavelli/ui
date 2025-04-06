@@ -93,6 +93,7 @@ const RequestDetails = () => {
 		setOpenAddProducts(false);
 		setOpenAddServices(false);
 		await findOneRequestById(id);
+		handleLoadPage();
 	};
 
 	const handleAddProduct = (newProduct, name) => {
@@ -176,7 +177,7 @@ const RequestDetails = () => {
 		[setEditRequest]
 	);
 
-	useEffect(() => {
+	const handleLoadPage = async () => {
 		Object.keys(requestDetails).length && setEditRequest((prev) => ({ ...prev, products: [...requestDetails.products], services: [...requestDetails.services] }));
 		requestDetails.services &&
 			requestDetails.services.length > 0 &&
@@ -186,6 +187,10 @@ const RequestDetails = () => {
 					return newChecked;
 				})
 			);
+	};
+
+	useEffect(() => {
+		handleLoadPage();
 	}, [requestDetails]);
 
 	useEffect(() => {
@@ -382,7 +387,8 @@ const RequestDetails = () => {
 																			variant="contained"
 																			size="small"
 																			startIcon={<PlusOutlined />}
-																			onClick={async () => {
+																			onClick={async (event) => {
+																				event.stopPropagation();
 																				await searchAllOperations();
 																				handleOpenEditInput("services");
 																				setOpenAddServices(true);
@@ -448,7 +454,8 @@ const RequestDetails = () => {
 																			variant="contained"
 																			size="small"
 																			startIcon={<PlusOutlined />}
-																			onClick={async () => {
+																			onClick={async (event) => {
+																				event.stopPropagation();
 																				handleOpenEditInput("products");
 																				await searchAllProducts();
 																				setOpenAddProducts(true);

@@ -37,6 +37,9 @@ const ListProductsForAdmin = Loadable(lazy(() => import("pages/products/admin"))
 // render - serviços
 const ListOperationsForAdmin = Loadable(lazy(() => import("pages/operations/admin")));
 
+// render - serviços
+const ListTasks = Loadable(lazy(() => import("pages/tasks/list")));
+
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
@@ -213,6 +216,19 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A']">
 									<ListOperationsForAdmin />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "tasks",
+					children: [
+						{
+							path: "",
+							element: (
+								<AuthGuard requiredUserType="['A', 'C']">
+									<ListTasks />
 								</AuthGuard>
 							),
 						},

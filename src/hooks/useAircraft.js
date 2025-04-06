@@ -141,6 +141,7 @@ const useAircraft = () => {
 			const response = await publicAxios.get(`/aircrafts/admin/find-all?search=${search}&page=${page}`);
 			setAircrafts(response.data.items);
 			setTotalAircrafts(response.data.pagination.totalPages);
+			setUsersResp(response.data.usersResp);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

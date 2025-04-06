@@ -156,7 +156,7 @@ const MyAircrafts = () => {
 			</Stack>
 
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddAircraft aircraft={aircraft} onCancel={handleAdd} resp={1} />
+				<AddAircraft aircraft={aircraft} onCancel={handleAdd} />
 			</Dialog>
 		</>
 	);

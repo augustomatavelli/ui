@@ -15,4 +15,5 @@ export const ErrorMessages = {
 	email_domain_invalid: "Domínio de email inválido",
 	invalid_phone_number: "Número de celular inválido",
 	validation_error: "Erro na validação dos dados. Verifique os campos e tente novamente",
+	not_exist_or_finalized: "Solicitação não existe ou já foi finalizada",
 };
