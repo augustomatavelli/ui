@@ -185,7 +185,31 @@ const useAircraft = () => {
 		}
 	};
 
-	return { createAircraft, searchAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllAircrafts, approveAircraft };
+	const deleteAircraft = async (aircraftId) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.delete(`/aircrafts/admin/delete/${aircraftId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
+	return { createAircraft, searchAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllAircrafts, approveAircraft, deleteAircraft };
 };
 
 export default useAircraft;

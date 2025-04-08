@@ -131,7 +131,31 @@ const useLandingSite = () => {
 		}
 	};
 
-	return { createLandingSite, findAllLandingSites, searchAllLandingSites, findUf, findOneLandingSiteById };
+	const deleteLandingSite = async (landingSiteId) => {
+		try {
+			setLoadingLandingSite(true);
+			const response = await publicAxios.delete(`/landing-sites/admin/delete/${landingSiteId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingLandingSite(false);
+		}
+	};
+
+	return { createLandingSite, findAllLandingSites, searchAllLandingSites, findUf, findOneLandingSiteById, deleteLandingSite };
 };
 
 export default useLandingSite;

@@ -108,7 +108,31 @@ const useProduct = () => {
 		}
 	};
 
-	return { createProduct, findAllProducts, searchAllProducts, findCategories };
+	const deleteProduct = async (productId) => {
+		try {
+			setLoadingProduct(true);
+			const response = await publicAxios.delete(`/products/admin/delete/${productId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingProduct(false);
+		}
+	};
+
+	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct };
 };
 
 export default useProduct;

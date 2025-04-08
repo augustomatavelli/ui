@@ -107,7 +107,31 @@ const useOperation = () => {
 		}
 	};
 
-	return { createOperation, findAllOperations, searchAllOperations, findCategories };
+	const deleteOperation = async (operationId) => {
+		try {
+			setLoadingOperation(true);
+			const response = await publicAxios.delete(`/operations/admin/delete/${operationId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingOperation(false);
+		}
+	};
+
+	return { createOperation, findAllOperations, searchAllOperations, findCategories, deleteOperation };
 };
 
 export default useOperation;

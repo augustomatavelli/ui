@@ -16,4 +16,9 @@ export const ErrorMessages = {
 	invalid_phone_number: "Número de celular inválido",
 	validation_error: "Erro na validação dos dados. Verifique os campos e tente novamente",
 	not_exist_or_finalized: "Solicitação não existe ou já foi finalizada",
+	request_user_exists: "Existe uma solicitação em aberto com esse usuário ",
+	request_product_exists: "Existe uma solicitação em aberto com esse produto ",
+	request_aircraft_exists: "Existe uma solicitação em aberto com essa aeronave ",
+	request_landing_site_exists: "Existe uma solicitação em aberto com esse aeródromo ",
+	request_operation_exists: "Existe uma solicitação em aberto com esse serviço ",
 };

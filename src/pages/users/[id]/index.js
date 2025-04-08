@@ -11,17 +11,23 @@ import Loader from "components/Loader";
 import dayjs from "dayjs";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
+import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 
 const UserDetails = () => {
-	const { findOneUserById } = useUser();
+	const { findOneUserById, deleteUser } = useUser();
 
 	const { loadingUser, userDetails, setUserDetails } = useContext(UserContext);
 
 	const [openUserAircrafts, setOpenUserAircrafts] = useState(false);
+	const [openAlert, setOpenAlert] = useState(false);
 
 	const { id } = useParams();
 
 	const { name, email, mobile, type, pilot_register, status, created_at } = userDetails;
+
+	const handleAlertClose = () => {
+		setOpenAlert(!openAlert);
+	};
 
 	useEffect(() => {
 		findOneUserById(id);
@@ -165,7 +171,7 @@ const UserDetails = () => {
 								</List>
 							)}
 							<Box sx={{ p: 2.5 }}>
-								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
+								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }} spacing={2}>
 									<Button
 										variant="outlined"
 										color="error"
@@ -176,6 +182,16 @@ const UserDetails = () => {
 									>
 										Voltar
 									</Button>
+									<Button
+										variant="contained"
+										color="error"
+										onClick={() => {
+											setOpenAlert(true);
+										}}
+									>
+										Excluir
+									</Button>
+									<AlertCustomerDelete title={name} open={openAlert} handleClose={handleAlertClose} id={Number(id)} handleDelete={deleteUser} />
 								</Stack>
 							</Box>
 						</Grid>

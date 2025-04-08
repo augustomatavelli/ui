@@ -1,10 +1,7 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 // material-ui
-import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography, Dialog } from "@mui/material";
-
-// third-party
-import { PatternFormat } from "react-number-format";
+import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -13,10 +10,7 @@ import MainCard from "components/MainCard";
 import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
-import AddRequest from "../requests/ScheduleForm";
-import { PopupTransition } from "components/@extended/Transitions";
 import AircraftContext from "contexts/AircraftContext";
-import { borderColor } from "@mui/system";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
@@ -43,14 +37,12 @@ const AircraftCard = ({ data, setReload, reload }) => {
 				sx={{
 					height: 1,
 					cursor: "pointer",
-					border: 2,
-					borderRadius: 2,
-					borderColor: status === "A" && user.status === "A" && hasRequest === 0 ? "primary.main" : "warning.main",
+						borderRadius: 2,
 					boxShadow: 3,
 					transition: "all 0.3s ease-in-out",
 					"&:hover": {
 						boxShadow: 4,
-						transform: "scale(1.03)",
+						transform: "scale(1.02)",
 					},
 					"& .MuiCardContent-root": {
 						height: 1,

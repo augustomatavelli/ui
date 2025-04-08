@@ -13,21 +13,27 @@ import { PopupTransition } from "components/@extended/Transitions";
 import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
 import ConfirmRemoveLinkUserAircraft from "sections/apps/aircrafts/ConfirmRemoveLinkUserAircraft";
 import UserContext from "contexts/UserContext";
+import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 
 const AircraftDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft } = useAircraft();
+	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft } = useAircraft();
 
 	const { aircraftDetails, setAircraftDetails, loadingAircraft } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
 
 	const [open, setOpen] = useState(false);
 	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
+	const [openAlert, setOpenAlert] = useState(false);
 
 	const { id } = useParams();
 
 	const { id_aircraft, rab, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
+
+	const handleAlertClose = () => {
+		setOpenAlert(!openAlert);
+	};
 
 	const handleremoveLinkUserAircraft = async () => {
 		const response = await removeLinkUserAircraft(userId, id_aircraft);
@@ -176,7 +182,7 @@ const AircraftDetails = () => {
 								<Divider />
 							</List>
 							<Box sx={{ p: 2.5 }}>
-								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
+								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }} spacing={2}>
 									<Button
 										variant="outlined"
 										color="error"
@@ -187,6 +193,18 @@ const AircraftDetails = () => {
 									>
 										Voltar
 									</Button>
+									{(Number(userId) === id_user_resp || user.type === "A") && (
+										<Button
+											variant="contained"
+											color="error"
+											onClick={() => {
+												setOpenAlert(true);
+											}}
+										>
+											Excluir
+										</Button>
+									)}
+									<AlertCustomerDelete title={rab} open={openAlert} handleClose={handleAlertClose} id={id_aircraft} handleDelete={deleteAircraft} />
 								</Stack>
 							</Box>
 						</Grid>

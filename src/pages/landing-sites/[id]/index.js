@@ -9,15 +9,23 @@ import Loader from "components/Loader";
 import dayjs from "dayjs";
 import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
+import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import { useState } from "react";
 
 const UserDetails = () => {
-	const { findOneLandingSiteById } = useLandingSite();
+	const { findOneLandingSiteById, deleteLandingSite } = useLandingSite();
 
 	const { loadingLandingSite, landingSiteDetails, setLoadingLandingSite } = useContext(LandingSiteContext);
 
+	const [openAlert, setOpenAlert] = useState(false);
+
 	const { id } = useParams();
 
-	const { name, ciad, type, endereco, cidade, capacity, status, created_at } = landingSiteDetails;
+	const { id_landing_site, name, ciad, type, endereco, cidade, capacity, status, created_at } = landingSiteDetails;
+
+	const handleAlertClose = () => {
+		setOpenAlert(!openAlert);
+	};
 
 	useEffect(() => {
 		findOneLandingSiteById(id);
@@ -124,7 +132,7 @@ const UserDetails = () => {
 								</List>
 							)}
 							<Box sx={{ p: 2.5 }}>
-								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }}>
+								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }} spacing={2}>
 									<Button
 										variant="outlined"
 										color="error"
@@ -135,6 +143,16 @@ const UserDetails = () => {
 									>
 										Voltar
 									</Button>
+									<Button
+										variant="contained"
+										color="error"
+										onClick={() => {
+											setOpenAlert(true);
+										}}
+									>
+										Excluir
+									</Button>
+									<AlertCustomerDelete title={name} open={openAlert} handleClose={handleAlertClose} id={id_landing_site} handleDelete={deleteLandingSite} />
 								</Stack>
 							</Box>
 						</Grid>
