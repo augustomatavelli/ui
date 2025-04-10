@@ -45,7 +45,7 @@ export default function MyAircraftsRequestsTable() {
 						<TableRow>
 							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
-							<TableCell align="center">Tipo de usuário</TableCell>
+							{/* <TableCell align="center">Tipo de usuário</TableCell> */}
 							<TableCell align="center">Aeronave</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
@@ -71,14 +71,14 @@ export default function MyAircraftsRequestsTable() {
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
-									<TableCell align="center">
+									{/* 	<TableCell align="center">
 										<Chip
 											color={e.type === "P" ? "success" : e.type === "R" ? "primary" : e.type === "A" ? "info" : "warning"}
 											variant="filled"
 											size="small"
 											label={e.type === "P" ? "Piloto" : e.type === "R" ? "Responsável" : e.type === "A" ? "Administrador" : "Comum"}
 										/>
-									</TableCell>
+									</TableCell> */}
 									<TableCell align="center">{e.rab}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>

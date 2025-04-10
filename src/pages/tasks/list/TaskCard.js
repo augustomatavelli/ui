@@ -12,7 +12,7 @@ import { CalendarOutlined, CalendarFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 const TaskCard = ({ data }) => {
-	const { rab, name, email, mobile, landing_date, takeoff_date } = data;
+	const { id_request, rab, landing_date, takeoff_date, itemTasks } = data;
 
 	return (
 		<>
@@ -25,7 +25,6 @@ const TaskCard = ({ data }) => {
 					transition: "all 0.3s ease-in-out",
 					"&:hover": {
 						boxShadow: 4,
-						transform: "scale(1.02)",
 					},
 					"& .MuiCardContent-root": {
 						height: 1,
@@ -38,7 +37,7 @@ const TaskCard = ({ data }) => {
 					<Grid item xs={12}>
 						<Grid container spacing={1}>
 							<Grid item xs={12}>
-								<ListItemText primary={<Typography variant="subtitle1">Aeronave: {rab}</Typography>} />
+								<ListItemText primary={<Typography variant="h5"># {id_request}</Typography>} secondary={<Typography variant="h5">{rab}</Typography>} />
 								<List sx={{ p: 0, overflow: "hidden", "& .MuiListItem-root": { px: 0, py: 0.5 } }}>
 									<ListItem>
 										<ListItemIcon>
@@ -52,9 +51,15 @@ const TaskCard = ({ data }) => {
 										</ListItemIcon>
 										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>} />
 									</ListItem>
-									<ListItem>
-										<ListItemText primary={<Typography color="secondary">{mobile}</Typography>} />
-									</ListItem>
+									{itemTasks.map((item, index) => (
+										<ListItem key={index}>
+											<ListItemText
+												primary={
+													<Typography color="secondary">{item.unit === "un" ? item.name : item.unit === "L" ? `${item.name} ${item.amount}${item.unit}` : `${item.amount}x ${item.name}`}</Typography>
+												}
+											/>
+										</ListItem>
+									))}
 								</List>
 							</Grid>
 						</Grid>

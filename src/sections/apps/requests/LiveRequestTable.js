@@ -3,7 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { useContext, useEffect } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import { format } from "date-fns";
+import FlightLandIcon from "@mui/icons-material/FlightLand";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Loader from "components/Loader";
 
 export default function RequestsTable() {
@@ -21,6 +22,22 @@ export default function RequestsTable() {
 		return () => clearInterval(intervalId);
 	}, []);
 
+	const isSoon = (date) => {
+		const eventDate = new Date(date);
+		const now = new Date();
+		const diffInMinutes = (eventDate.getTime() - now.getTime()) / (1000 * 60);
+		return diffInMinutes > 0 && diffInMinutes <= 30;
+	};
+
+	const pulseAnimation = {
+		"@keyframes pulse": {
+			"0%": { backgroundColor: "#ffcc00" },
+			"50%": { backgroundColor: "#fff176" },
+			"100%": { backgroundColor: "#ffcc00" },
+		},
+		animation: "pulse 5s infinite",
+	};
+
 	return (
 		<>
 			<TableContainer>
@@ -32,39 +49,52 @@ export default function RequestsTable() {
 								Aeronave
 							</TableCell>
 							<TableCell align="center" sx={{ color: "white", fontSize: 20 }}>
-								Pouso
+								Piloto
 							</TableCell>
 							<TableCell align="center" sx={{ color: "white", fontSize: 20 }}>
-								Decolagem
+								Horário Previsto
 							</TableCell>
-							<TableCell align="center" sx={{ color: "white", fontSize: 20 }}>
-								Data solicitação
-							</TableCell>
+							<TableCell align="center" sx={{ color: "white", fontSize: 20 }}></TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
 							<Loader />
 						) : liveRequests.length > 0 ? (
-							liveRequests.map((e) => (
-								<TableRow hover key={e.id_request} sx={{ "&:hover": { backgroundColor: "transparent" } }}>
-									<TableCell align="center">
-										<Chip color="warning" variant="filled" size="large" label={`# ${e.id_request}`} sx={{ fontWeight: "bold", height: 30, color: "black" }} />
-									</TableCell>
-									<TableCell align="center" sx={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-										{e.rab}
-									</TableCell>
-									<TableCell align="center" sx={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-										{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}
-									</TableCell>
-									<TableCell align="center" sx={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-										{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "N/A"}
-									</TableCell>
-									<TableCell align="center" sx={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
-										{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}
-									</TableCell>
-								</TableRow>
-							))
+							liveRequests.flatMap((e) =>
+								e.schedules.map((schedule) => (
+									<TableRow
+										key={`${e.id_request}-${schedule.type}`}
+										sx={{
+											...(isSoon(schedule.date) ? pulseAnimation : {}),
+											"&:hover": { backgroundColor: "transparent" },
+										}}
+									>
+										<TableCell align="center">{<Chip color="warning" variant="filled" size="large" label={`# ${e.id_request}`} sx={{ fontWeight: "bold", height: 30, color: "black" }} />}</TableCell>
+										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
+											{e.rab}
+										</TableCell>
+										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
+											{e.user}
+										</TableCell>
+										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18 }}>
+											{new Date(schedule.date).toLocaleString("pt-BR")}
+										</TableCell>
+										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18 }}>
+											{schedule.type === "landing_date" ? (
+												<Typography variant="h4" a sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
+													<FlightLandIcon sx={{ fontSize: 30 }} /> Pouso
+												</Typography>
+											) : (
+												<Typography variant="h4" a sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
+													Decolagem
+													<FlightTakeoffIcon sx={{ fontSize: 30 }} />
+												</Typography>
+											)}
+										</TableCell>
+									</TableRow>
+								))
+							)
 						) : (
 							<TableRow>
 								<TableCell colSpan={5} align="center">

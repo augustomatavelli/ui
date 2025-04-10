@@ -262,12 +262,14 @@ const RequestDetails = () => {
 													<Stack spacing={1}>
 														<Stack direction="row" alignItems="center" spacing={1.5}>
 															<Typography color="secondary">Data agendada para pouso</Typography>
-															<EditOutlined
-																style={{ cursor: "pointer" }}
-																onClick={() => {
-																	handleOpenEditInput("landingDateField");
-																}}
-															/>
+															{status === "A" && (
+																<EditOutlined
+																	style={{ cursor: "pointer" }}
+																	onClick={() => {
+																		handleOpenEditInput("landingDateField");
+																	}}
+																/>
+															)}
 														</Stack>
 														{openEditInput["landingDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -298,12 +300,14 @@ const RequestDetails = () => {
 													<Stack spacing={1}>
 														<Stack direction="row" alignItems="center" spacing={1.5}>
 															<Typography color="secondary">Data agendada para decolagem</Typography>
-															<EditOutlined
-																style={{ cursor: "pointer" }}
-																onClick={() => {
-																	handleOpenEditInput("takeoffDateField");
-																}}
-															/>
+															{status === "A" && (
+																<EditOutlined
+																	style={{ cursor: "pointer" }}
+																	onClick={() => {
+																		handleOpenEditInput("takeoffDateField");
+																	}}
+																/>
+															)}
 														</Stack>
 														{openEditInput["takeoffDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -378,25 +382,28 @@ const RequestDetails = () => {
 																							}}
 																							key={e.id_service}
 																							sx={{ alignSelf: "start", borderRadius: "16px" }}
+																							disabled={status === "F" || status === "R"}
 																						/>
 																					)
 																			)}
 																	</List>
-																	<Grid sx={{ mt: 2 }}>
-																		<Button
-																			variant="contained"
-																			size="small"
-																			startIcon={<PlusOutlined />}
-																			onClick={async (event) => {
-																				event.stopPropagation();
-																				await searchAllOperations();
-																				handleOpenEditInput("services");
-																				setOpenAddServices(true);
-																			}}
-																		>
-																			Adicionar
-																		</Button>
-																	</Grid>
+																	{status === "A" && (
+																		<Grid sx={{ mt: 2 }}>
+																			<Button
+																				variant="contained"
+																				size="small"
+																				startIcon={<PlusOutlined />}
+																				onClick={async (event) => {
+																					event.stopPropagation();
+																					await searchAllOperations();
+																					handleOpenEditInput("services");
+																					setOpenAddServices(true);
+																				}}
+																			>
+																				Adicionar
+																			</Button>
+																		</Grid>
+																	)}
 																</>
 															) : loadingService ? (
 																<CircularProgress size={20} />
@@ -445,25 +452,29 @@ const RequestDetails = () => {
 																							}}
 																							key={e.id_product}
 																							sx={{ alignSelf: "start", borderRadius: "16px" }}
+																							disabled={status === "F" || status === "R"}
 																						/>
 																					)
 																			)}
 																	</List>
-																	<Grid sx={{ mt: 2 }}>
-																		<Button
-																			variant="contained"
-																			size="small"
-																			startIcon={<PlusOutlined />}
-																			onClick={async (event) => {
-																				event.stopPropagation();
-																				handleOpenEditInput("products");
-																				await searchAllProducts();
-																				setOpenAddProducts(true);
-																			}}
-																		>
-																			Adicionar
-																		</Button>
-																	</Grid>
+																	{status === "A" && (
+																		<Grid sx={{ mt: 2 }}>
+																			<Button
+																				variant="contained"
+																				size="small"
+																				startIcon={<PlusOutlined />}
+																				onClick={async (event) => {
+																					event.stopPropagation();
+																					handleOpenEditInput("products");
+																					await searchAllProducts();
+																					setOpenAddProducts(true);
+																				}}
+																				disabled={status === "F" || status === "R"}
+																			>
+																				Adicionar
+																			</Button>
+																		</Grid>
+																	)}
 																</>
 															) : (
 																<Grid>

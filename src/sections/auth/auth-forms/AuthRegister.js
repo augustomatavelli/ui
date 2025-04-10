@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // material-ui
-import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, RadioGroup, FormControlLabel, Radio, Checkbox } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -39,6 +39,10 @@ const AuthRegister = () => {
 
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
+	};
+
+	const handleChangeCheckBox = () => {
+		setIsPilot(!isPilot);
 	};
 
 	return (
@@ -126,7 +130,6 @@ const AuthRegister = () => {
 										value={typeDoc}
 										onChange={(e) => {
 											setTypeDoc(e.target.value);
-											e.target.value === "cpf" ? setIsPilot(true) : setIsPilot(false);
 										}}
 									>
 										<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
@@ -201,17 +204,17 @@ const AuthRegister = () => {
 							{typeDoc === "cpf" && (
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="pilot-signup">Registro de piloto</InputLabel>
+										<FormControlLabel control={<Checkbox checked={isPilot} onChange={handleChangeCheckBox} name="isPilot" color="primary" />} label="Sou piloto" />
 										<OutlinedInput
 											fullWidth
 											error={Boolean(touched.pilot && errors.pilot)}
 											id="pilot-signup"
-											value={values.pilot}
+											value={isPilot ? values.pilot : ""}
 											name="pilot"
 											onBlur={handleBlur}
 											onChange={handleChange}
 											placeholder="Digite o número do registro de piloto..."
-											inputProps={{}}
+											disabled={!isPilot}
 										/>
 										{touched.pilot && errors.pilot && (
 											<FormHelperText error id="helper-text-pilot-signup">
@@ -251,18 +254,6 @@ const AuthRegister = () => {
 										</FormHelperText>
 									)}
 								</Stack>
-								{/* <FormControl fullWidth sx={{ mt: 2 }}>
-									<Grid container spacing={2} alignItems="center">
-										<Grid item>
-											<Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: "7px" }} />
-										</Grid>
-										<Grid item>
-											<Typography variant="subtitle1" fontSize="0.75rem">
-												{level?.label}
-											</Typography>
-										</Grid>
-									</Grid>
-								</FormControl> */}
 							</Grid>
 							{errors.submit && (
 								<Grid item xs={12}>

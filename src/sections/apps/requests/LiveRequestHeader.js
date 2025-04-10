@@ -8,6 +8,7 @@ function LiveRequestsHeader() {
 	const { liveRequests } = useContext(RequestContext);
 
 	useEffect(() => {}, [liveRequests]);
+
 	return (
 		<>
 			<Grid sx={{ display: "flex", width: "100%", justifyContent: "space-around", alignItems: "center", color: "white", py: 5 }}>

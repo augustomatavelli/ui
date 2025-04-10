@@ -24,6 +24,8 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 	const { searchLandingSites } = useContext(LandingSiteContext);
 	const { setRequestResume, requestResume } = useContext(RequestContext);
 
+	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
+
 	// constant
 	const getInitialValues = (aircraft) => {
 		const newRequest = {
@@ -32,11 +34,19 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 			name_landing_site: "",
 			amount: "",
 			landing_date: "",
+			takeoff_date: "",
 		};
 
 		return newRequest;
 	};
 
+	const handleToggleCheckBox = (event) => {
+		setTakeoffCheckbox(event.target.checked);
+		if (!event.target.checked) {
+			setRequestResume((prev) => ({ ...prev, takeoff_date: "" }));
+		}
+	};
+	console.log(requestResume);
 	useEffect(() => {
 		searchAllLandingSites();
 	}, []);
@@ -52,13 +62,14 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 		initialValues: getInitialValues(aircraft),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, name_landing_site, amount, landing_date } = values;
+			const { id_aircraft, id_landing_site, name_landing_site, amount, landing_date, takeoff_date } = values;
 			const newRequest = {
 				id_aircraft: id_aircraft,
 				id_landing_site: id_landing_site,
 				name_landing_site: name_landing_site,
 				amount: amount,
 				landing_date: landing_date,
+				takeoff_date: takeoff_date,
 			};
 			setRequestResume(newRequest);
 		},
@@ -123,6 +134,29 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 											error={Boolean(touched.amount && errors.amount)}
 											helperText={touched.amount && errors.amount}
 											inputProps={{ min: 0 }}
+										/>
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1.25}>
+										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
+											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} />
+											<InputLabel>Já deseja agendar a decolagem? (opcional)</InputLabel>
+										</Grid>
+										<DateTimePicker
+											value={requestResume ? requestResume.takeoff_date : formik.values.takeoff_date}
+											disablePast
+											minDateTime={requestResume.landing_date}
+											onChange={(date) => formik.setFieldValue("takeoff_date", date)}
+											format="dd/MM/yyyy HH:mm"
+											disabled={!takeoffCheckbox}
+											slotProps={{
+												textField: {
+													error: Boolean(formik.touched.takeoff_date && formik.errors.takeoff_date),
+													helperText: formik.touched.takeoff_date && formik.errors.takeoff_date,
+												},
+												field: { format: "dd/MM/yyyy HH:mm" },
+											}}
 										/>
 									</Stack>
 								</Grid>

@@ -21,7 +21,7 @@ const UserDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_landing_site, name, ciad, type, endereco, cidade, capacity, status, created_at } = landingSiteDetails;
+	const { id_landing_site, name, ciad, type, operation_type, endereco, cidade, capacity, status, created_at } = landingSiteDetails;
 
 	const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
@@ -69,6 +69,17 @@ const UserDetails = () => {
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Tipo</Typography>
 													<Typography>{type === "H" ? "Heliporto" : type}</Typography>
+												</Stack>
+											</Grid>
+										</Grid>
+									</ListItem>
+									<Divider />
+									<ListItem>
+										<Grid container spacing={3}>
+											<Grid item xs={12} md={6}>
+												<Stack spacing={0.5}>
+													<Typography color="secondary">Tipo de operação</Typography>
+													<Typography>{operation_type === "P" ? "Público" : "Privado"}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>

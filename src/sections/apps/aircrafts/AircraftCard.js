@@ -37,7 +37,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 				sx={{
 					height: 1,
 					cursor: "pointer",
-						borderRadius: 2,
+					borderRadius: 2,
 					boxShadow: 3,
 					transition: "all 0.3s ease-in-out",
 					"&:hover": {
@@ -119,7 +119,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 				{status === "A" && user.status === "A" && hasRequest === 0 ? (
 					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ pt: 2.25 }}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							size="small"
 							onClick={(event) => {
 								event.stopPropagation();
@@ -134,15 +134,21 @@ const AircraftCard = ({ data, setReload, reload }) => {
 					</Stack>
 				) : hasRequest === 1 ? (
 					<Stack direction="row" className="hideforPDf" alignItems="center" spacing={1} sx={{ pt: 2.25 }}>
-						<Chip label="Solicitação em aberto" color="warning" variant="filled" />
+						<Chip
+							label="Solicitação em aberto"
+							color="warning"
+							variant="filled"
+							sx={{
+								width: "100%",
+								color: "black",
+								justifyContent: "center",
+							}}
+						/>
 					</Stack>
 				) : (
 					<></>
 				)}
 			</MainCard>
-			{/* 	<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} open={addRequest} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddRequest aircraft={data} handleAddRequest={handleAddRequest} />
-			</Dialog> */}
 		</>
 	);
 };

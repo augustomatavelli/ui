@@ -49,6 +49,7 @@ const AddLandingSite = ({ onCancel }) => {
 	const NewLandingSiteSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
 		type: Yup.string().max(255).required("Selecione um tipo"),
+		operationType: Yup.string().max(255).required("Tipo da operação é obrigatória"),
 		ciad: Yup.string().max(255).required("CIAD é obrigatório"),
 		address: Yup.string().max(255).required("Endereço é obrigatório"),
 		number: Yup.string().optional(),
@@ -65,6 +66,7 @@ const AddLandingSite = ({ onCancel }) => {
 				const payload = {
 					name: values.name,
 					type: values.type,
+					operationType: values.operationType,
 					ciad: values.ciad,
 					capacity: values.capacity,
 					address: values.address,
@@ -177,6 +179,27 @@ const AddLandingSite = ({ onCancel }) => {
 											{touched.type && errors.type && (
 												<FormHelperText error id="helper-text-type-signup">
 													{errors.type}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
+									<Grid item xs={8}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="email-signup">Tipo de operação</InputLabel>
+											<Select
+												value={values.operationType}
+												name="operationType"
+												onChange={handleChange}
+												displayEmpty
+												inputProps={{ "aria-label": "Without label" }}
+												renderValue={values.operationType ? undefined : () => <Typography variant="subtitle1">Selecione um tipo</Typography>}
+											>
+												<MenuItem value={"P"}>Público</MenuItem>
+												<MenuItem value={"R"}>Privado</MenuItem>
+											</Select>
+											{touched.operationType && errors.operationType && (
+												<FormHelperText error id="helper-text-operationType-signup">
+													{errors.operationType}
 												</FormHelperText>
 											)}
 										</Stack>
