@@ -11,8 +11,8 @@ import MainCard from "components/MainCard";
 import { CalendarOutlined, CalendarFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 
-const TaskCard = ({ data }) => {
-	const { id_request, rab, landing_date, takeoff_date, itemTasks } = data;
+const OrderCard = ({ data }) => {
+	const { id_request, rab, landing_date, takeoff_date, itemOrders } = data;
 
 	return (
 		<>
@@ -51,7 +51,7 @@ const TaskCard = ({ data }) => {
 										</ListItemIcon>
 										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>} />
 									</ListItem>
-									{itemTasks.map((item, index) => (
+									{itemOrders.map((item, index) => (
 										<ListItem key={index}>
 											<ListItemText
 												primary={
@@ -73,8 +73,8 @@ const TaskCard = ({ data }) => {
 	);
 };
 
-TaskCard.propTypes = {
+OrderCard.propTypes = {
 	data: PropTypes.object,
 };
 
-export default TaskCard;
+export default OrderCard;

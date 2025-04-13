@@ -38,7 +38,7 @@ const ListProductsForAdmin = Loadable(lazy(() => import("pages/products/admin"))
 const ListOperationsForAdmin = Loadable(lazy(() => import("pages/operations/admin")));
 
 // render - serviços
-const ListTasks = Loadable(lazy(() => import("pages/tasks/list")));
+const ListOrders = Loadable(lazy(() => import("pages/orders/list")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -52,6 +52,8 @@ const MaintenanceError = Loadable(lazy(() => import("pages/maintenance/404")));
 const MaintenanceError500 = Loadable(lazy(() => import("pages/maintenance/500")));
 const MaintenanceUnderConstruction = Loadable(lazy(() => import("pages/maintenance/under-construction")));
 const MaintenanceComingSoon = Loadable(lazy(() => import("pages/maintenance/coming-soon")));
+
+const ContactUs = Loadable(lazy(() => import("pages/contact-us")));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -222,13 +224,13 @@ const MainRoutes = {
 					],
 				},
 				{
-					path: "tasks",
+					path: "orders",
 					children: [
 						{
 							path: "",
 							element: (
 								<AuthGuard requiredUserType="['A', 'C']">
-									<ListTasks />
+									<ListOrders />
 								</AuthGuard>
 							),
 						},
@@ -243,6 +245,16 @@ const MainRoutes = {
 				{
 					path: "",
 					element: <LiveRequests />,
+				},
+			],
+		},
+		{
+			path: "/contact-us",
+			element: <CommonLayout />,
+			children: [
+				{
+					path: "",
+					element: <ContactUs />,
 				},
 			],
 		},

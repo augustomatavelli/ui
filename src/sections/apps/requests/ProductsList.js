@@ -3,10 +3,22 @@ import { Grid, Card, CardContent, Typography, TextField, IconButton, Box } from 
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 
 export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, handleChangeProductAmount, handleRemoveProduct }) => {
+	console.log(searchProducts);
 	return searchProducts.map((e) => (
 		<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
 			<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-				<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
+				<Grid
+					item
+					xs={12}
+					md={3}
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						gap: 2,
+						maxWidth: "25%",
+					}}
+				>
 					<Box
 						sx={{
 							width: "100%",
@@ -29,7 +41,18 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 						/>
 					</Box>
 					<Typography variant="subtitle1">{e.name}</Typography>
+					<Box sx={{ minHeight: "20px" }}>
+						{e.hide_price === "N" && (
+							<Typography variant="subtitle2">
+								{new Intl.NumberFormat("pt-BR", {
+									style: "currency",
+									currency: "BRL",
+								}).format(Number(e.price))}
+							</Typography>
+						)}
+					</Box>
 				</Grid>
+
 				<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 					<IconButton
 						onClick={(event) => {

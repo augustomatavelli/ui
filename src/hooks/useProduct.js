@@ -3,7 +3,6 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import { useContext } from "react";
-import LandingSiteContext from "contexts/LandingSiteContext";
 import ProductsContext from "contexts/ProductsContext";
 
 const useProduct = () => {
@@ -132,7 +131,31 @@ const useProduct = () => {
 		}
 	};
 
-	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct };
+	const updateProduct = async (productId, data) => {
+		console.log(data);
+		try {
+			setLoadingProduct(true);
+			await publicAxios.patch(`/products/admin/update/${productId}`, { ...data });
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingProduct(false);
+		}
+	};
+
+	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct, updateProduct };
 };
 
 export default useProduct;

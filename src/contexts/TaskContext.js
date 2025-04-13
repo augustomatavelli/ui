@@ -1,24 +1,24 @@
 import PropTypes from "prop-types";
 import { createContext, useState } from "react";
 
-export const TaskContext = createContext({});
+export const OrderContext = createContext({});
 
-export const TaskProvider = ({ children }) => {
-	const [loadingTask, setLoadingTask] = useState(false);
-	const [tasks, setTasks] = useState([]);
-	const [totalTasks, setTotalTasks] = useState(0);
+export const OrderProvider = ({ children }) => {
+	const [loadingOrder, setLoadingOrder] = useState(false);
+	const [orders, setOrders] = useState([]);
+	const [totalOrders, setTotalOrders] = useState(0);
 
-	const resetTaskStates = () => {
-		setLoadingTask(false);
-		setTasks([]);
-		setTotalTasks(0);
+	const resetOrderStates = () => {
+		setLoadingOrder(false);
+		setOrders([]);
+		setTotalOrders(0);
 	};
 
-	return <TaskContext.Provider value={{ loadingTask, setLoadingTask, tasks, setTasks, totalTasks, setTotalTasks, resetTaskStates }}>{children}</TaskContext.Provider>;
+	return <OrderContext.Provider value={{ loadingOrder, setLoadingOrder, orders, setOrders, totalOrders, setTotalOrders, resetOrderStates }}>{children}</OrderContext.Provider>;
 };
 
-TaskProvider.propTypes = {
+OrderProvider.propTypes = {
 	children: PropTypes.node,
 };
 
-export default TaskContext;
+export default OrderContext;

@@ -9,15 +9,15 @@ const icons = { AuditOutlined };
 
 const staff = {
 	id: "group-staff",
-	title: <FormattedMessage id="Gestão de tarefas" />,
+	title: <FormattedMessage id="Gestão de ordens de serviço" />,
 	icon: icons.IdcardOutlined,
 	type: "staff",
 	children: [
 		{
-			id: "tasks",
-			title: <FormattedMessage id="Tarefas" />,
+			id: "orders",
+			title: <FormattedMessage id="Monitor" />,
 			type: "item",
-			url: "/tasks",
+			url: "/orders",
 			icon: icons.AuditOutlined,
 		},
 	],

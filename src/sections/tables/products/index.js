@@ -1,9 +1,9 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, Tooltip, IconButton } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import useProduct from "hooks/useProduct";
 import ProductsContext from "contexts/ProductsContext";
@@ -12,7 +12,7 @@ import AddProduct from "sections/apps/products/AddProduct";
 import Loader from "components/Loader";
 
 export default function ProductsTable() {
-	const { findAllProducts } = useProduct();
+	const { findAllProducts, updateProduct } = useProduct();
 
 	const { products, totalProducts, loadingProduct } = useContext(ProductsContext);
 
@@ -26,6 +26,11 @@ export default function ProductsTable() {
 
 	const handleAdd = async () => {
 		setOpen(!open);
+		await findAllProducts(search, page);
+	};
+
+	const handleClickVisibility = async (productId, hidePrice) => {
+		await updateProduct(productId, { hide_price: hidePrice === "S" ? "N" : "S" });
 		await findAllProducts(search, page);
 	};
 
@@ -81,12 +86,25 @@ export default function ProductsTable() {
 										<Chip color={e.category_name === "Bebida" ? "success" : "warning"} variant="filled" size="small" label={e.category_name} />
 									</TableCell>
 									<TableCell align="center">
-										{new Intl.NumberFormat("pt-BR", {
-											style: "currency",
-											currency: "BRL",
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2,
-										}).format(e.price)}
+										<>
+											{new Intl.NumberFormat("pt-BR", {
+												style: "currency",
+												currency: "BRL",
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2,
+											}).format(e.price)}{" "}
+											<Tooltip title={e.hide_price === "S" ? "Mostrar" : "Esconder"}>
+												<IconButton
+													onClick={() => {
+														handleClickVisibility(e.id_product, e.hide_price);
+													}}
+													edge="end"
+													color="secondary"
+												>
+													{e.hide_price === "S" ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+												</IconButton>
+											</Tooltip>
+										</>
 									</TableCell>
 									<TableCell align="center">{e.unit}</TableCell>
 									<TableCell align="center">

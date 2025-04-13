@@ -33,6 +33,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 			id_landing_site: "",
 			name_landing_site: "",
 			amount: "",
+			flight_time: "",
 			landing_date: "",
 			takeoff_date: "",
 		};
@@ -56,18 +57,20 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 		id_landing_site: Yup.number().required(),
 		name_landing_site: Yup.string().required(),
 		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
+		flight_time: Yup.number().optional(),
 		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
 	});
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, name_landing_site, amount, landing_date, takeoff_date } = values;
+			const { id_aircraft, id_landing_site, name_landing_site, amount, flight_time, landing_date, takeoff_date } = values;
 			const newRequest = {
 				id_aircraft: id_aircraft,
 				id_landing_site: id_landing_site,
 				name_landing_site: name_landing_site,
 				amount: amount,
+				flight_time: flight_time,
 				landing_date: landing_date,
 				takeoff_date: takeoff_date,
 			};
@@ -121,7 +124,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 										/>
 									</Stack>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item display="flex" width="100%" gap={2} sx={{ flexDirection: { xs: "column", sm: "column", md: "row" } }}>
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<InputLabel htmlFor="Número de passageiros">Número de passageiros</InputLabel>
 										<TextField
@@ -136,7 +139,23 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 											inputProps={{ min: 0 }}
 										/>
 									</Stack>
+
+									<Stack spacing={1.25} sx={{ width: "100%" }}>
+										<InputLabel htmlFor="Tempo estimado de voo">Tempo estimado de voo (h)</InputLabel>
+										<TextField
+											fullWidth
+											id="flight_time"
+											type="number"
+											value={Number(formik.values.flight_time)}
+											placeholder="Qual a previsão do seu voo..."
+											{...getFieldProps("flight_time")}
+											error={Boolean(touched.flight_time && errors.flight_time)}
+											helperText={touched.flight_time && errors.flight_time}
+											inputProps={{ min: 0 }}
+										/>
+									</Stack>
 								</Grid>
+
 								<Grid item xs={12}>
 									<Stack spacing={1.25}>
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>

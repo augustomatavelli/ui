@@ -8,7 +8,7 @@ import { SearchOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 // ==============================|| HEADER CONTENT - SEARCH ||============================== //
 
-const SearchTask = ({ setSearch }) => {
+const SearchOrder = ({ setSearch }) => {
 	const [inputValue, setInputValue] = useState("");
 	const [hover, setHover] = useState(false);
 
@@ -47,7 +47,7 @@ const SearchTask = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar aeronave pelo RAB..."
+					placeholder="Pesquisar pelo RAB..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}
@@ -60,4 +60,4 @@ const SearchTask = ({ setSearch }) => {
 	);
 };
 
-export default SearchTask;
+export default SearchOrder;

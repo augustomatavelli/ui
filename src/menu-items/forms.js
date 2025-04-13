@@ -15,7 +15,7 @@ const icons = {
 
 const forms = {
 	id: "group-forms",
-	title: <FormattedMessage id="Usuários" />,
+	title: <FormattedMessage id="Minha área" />,
 	icon: icons.IdcardOutlined,
 	type: "user",
 	children: [

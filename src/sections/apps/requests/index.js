@@ -21,7 +21,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
 	const [isFormValidSecond, setIsFormValidSecond] = useState(false);
 
-	const steps = ["Agendamento", "Serviços", "Produtos", "Resumo"];
+	const steps = ["Agendamento", "Serviços", "Serviço de Bordo", "Resumo"];
 
 	const navigate = useNavigate();
 
