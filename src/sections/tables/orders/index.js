@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Butto
 // project imports
 import { useContext, useEffect } from "react";
 import Loader from "components/Loader";
-import OrderContext from "contexts/TaskContext";
+import OrderContext from "contexts/OrdersContext";
 import dayjs from "dayjs";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -34,7 +34,7 @@ export default function OrdersTable({ reload, setReload, search }) {
 	};
 
 	useEffect(() => {}, [orders]);
-	console.log(orders);
+
 	return (
 		<>
 			<TableContainer>
@@ -60,8 +60,8 @@ export default function OrdersTable({ reload, setReload, search }) {
 										<TableCell align="center">
 											<Button
 												variant="contained"
-												color={itemOrder.order_status === "P" ? "primary" : itemOrder.order_status === "E" ? "warning" : "success"}
-												sx={{ color: itemOrder.order_status === "E" ? "black" : "white" }}
+												color="inherit"
+												sx={{ px: 1, py: 0.25 }}
 												onClick={async () => {
 													if (itemOrder.order_status === "F") return;
 													if (itemOrder.order_status === "P") {

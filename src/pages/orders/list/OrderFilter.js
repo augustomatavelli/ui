@@ -1,6 +1,5 @@
 import SearchOrder from "sections/apps/orders/SearchOrder";
-import { Box, Stack, Chip, useMediaQuery } from "@mui/material";
-import { CategoryChip } from "./OrderCategoryChip";
+import { Box, Stack, Chip, useMediaQuery, ButtonGroup, Button } from "@mui/material";
 
 export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, categoriesArray }) => {
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -14,19 +13,35 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 					</Stack>
 				</Stack>
 				{categoriesArray.length > 0 && (
-					<Stack sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
-						<Chip
-							label={"Todos"}
-							variant={Object.keys(selectedCategory).length === 0 ? "filled" : "outlined"}
+					<ButtonGroup variant="contained" sx={{ width: "fit-content" }}>
+						<Button
 							onClick={() => {
 								setSelectedCategory({});
 							}}
-							sx={{ cursor: "pointer" }}
-						/>
-						{categoriesArray.map((e) => {
-							return <CategoryChip key={e.id_category} label={e.name} categoryId={e.id_category} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />;
-						})}
-					</Stack>
+							variant={Object.keys(selectedCategory).length === 0 ? "contained" : "outlined"}
+						>
+							Todos
+						</Button>
+						{categoriesArray.map((e) => (
+							<Button
+								key={e.id_category}
+								onClick={() => {
+									setSelectedCategory((prev) => {
+										const newSelected = { ...prev };
+										if (newSelected[e.id_category]) {
+											delete newSelected[e.id_category];
+										} else {
+											newSelected[e.id_category] = true;
+										}
+										return newSelected;
+									});
+								}}
+								variant={selectedCategory[e.id_category] ? "contained" : "outlined"}
+							>
+								{e.name}
+							</Button>
+						))}
+					</ButtonGroup>
 				)}
 			</Box>
 		</>

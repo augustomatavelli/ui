@@ -1,0 +1,144 @@
+import * as React from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material";
+import OrdersTable from "sections/tables/orders";
+import OrderContext from "contexts/OrdersContext";
+import { useContext } from "react";
+
+function CustomTabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+			{value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+		</div>
+	);
+}
+
+function a11yProps(index) {
+	return {
+		id: `simple-tab-${index}`,
+		"aria-controls": `simple-tabpanel-${index}`,
+	};
+}
+
+export default function OrdersTabs({ reload, setReload, search, setSelectedStatus, value, setValue }) {
+	const { totalTabOrders } = useContext(OrderContext);
+
+	const theme = useTheme();
+
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+		switch (newValue) {
+			case 0:
+				setSelectedStatus({});
+				break;
+			case 1:
+				setSelectedStatus({ P: true });
+				break;
+			case 2:
+				setSelectedStatus({ E: true });
+				break;
+			case 3:
+				setSelectedStatus({ F: true });
+				break;
+			default:
+				break;
+		}
+	};
+
+	return (
+		<Box sx={{ width: "100%" }}>
+			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+				<Tabs
+					value={value}
+					onChange={handleChange}
+					TabIndicatorProps={{
+						style: {
+							backgroundColor: value === 0 ? theme.palette.primary.main : value === 1 ? theme.palette.error.main : value === 2 ? theme.palette.warning.main : theme.palette.success.main,
+						},
+					}}
+				>
+					<Tab
+						label={`Todas ${value === 0 ? ` (${totalTabOrders})` : ""}`}
+						{...a11yProps(0)}
+						sx={{
+							color: theme.palette.primary.main,
+							fontWeight: value === 0 ? "bold" : "normal",
+							backgroundColor: value === 0 ? theme.palette.primary.lighter : "transparent",
+							"&.Mui-selected": {
+								color: theme.palette.primary.main,
+							},
+							"&:hover": {
+								color: theme.palette.primary.main,
+								backgroundColor: "transparent",
+							},
+						}}
+					/>
+					<Tab
+						label={`Abertas ${value === 1 ? `(${totalTabOrders})` : ""}`}
+						{...a11yProps(1)}
+						sx={{
+							color: theme.palette.error.main,
+							fontWeight: value === 1 ? "bold" : "normal",
+							backgroundColor: value === 1 ? theme.palette.error.lighter : "transparent",
+							"&.Mui-selected": {
+								color: theme.palette.error.main,
+							},
+							"&:hover": {
+								color: theme.palette.error.main,
+								backgroundColor: "transparent",
+							},
+						}}
+					/>
+					<Tab
+						label={`Em execução ${value === 2 ? `(${totalTabOrders})` : ""}`}
+						{...a11yProps(2)}
+						sx={{
+							color: theme.palette.warning.main,
+							fontWeight: value === 2 ? "bold" : "normal",
+							backgroundColor: value === 2 ? theme.palette.warning.lighter : "transparent",
+							"&.Mui-selected": {
+								color: theme.palette.warning.main,
+							},
+							"&:hover": {
+								color: theme.palette.warning.main,
+								backgroundColor: "transparent",
+							},
+						}}
+					/>
+					<Tab
+						label={`Finalizadas ${value === 3 ? `(${totalTabOrders})` : ""}`}
+						{...a11yProps(3)}
+						sx={{
+							color: theme.palette.success.main,
+							fontWeight: value === 3 ? "bold" : "normal",
+							backgroundColor: value === 3 ? theme.palette.success.lighter : "transparent",
+							"&.Mui-selected": {
+								color: theme.palette.success.main,
+							},
+							"&:hover": {
+								color: theme.palette.success.main,
+								backgroundColor: "transparent",
+							},
+						}}
+					/>
+				</Tabs>
+			</Box>
+			<CustomTabPanel value={value} index={0}>
+				<OrdersTable reload={reload} setReload={setReload} search={search} />
+			</CustomTabPanel>
+			<CustomTabPanel value={value} index={1}>
+				<OrdersTable reload={reload} setReload={setReload} search={search} />
+			</CustomTabPanel>
+			<CustomTabPanel value={value} index={2}>
+				<OrdersTable reload={reload} setReload={setReload} search={search} />
+			</CustomTabPanel>
+			<CustomTabPanel value={value} index={3}>
+				<OrdersTable reload={reload} setReload={setReload} search={search} />
+			</CustomTabPanel>
+		</Box>
+	);
+}

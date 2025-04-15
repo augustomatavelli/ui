@@ -28,7 +28,7 @@ import { LandingSiteProvider } from "contexts/LandingSiteContext";
 import { RequestProvider } from "contexts/RequestContext";
 import { ProductsProvider } from "contexts/ProductsContext";
 import { OperationsProvider } from "contexts/OperationContext";
-import { OrderProvider } from "contexts/TaskContext";
+import { OrderProvider } from "contexts/OrdersContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
