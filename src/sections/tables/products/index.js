@@ -99,7 +99,8 @@ export default function ProductsTable() {
 														handleClickVisibility(e.id_product, e.hide_price);
 													}}
 													edge="end"
-													color="secondary"
+													color={e.hide_price === "S" ? "error" : "success"}
+													sx={{ fontWeight: "bold" }}
 												>
 													{e.hide_price === "S" ? <EyeInvisibleOutlined /> : <EyeOutlined />}
 												</IconButton>

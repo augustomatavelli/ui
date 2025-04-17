@@ -108,7 +108,13 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							component="ul"
 						>
 							<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
-								<Chip color={status === "A" ? "success" : "warning"} variant="filled" size="small" label={status === "A" ? "Ativo" : "Pendente"} sx={{ fontWeight: "bold" }} />
+								<Chip
+									color={status === "A" ? "success" : "warning"}
+									variant="filled"
+									size="small"
+									label={status === "A" ? "Ativo" : "Pendente"}
+									sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
+								/>
 							</ListItem>
 							<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
 								<Chip color={membership === "S" ? "primary" : "secondary"} variant="filled" size="small" label={membership === "S" ? "Mensalista" : "Avulso"} sx={{ fontWeight: "bold" }} />

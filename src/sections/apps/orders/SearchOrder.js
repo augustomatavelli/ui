@@ -25,7 +25,15 @@ const SearchOrder = ({ setSearch }) => {
 	};
 
 	return (
-		<Box sx={{ width: "50%" }}>
+		<Box
+			sx={{
+				width: {
+					xs: "100%",
+					sm: "100%",
+					md: "50%",
+				},
+			}}
+		>
 			<FormControl component="form" onSubmit={handleClick} sx={{ display: "flex", flexDirection: "row", gap: 1, width: "100%" }}>
 				<OutlinedInput
 					size="small"

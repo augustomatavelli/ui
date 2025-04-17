@@ -16,7 +16,7 @@ const useOrder = () => {
 			const response = await publicAxios.get(`/orders/find-all?search=${search}&page=${page}&${params.toString()}&${paramsStatus.toString()}`);
 			setOrders(response.data.items);
 			setTotalOrders(response.data.pagination.totalPages);
-			setTotalTabOrders(response.data.pagination.totalResults);
+			setTotalTabOrders(response.data.count);
 			return response.data;
 		} catch (error) {
 			console.log(error);

@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme } from "@mui/material";
 
 // project imports
 import { useContext, useEffect } from "react";
@@ -10,10 +10,12 @@ import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 
-export default function OrdersTable({ reload, setReload, search }) {
+export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
 
 	const { orders, loadingOrders } = useContext(OrderContext);
+
+	const theme = useTheme();
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
@@ -60,8 +62,8 @@ export default function OrdersTable({ reload, setReload, search }) {
 										<TableCell align="center">
 											<Button
 												variant="contained"
-												color="inherit"
-												sx={{ px: 1, py: 0.25 }}
+												color={itemOrder.order_status === "P" ? "error" : itemOrder.order_status === "E" ? "warning" : "success"}
+												sx={{ px: 1, py: 0.25, color: itemOrder.order_status === "E" ? "black" : "white" }}
 												onClick={async () => {
 													if (itemOrder.order_status === "F") return;
 													if (itemOrder.order_status === "P") {
@@ -71,7 +73,7 @@ export default function OrdersTable({ reload, setReload, search }) {
 													}
 												}}
 											>
-												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Finalizar" : "Finalizada"}
+												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Concluir" : "Finalizada"}
 											</Button>
 										</TableCell>
 										<TableCell align="center">{item.rab}</TableCell>
@@ -85,8 +87,7 @@ export default function OrdersTable({ reload, setReload, search }) {
 									</TableRow>
 								))
 							)
-						) : //TODO: não está funcionando essa parte, parece que não ta atualizando o estado Orders
-						search ? (
+						) : search ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhuma ordem de serviço encontrada</Typography>
@@ -95,7 +96,15 @@ export default function OrdersTable({ reload, setReload, search }) {
 						) : (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhuma ordem de serviço pendente</Typography>
+									{tab === 0 ? (
+										<Typography variant="h5">Não há nenhum ordem de serviço encontrada</Typography>
+									) : tab === 1 ? (
+										<Typography variant="h5">Nenhuma ordem de serviço aberta</Typography>
+									) : tab === 2 ? (
+										<Typography variant="h5">Nenhuma ordem de serviço em execução</Typography>
+									) : (
+										<Typography variant="h5">Nenhuma ordem de serviço finalizada</Typography>
+									)}
 								</TableCell>
 							</TableRow>
 						)}

@@ -60,13 +60,14 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 							backgroundColor: value === 0 ? theme.palette.primary.main : value === 1 ? theme.palette.error.main : value === 2 ? theme.palette.warning.main : theme.palette.success.main,
 						},
 					}}
+					variant="scrollable"
 				>
 					<Tab
-						label={`Todas ${value === 0 ? ` (${totalTabOrders})` : ""}`}
+						label={`Todas (${totalTabOrders.amount_total})`}
 						{...a11yProps(0)}
 						sx={{
 							color: theme.palette.primary.main,
-							fontWeight: value === 0 ? "bold" : "normal",
+							fontWeight: "bold",
 							backgroundColor: value === 0 ? theme.palette.primary.lighter : "transparent",
 							"&.Mui-selected": {
 								color: theme.palette.primary.main,
@@ -78,11 +79,11 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 						}}
 					/>
 					<Tab
-						label={`Abertas ${value === 1 ? `(${totalTabOrders})` : ""}`}
+						label={`Abertas (${totalTabOrders.amount_open})`}
 						{...a11yProps(1)}
 						sx={{
 							color: theme.palette.error.main,
-							fontWeight: value === 1 ? "bold" : "normal",
+							fontWeight: "bold",
 							backgroundColor: value === 1 ? theme.palette.error.lighter : "transparent",
 							"&.Mui-selected": {
 								color: theme.palette.error.main,
@@ -94,11 +95,11 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 						}}
 					/>
 					<Tab
-						label={`Em execução ${value === 2 ? `(${totalTabOrders})` : ""}`}
+						label={`Em execução (${totalTabOrders.amount_execution})`}
 						{...a11yProps(2)}
 						sx={{
 							color: theme.palette.warning.main,
-							fontWeight: value === 2 ? "bold" : "normal",
+							fontWeight: "bold",
 							backgroundColor: value === 2 ? theme.palette.warning.lighter : "transparent",
 							"&.Mui-selected": {
 								color: theme.palette.warning.main,
@@ -110,11 +111,11 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 						}}
 					/>
 					<Tab
-						label={`Finalizadas ${value === 3 ? `(${totalTabOrders})` : ""}`}
+						label={`Finalizadas (${totalTabOrders.amount_finalized})`}
 						{...a11yProps(3)}
 						sx={{
 							color: theme.palette.success.main,
-							fontWeight: value === 3 ? "bold" : "normal",
+							fontWeight: "bold",
 							backgroundColor: value === 3 ? theme.palette.success.lighter : "transparent",
 							"&.Mui-selected": {
 								color: theme.palette.success.main,
@@ -128,16 +129,16 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				<OrdersTable reload={reload} setReload={setReload} search={search} />
+				<OrdersTable reload={reload} setReload={setReload} search={search} tab={0} />
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
-				<OrdersTable reload={reload} setReload={setReload} search={search} />
+				<OrdersTable reload={reload} setReload={setReload} search={search} tab={1} />
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={2}>
-				<OrdersTable reload={reload} setReload={setReload} search={search} />
+				<OrdersTable reload={reload} setReload={setReload} search={search} tab={2} />
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={3}>
-				<OrdersTable reload={reload} setReload={setReload} search={search} />
+				<OrdersTable reload={reload} setReload={setReload} search={search} tab={3} />
 			</CustomTabPanel>
 		</Box>
 	);
