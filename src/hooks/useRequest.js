@@ -215,7 +215,31 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests };
+	const deleteRequest = async (requestId) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.delete(`/requests/${requestId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests, deleteRequest };
 };
 
 export default useRequest;

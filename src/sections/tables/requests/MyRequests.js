@@ -78,10 +78,10 @@ export default function MyRequestsTable() {
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">
 										<Chip
-											color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : "error"}
+											color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
 											variant="filled"
 											size="small"
-											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : "Rejeitado"}
+											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
 										/>
 									</TableCell>
 									<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>

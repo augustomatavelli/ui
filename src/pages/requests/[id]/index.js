@@ -21,9 +21,10 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { ProductsList } from "sections/apps/requests/ProductsList";
 import OperationsContext from "contexts/OperationContext";
 import { OperationsList } from "sections/apps/requests/OperationsList";
+import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 
 const RequestDetails = () => {
-	const { findOneRequestById, updateRequest } = useRequest();
+	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
 	const { searchAllProducts } = useProduct();
 	const { searchAllOperations } = useOperation();
 
@@ -38,6 +39,7 @@ const RequestDetails = () => {
 	const [openAddProducts, setOpenAddProducts] = useState(false);
 	const [openAddServices, setOpenAddServices] = useState(false);
 	const [checked, setChecked] = useState({});
+	const [openAlert, setOpenAlert] = useState(false);
 
 	const { id } = useParams();
 
@@ -189,6 +191,10 @@ const RequestDetails = () => {
 			);
 	};
 
+	const handleAlertClose = () => {
+		setOpenAlert(!openAlert);
+	};
+
 	useEffect(() => {
 		handleLoadPage();
 	}, [requestDetails]);
@@ -207,10 +213,10 @@ const RequestDetails = () => {
 					secondary={
 						!loadingRequest && (
 							<Chip
-								color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : "error"}
+								color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : status === "C" ? "error" : "error"}
 								variant="filled"
 								size="medium"
-								label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : "Rejeitado"}
+								label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
 								sx={{ fontWeight: "bold" }}
 							/>
 						)
@@ -537,6 +543,18 @@ const RequestDetails = () => {
 													Salvar
 												</Button>
 											)}
+											{status === "A" && (
+												<Button
+													variant="contained"
+													color="error"
+													onClick={() => {
+														setOpenAlert(true);
+													}}
+												>
+													Cancelar solicitação
+												</Button>
+											)}
+											<AlertCustomerDelete title={`a solicitação #${id_request}`} open={openAlert} handleClose={handleAlertClose} id={id_request} handleDelete={deleteRequest} cancel={true} />
 										</Stack>
 									</Box>
 								</>

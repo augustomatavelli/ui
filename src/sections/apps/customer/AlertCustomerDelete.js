@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 
 // ==============================|| CUSTOMER - DELETE ||============================== //
 
-export default function AlertCustomerDelete({ title, open, handleClose, id, handleDelete }) {
+export default function AlertCustomerDelete({ title, open, handleClose, id, handleDelete, cancel }) {
 	const navigate = useNavigate();
 
 	return (
@@ -33,16 +33,29 @@ export default function AlertCustomerDelete({ title, open, handleClose, id, hand
 					<Avatar color="error" sx={{ width: 72, height: 72, fontSize: "1.75rem" }}>
 						<DeleteOutlined />
 					</Avatar>
-					<Stack spacing={2}>
-						<Typography variant="h4" align="center">
-							Tem certeza que deseja excluir
-							<Typography variant="h4" component="span">
-								{" "}
-								&quot;{title}&quot;
+					{!cancel ? (
+						<Stack spacing={2}>
+							<Typography variant="h4" align="center">
+								Tem certeza que deseja excluir
+								<Typography variant="h4" component="span">
+									{" "}
+									{title}
+								</Typography>
+								?
 							</Typography>
-							?
-						</Typography>
-					</Stack>
+						</Stack>
+					) : (
+						<Stack spacing={2}>
+							<Typography variant="h4" align="center">
+								Tem certeza que deseja cancelar
+								<Typography variant="h4" component="span">
+									{" "}
+									{title}
+								</Typography>
+								?
+							</Typography>
+						</Stack>
+					)}
 
 					<Stack direction="row" spacing={2} sx={{ width: 1 }}>
 						<Button fullWidth onClick={() => handleClose(false)} color="secondary" variant="outlined">
@@ -70,7 +83,7 @@ export default function AlertCustomerDelete({ title, open, handleClose, id, hand
 							}}
 							autoFocus
 						>
-							Excluir
+							{!cancel ? "Excluir" : "Cancelar"}
 						</Button>
 					</Stack>
 				</Stack>
