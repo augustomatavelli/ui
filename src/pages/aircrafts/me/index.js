@@ -25,7 +25,7 @@ const allColumns = [
 	},
 	{
 		id: 2,
-		header: "RAB",
+		header: "Matrícula",
 	},
 	{
 		id: 3,
@@ -134,7 +134,7 @@ const MyAircrafts = () => {
 					{searchAircrafts
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
-							if (sortBy === "RAB") return a.rab.localeCompare(b.rab);
+							if (sortBy === "Matrícula") return a.registration.localeCompare(b.registration);
 							if (sortBy === "Categoria") return a.category.localeCompare(b.category);
 							if (sortBy === "Email responsável") return a.email.localeCompare(b.email);
 							if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);

@@ -72,7 +72,7 @@ export default function MyRequestsTable() {
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
-									<TableCell align="center">{e.rab}</TableCell>
+									<TableCell align="center">{e.registration}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>

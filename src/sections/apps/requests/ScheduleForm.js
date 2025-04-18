@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
 
 // material-ui
-import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox } from "@mui/material";
+import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -47,7 +47,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 			setRequestResume((prev) => ({ ...prev, takeoff_date: "" }));
 		}
 	};
-	console.log(requestResume);
+
 	useEffect(() => {
 		searchAllLandingSites();
 	}, []);
@@ -155,13 +155,30 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 										/>
 									</Stack>
 								</Grid>
-
 								<Grid item xs={12}>
 									<Stack spacing={1.25}>
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} />
+											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} disabled={formik.values.landing_date === ""} />
 											<InputLabel>Já deseja agendar a decolagem? (opcional)</InputLabel>
 										</Grid>
+										<Stack direction="row" spacing={1} mt={1}>
+											{[5, 10, 15, 30, 60].map((minutes) => (
+												<Button
+													key={minutes}
+													variant="outlined"
+													size="small"
+													onClick={() => {
+														const landingDate = dayjs(formik.values.landing_date);
+														if (!landingDate.isValid()) return;
+														const newTakeoff = landingDate.add(minutes, "minute");
+														formik.setFieldValue("takeoff_date", newTakeoff);
+													}}
+													disabled={!takeoffCheckbox}
+												>
+													+{minutes} min
+												</Button>
+											))}
+										</Stack>
 										<DateTimePicker
 											value={requestResume ? requestResume.takeoff_date : formik.values.takeoff_date}
 											disablePast

@@ -71,15 +71,7 @@ export default function MyAircraftsRequestsTable() {
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
-									{/* 	<TableCell align="center">
-										<Chip
-											color={e.type === "P" ? "success" : e.type === "R" ? "primary" : e.type === "A" ? "info" : "warning"}
-											variant="filled"
-											size="small"
-											label={e.type === "P" ? "Piloto" : e.type === "R" ? "Responsável" : e.type === "A" ? "Administrador" : "Comum"}
-										/>
-									</TableCell> */}
-									<TableCell align="center">{e.rab}</TableCell>
+									<TableCell align="center">{e.registration}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>

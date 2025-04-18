@@ -21,5 +21,5 @@ export const ErrorMessages = {
 	request_aircraft_exists: "Existe uma solicitação em aberto com essa aeronave",
 	request_landing_site_exists: "Existe uma solicitação em aberto com esse aeródromo",
 	request_operation_exists: "Existe uma solicitação em aberto com esse serviço",
-	failed_to_search_rab: "Erro ao buscar os dados do RAB",
+	failed_to_search_registration: "Erro ao buscar os dados da matrícula",
 };

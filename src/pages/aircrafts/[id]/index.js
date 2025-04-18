@@ -27,7 +27,7 @@ const AircraftDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_aircraft, rab, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
+	const { id_aircraft, registration, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -107,8 +107,8 @@ const AircraftDetails = () => {
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">RAB</Typography>
-												<Typography>{rab}</Typography>
+												<Typography color="secondary">Matrícula</Typography>
+												<Typography>{registration}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
@@ -204,7 +204,7 @@ const AircraftDetails = () => {
 											Excluir
 										</Button>
 									)}
-									<AlertCustomerDelete title={rab} open={openAlert} handleClose={handleAlertClose} id={id_aircraft} handleDelete={deleteAircraft} />
+									<AlertCustomerDelete title={registration} open={openAlert} handleClose={handleAlertClose} id={id_aircraft} handleDelete={deleteAircraft} />
 								</Stack>
 							</Box>
 						</Grid>

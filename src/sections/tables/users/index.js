@@ -19,7 +19,7 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 	{ label: "Tipo", key: "type" },
-	{ label: "Registro piloto", key: "pilot_register" },
+	{ label: "Registro piloto", key: "license" },
 ];
 
 export default function UsersTable() {
@@ -148,7 +148,7 @@ export default function UsersTable() {
 											label={user.type === "P" ? "Piloto" : user.type === "R" ? "Responsável" : user.type === "A" ? "Administrador" : "Comum"}
 										/>
 									</TableCell>
-									<TableCell align="center">{user?.pilot_register ?? <Typography>-</Typography>}</TableCell>
+									<TableCell align="center">{user?.license ?? <Typography>-</Typography>}</TableCell>
 								</TableRow>
 							))
 						) : search ? (

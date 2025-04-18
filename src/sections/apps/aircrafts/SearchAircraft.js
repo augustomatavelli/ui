@@ -47,7 +47,7 @@ const SearchAircraft = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar aeronave pelo RAB..."
+					placeholder="Pesquisar aeronave pela matrícula..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

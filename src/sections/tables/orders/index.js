@@ -44,7 +44,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell align="center">RAB</TableCell>
+							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Horário previsto</TableCell>
 							<TableCell align="center">Item</TableCell>
 							<TableCell align="center">Quantidade </TableCell>
@@ -76,7 +76,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Concluir" : "Finalizada"}
 											</Button>
 										</TableCell>
-										<TableCell align="center">{item.rab}</TableCell>
+										<TableCell align="center">{item.registration}</TableCell>
 										<TableCell align="center">
 											{itemOrder.type === "P" ? dayjs(item.landing_date).format("DD/MM/YYYY HH:mm") : item.takeoff_date ? dayjs(item.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
 										</TableCell>

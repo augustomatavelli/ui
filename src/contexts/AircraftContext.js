@@ -12,6 +12,7 @@ export const AircraftProvider = ({ children }) => {
 	const [aircrafts, setAircrafts] = useState([]);
 	const [totalAircrafts, setTotalAircrafts] = useState(0);
 	const [requestAircraft, setRequestAircraft] = useState({});
+	const [anacResponse, setAnacRespose] = useState({});
 
 	const resetAircraftstates = () => {
 		setLoadingAircraft(false);
@@ -22,6 +23,7 @@ export const AircraftProvider = ({ children }) => {
 		setTotalAircrafts(0);
 		setTotalSearchAircrafts(0);
 		setRequestAircraft({});
+		setAnacRespose({});
 	};
 
 	return (
@@ -44,6 +46,8 @@ export const AircraftProvider = ({ children }) => {
 				resetAircraftstates,
 				requestAircraft,
 				setRequestAircraft,
+				anacResponse,
+				setAnacRespose,
 			}}
 		>
 			{children}

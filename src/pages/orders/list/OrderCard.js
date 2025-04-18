@@ -12,7 +12,7 @@ import { CalendarOutlined, CalendarFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 const OrderCard = ({ data }) => {
-	const { id_request, rab, landing_date, takeoff_date, itemOrders } = data;
+	const { id_request, registration, landing_date, takeoff_date, itemOrders } = data;
 
 	return (
 		<>
@@ -37,7 +37,7 @@ const OrderCard = ({ data }) => {
 					<Grid item xs={12}>
 						<Grid container spacing={1}>
 							<Grid item xs={12}>
-								<ListItemText primary={<Typography variant="h5"># {id_request}</Typography>} secondary={<Typography variant="h5">{rab}</Typography>} />
+								<ListItemText primary={<Typography variant="h5"># {id_request}</Typography>} secondary={<Typography variant="h5">{registration}</Typography>} />
 								<List sx={{ p: 0, overflow: "hidden", "& .MuiListItem-root": { px: 0, py: 0.5 } }}>
 									<ListItem>
 										<ListItemIcon>

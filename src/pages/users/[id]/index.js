@@ -23,7 +23,7 @@ const UserDetails = () => {
 
 	const { id } = useParams();
 
-	const { name, email, mobile, type, pilot_register, status, created_at } = userDetails;
+	const { name, email, mobile, type, license, status, created_at } = userDetails;
 
 	const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
@@ -92,7 +92,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Registro do piloto</Typography>
-													<Typography>{pilot_register}</Typography>
+													<Typography>{license}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>

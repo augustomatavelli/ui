@@ -52,7 +52,7 @@ import UserContext from "contexts/UserContext";
 
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
-		rab: "",
+		registration: "",
 		category: "",
 		name: "",
 		doc: "",
@@ -63,7 +63,7 @@ const getInitialValues = (aircraft) => {
 	};
 
 	if (aircraft) {
-		newAircraft.rab = aircraft.fatherName;
+		newAircraft.registration = aircraft.fatherName;
 		newAircraft.location = aircraft.address;
 		return _.merge({}, newAircraft, aircraft);
 	}
@@ -73,12 +73,11 @@ const getInitialValues = (aircraft) => {
 
 const allStatus = ["A", "B", "C", "D", "E"];
 
-// ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
-
 const AddAircraft = ({ aircraft, onCancel }) => {
-	const { createAircraft, searchAllAircrafts, findAllAircrafts } = useAircraft();
+	//TODO: Utilizar a requisição de pesquisa de aeronaves para preencher o select de categoria
+	const { createAircraft, searchAllAircrafts, findAllAircrafts, anacSearch } = useAircraft();
 
-	const { usersResp, user } = useContext(UserContext);
+	const { usersResp, user, anacResponse } = useContext(UserContext);
 
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
@@ -105,7 +104,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 	}, [selectedImage]);
 
 	const AircraftSchema = Yup.object().shape({
-		rab: Yup.string().max(255).required("RAB é obrigatório"),
+		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
 		category: Yup.string().required("Categoria é obrigatório"),
 		name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
@@ -121,7 +120,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 	});
 
 	const AircraftNewUserSchema = Yup.object().shape({
-		rab: Yup.string().max(255).required("RAB é obrigatório"),
+		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
 		category: Yup.string().required("Categoria é obrigatório"),
 		name: Yup.string(),
 		doc: Yup.string(),
@@ -135,12 +134,12 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		validationSchema: selectedUserResp ? AircraftNewUserSchema : AircraftSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus, errors }) => {
 			try {
-				const { rab, category, membership, name, email, doc, phone } = values;
+				const { registration, category, membership, name, email, doc, phone } = values;
 
 				let base64Image = "";
 				base64Image = await readFile(selectedImage);
 				const newAircraft = {
-					rab: rab,
+					registration: registration,
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
@@ -274,8 +273,15 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
-												<InputLabel htmlFor="rab">Registro Aeronáutico Brasileiro</InputLabel>
-												<TextField fullWidth id="rab" placeholder="Digite o RAB" {...getFieldProps("rab")} error={Boolean(touched.rab && errors.rab)} helperText={touched.rab && errors.rab} />
+												<InputLabel htmlFor="registration">Matrícula</InputLabel>
+												<TextField
+													fullWidth
+													id="registration"
+													placeholder="Digite a matrícula"
+													{...getFieldProps("registration")}
+													error={Boolean(touched.registration && errors.registration)}
+													helperText={touched.registration && errors.registration}
+												/>
 											</Stack>
 										</Grid>
 										<Grid item xs={12}>

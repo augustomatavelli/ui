@@ -10,7 +10,7 @@ import UserContext from "contexts/UserContext";
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingAircraft, setSearchAircrafts, setAircraftDetails, setAircrafts, setTotalAircrafts, setTotalSearchAircrafts } = useContext(AircraftContext);
+	const { setLoadingAircraft, setSearchAircrafts, setAircraftDetails, setAircrafts, setTotalAircrafts, setTotalSearchAircrafts, setAnacRespose } = useContext(AircraftContext);
 	const { setUsersResp } = useContext(UserContext);
 
 	const createAircraft = async (data) => {
@@ -209,7 +209,32 @@ const useAircraft = () => {
 		}
 	};
 
-	return { createAircraft, searchAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllAircrafts, approveAircraft, deleteAircraft };
+	const anacSearch = async (search) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.post(`/rab-search/${search}`);
+			setAnacRespose(response.data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
+	return { createAircraft, searchAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllAircrafts, approveAircraft, deleteAircraft, anacSearch };
 };
 
 export default useAircraft;

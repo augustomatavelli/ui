@@ -29,7 +29,7 @@ export const UserAircraftsList = ({ data }) => {
 								}}
 							/>
 						</Box>
-						<Typography variant="subtitle1">{e.rab}</Typography>
+						<Typography variant="subtitle1">{e.registration}</Typography>
 					</Grid>
 				</CardContent>
 			</Card>

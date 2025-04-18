@@ -108,7 +108,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 							}}
 						/>
 					</Box>
-					<Typography variant="h4">{aircraft.rab}</Typography>
+					<Typography variant="h4">{aircraft.registration}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
 

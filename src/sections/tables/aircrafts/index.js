@@ -16,7 +16,7 @@ import UserContext from "contexts/UserContext";
 
 export const header = [
 	{ label: "", key: "icon" },
-	{ label: "RAB", key: "rab" },
+	{ label: "Matrícula", key: "registration" },
 	{ label: "Categoria", key: "category" },
 	{ label: "Nome", key: "name" },
 	{ label: "Email", key: "email" },
@@ -79,7 +79,7 @@ export default function AircraftsTable() {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell align="center">RAB</TableCell>
+							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Categoria</TableCell>
 							<TableCell align="center">Nome</TableCell>
 							<TableCell align="center">Email</TableCell>
@@ -135,7 +135,7 @@ export default function AircraftsTable() {
 											<Chip color="success" variant="filled" size="small" label="Ativo" />
 										)}
 									</TableCell>
-									<TableCell align="center">{aircraft.rab}</TableCell>
+									<TableCell align="center">{aircraft.registration}</TableCell>
 									<TableCell align="center">{aircraft.category}</TableCell>
 									<TableCell align="center">{aircraft.name}</TableCell>
 									<TableCell align="center">{aircraft.email}</TableCell>

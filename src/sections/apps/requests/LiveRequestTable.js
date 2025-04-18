@@ -72,7 +72,7 @@ export default function RequestsTable() {
 									>
 										<TableCell align="center">{<Chip color="warning" variant="filled" size="large" label={`# ${e.id_request}`} sx={{ fontWeight: "bold", height: 30, color: "black" }} />}</TableCell>
 										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
-											{e.rab}
+											{e.registration}
 										</TableCell>
 										<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
 											{e.user}

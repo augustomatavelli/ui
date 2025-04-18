@@ -22,6 +22,7 @@ import { ProductsList } from "sections/apps/requests/ProductsList";
 import OperationsContext from "contexts/OperationContext";
 import { OperationsList } from "sections/apps/requests/OperationsList";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import UserContext from "contexts/UserContext";
 
 const RequestDetails = () => {
 	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
@@ -31,6 +32,7 @@ const RequestDetails = () => {
 	const { requestDetails, setRequestDetails, loadingRequest } = useContext(RequestContext);
 	const { searchProducts, loadingProduct } = useContext(ProductsContext);
 	const { searchOperations, loadingService } = useContext(OperationsContext);
+	const { user } = useContext(UserContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
@@ -43,7 +45,7 @@ const RequestDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_request, landing_date, takeoff_date, status, created_at, user, type, rab, landing_site, products, services } = requestDetails;
+	const { id_request, landing_date, takeoff_date, status, created_at, id_user, user_name, type, registration, landing_site, products, services } = requestDetails;
 
 	const resetStates = () => {
 		setRequestDetails({});
@@ -255,8 +257,8 @@ const RequestDetails = () => {
 											<Grid container spacing={3}>
 												<Grid item xs={12} md={6}>
 													<Stack spacing={0.5}>
-														<Typography color="secondary">RAB</Typography>
-														<Typography>{rab}</Typography>
+														<Typography color="secondary">Matrícula</Typography>
+														<Typography>{registration}</Typography>
 													</Stack>
 												</Grid>
 											</Grid>
@@ -342,7 +344,7 @@ const RequestDetails = () => {
 												<Grid item xs={12} md={6}>
 													<Stack spacing={0.5}>
 														<Typography color="secondary">Solicitado por</Typography>
-														<Typography>{user}</Typography>
+														<Typography>{user_name}</Typography>
 													</Stack>
 												</Grid>
 											</Grid>
@@ -543,7 +545,7 @@ const RequestDetails = () => {
 													Salvar
 												</Button>
 											)}
-											{status === "A" && (
+											{status === "A" && (user.type === "A" || id_user === user.id_user) && (
 												<Button
 													variant="contained"
 													color="error"

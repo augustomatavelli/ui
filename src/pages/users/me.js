@@ -65,7 +65,7 @@ const UserProfile = () => {
 					name: user.name,
 					email: user.email,
 					phone: user.mobile,
-					rab: user.pilot_register,
+					license: user.license,
 					newPassword: "",
 					confirmNewPassword: "",
 					submit: null,
@@ -142,8 +142,8 @@ const UserProfile = () => {
 								</Grid>
 								<Grid item xs={12} sm={6}>
 									<Stack spacing={1.25}>
-										<InputLabel htmlFor="personal-rab">Número do registro de piloto</InputLabel>
-										<TextField fullWidth value={values.rab ? values.rab : "-"} name="rab" id="personal-rab" disabled />
+										<InputLabel htmlFor="personal-license">Número do registro de piloto</InputLabel>
+										<TextField fullWidth value={values.license ? values.license : "-"} name="license" id="personal-license" disabled />
 									</Stack>
 								</Grid>
 								<Grid item xs={12} sm={6}>

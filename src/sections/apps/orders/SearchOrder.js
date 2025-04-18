@@ -55,7 +55,7 @@ const SearchOrder = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar pelo RAB..."
+					placeholder="Pesquisar pela matrícula..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}
