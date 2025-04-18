@@ -41,7 +41,7 @@ const SearchUserByAdmin = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar usuário por nome, email ou registro de piloto..."
+					placeholder="Pesquisar usuário por nome, email ou licença..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

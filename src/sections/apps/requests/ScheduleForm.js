@@ -18,13 +18,11 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 import RequestContext from "contexts/RequestContext";
 
-const ScheduleForm = ({ aircraft, onValidate }) => {
+const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbox }) => {
 	const { searchAllLandingSites } = useLandingSite();
 
 	const { searchLandingSites } = useContext(LandingSiteContext);
 	const { setRequestResume, requestResume } = useContext(RequestContext);
-
-	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
 
 	// constant
 	const getInitialValues = (aircraft) => {
@@ -59,6 +57,7 @@ const ScheduleForm = ({ aircraft, onValidate }) => {
 		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
 		flight_time: Yup.number().optional(),
 		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
+		takeoff_date: Yup.date().optional(),
 	});
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),

@@ -150,7 +150,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
 					isNewUserResp: showUserResp,
 				};
-				console.log(newAircraft);
+
 				const response = await createAircraft(newAircraft);
 				if (response) {
 					dispatch(

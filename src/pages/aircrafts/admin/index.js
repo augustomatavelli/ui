@@ -1,14 +1,16 @@
 import MainCard from "components/MainCard";
 import UserContext from "contexts/UserContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AircraftsTable from "sections/tables/aircrafts";
-
-// ==============================|| TAB - PERSONAL ||============================== //
+import { FilterOutlined } from "@ant-design/icons";
 
 const ListAircraftsForAdmin = () => {
 	const { user } = useContext(UserContext);
-	const navigate = useNavigate;
+
+	const [openFilter, setOpenFilter] = useState(false);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!user) return;
@@ -18,8 +20,20 @@ const ListAircraftsForAdmin = () => {
 	}, []);
 
 	return (
-		<MainCard content={false} title="Aeronaves" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
-			<AircraftsTable />
+		<MainCard
+			content={false}
+			title="Aeronaves"
+			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
+			secondary={
+				<FilterOutlined
+					onClick={() => {
+						setOpenFilter(!openFilter);
+					}}
+					style={{ fontSize: 20 }}
+				/>
+			}
+		>
+			<AircraftsTable openFilter={openFilter} />
 		</MainCard>
 	);
 };

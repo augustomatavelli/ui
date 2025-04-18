@@ -55,7 +55,7 @@ const SearchOrder = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar pela matrícula..."
+					placeholder="Pesquisar pelo número da solicitação, matrícula ou usuário..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

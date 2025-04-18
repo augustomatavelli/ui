@@ -44,10 +44,10 @@ const useRequest = () => {
 		}
 	};
 
-	const searchAllRequests = async (search, page) => {
+	const searchAllRequests = async (search, page, statusParams) => {
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/requests?search=${search}&page=${page}&${statusParams.toString()}`);
 			setSearchRequests(response.data.items);
 			setTotalSearchRequests(response.data.pagination.totalPages);
 		} catch (error) {
@@ -69,10 +69,10 @@ const useRequest = () => {
 		}
 	};
 
-	const searchMyAircraftsRequests = async (search, page) => {
+	const searchMyAircraftsRequests = async (search, page, statusParams) => {
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}&${statusParams.toString()}`);
 			setSearchAircraftsRequests(response.data.items);
 			setTotalSearchAircraftsRequests(response.data.pagination.totalPages);
 		} catch (error) {
@@ -142,10 +142,10 @@ const useRequest = () => {
 		}
 	};
 
-	const findAllRequests = async (search, page) => {
+	const findAllRequests = async (search, page, statusParams) => {
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}`);
 			setRequests(response.data.items);
 			setTotalRequests(response.data.pagination.totalPages);
 		} catch (error) {

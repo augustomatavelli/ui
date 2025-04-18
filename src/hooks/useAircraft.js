@@ -135,10 +135,10 @@ const useAircraft = () => {
 		}
 	};
 
-	const findAllAircrafts = async (search, page) => {
+	const findAllAircrafts = async (search, page, statusParams) => {
 		try {
 			setLoadingAircraft(true);
-			const response = await publicAxios.get(`/aircrafts/admin/find-all?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/aircrafts/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}`);
 			setAircrafts(response.data.items);
 			setTotalAircrafts(response.data.pagination.totalPages);
 			setUsersResp(response.data.usersResp);

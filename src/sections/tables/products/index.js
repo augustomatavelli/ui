@@ -10,33 +10,47 @@ import ProductsContext from "contexts/ProductsContext";
 import SearchProductByAdmin from "sections/apps/products/SearchProductByAdmin";
 import AddProduct from "sections/apps/products/AddProduct";
 import Loader from "components/Loader";
+import { ProductFilter } from "./ProductFilter";
 
-export default function ProductsTable() {
-	const { findAllProducts, updateProduct } = useProduct();
+export default function ProductsTable({ openFilter }) {
+	const { findAllProducts, updateProduct, findCategories } = useProduct();
 
 	const { products, totalProducts, loadingProduct } = useContext(ProductsContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState({});
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
 	const handleAdd = async () => {
+		const categoriesParams = Object.keys(selectedCategory);
+		const params = new URLSearchParams();
+		params.set("categories", categoriesParams.join(","));
 		setOpen(!open);
-		await findAllProducts(search, page);
+		await findAllProducts(search, page, params);
 	};
 
 	const handleClickVisibility = async (productId, hidePrice) => {
+		const categoriesParams = Object.keys(selectedCategory);
+		const params = new URLSearchParams();
+		params.set("categories", categoriesParams.join(","));
+
 		await updateProduct(productId, { hide_price: hidePrice === "S" ? "N" : "S" });
-		await findAllProducts(search, page);
+		await findAllProducts(search, page, params);
 	};
 
 	useEffect(() => {
-		findAllProducts(search, page);
-	}, [search, page]);
+		findCategories();
+		const categoriesParams = Object.keys(selectedCategory);
+		const params = new URLSearchParams();
+		params.set("categories", categoriesParams.join(","));
+
+		findAllProducts(search, page, params);
+	}, [search, page, selectedCategory]);
 
 	useEffect(() => {}, [products]);
 
@@ -60,6 +74,7 @@ export default function ProductsTable() {
 						</Button>
 					</Stack>
 				</Grid>
+				{openFilter && <ProductFilter selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
@@ -83,7 +98,7 @@ export default function ProductsTable() {
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">
-										<Chip color={e.category_name === "Bebida" ? "success" : "warning"} variant="filled" size="small" label={e.category_name} />
+										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "black" }} />
 									</TableCell>
 									<TableCell align="center">
 										<>
@@ -100,9 +115,8 @@ export default function ProductsTable() {
 													}}
 													edge="end"
 													color={e.hide_price === "S" ? "error" : "success"}
-													sx={{ fontWeight: "bold" }}
 												>
-													{e.hide_price === "S" ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+													{e.hide_price === "S" ? <EyeInvisibleOutlined style={{ fontSize: 20, fontWeight: "bold" }} /> : <EyeOutlined style={{ fontSize: 20, fontWeight: "bold" }} />}
 												</IconButton>
 											</Tooltip>
 										</>
@@ -114,7 +128,7 @@ export default function ProductsTable() {
 									<TableCell align="center">{e.created_by}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
+						) : search || openFilter ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhum produto encontrado</Typography>

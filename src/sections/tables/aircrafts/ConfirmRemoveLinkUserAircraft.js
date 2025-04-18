@@ -101,6 +101,7 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 											variant="filled"
 											size="small"
 											label={user.status === "P" ? "Pendente" : user.status === "A" ? "Ativo" : ""}
+											sx={{ color: user.status === "P" ? "black" : "white" }}
 										/>
 									</TableCell>
 								</TableRow>

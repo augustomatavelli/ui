@@ -13,8 +13,9 @@ import Loader from "components/Loader";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { useNavigate } from "react-router";
+import { RequestFilter } from "./RequestFilter";
 
-export default function RequestsTable() {
+export default function RequestsTable({ openFilter }) {
 	const { findAllRequests, updateStatus } = useRequest();
 
 	const { requests, totalRequests, loadingRequest } = useContext(RequestContext);
@@ -22,6 +23,7 @@ export default function RequestsTable() {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState({});
 
 	const navigate = useNavigate();
 
@@ -30,8 +32,12 @@ export default function RequestsTable() {
 	};
 
 	const handleAdd = async () => {
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+
 		setOpen(!open);
-		await findAllRequests(search, page);
+		await findAllRequests(search, page, paramsStatus);
 	};
 
 	const handleRedirect = (requestId) => {
@@ -39,8 +45,12 @@ export default function RequestsTable() {
 	};
 
 	useEffect(() => {
-		findAllRequests(search, page);
-	}, [search, page]);
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+
+		findAllRequests(search, page, paramsStatus);
+	}, [search, page, selectedStatus]);
 
 	useEffect(() => {}, [requests]);
 
@@ -53,13 +63,13 @@ export default function RequestsTable() {
 						<Pagination count={totalRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
+				{openFilter && <RequestFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
 							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
-							{/* <TableCell align="center">Tipo de usuário</TableCell> */}
 							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Aeródromo</TableCell>
 							<TableCell align="center">Pouso</TableCell>
@@ -85,7 +95,7 @@ export default function RequestsTable() {
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 									</TableCell>
 									<TableCell align="center">
-										{e.status !== "F" && (
+										{e.status === "A" && (
 											<Button
 												variant="contained"
 												size="small"
@@ -111,14 +121,6 @@ export default function RequestsTable() {
 										)}
 									</TableCell>
 									<TableCell align="center">{e.user}</TableCell>
-									{/* <TableCell align="center">
-										<Chip
-											color={e.type === "P" ? "success" : e.type === "R" ? "primary" : e.type === "A" ? "info" : "warning"}
-											variant="filled"
-											size="small"
-											label={e.type === "P" ? "Piloto" : e.type === "R" ? "Responsável" : e.type === "A" ? "Administrador" : "Comum"}
-										/>
-									</TableCell> */}
 									<TableCell align="center">{e.registration}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
@@ -129,12 +131,13 @@ export default function RequestsTable() {
 											variant="filled"
 											size="small"
 											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
+											sx={{ color: e.status === "P" ? "black" : "white" }}
 										/>
 									</TableCell>
 									<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
+						) : search || openFilter ? (
 							<TableRow>
 								<TableCell colSpan={11} align="center">
 									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>

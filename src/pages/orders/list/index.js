@@ -17,7 +17,7 @@ const ListOrders = () => {
 	const { user } = useContext(UserContext);
 	const { findAllOrders, findAllCategories } = useOrder();
 
-	const { orders, totalOrders, loadingOrder } = useContext(OrderContext);
+	const { totalOrders, loadingOrder } = useContext(OrderContext);
 
 	const [page, setPage] = useState(1);
 	const [openFilter, setOpenFilter] = useState(false);

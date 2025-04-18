@@ -20,8 +20,9 @@ const CreateRequestStepper = ({ aircraft }) => {
 	const [errorIndex, setErrorIndex] = useState(null);
 	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
 	const [isFormValidSecond, setIsFormValidSecond] = useState(false);
+	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
 
-	const steps = ["Agendamento", "Serviços", "Serviço de Bordo", "Resumo"];
+	const steps = takeoffCheckbox ? ["Agendamento", "Serviços", "Serviço de Bordo", "Resumo"] : ["Agendamento", "Serviços", "Resumo"];
 
 	const navigate = useNavigate();
 
@@ -111,13 +112,12 @@ const CreateRequestStepper = ({ aircraft }) => {
 					<Typography variant="h4">{aircraft.registration}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
-
 				{/* Formulário ocupando o resto */}
 				<Grid item xs={12} md={9} container sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
-					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} takeoffCheckbox={takeoffCheckbox} setTakeoffCheckbox={setTakeoffCheckbox} />}
 					{activeStep === 1 && <OperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{activeStep === 2 && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{activeStep === 3 && <RequestResume aircraft={aircraft} />}
+					{takeoffCheckbox && activeStep === 2 && takeoffCheckbox && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+					{(takeoffCheckbox ? activeStep === 3 : activeStep === 2) && <RequestResume aircraft={aircraft} />}
 				</Grid>
 			</Grid>
 

@@ -3,7 +3,6 @@ import { Grid, Card, CardContent, Typography, TextField, IconButton, Box } from 
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 
 export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, handleChangeProductAmount, handleRemoveProduct }) => {
-	console.log(searchProducts);
 	return searchProducts.map((e) => (
 		<Card key={e.id_product} sx={{ minWidth: 200, marginRight: "1rem" }}>
 			<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

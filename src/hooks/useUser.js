@@ -130,10 +130,11 @@ const useUser = () => {
 		}
 	};
 
-	const findAllUsers = async (search, page) => {
+	const findAllUsers = async (search, page, roleParams, statusParams) => {
+		console.log(roleParams, statusParams);
 		try {
 			setLoadingUser(true);
-			const response = await publicAxios.get(`/users/admin/find-all?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/users/admin/find-all?search=${search}&page=${page}&${roleParams.toString()}&${statusParams.toString()}`);
 			setUsers(response.data.items);
 			setTotalUser(response.data.pagination.totalPages);
 		} catch (error) {

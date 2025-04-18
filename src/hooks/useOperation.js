@@ -58,10 +58,10 @@ const useOperation = () => {
 		}
 	};
 
-	const findAllOperations = async (search, page) => {
+	const findAllOperations = async (search, page, categoriesParams) => {
 		try {
 			setLoadingOperation(true);
-			const response = await publicAxios.get(`/operations/admin/find-all?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/operations/admin/find-all?search=${search}&page=${page}&${categoriesParams.toString()}`);
 			setOperations(response.data.items);
 			setTotalOperations(response.data.pagination.totalPages);
 		} catch (error) {

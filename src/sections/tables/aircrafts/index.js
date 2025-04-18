@@ -13,6 +13,7 @@ import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin
 import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 import UserContext from "contexts/UserContext";
+import { AircraftFilter } from "./AircraftFilter";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -23,7 +24,7 @@ export const header = [
 	{ label: "Celular", key: "mobile" },
 ];
 
-export default function AircraftsTable() {
+export default function AircraftsTable({ openFilter }) {
 	const { findAllAircrafts, approveAircraft, searchAllAircrafts } = useAircraft();
 
 	const { aircrafts, totalAircrafts, loadingAircraft } = useContext(AircraftContext);
@@ -32,6 +33,7 @@ export default function AircraftsTable() {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState({});
 
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -41,8 +43,12 @@ export default function AircraftsTable() {
 	};
 
 	const handleAdd = async () => {
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+
 		setOpen(!open);
-		user.type === "A" ? await findAllAircrafts(search, page) : await searchAllAircrafts(search, page);
+		user.type === "A" ? await findAllAircrafts(search, page, paramsStatus) : await searchAllAircrafts(search, page);
 	};
 
 	const handleRedirect = (aircraftId) => {
@@ -50,8 +56,12 @@ export default function AircraftsTable() {
 	};
 
 	useEffect(() => {
-		user.type === "A" ? findAllAircrafts(search, page) : searchAllAircrafts(search, page);
-	}, [search, page]);
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+
+		user.type === "A" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
+	}, [search, page, selectedStatus]);
 
 	useEffect(() => {}, [aircrafts]);
 
@@ -75,6 +85,7 @@ export default function AircraftsTable() {
 						</Button>
 					</Stack>
 				</Grid>
+				{openFilter && <AircraftFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
@@ -142,7 +153,7 @@ export default function AircraftsTable() {
 									<TableCell align="center">{aircraft.mobile}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
+						) : search || openFilter ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhuma aeronave encontrada</Typography>

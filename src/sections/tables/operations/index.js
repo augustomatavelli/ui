@@ -10,28 +10,39 @@ import SearchOperationByAdmin from "sections/apps/operations/SearchOperationByAd
 import AddOperation from "sections/apps/operations/AddOperation";
 import { PlusOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
+import { OperationFilter } from "./OperationFilter";
 
-export default function OperationsTable() {
-	const { findAllOperations } = useOperation();
+export default function OperationsTable({ openFilter }) {
+	const { findAllOperations, findCategories } = useOperation();
 
 	const { operations, totalOperations, loadingOperation } = useContext(OperationsContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState({});
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
 	const handleAdd = async () => {
+		const categoriesParams = Object.keys(selectedCategory);
+		const params = new URLSearchParams();
+		params.set("categories", categoriesParams.join(","));
+
 		setOpen(!open);
-		await findAllOperations(search, page);
+		await findAllOperations(search, page, params);
 	};
 
 	useEffect(() => {
-		findAllOperations(search, page);
-	}, [search, page]);
+		findCategories();
+		const categoriesParams = Object.keys(selectedCategory);
+		const params = new URLSearchParams();
+		params.set("categories", categoriesParams.join(","));
+
+		findAllOperations(search, page, params);
+	}, [search, page, selectedCategory]);
 
 	useEffect(() => {}, [operations]);
 
@@ -55,6 +66,7 @@ export default function OperationsTable() {
 						</Button>
 					</Stack>
 				</Grid>
+				{openFilter && <OperationFilter selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
@@ -78,7 +90,7 @@ export default function OperationsTable() {
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">
-										<Chip color={e.category_name === "Bebida" ? "success" : "warning"} variant="filled" size="small" label={e.category_name} />
+										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "black" }} />
 									</TableCell>
 									<TableCell align="center">
 										{new Intl.NumberFormat("pt-BR", {
@@ -95,7 +107,7 @@ export default function OperationsTable() {
 									<TableCell align="center">{e.created_by}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
+						) : search || openFilter ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhum serviço encontrado</Typography>

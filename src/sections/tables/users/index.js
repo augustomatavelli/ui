@@ -1,17 +1,18 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, TextField } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
 
 // project imports
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
-import { LikeFilled, DislikeFilled, SearchOutlined, CloseOutlined } from "@ant-design/icons";
+import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddUser from "sections/apps/users/AddUser";
 import Loader from "components/Loader";
 import { useNavigate } from "react-router";
+import { UserFilter } from "./UserFilter";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -19,10 +20,10 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 	{ label: "Tipo", key: "type" },
-	{ label: "Registro piloto", key: "license" },
+	{ label: "Licença", key: "license" },
 ];
 
-export default function UsersTable() {
+export default function UsersTable({ openFilter }) {
 	const { findAllUsers, approveUser } = useUser();
 
 	const { users, totalUser, loadingUser } = useContext(UserContext);
@@ -30,6 +31,8 @@ export default function UsersTable() {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState({});
+	const [selectedRole, setSelectedRole] = useState({});
 
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -43,8 +46,15 @@ export default function UsersTable() {
 	};
 
 	const handleClose = async () => {
+		const roleParams = Object.keys(selectedRole);
+		const params = new URLSearchParams();
+		params.set("role", roleParams.join(","));
+
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
 		setOpen(false);
-		await findAllUsers(search, page);
+		await findAllUsers(search, page, params, paramsStatus);
 	};
 
 	const handleRedirect = (userId) => {
@@ -52,8 +62,16 @@ export default function UsersTable() {
 	};
 
 	useEffect(() => {
-		findAllUsers(search, page);
-	}, [search, page]);
+		const roleParams = Object.keys(selectedRole);
+		const params = new URLSearchParams();
+		params.set("role", roleParams.join(","));
+
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+
+		findAllUsers(search, page, params, paramsStatus);
+	}, [search, page, selectedRole, selectedStatus]);
 
 	useEffect(() => {}, [users]);
 
@@ -77,6 +95,7 @@ export default function UsersTable() {
 						</Button>
 					</Stack>
 				</Grid>
+				{openFilter && <UserFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} selectedRole={selectedRole} setSelectedRole={setSelectedRole} />}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
@@ -85,7 +104,7 @@ export default function UsersTable() {
 							<TableCell align="center">Email</TableCell>
 							<TableCell align="center">Celular</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
-							<TableCell align="center">Registro de piloto</TableCell>
+							<TableCell align="center">Licença</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -151,7 +170,7 @@ export default function UsersTable() {
 									<TableCell align="center">{user?.license ?? <Typography>-</Typography>}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
+						) : search || openFilter ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhum usuário encontrado</Typography>
@@ -167,7 +186,6 @@ export default function UsersTable() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddUser onCancel={handleClose} />
 			</Dialog>

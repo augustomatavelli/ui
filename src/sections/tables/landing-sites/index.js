@@ -95,7 +95,13 @@ export default function LandingSitesTable() {
 									}}
 								>
 									<TableCell align="center">
-										<Chip color={e.status === "P" ? "warning" : "success"} variant="filled" size="small" label={e.status === "P" ? "Pendente" : "Ativo"} />
+										<Chip
+											color={e.status === "P" ? "warning" : "success"}
+											variant="filled"
+											size="small"
+											label={e.status === "P" ? "Pendente" : "Ativo"}
+											sx={{ color: e.status === "P" ? "black" : "white" }}
+										/>
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">{e.type === "H" ? "Heliporto" : "-"}</TableCell>

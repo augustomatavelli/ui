@@ -58,10 +58,10 @@ const useProduct = () => {
 		}
 	};
 
-	const findAllProducts = async (search, page) => {
+	const findAllProducts = async (search, page, categoriesParams) => {
 		try {
 			setLoadingProduct(true);
-			const response = await publicAxios.get(`/products/admin/find-all?search=${search}&page=${page}`);
+			const response = await publicAxios.get(`/products/admin/find-all?search=${search}&page=${page}&${categoriesParams.toString()}`);
 			setProducts(response.data.items);
 			setTotalProducts(response.data.pagination.totalPages);
 		} catch (error) {

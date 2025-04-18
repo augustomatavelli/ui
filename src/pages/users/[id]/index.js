@@ -91,7 +91,7 @@ const UserDetails = () => {
 										<Grid container spacing={3}>
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
-													<Typography color="secondary">Registro do piloto</Typography>
+													<Typography color="secondary">Licença</Typography>
 													<Typography>{license}</Typography>
 												</Stack>
 											</Grid>

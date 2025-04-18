@@ -142,7 +142,7 @@ const UserProfile = () => {
 								</Grid>
 								<Grid item xs={12} sm={6}>
 									<Stack spacing={1.25}>
-										<InputLabel htmlFor="personal-license">Número do registro de piloto</InputLabel>
+										<InputLabel htmlFor="personal-license">Número da licença</InputLabel>
 										<TextField fullWidth value={values.license ? values.license : "-"} name="license" id="personal-license" disabled />
 									</Stack>
 								</Grid>
