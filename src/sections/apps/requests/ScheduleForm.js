@@ -1,48 +1,40 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-
-// material-ui
 import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-
-// third-party.png
 import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// assets
 import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 import RequestContext from "contexts/RequestContext";
 
 const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbox }) => {
 	const { searchAllLandingSites } = useLandingSite();
-
 	const { searchLandingSites } = useContext(LandingSiteContext);
 	const { setRequestResume, requestResume } = useContext(RequestContext);
 
-	// constant
-	const getInitialValues = (aircraft) => {
-		const newRequest = {
-			id_aircraft: aircraft.id_aircraft,
-			id_landing_site: "",
-			name_landing_site: "",
-			amount: "",
-			flight_time: "",
-			landing_date: "",
-			takeoff_date: "",
-		};
+	const [selectedInterval, setSelectedInterval] = useState(null);
 
-		return newRequest;
-	};
+	const getInitialValues = (aircraft) => ({
+		id_aircraft: aircraft.id_aircraft,
+		id_landing_site: "",
+		name_landing_site: "",
+		amount: "",
+		flight_time: "",
+		landing_date: null,
+		takeoff_date: null,
+	});
 
 	const handleToggleCheckBox = (event) => {
 		setTakeoffCheckbox(event.target.checked);
 		if (!event.target.checked) {
-			setRequestResume((prev) => ({ ...prev, takeoff_date: "" }));
+			formik.setFieldValue("takeoff_date", null);
+			setSelectedInterval(null); // Reseta o intervalo quando a checkbox é desmarcada
+			setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
 		}
 	};
 
@@ -56,22 +48,22 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 		name_landing_site: Yup.string().required(),
 		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
 		flight_time: Yup.number().optional(),
-		landing_date: Yup.date().required("Data e hora previstos é obrigatório"),
-		takeoff_date: Yup.date().optional(),
+		landing_date: Yup.date().nullable().required("Data e hora previstos é obrigatório"),
+		takeoff_date: Yup.date().nullable().optional(),
 	});
+
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
 		validationSchema: RequestSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
-			const { id_aircraft, id_landing_site, name_landing_site, amount, flight_time, landing_date, takeoff_date } = values;
 			const newRequest = {
-				id_aircraft: id_aircraft,
-				id_landing_site: id_landing_site,
-				name_landing_site: name_landing_site,
-				amount: amount,
-				flight_time: flight_time,
-				landing_date: landing_date,
-				takeoff_date: takeoff_date,
+				id_aircraft: values.id_aircraft,
+				id_landing_site: values.id_landing_site,
+				name_landing_site: values.name_landing_site,
+				amount: values.amount,
+				flight_time: values.flight_time,
+				landing_date: values.landing_date,
+				takeoff_date: values.takeoff_date,
 			};
 			setRequestResume(newRequest);
 		},
@@ -80,6 +72,30 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 	useEffect(() => {
 		onValidate(formik.isValid && formik.dirty, formik.values);
 	}, [formik.isValid, formik.dirty, formik.values]);
+
+	// Monitora mudanças no landing_date e ajusta o takeoff_date
+	useEffect(() => {
+		const { landing_date, takeoff_date } = formik.values;
+
+		if (landing_date && takeoff_date && takeoffCheckbox && selectedInterval !== null) {
+			const previousLandingDate = dayjs(requestResume.landing_date);
+			const previousTakeoffDate = dayjs(takeoff_date);
+			if (previousLandingDate.isValid() && previousTakeoffDate.isValid()) {
+				// Calcula a diferença em minutos entre o landing_date anterior e o takeoff_date
+				const timeDifference = previousTakeoffDate.diff(previousLandingDate, "minute");
+
+				// Aplica a mesma diferença ao novo landing_date
+				const newTakeoffDate = dayjs(landing_date).add(timeDifference, "minute").toDate();
+
+				formik.setFieldValue("takeoff_date", newTakeoffDate);
+				setRequestResume((prev) => ({ ...prev, takeoff_date: newTakeoffDate }));
+			}
+		} else if (landing_date && takeoff_date && takeoffCheckbox && selectedInterval === null) {
+			// Reseta takeoff_date se selectedInterval for null
+			formik.setFieldValue("takeoff_date", null);
+			setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
+		}
+	}, [formik.values.landing_date, selectedInterval]);
 
 	const { errors, touched, handleSubmit, getFieldProps } = formik;
 
@@ -138,7 +154,6 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 											inputProps={{ min: 0 }}
 										/>
 									</Stack>
-
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<InputLabel htmlFor="Tempo estimado de voo">Tempo estimado de voo (h)</InputLabel>
 										<TextField
@@ -157,42 +172,58 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 								<Grid item xs={12}>
 									<Stack spacing={1.25}>
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
-											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} disabled={formik.values.landing_date === ""} />
+											<Checkbox style={{ padding: 0 }} checked={takeoffCheckbox} onChange={handleToggleCheckBox} disabled={!formik.values.landing_date} />
 											<InputLabel>Já deseja agendar a decolagem? (opcional)</InputLabel>
 										</Grid>
-										<Stack direction="row" spacing={1} mt={1}>
-											{[5, 10, 15, 30, 60].map((minutes) => (
-												<Button
-													key={minutes}
-													variant="outlined"
-													size="small"
-													onClick={() => {
-														const landingDate = dayjs(formik.values.landing_date);
-														if (!landingDate.isValid()) return;
-														const newTakeoff = landingDate.add(minutes, "minute");
-														formik.setFieldValue("takeoff_date", newTakeoff);
+										{takeoffCheckbox && (
+											<>
+												<Stack direction="row" spacing={1} mt={1}>
+													{[5, 10, 15, 30, 60].map((minutes) => (
+														<Button
+															key={minutes}
+															variant={selectedInterval === minutes ? "contained" : "outlined"}
+															size="small"
+															onClick={() => {
+																const newInterval = selectedInterval === minutes ? null : minutes;
+																setSelectedInterval(newInterval);
+																const landingDate = dayjs(formik.values.landing_date);
+																if (!landingDate.isValid()) return;
+																if (newInterval === null) {
+																	formik.setFieldValue("takeoff_date", null);
+																	setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
+																} else {
+																	const newTakeoff = landingDate.add(Math.floor(minutes), "minute").toDate();
+																	formik.setFieldValue("takeoff_date", newTakeoff);
+																	setRequestResume((prev) => ({ ...prev, takeoff_date: newTakeoff }));
+																}
+															}}
+															disabled={!takeoffCheckbox || !formik.values.landing_date}
+														>
+															+{minutes} min
+														</Button>
+													))}
+												</Stack>
+												<DateTimePicker
+													value={formik.values.takeoff_date}
+													disablePast
+													minDateTime={formik.values.landing_date || dayjs()}
+													onChange={(date) => {
+														formik.setFieldValue("takeoff_date", date);
+														setRequestResume((prev) => ({ ...prev, takeoff_date: date }));
+														setSelectedInterval(null);
 													}}
+													format="dd/MM/yyyy HH:mm"
 													disabled={!takeoffCheckbox}
-												>
-													+{minutes} min
-												</Button>
-											))}
-										</Stack>
-										<DateTimePicker
-											value={requestResume ? requestResume.takeoff_date : formik.values.takeoff_date}
-											disablePast
-											minDateTime={requestResume.landing_date}
-											onChange={(date) => formik.setFieldValue("takeoff_date", date)}
-											format="dd/MM/yyyy HH:mm"
-											disabled={!takeoffCheckbox}
-											slotProps={{
-												textField: {
-													error: Boolean(formik.touched.takeoff_date && formik.errors.takeoff_date),
-													helperText: formik.touched.takeoff_date && formik.errors.takeoff_date,
-												},
-												field: { format: "dd/MM/yyyy HH:mm" },
-											}}
-										/>
+													slotProps={{
+														textField: {
+															error: Boolean(touched.takeoff_date && errors.takeoff_date),
+															helperText: touched.takeoff_date && errors.takeoff_date,
+														},
+														field: { format: "dd/MM/yyyy HH:mm" },
+													}}
+												/>
+											</>
+										)}
 									</Stack>
 								</Grid>
 							</Grid>
@@ -208,6 +239,8 @@ ScheduleForm.propTypes = {
 	aircraft: PropTypes.any,
 	onCancel: PropTypes.func,
 	onValidate: PropTypes.func.isRequired,
+	takeoffCheckbox: PropTypes.bool,
+	setTakeoffCheckbox: PropTypes.func,
 };
 
 export default ScheduleForm;
