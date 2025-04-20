@@ -206,7 +206,7 @@ const RequestDetails = () => {
 			findOneRequestById(id);
 		}
 	}, [id]);
-
+	console.log(editRequest.services);
 	return (
 		<>
 			<Grid item xs={12}>
@@ -381,9 +381,9 @@ const RequestDetails = () => {
 																			editRequest.services.length > 0 &&
 																			editRequest.services.map(
 																				(e) =>
-																					e.amount > 0 && (
+																					(Number(e.amount) > 0 || e.amount === "full") && (
 																						<Chip
-																							label={e.unit === "un" ? `${e.name}` : `${e.name} ${e.amount}${e.unit}`}
+																							label={e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Encher o tanque" : `${e.name} ${e.amount}${e.unit}`}
 																							onDelete={() => {
 																								handleOpenEditInput("services");
 																								handleDeleteService(e.id_service);
