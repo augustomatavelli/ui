@@ -92,7 +92,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Licença</Typography>
-													<Typography>{license}</Typography>
+													{license ? <Typography>{license}</Typography> : <Typography>Usuário não possui licença de piloto</Typography>}
 												</Stack>
 											</Grid>
 										</Grid>
