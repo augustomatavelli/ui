@@ -10,7 +10,7 @@ import UserContext from "contexts/UserContext";
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingAircraft, setSearchAircrafts, setAircraftDetails, setAircrafts, setTotalAircrafts, setTotalSearchAircrafts, setAnacRespose } = useContext(AircraftContext);
+	const { setLoadingAircraft, setSearchAircrafts, setAircraftDetails, setAircrafts, setTotalAircrafts, setTotalSearchAircrafts } = useContext(AircraftContext);
 	const { setUsersResp } = useContext(UserContext);
 
 	const createAircraft = async (data) => {
@@ -213,7 +213,6 @@ const useAircraft = () => {
 		try {
 			setLoadingAircraft(true);
 			const response = await publicAxios.post(`/rab-search/${search}`);
-			setAnacRespose(response.data);
 			return response.data;
 		} catch (error) {
 			console.log(error);

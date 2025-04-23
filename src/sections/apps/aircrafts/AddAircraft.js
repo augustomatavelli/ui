@@ -40,7 +40,6 @@ import { useFormik, Form, FormikProvider } from "formik";
 // project imports
 /* import AlertCustomerDelete from "./AlertCustomerDelete"; */
 
-import { ThemeMode } from "config";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
@@ -77,7 +76,7 @@ const allStatus = ["A", "B", "C", "D", "E"];
 const AddAircraft = ({ aircraft, onCancel }) => {
 	const { createAircraft, searchAllAircrafts, findAllAircrafts, anacSearch } = useAircraft();
 
-	const { usersResp, user, anacResponse } = useContext(UserContext);
+	const { usersResp, user } = useContext(UserContext);
 	const { loadingAircraft } = useContext(AircraftContext);
 
 	const [selectedImage, setSelectedImage] = useState(undefined);
@@ -86,6 +85,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 	const [toggleCheckbox, setToggleCheckbox] = useState(false);
 	const [showUserResp, setShowUserResp] = useState(false);
 	const [selectedUserResp, setSelectedUserResp] = useState(false);
+	const [previousRegistration, setPreviousRegistration] = useState("");
 
 	const theme = useTheme();
 
@@ -100,7 +100,11 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 
 	const handleBlurRegistration = async (e) => {
 		handleBlur(e);
-		await anacSearch(e.target.value);
+		const currentValue = e.target.value.trim();
+		if (currentValue && currentValue !== previousRegistration) {
+			setPreviousRegistration(currentValue);
+			await anacSearch(currentValue);
+		}
 	};
 
 	useEffect(() => {

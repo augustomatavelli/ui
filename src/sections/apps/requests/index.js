@@ -128,7 +128,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 				</Button>
 				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
-						{activeStep != 3 ? (
+						{(takeoffCheckbox && activeStep !== 3) || (!takeoffCheckbox && activeStep !== 2) ? (
 							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
 								Próximo
 							</Button>

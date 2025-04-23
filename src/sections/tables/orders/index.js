@@ -45,7 +45,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						<TableRow>
 							<TableCell />
 							<TableCell align="center">Matrícula</TableCell>
-							<TableCell align="center">Horário previsto</TableCell>
+							<TableCell align="center">Hora</TableCell>
 							<TableCell align="center">Item</TableCell>
 							<TableCell align="center">Quantidade </TableCell>
 							<TableCell align="center">Atribuído a</TableCell>
