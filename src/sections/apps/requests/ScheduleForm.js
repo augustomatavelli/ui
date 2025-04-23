@@ -18,6 +18,7 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 	const { setRequestResume, requestResume } = useContext(RequestContext);
 
 	const [selectedInterval, setSelectedInterval] = useState(null);
+	const [checkAmount, setCheckAmount] = useState(false);
 
 	const getInitialValues = (aircraft) => ({
 		id_aircraft: aircraft.id_aircraft,
@@ -33,8 +34,16 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 		setTakeoffCheckbox(event.target.checked);
 		if (!event.target.checked) {
 			formik.setFieldValue("takeoff_date", null);
-			setSelectedInterval(null); // Reseta o intervalo quando a checkbox é desmarcada
+			setSelectedInterval(null);
 			setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
+		}
+	};
+
+	const handleToggleCheckBoxAmount = (event) => {
+		setCheckAmount(event.target.checked);
+		!event.target.checked && formik.setErrors({ amount: null });
+		if (!event.target.checked) {
+			formik.setFieldValue("amount", undefined);
 		}
 	};
 
@@ -46,7 +55,7 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 		id_aircraft: Yup.number(),
 		id_landing_site: Yup.number().required(),
 		name_landing_site: Yup.string().required(),
-		amount: Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório"),
+		amount: checkAmount ? Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório") : Yup.number().optional(),
 		flight_time: Yup.number().optional(),
 		landing_date: Yup.date().nullable().required("Data e hora previstos é obrigatório"),
 		takeoff_date: Yup.date().nullable().optional(),
@@ -141,7 +150,11 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 								</Grid>
 								<Grid item display="flex" width="100%" gap={2} sx={{ flexDirection: { xs: "column", sm: "column", md: "row" } }}>
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
-										<InputLabel htmlFor="Número de passageiros">Número de passageiros</InputLabel>
+										{/* <InputLabel htmlFor="Número de passageiros">Número de passageiros</InputLabel> */}
+										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
+											<Checkbox style={{ padding: 0 }} checked={checkAmount} onChange={handleToggleCheckBoxAmount} />
+											<InputLabel>Informar a quantidade de passageiros (opcional)</InputLabel>
+										</Grid>
 										<TextField
 											fullWidth
 											id="amount"
@@ -149,6 +162,7 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 											value={Number(formik.values.amount)}
 											placeholder="Quantidade de passageiros..."
 											{...getFieldProps("amount")}
+											disabled={!checkAmount}
 											error={Boolean(touched.amount && errors.amount)}
 											helperText={touched.amount && errors.amount}
 											inputProps={{ min: 0 }}

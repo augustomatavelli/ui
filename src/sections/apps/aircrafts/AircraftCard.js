@@ -73,7 +73,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 						<Grid container spacing={1}>
 							<Grid item xs={12}>
 								<ListItemText primary={<Typography variant="subtitle1">{registration}</Typography>} secondary={`Categoria ${category}`} />
-								<List sx={{ p: 0, overflow: "hidden", "& .MuiListItem-root": { px: 0, py: 0.5 } }}>
+								<List sx={{ p: 0, overflow: "hidden", "& .MuiListItem-root": { p: 0 } }}>
 									<ListItem>
 										<ListItemIcon>
 											<UserOutlined />

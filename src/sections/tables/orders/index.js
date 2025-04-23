@@ -97,7 +97,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 							<TableRow>
 								<TableCell colSpan={7} align="center">
 									{tab === 0 ? (
-										<Typography variant="h5">Não há nenhum ordem de serviço encontrada</Typography>
+										<Typography variant="h5">Nenhuma ordem de serviço encontrada</Typography>
 									) : tab === 1 ? (
 										<Typography variant="h5">Nenhuma ordem de serviço aberta</Typography>
 									) : tab === 2 ? (

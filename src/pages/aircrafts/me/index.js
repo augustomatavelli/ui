@@ -6,8 +6,6 @@ import { Grid, Stack, useMediaQuery, Button, FormControl, Select, MenuItem, Box,
 import { PopupTransition } from "components/@extended/Transitions";
 import EmptyUserCard from "components/cards/skeleton/EmptyUserCard";
 
-import { GlobalFilter } from "utils/react-table";
-
 // assets
 import { PlusOutlined } from "@ant-design/icons";
 import AircraftCard from "sections/apps/aircrafts/AircraftCard";

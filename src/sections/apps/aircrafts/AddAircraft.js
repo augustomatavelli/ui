@@ -49,6 +49,7 @@ import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
 import UserContext from "contexts/UserContext";
+import AircraftContext from "contexts/AircraftContext";
 
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
@@ -74,10 +75,10 @@ const getInitialValues = (aircraft) => {
 const allStatus = ["A", "B", "C", "D", "E"];
 
 const AddAircraft = ({ aircraft, onCancel }) => {
-	//TODO: Utilizar a requisição de pesquisa de aeronaves para preencher o select de categoria
 	const { createAircraft, searchAllAircrafts, findAllAircrafts, anacSearch } = useAircraft();
 
 	const { usersResp, user, anacResponse } = useContext(UserContext);
+	const { loadingAircraft } = useContext(AircraftContext);
 
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
@@ -96,6 +97,11 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 			reader.readAsDataURL(file);
 		});
 	}
+
+	const handleBlurRegistration = async (e) => {
+		handleBlur(e);
+		await anacSearch(e.target.value);
+	};
 
 	useEffect(() => {
 		if (selectedImage) {
@@ -279,6 +285,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 													id="registration"
 													placeholder="Digite a matrícula"
 													{...getFieldProps("registration")}
+													onBlur={handleBlurRegistration}
 													error={Boolean(touched.registration && errors.registration)}
 													helperText={touched.registration && errors.registration}
 												/>
@@ -476,10 +483,10 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 							<Grid container justifyContent="flex-end" alignItems="center">
 								<Grid item>
 									<Stack direction="row" spacing={2} alignItems="center">
-										<Button color="error" onClick={onCancel}>
+										<Button color="error" onClick={onCancel} disabled={loadingAircraft}>
 											Fechar
 										</Button>
-										<Button type="submit" variant="contained" disabled={isSubmitting}>
+										<Button type="submit" variant="contained" disabled={isSubmitting || loadingAircraft}>
 											Adicionar
 										</Button>
 									</Stack>

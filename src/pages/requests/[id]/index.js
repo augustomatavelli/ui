@@ -141,7 +141,7 @@ const RequestDetails = () => {
 	const handleDeleteService = (id) => {
 		setEditRequest((prev) => ({
 			...prev,
-			services: prev.services.map((p) => (p.id_service === id ? { ...p, amount: 0 } : p)),
+			services: prev.services.map((p) => (p.id_service === id ? { ...p, amount: "0" } : p)),
 		}));
 	};
 
@@ -161,20 +161,20 @@ const RequestDetails = () => {
 				if (newAmount === 0) {
 					return {
 						...prev,
-						services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount } : p)),
+						services: services.map((p) => (p.id_service === id ? { ...p, amount: String(newAmount) } : p)),
 					};
 				}
 				const existingService = services.find((p) => p.id_service === id);
 				if (!existingService) {
 					return {
 						...prev,
-						services: [...services, { id_service: id, name: name, amount: newAmount, unit: unit }],
+						services: [...services, { id_service: id, name: name, amount: String(newAmount), unit: unit }],
 					};
 				}
 
 				return {
 					...prev,
-					services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount, unit: unit } : p)),
+					services: services.map((p) => (p.id_service === id ? { ...p, amount: String(newAmount), unit: unit } : p)),
 				};
 			});
 		},

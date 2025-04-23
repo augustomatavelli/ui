@@ -35,13 +35,13 @@ const OperationsForm = ({ onValidate }) => {
 				if (!existingService) {
 					return {
 						...prev,
-						services: [...services, { id_service: id, name: name, amount: newAmount, unit: unit }],
+						services: [...services, { id_service: id, name: name, amount: String(newAmount), unit: unit }],
 					};
 				}
 
 				return {
 					...prev,
-					services: services.map((p) => (p.id_service === id ? { ...p, amount: newAmount, unit: unit } : p)),
+					services: services.map((p) => (p.id_service === id ? { ...p, amount: String(newAmount), unit: unit } : p)),
 				};
 			});
 		},
@@ -107,19 +107,3 @@ OperationsForm.propTypes = {
 };
 
 export default OperationsForm;
-
-{
-	/* <Card key={e.id_service} sx={{ minWidth: 200, marginRight: "1rem" }}>
-																<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-																	<Typography variant="subtitle1">{e.name}</Typography>
-																	<TextField
-																		type="number"
-																		value={requestResume.operations && requestResume.operations.length > 0 ? requestResume.operations.find((p) => p.id_service === e.id_service)?.amount || "" : ""}
-																		onChange={(el) => handleChangeAmount(e.id_service, e.name, Number(el.target.value))}
-																		inputProps={{ min: 0 }}
-																		size="small"
-																		sx={{ width: 80, mt: 1 }}
-																	/>
-																</CardContent>
-															</Card> */
-}

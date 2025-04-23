@@ -161,7 +161,7 @@ export default function UsersTable({ openFilter }) {
 									<TableCell align="center">{user.mobile}</TableCell>
 									<TableCell align="center">
 										<Chip
-											color={user.type === "P" ? "success" : user.type === "R" ? "primary" : user.type === "A" ? "info" : "warning"}
+											color={user.type === "P" ? "success" : user.type === "R" ? "primary" : user.type === "A" ? "error" : "warning"}
 											variant="filled"
 											size="small"
 											label={user.type === "P" ? "Piloto" : user.type === "R" ? "Responsável" : user.type === "A" ? "Administrador" : "Comum"}

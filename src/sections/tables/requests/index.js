@@ -44,6 +44,25 @@ export default function RequestsTable({ openFilter }) {
 		navigate(`/requests/${requestId}`);
 	};
 
+	const handleFinalize = async (requestId) => {
+		const response = await updateStatus(requestId);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+		await findAllRequests(search, page, paramsStatus);
+	};
+
 	useEffect(() => {
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
@@ -101,19 +120,7 @@ export default function RequestsTable({ openFilter }) {
 												size="small"
 												onClick={async (event) => {
 													event.stopPropagation();
-													const response = await updateStatus(e.id_request);
-													dispatch(
-														openSnackbar({
-															open: true,
-															message: response.message,
-															variant: "alert",
-															alert: {
-																color: "success",
-															},
-															close: false,
-														})
-													);
-													await findAllRequests(search, page);
+													await handleFinalize(e.id_request);
 												}}
 											>
 												Finalizar
