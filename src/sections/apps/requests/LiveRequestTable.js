@@ -68,8 +68,8 @@ export default function RequestsTable() {
 					<TableBody>
 						{loadingRequest ? (
 							<Loader />
-						) : liveRequests.length > 0 ? (
-							liveRequests.flatMap((e) =>
+						) : liveRequests.length > 0 && liveRequests.items.length > 0 ? (
+							liveRequests.items.flatMap((e) =>
 								e.schedules.map((schedule, index) => {
 									const currentIndex = globalIndex++;
 									return (

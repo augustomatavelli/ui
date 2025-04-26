@@ -29,14 +29,6 @@ const allColumns = [
 		id: 3,
 		header: "Categoria",
 	},
-	{
-		id: 4,
-		header: "Nome responsável",
-	},
-	{
-		id: 5,
-		header: "Email responsável",
-	},
 ];
 
 const MyAircrafts = () => {
@@ -134,8 +126,6 @@ const MyAircrafts = () => {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
 							if (sortBy === "Matrícula") return a.registration.localeCompare(b.registration);
 							if (sortBy === "Categoria") return a.category.localeCompare(b.category);
-							if (sortBy === "Email responsável") return a.email.localeCompare(b.email);
-							if (sortBy === "Nome responsável") return a.name.localeCompare(b.name);
 							return a;
 						})
 						.map((aircraft) => (

@@ -14,7 +14,7 @@ function LiveRequestsHeader() {
 			<Grid sx={{ display: "flex", width: "100%", justifyContent: "space-around", alignItems: "center", color: "white", py: 5 }}>
 				<Grid sx={{ display: "flex", alignItems: "center", flexDirection: "column", gap: 2 }}>
 					<img src={LogoHeliforte} alt="Logo" width="200" />
-					{liveRequests.length > 0 && <Typography sx={{ fontSize: 20, textShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)" }}>{`${liveRequests[0].city} / ${liveRequests[0].uf}`}</Typography>}
+					<Typography sx={{ fontSize: 20, textShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)" }}>{liveRequests.location}</Typography>
 				</Grid>
 				<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 					<Typography sx={{ fontSize: 50, textShadow: "2px 2px 5px rgba(0, 0, 0, 0.5)" }}>PROGRAMAÇÃO</Typography>

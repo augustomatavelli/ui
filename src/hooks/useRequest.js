@@ -122,7 +122,7 @@ const useRequest = () => {
 		try {
 			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests/dashboard/live`);
-			setLiveRequests(response.data.items);
+			setLiveRequests(response.data);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

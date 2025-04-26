@@ -21,5 +21,7 @@ export const ErrorMessages = {
 	request_aircraft_exists: "Existe uma solicitação em aberto com essa aeronave",
 	request_landing_site_exists: "Existe uma solicitação em aberto com esse aeródromo",
 	request_operation_exists: "Existe uma solicitação em aberto com esse serviço",
-	failed_to_search_registration: "Erro ao buscar os dados. Verifique a matrícula e tente novamente.",
+	failed_to_search_registration: "Erro ao buscar os dados. Verifique a matrícula e tente novamente",
+	orders_open: "Você precisa concluir todas as ordens de serviço antes de finalizar a solicitação",
+	orders_already_started: "Você não pode cancelar a solicitação, pois existe um serviço em execução ou já finalizado",
 };
