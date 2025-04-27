@@ -10,10 +10,14 @@ const useOrder = () => {
 
 	const { setLoadingOrder, setOrders, setTotalOrders, setTotalTabOrders } = useContext(OrderContext);
 
-	const findAllOrders = async (search, page, params, paramsStatus) => {
+	const findAllOrders = async (search, page, params, paramsStatus, period, dateFilter) => {
+		const { startDate, endDate } = dateFilter;
+
 		try {
 			setLoadingOrder(true);
-			const response = await publicAxios.get(`/orders/find-all?search=${search}&page=${page}&${params.toString()}&${paramsStatus.toString()}`);
+			const response = await publicAxios.get(
+				`/orders/find-all?search=${search}&page=${page}&${params.toString()}&${paramsStatus.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`
+			);
 			setOrders(response.data.items);
 			setTotalOrders(response.data.pagination.totalPages);
 			setTotalTabOrders(response.data.count);

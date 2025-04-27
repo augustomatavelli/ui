@@ -6,6 +6,7 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import UserContext from "contexts/UserContext";
+import { is } from "immutable";
 
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();
@@ -233,7 +234,42 @@ const useAircraft = () => {
 		}
 	};
 
-	return { createAircraft, searchAllAircrafts, findOneAircraftById, addLinkUserAircraft, removeLinkUserAircraft, findAllAircrafts, approveAircraft, deleteAircraft, anacSearch };
+	const toggleRestrictedAircraft = async (aircraftId, isRestricted) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.patch(`/aircrafts/admin/restricted/${aircraftId}`, { isRestricted });
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
+	return {
+		createAircraft,
+		searchAllAircrafts,
+		findOneAircraftById,
+		addLinkUserAircraft,
+		removeLinkUserAircraft,
+		findAllAircrafts,
+		approveAircraft,
+		deleteAircraft,
+		anacSearch,
+		toggleRestrictedAircraft,
+	};
 };
 
 export default useAircraft;

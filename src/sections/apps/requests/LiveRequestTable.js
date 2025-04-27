@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Grid } from "@mui/material";
+import { Howl } from "howler";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import FlightLandIcon from "@mui/icons-material/FlightLand";
@@ -12,6 +13,13 @@ export default function RequestsTable() {
 
 	const { liveRequests, loadingRequest } = useContext(RequestContext);
 
+	const previousIds = useRef(new Set());
+
+	const alertSound = new Howl({
+		src: ["/sounds/mixkit-home-standard-ding-dong-109.wav"],
+		volume: 1,
+	});
+
 	useEffect(() => {
 		findAllLiveRequests();
 
@@ -21,6 +29,18 @@ export default function RequestsTable() {
 
 		return () => clearInterval(intervalId);
 	}, []);
+
+	useEffect(() => {
+		if (liveRequests?.items) {
+			const currentIds = new Set(liveRequests.items.map((item) => item.id_request));
+			const newItems = Array.from(currentIds).filter((id) => !previousIds.current.has(id));
+			if (newItems.length > 0) {
+				alertSound.play();
+			}
+
+			previousIds.current = currentIds;
+		}
+	}, [liveRequests]);
 
 	const isSoon = (date) => {
 		const eventDate = new Date(date);
@@ -68,7 +88,7 @@ export default function RequestsTable() {
 					<TableBody>
 						{loadingRequest ? (
 							<Loader />
-						) : liveRequests.length > 0 && liveRequests.items.length > 0 ? (
+						) : liveRequests && liveRequests.items && liveRequests.items.length > 0 ? (
 							liveRequests.items.flatMap((e) =>
 								e.schedules.map((schedule, index) => {
 									const currentIndex = globalIndex++;

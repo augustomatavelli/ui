@@ -44,10 +44,12 @@ const useRequest = () => {
 		}
 	};
 
-	const searchAllRequests = async (search, page, statusParams) => {
+	const searchAllRequests = async (search, page, statusParams, period, dateFilter) => {
+		const { startDate, endDate } = dateFilter;
+
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests?search=${search}&page=${page}&${statusParams.toString()}`);
+			const response = await publicAxios.get(`/requests?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
 			setSearchRequests(response.data.items);
 			setTotalSearchRequests(response.data.pagination.totalPages);
 		} catch (error) {
@@ -69,10 +71,12 @@ const useRequest = () => {
 		}
 	};
 
-	const searchMyAircraftsRequests = async (search, page, statusParams) => {
+	const searchMyAircraftsRequests = async (search, page, statusParams, period, dateFilter) => {
+		const { startDate, endDate } = dateFilter;
+
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}&${statusParams.toString()}`);
+			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
 			setSearchAircraftsRequests(response.data.items);
 			setTotalSearchAircraftsRequests(response.data.pagination.totalPages);
 		} catch (error) {
@@ -142,10 +146,12 @@ const useRequest = () => {
 		}
 	};
 
-	const findAllRequests = async (search, page, statusParams) => {
+	const findAllRequests = async (search, page, statusParams, period, dateFilter) => {
+		const { startDate, endDate } = dateFilter;
+
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}`);
+			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
 			setRequests(response.data.items);
 			setTotalRequests(response.data.pagination.totalPages);
 		} catch (error) {

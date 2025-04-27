@@ -24,6 +24,8 @@ export default function RequestsTable({ openFilter }) {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState({});
+	const [selectedPeriod, setSelectedPeriod] = useState("");
+	const [dateFilter, setDateFilter] = useState({});
 
 	const navigate = useNavigate();
 
@@ -60,16 +62,20 @@ export default function RequestsTable({ openFilter }) {
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
-		await findAllRequests(search, page, paramsStatus);
+		await findAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
 	};
 
 	useEffect(() => {
+		if (selectedPeriod === "custom" && (!dateFilter?.startDate || !dateFilter?.endDate)) {
+			return;
+		}
+
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		findAllRequests(search, page, paramsStatus);
-	}, [search, page, selectedStatus]);
+		findAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
 
 	useEffect(() => {}, [requests]);
 
@@ -82,7 +88,16 @@ export default function RequestsTable({ openFilter }) {
 						<Pagination count={totalRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
-				{openFilter && <RequestFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
+				{openFilter && (
+					<RequestFilter
+						selectedStatus={selectedStatus}
+						setSelectedStatus={setSelectedStatus}
+						selectedPeriod={selectedPeriod}
+						setSelectedPeriod={setSelectedPeriod}
+						dateFilter={dateFilter}
+						setDateFilter={setDateFilter}
+					/>
+				)}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>

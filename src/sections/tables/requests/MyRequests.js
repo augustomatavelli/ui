@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import Loader from "components/Loader";
 import { RequestFilter } from "./RequestFilter";
+import { date } from "yup";
 
 export default function MyRequestsTable({ openFilter }) {
 	const { searchAllRequests } = useRequest();
@@ -19,6 +20,8 @@ export default function MyRequestsTable({ openFilter }) {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [selectedStatus, setSelectedStatus] = useState({});
+	const [selectedPeriod, setSelectedPeriod] = useState("");
+	const [dateFilter, setDateFilter] = useState({});
 
 	const navigate = useNavigate();
 
@@ -31,12 +34,16 @@ export default function MyRequestsTable({ openFilter }) {
 	};
 
 	useEffect(() => {
+		if (selectedPeriod === "custom" && (!dateFilter?.startDate || !dateFilter?.endDate)) {
+			return;
+		}
+
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		searchAllRequests(search, page, paramsStatus);
-	}, [search, page, selectedStatus]);
+		searchAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
 
 	useEffect(() => {}, [searchRequests]);
 
@@ -49,7 +56,16 @@ export default function MyRequestsTable({ openFilter }) {
 						<Pagination count={totalSearchRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
-				{openFilter && <RequestFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
+				{openFilter && (
+					<RequestFilter
+						selectedStatus={selectedStatus}
+						setSelectedStatus={setSelectedStatus}
+						selectedPeriod={selectedPeriod}
+						setSelectedPeriod={setSelectedPeriod}
+						dateFilter={dateFilter}
+						setDateFilter={setDateFilter}
+					/>
+				)}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>

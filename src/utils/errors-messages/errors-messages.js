@@ -24,4 +24,5 @@ export const ErrorMessages = {
 	failed_to_search_registration: "Erro ao buscar os dados. Verifique a matrícula e tente novamente",
 	orders_open: "Você precisa concluir todas as ordens de serviço antes de finalizar a solicitação",
 	orders_already_started: "Você não pode cancelar a solicitação, pois existe um serviço em execução ou já finalizado",
+	request_order_execution: "Você não pode alterar a solicitação, pois existe uma ordem em execução",
 };

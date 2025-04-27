@@ -19,6 +19,8 @@ export default function MyAircraftsRequestsTable({ openFilter }) {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [selectedStatus, setSelectedStatus] = useState({});
+	const [selectedPeriod, setSelectedPeriod] = useState("");
+	const [dateFilter, setDateFilter] = useState({});
 
 	const navigate = useNavigate();
 
@@ -27,12 +29,16 @@ export default function MyAircraftsRequestsTable({ openFilter }) {
 	};
 
 	useEffect(() => {
+		if (selectedPeriod === "custom" && (!dateFilter?.startDate || !dateFilter?.endDate)) {
+			return;
+		}
+
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		searchMyAircraftsRequests(search, page, paramsStatus);
-	}, [search, page, selectedStatus]);
+		searchMyAircraftsRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
 
 	useEffect(() => {}, [searchAircraftsRequests]);
 
@@ -45,7 +51,16 @@ export default function MyAircraftsRequestsTable({ openFilter }) {
 						<Pagination count={totalSearchAircraftsRequests} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
-				{openFilter && <RequestFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
+				{openFilter && (
+					<RequestFilter
+						selectedStatus={selectedStatus}
+						setSelectedStatus={setSelectedStatus}
+						selectedPeriod={selectedPeriod}
+						setSelectedPeriod={setSelectedPeriod}
+						dateFilter={dateFilter}
+						setDateFilter={setDateFilter}
+					/>
+				)}
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>

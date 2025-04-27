@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -16,7 +16,7 @@ import UserContext from "contexts/UserContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 
 const AircraftDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft } = useAircraft();
+	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft } = useAircraft();
 
 	const { aircraftDetails, setAircraftDetails, loadingAircraft } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
@@ -24,10 +24,11 @@ const AircraftDetails = () => {
 	const [open, setOpen] = useState(false);
 	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
 	const [openAlert, setOpenAlert] = useState(false);
+	const [checked, setChecked] = useState(false);
 
 	const { id } = useParams();
 
-	const { id_aircraft, registration, category, image, membership, status, id_user_resp, name, email, mobile } = aircraftDetails;
+	const { id_aircraft, registration, category, image, membership, status, is_restricted, id_user_resp, name, email, mobile } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -51,14 +52,44 @@ const AircraftDetails = () => {
 		window.history.back();
 	};
 
+	const handleToggleChecked = async (event) => {
+		setChecked(event.target.checked);
+		const response = await toggleRestrictedAircraft(id_aircraft, event.target.checked ? "S" : "N");
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+	};
+
 	useEffect(() => {
 		findOneAircraftById(id);
 	}, [id]);
 
+	useEffect(() => {
+		is_restricted === "S" ? setChecked(true) : setChecked(false);
+	}, [is_restricted]);
+
 	return (
 		<>
 			<Grid item xs={12} sm={7} md={8} xl={9}>
-				<MainCard title="Detalhes da aeronave">
+				<MainCard
+					title="Detalhes da aeronave"
+					secondary={
+						user.type === "A" && (
+							<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+								<Checkbox style={{ padding: 0 }} checked={checked} onChange={handleToggleChecked} />
+								<Typography>Tornar aeronave restrita</Typography>
+							</Grid>
+						)
+					}
+				>
 					<Grid container spacing={3}>
 						<Grid item xs={12} sm={4} md={3}>
 							<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
