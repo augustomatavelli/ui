@@ -9,6 +9,7 @@ export const ProductsProvider = ({ children }) => {
 	const [totalProducts, setTotalProducts] = useState(0);
 	const [searchProducts, setSearchProducts] = useState([]);
 	const [categories, setCategories] = useState([]);
+	const [productDetails, setProductDetails] = useState({});
 
 	const resetProductStates = () => {
 		setLoadingProduct(false);
@@ -16,11 +17,26 @@ export const ProductsProvider = ({ children }) => {
 		setTotalProducts(0);
 		setSearchProducts([]);
 		setCategories([]);
+		setProductDetails({});
 	};
 
 	return (
 		<ProductsContext.Provider
-			value={{ loadingProduct, setLoadingProduct, products, setProducts, totalProducts, setTotalProducts, searchProducts, setSearchProducts, categories, setCategories, resetProductStates }}
+			value={{
+				loadingProduct,
+				setLoadingProduct,
+				products,
+				setProducts,
+				totalProducts,
+				setTotalProducts,
+				searchProducts,
+				setSearchProducts,
+				categories,
+				setCategories,
+				productDetails,
+				setProductDetails,
+				resetProductStates,
+			}}
 		>
 			{children}
 		</ProductsContext.Provider>

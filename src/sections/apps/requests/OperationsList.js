@@ -66,7 +66,7 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 							</Grid>
 							{e.unit === "L" && (
 								<>
-									<FormControlLabel	
+									<FormControlLabel
 										control={
 											<Switch
 												checked={fillTank[e.name] || false}
@@ -83,7 +83,7 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 												disabled={!checked[e.name]}
 											/>
 										}
-										label="Encher o tanque"
+										label="Full"
 									/>
 									<TextField
 										type="number"

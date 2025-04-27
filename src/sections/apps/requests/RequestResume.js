@@ -60,7 +60,7 @@ export const RequestResume = ({}) => {
 											<Table>
 												<List sx={{ padding: 0, opacity: 0.5 }}>
 													{requestResume.services.map((e) => (
-														<ListItem key={e.id_operation}>{e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Encher o tanque" : `${e.name} ${e.amount}${e.unit}`}</ListItem>
+														<ListItem key={e.id_operation}>{e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Full" : `${e.name} ${e.amount}${e.unit}`}</ListItem>
 													))}
 												</List>
 											</Table>

@@ -11,6 +11,7 @@ import SearchProductByAdmin from "sections/apps/products/SearchProductByAdmin";
 import AddProduct from "sections/apps/products/AddProduct";
 import Loader from "components/Loader";
 import { ProductFilter } from "./ProductFilter";
+import { useNavigate } from "react-router";
 
 export default function ProductsTable({ openFilter }) {
 	const { findAllProducts, updateProduct, findCategories } = useProduct();
@@ -21,6 +22,8 @@ export default function ProductsTable({ openFilter }) {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState({});
+
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -41,6 +44,10 @@ export default function ProductsTable({ openFilter }) {
 
 		await updateProduct(productId, { hide_price: hidePrice === "S" ? "N" : "S" });
 		await findAllProducts(search, page, params);
+	};
+
+	const handleRedirect = (productId) => {
+		navigate(`/products/${productId}`);
 	};
 
 	useEffect(() => {
@@ -92,7 +99,14 @@ export default function ProductsTable({ openFilter }) {
 							<Loader />
 						) : products.length > 0 ? (
 							products.map((e) => (
-								<TableRow hover key={e.id_product}>
+								<TableRow
+									hover
+									key={e.id_product}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(e.id_product);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_product}`} />
 									</TableCell>
@@ -110,7 +124,8 @@ export default function ProductsTable({ openFilter }) {
 											}).format(e.price)}{" "}
 											<Tooltip title={e.hide_price === "S" ? "Mostrar" : "Esconder"}>
 												<IconButton
-													onClick={() => {
+													onClick={(e) => {
+														e.stopPropagation();
 														handleClickVisibility(e.id_product, e.hide_price);
 													}}
 													edge="end"

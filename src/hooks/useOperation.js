@@ -8,7 +8,7 @@ import OperationsContext from "contexts/OperationContext";
 const useOperation = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingOperation, setSearchOperations, setOperations, setTotalOperations, setCategories } = useContext(OperationsContext);
+	const { setLoadingOperation, setSearchOperations, setOperations, setTotalOperations, setCategories, setOperationDetails } = useContext(OperationsContext);
 
 	const createOperation = async (data) => {
 		try {
@@ -83,6 +83,30 @@ const useOperation = () => {
 		}
 	};
 
+	const findOneOperationById = async (productId) => {
+		try {
+			setLoadingOperation(true);
+			const response = await publicAxios.get(`/operations/admin/${productId}`);
+			setOperationDetails(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingOperation(false);
+		}
+	};
+
 	const findCategories = async () => {
 		try {
 			setLoadingOperation(true);
@@ -131,7 +155,31 @@ const useOperation = () => {
 		}
 	};
 
-	return { createOperation, findAllOperations, searchAllOperations, findCategories, deleteOperation };
+	const updateOperation = async (operationId, data) => {
+		try {
+			setLoadingOperation(true);
+			const response = await publicAxios.patch(`/operations/admin/update/${operationId}`, { ...data });
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingOperation(false);
+		}
+	};
+
+	return { createOperation, findAllOperations, searchAllOperations, findCategories, deleteOperation, findOneOperationById, updateOperation };
 };
 
 export default useOperation;

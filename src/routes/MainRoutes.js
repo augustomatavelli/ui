@@ -33,9 +33,11 @@ const LiveRequests = Loadable(lazy(() => import("pages/requests/live")));
 
 // render - produtos
 const ListProductsForAdmin = Loadable(lazy(() => import("pages/products/admin")));
+const ProductDetails = Loadable(lazy(() => import("pages/products/[id]")));
 
 // render - serviços
 const ListOperationsForAdmin = Loadable(lazy(() => import("pages/operations/admin")));
+const OperationDetails = Loadable(lazy(() => import("pages/operations/[id]")));
 
 // render - serviços
 const ListOrders = Loadable(lazy(() => import("pages/orders/list")));
@@ -190,7 +192,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="[, 'A', 'R', 'P']">
+								<AuthGuard requiredUserType="['A', 'R', 'P']">
 									<RequestDetails />
 								</AuthGuard>
 							),
@@ -208,6 +210,14 @@ const MainRoutes = {
 								</AuthGuard>
 							),
 						},
+						{
+							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A']">
+									<ProductDetails />
+								</AuthGuard>
+							),
+						},
 					],
 				},
 				{
@@ -218,6 +228,14 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A']">
 									<ListOperationsForAdmin />
+								</AuthGuard>
+							),
+						},
+						{
+							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A']">
+									<OperationDetails />
 								</AuthGuard>
 							),
 						},

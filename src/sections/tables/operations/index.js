@@ -11,6 +11,7 @@ import AddOperation from "sections/apps/operations/AddOperation";
 import { PlusOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
 import { OperationFilter } from "./OperationFilter";
+import { useNavigate } from "react-router";
 
 export default function OperationsTable({ openFilter }) {
 	const { findAllOperations, findCategories } = useOperation();
@@ -21,6 +22,8 @@ export default function OperationsTable({ openFilter }) {
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState({});
+
+	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
@@ -33,6 +36,10 @@ export default function OperationsTable({ openFilter }) {
 
 		setOpen(!open);
 		await findAllOperations(search, page, params);
+	};
+
+	const handleRedirect = (productId) => {
+		navigate(`/operations/${productId}`);
 	};
 
 	useEffect(() => {
@@ -84,7 +91,14 @@ export default function OperationsTable({ openFilter }) {
 							<Loader />
 						) : operations.length > 0 ? (
 							operations.map((e) => (
-								<TableRow hover key={e.id_service}>
+								<TableRow
+									hover
+									key={e.id_service}
+									sx={{ cursor: "pointer" }}
+									onClick={() => {
+										handleRedirect(e.id_service);
+									}}
+								>
 									<TableCell align="center">
 										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_service}`} />
 									</TableCell>

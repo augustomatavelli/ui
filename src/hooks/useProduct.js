@@ -8,7 +8,7 @@ import ProductsContext from "contexts/ProductsContext";
 const useProduct = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingProduct, setSearchProducts, setProducts, setTotalProducts, setCategories } = useContext(ProductsContext);
+	const { setLoadingProduct, setSearchProducts, setProducts, setTotalProducts, setCategories, setProductDetails } = useContext(ProductsContext);
 
 	const createProduct = async (data) => {
 		try {
@@ -107,6 +107,30 @@ const useProduct = () => {
 		}
 	};
 
+	const findOneProductById = async (productId) => {
+		try {
+			setLoadingProduct(true);
+			const response = await publicAxios.get(`/products/admin/${productId}`);
+			setProductDetails(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingProduct(false);
+		}
+	};
+
 	const deleteProduct = async (productId) => {
 		try {
 			setLoadingProduct(true);
@@ -132,10 +156,10 @@ const useProduct = () => {
 	};
 
 	const updateProduct = async (productId, data) => {
-		console.log(data);
 		try {
 			setLoadingProduct(true);
-			await publicAxios.patch(`/products/admin/update/${productId}`, { ...data });
+			const response = await publicAxios.patch(`/products/admin/update/${productId}`, { ...data });
+			return response.data;
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -155,7 +179,7 @@ const useProduct = () => {
 		}
 	};
 
-	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct, updateProduct };
+	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct, updateProduct, findOneProductById };
 };
 
 export default useProduct;

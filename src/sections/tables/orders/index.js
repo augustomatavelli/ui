@@ -1,21 +1,25 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput } from "@mui/material";
 
 // project imports
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
 import dayjs from "dayjs";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
+import { EditOutlined, SaveOutlined } from "@ant-design/icons";
+import useRequest from "hooks/useRequest";
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
+	const { updateRequest } = useRequest();
 
 	const { orders, loadingOrders } = useContext(OrderContext);
 
-	const theme = useTheme();
+	const [editFuel, setEditFuel] = useState(false);
+	const [editFuelValue, setEditFuelValue] = useState("");
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
@@ -33,6 +37,23 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 				close: false,
 			})
 		);
+	};
+
+	const handleChange = async (requestId, itemOrder) => {
+		const response = await updateRequest(requestId, { services: [{ id_service: itemOrder.item_id, name: itemOrder.name, amount: editFuelValue }], products: [] });
+		setReload(!reload);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		setEditFuel(false);
 	};
 
 	useEffect(() => {}, [orders]);
@@ -81,7 +102,43 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 											{itemOrder.type === "P" ? dayjs(item.landing_date).format("DD/MM/YYYY HH:mm") : item.takeoff_date ? dayjs(item.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
 										</TableCell>
 										<TableCell align="center">{itemOrder.name}</TableCell>
-										<TableCell align="center">{`${itemOrder.amount} ${itemOrder.unit}`}</TableCell>
+										<TableCell align="center">
+											{!editFuel ? (
+												<Box display="inline-flex" alignItems="center" gap={1}>
+													{itemOrder.unit === "un" ? "-" : itemOrder.amount === "full" ? "Full" : `${itemOrder.amount}${itemOrder.unit}`}
+													{itemOrder.unit === "L" && (itemOrder.order_status === "E" || itemOrder.order_status === "P") && (
+														<EditOutlined
+															style={{ cursor: "pointer" }}
+															onClick={() => {
+																setEditFuel(true);
+															}}
+														/>
+													)}
+												</Box>
+											) : (
+												<Box display="inline-flex" alignItems="center" gap={1}>
+													<OutlinedInput
+														id="fuel"
+														type={"number"}
+														value={editFuelValue}
+														name="fuel"
+														sx={{ height: "30px" }}
+														inputProps={{
+															style: { padding: 5, width: "50px" },
+														}}
+														onChange={(e) => {
+															setEditFuelValue(e.target.value);
+														}}
+													/>
+													<SaveOutlined
+														style={{ cursor: "pointer" }}
+														onClick={async () => {
+															handleChange(item.id_request, itemOrder);
+														}}
+													/>
+												</Box>
+											)}
+										</TableCell>
 										<TableCell align="center">{itemOrder.attributed_to}</TableCell>
 										<TableCell align="center">{itemOrder.finalized_by}</TableCell>
 									</TableRow>
