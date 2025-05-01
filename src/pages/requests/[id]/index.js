@@ -107,34 +107,35 @@ const RequestDetails = () => {
 			if (!existingProduct) {
 				return {
 					...prev,
-					products: [...products, { id_product: newProduct, name: name, amount: 1 }],
+					products: [...products, { id_product: newProduct, name: name, amount: String(1) }],
 				};
 			}
 			return {
 				...prev,
-				products: products.map((p) => (p.id_product === newProduct ? { ...p, amount: p.amount + 1 } : p)),
+				products: products.map((p) => (p.id_product === newProduct ? { ...p, amount: String(Number(p.amount) + 1) } : p)),
 			};
 		});
 	};
 
 	const handleChangeProductAmount = (id, newAmount) => {
+		console.log(newAmount, typeof newAmount);
 		setEditRequest((prev) => ({
 			...prev,
-			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: newAmount } : p)),
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: newAmount === "" ? 0 : Number(newAmount) } : p)),
 		}));
 	};
 
 	const handleRemoveProduct = (id) => {
 		setEditRequest((prev) => ({
 			...prev,
-			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: Math.max(0, p.amount - 1) } : p)),
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: String(Math.max(0, Number(p.amount) - 1)) } : p)),
 		}));
 	};
 
 	const handleDeleteProduct = (id) => {
 		setEditRequest((prev) => ({
 			...prev,
-			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: 0 } : p)),
+			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: String(0) } : p)),
 		}));
 	};
 
@@ -383,7 +384,7 @@ const RequestDetails = () => {
 																				(e) =>
 																					(Number(e.amount) > 0 || e.amount === "full") && (
 																						<Chip
-																							label={e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Full" : `${e.name} ${e.amount}${e.unit}`}
+																							label={e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Full" : `${e.name} ${e.amount} ${e.unit}`}
 																							onDelete={() => {
 																								handleOpenEditInput("services");
 																								handleDeleteService(e.id_service);

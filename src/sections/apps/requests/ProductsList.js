@@ -65,11 +65,11 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 					</IconButton>
 					<TextField
 						type="number"
-						value={requestObject.products && requestObject.products.length > 0 ? (requestObject.products.find((p) => p.id_product === e.id_product)?.amount ?? "") : ""}
+						value={requestObject.products && requestObject.products.length > 0 ? (Number(requestObject.products.find((p) => p.id_product === e.id_product)?.amount) ?? "") : ""}
 						onChange={(el) => {
-							const rawValue = el.target.value;
-							const newValue = rawValue === "" ? "" : Math.max(0, Number(rawValue));
-							handleChangeProductAmount(e.id_product, newValue);
+							const value = el.target.value;
+							const rawValue = value === "" ? "" : Math.max(0, Number(value));
+							handleChangeProductAmount(e.id_product, rawValue);
 						}}
 						onClick={(el) => el.stopPropagation()}
 						onFocus={(el) => el.stopPropagation()}

@@ -83,10 +83,11 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										<TableCell align="center">
 											<Button
 												variant="contained"
-												color={itemOrder.order_status === "P" ? "error" : itemOrder.order_status === "E" ? "warning" : "success"}
+												color={itemOrder.order_status === "P" ? "primary" : itemOrder.order_status === "E" ? "warning" : itemOrder.order_status === "C" ? "error" : "success"}
 												sx={{ px: 1, py: 0.25, color: itemOrder.order_status === "E" ? "black" : "white" }}
 												onClick={async () => {
 													if (itemOrder.order_status === "F") return;
+													if (itemOrder.order_status === "C") return;
 													if (itemOrder.order_status === "P") {
 														await handleStatus(itemOrder.id_order, "E");
 													} else if (itemOrder.order_status === "E") {
@@ -94,18 +95,30 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 													}
 												}}
 											>
-												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Concluir" : "Finalizada"}
+												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Concluir" : itemOrder.order_status === "C" ? "Cancelada" : "Finalizada"}
 											</Button>
 										</TableCell>
 										<TableCell align="center">{item.registration}</TableCell>
 										<TableCell align="center">
-											{itemOrder.type === "P" ? dayjs(item.landing_date).format("DD/MM/YYYY HH:mm") : item.takeoff_date ? dayjs(item.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
+											{itemOrder.available_at === "P"
+												? dayjs(item.landing_date).format("DD/MM/YYYY HH:mm")
+												: itemOrder.available_at === "D"
+													? dayjs(item.takeoff_date).format("DD/MM/YYYY HH:mm")
+													: itemOrder.available_at === "A"
+														? (() => {
+																const now = dayjs();
+																const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
+																const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
+																const closestDate = landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
+																return dayjs(closestDate).format("DD/MM/YYYY HH:mm");
+															})()
+														: "Não agendado"}
 										</TableCell>
 										<TableCell align="center">{itemOrder.name}</TableCell>
 										<TableCell align="center">
 											{!editFuel ? (
 												<Box display="inline-flex" alignItems="center" gap={1}>
-													{itemOrder.unit === "un" ? "-" : itemOrder.amount === "full" ? "Full" : `${itemOrder.amount}${itemOrder.unit}`}
+													{itemOrder.unit === "un" ? "-" : itemOrder.amount === "full" ? "Full" : `${itemOrder.amount} ${itemOrder.unit}`}
 													{itemOrder.unit === "L" && (itemOrder.order_status === "E" || itemOrder.order_status === "P") && (
 														<EditOutlined
 															style={{ cursor: "pointer" }}
@@ -159,8 +172,10 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										<Typography variant="h5">Nenhuma ordem de serviço aberta</Typography>
 									) : tab === 2 ? (
 										<Typography variant="h5">Nenhuma ordem de serviço em execução</Typography>
-									) : (
+									) : tab === 2 ? (
 										<Typography variant="h5">Nenhuma ordem de serviço finalizada</Typography>
+									) : (
+										<Typography variant="h5">Nenhuma ordem de serviço cancelada</Typography>
 									)}
 								</TableCell>
 							</TableRow>

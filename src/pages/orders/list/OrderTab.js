@@ -44,6 +44,9 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 			case 3:
 				setSelectedStatus({ F: true });
 				break;
+			case 4:
+				setSelectedStatus({ C: true });
+				break;
 			default:
 				break;
 		}
@@ -57,7 +60,16 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 					onChange={handleChange}
 					TabIndicatorProps={{
 						style: {
-							backgroundColor: value === 0 ? theme.palette.primary.main : value === 1 ? theme.palette.error.main : value === 2 ? theme.palette.warning.main : theme.palette.success.main,
+							backgroundColor:
+								value === 0
+									? theme.palette.secondary.main
+									: value === 1
+										? theme.palette.primary.main
+										: value === 2
+											? theme.palette.warning.main
+											: value === 3
+												? theme.palette.success.main
+												: theme.palette.error.main,
 						},
 					}}
 					variant="scrollable"
@@ -66,30 +78,31 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 						label={`Todas (${totalTabOrders.amount_total})`}
 						{...a11yProps(0)}
 						sx={{
-							color: theme.palette.primary.main,
+							color: theme.palette.secondary.main,
 							fontWeight: "bold",
-							backgroundColor: value === 0 ? theme.palette.primary.lighter : "transparent",
+							backgroundColor: value === 0 ? theme.palette.secondary.lighter : "transparent",
 							"&.Mui-selected": {
-								color: theme.palette.primary.main,
+								color: theme.palette.secondary.main,
 							},
 							"&:hover": {
-								color: theme.palette.primary.main,
+								color: theme.palette.secondary.main,
 								backgroundColor: "transparent",
 							},
 						}}
 					/>
+
 					<Tab
 						label={`Abertas (${totalTabOrders.amount_open})`}
 						{...a11yProps(1)}
 						sx={{
-							color: theme.palette.error.main,
+							color: theme.palette.primary.main,
 							fontWeight: "bold",
-							backgroundColor: value === 1 ? theme.palette.error.lighter : "transparent",
+							backgroundColor: value === 1 ? theme.palette.primary.lighter : "transparent",
 							"&.Mui-selected": {
-								color: theme.palette.error.main,
+								color: theme.palette.primary.main,
 							},
 							"&:hover": {
-								color: theme.palette.error.main,
+								color: theme.palette.primary.main,
 								backgroundColor: "transparent",
 							},
 						}}
@@ -126,6 +139,22 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 							},
 						}}
 					/>
+					<Tab
+						label={`Canceladas (${totalTabOrders.amount_canceled})`}
+						{...a11yProps(4)}
+						sx={{
+							color: theme.palette.error.main,
+							fontWeight: "bold",
+							backgroundColor: value === 4 ? theme.palette.error.lighter : "transparent",
+							"&.Mui-selected": {
+								color: theme.palette.error.main,
+							},
+							"&:hover": {
+								color: theme.palette.error.main,
+								backgroundColor: "transparent",
+							},
+						}}
+					/>
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
@@ -139,6 +168,9 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={3}>
 				<OrdersTable reload={reload} setReload={setReload} search={search} tab={3} />
+			</CustomTabPanel>
+			<CustomTabPanel value={value} index={4}>
+				<OrdersTable reload={reload} setReload={setReload} search={search} tab={4} />
 			</CustomTabPanel>
 		</Box>
 	);
