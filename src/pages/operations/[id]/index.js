@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -23,6 +23,7 @@ const OperationDetails = () => {
 	/* const [openAlert, setOpenAlert] = useState(false); */
 	const [editPrice, setEditPrice] = useState(false);
 	const [editPriceValue, setEditPriceValue] = useState("");
+	const [available, setAvailable] = useState("");
 
 	const { id } = useParams();
 
@@ -44,6 +45,14 @@ const OperationDetails = () => {
 		setEditPrice(false);
 		await findOneOperationById(id);
 	};
+
+	const handleChangeAvailable = (event) => {
+		setAvailable(event.target.value);
+	};
+
+	useEffect(() => {
+		setAvailable(operationDetails.available_at);
+	}, [operationDetails]);
 
 	/* const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
@@ -144,6 +153,21 @@ const OperationDetails = () => {
 																/>
 															</Box>
 														)}
+													</Stack>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
+										<ListItem>
+											<Grid container spacing={3}>
+												<Grid item xs={12} md={6}>
+													<Stack spacing={0.5}>
+														<InputLabel htmlFor="unit">Disponibilidade</InputLabel>
+														<RadioGroup aria-label="size" value={available} name="radio-buttons-group" onChange={handleChangeAvailable} row>
+															<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+															<FormControlLabel value="P" control={<Radio />} label="No pouso" />
+															<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+														</RadioGroup>
 													</Stack>
 												</Grid>
 											</Grid>

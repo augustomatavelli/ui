@@ -21,6 +21,9 @@ import {
 	Box,
 	Avatar,
 	FormLabel,
+	RadioGroup,
+	FormControlLabel,
+	Radio,
 } from "@mui/material";
 
 // third party
@@ -30,7 +33,6 @@ import { useFormik, Form, FormikProvider } from "formik";
 // project import
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { ThemeMode } from "config";
 
 import useScriptRef from "hooks/useScriptRef";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -45,6 +47,7 @@ const getInitialValues = () => {
 		price: "",
 		unit: "",
 		category: "",
+		available_at: "A",
 		image: "",
 	};
 
@@ -60,6 +63,7 @@ const AddProduct = ({ onCancel }) => {
 
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
+	const [available, setAvailable] = useState("A");
 
 	const scriptedRef = useScriptRef();
 
@@ -75,6 +79,10 @@ const AddProduct = ({ onCancel }) => {
 			reader.readAsDataURL(file);
 		});
 	}
+
+	const handleChangeAvailable = (event) => {
+		setAvailable(event.target.value);
+	};
 
 	useEffect(() => {
 		findCategories();
@@ -106,6 +114,7 @@ const AddProduct = ({ onCancel }) => {
 					price: parseFloat(price.replace(",", ".")).toFixed(1),
 					unit: unit,
 					id_category: Number(category),
+					available_at: available,
 					image: selectedImage ? base64Image : "",
 				};
 				const response = await createProduct(payload);
@@ -326,6 +335,16 @@ const AddProduct = ({ onCancel }) => {
 														{errors.unit}
 													</FormHelperText>
 												)}
+											</Stack>
+										</Grid>
+										<Grid item xs={12}>
+											<Stack spacing={1}>
+												<InputLabel htmlFor="unit">Disponibilidade do produto</InputLabel>
+												<RadioGroup aria-label="size" value={available} defaultValue="available" name="radio-buttons-group" onChange={handleChangeAvailable} row>
+													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+													<FormControlLabel value="P" control={<Radio />} label="No pouso" />
+													<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+												</RadioGroup>
 											</Stack>
 										</Grid>
 									</Grid>

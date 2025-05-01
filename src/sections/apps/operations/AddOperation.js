@@ -2,7 +2,24 @@
 import { useContext, useEffect, useState } from "react";
 
 // material-ui
-import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, DialogActions, Divider, DialogTitle, DialogContent, Select, MenuItem, Typography } from "@mui/material";
+import {
+	Button,
+	Grid,
+	InputLabel,
+	Stack,
+	FormHelperText,
+	OutlinedInput,
+	DialogActions,
+	Divider,
+	DialogTitle,
+	DialogContent,
+	Select,
+	MenuItem,
+	Typography,
+	RadioGroup,
+	Radio,
+	FormControlLabel,
+} from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -24,6 +41,7 @@ const getInitialValues = () => {
 		name: "",
 		price: "",
 		unit: "",
+		available_at: "A",
 		category: "",
 	};
 
@@ -37,9 +55,15 @@ const AddOperation = ({ onCancel }) => {
 
 	const { categories } = useContext(OperationsContext);
 
+	const [available, setAvailable] = useState("A");
+
 	const scriptedRef = useScriptRef();
 
 	const units = ["L", "un"];
+
+	const handleChangeAvailable = (event) => {
+		setAvailable(event.target.value);
+	};
 
 	useEffect(() => {
 		findCategories();
@@ -61,6 +85,7 @@ const AddOperation = ({ onCancel }) => {
 					name: values.name,
 					price: parseFloat(values.price.replace(",", ".")).toFixed(1),
 					unit: values.unit,
+					available_at: available,
 					id_category: Number(values.category),
 				};
 				const response = await createOperation(payload);
@@ -192,6 +217,16 @@ const AddOperation = ({ onCancel }) => {
 												{errors.unit}
 											</FormHelperText>
 										)}
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<InputLabel htmlFor="unit">Disponibilidade do serviço</InputLabel>
+										<RadioGroup aria-label="size" value={available} defaultValue="available" name="radio-buttons-group" onChange={handleChangeAvailable} row>
+											<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+											<FormControlLabel value="P" control={<Radio />} label="No pouso" />
+											<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+										</RadioGroup>
 									</Stack>
 								</Grid>
 							</Grid>
