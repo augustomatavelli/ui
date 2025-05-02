@@ -56,6 +56,7 @@ const AddOperation = ({ onCancel }) => {
 	const { categories } = useContext(OperationsContext);
 
 	const [available, setAvailable] = useState("A");
+	const [selectionMode, setSelectionMode] = useState("N");
 
 	const scriptedRef = useScriptRef();
 
@@ -63,6 +64,10 @@ const AddOperation = ({ onCancel }) => {
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
+	};
+
+	const handleChangeSelectionMode = (event) => {
+		setSelectionMode(event.target.value);
 	};
 
 	useEffect(() => {
@@ -222,10 +227,19 @@ const AddOperation = ({ onCancel }) => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<InputLabel htmlFor="unit">Disponibilidade do serviço</InputLabel>
-										<RadioGroup aria-label="size" value={available} defaultValue="available" name="radio-buttons-group" onChange={handleChangeAvailable} row>
+										<RadioGroup aria-label="size" value={available} defaultValue="A" name="radio-buttons-group" onChange={handleChangeAvailable} row>
 											<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 											<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 											<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+										</RadioGroup>
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<InputLabel htmlFor="unit">Tipo de atribuição do serviço</InputLabel>
+										<RadioGroup aria-label="size" value={selectionMode} defaultValue="S" name="radio-buttons-group" onChange={handleChangeSelectionMode} row>
+											<FormControlLabel value="S" control={<Radio />} label="Manual" />
+											<FormControlLabel value="N" control={<Radio />} label="Automático" />
 										</RadioGroup>
 									</Stack>
 								</Grid>

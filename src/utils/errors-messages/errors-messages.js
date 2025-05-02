@@ -25,5 +25,5 @@ export const ErrorMessages = {
 	orders_open: "Você precisa concluir todas as ordens de serviço antes de finalizar a solicitação",
 	orders_already_started: "Você não pode cancelar a solicitação, pois existe um serviço em execução ou já finalizado",
 	request_order_execution_or_finalized: "Você não pode alterar a solicitação, pois existe uma ordem em execução ou finalizada",
-	product_order_already_finalized: "Você não pode selecionar a quantidade desejada, pois parte da quantidade já foi finalizada",
+	order_already_finalized: "Você não pode selecionar a quantidade desejada, pois parte da quantidade já foi finalizada",
 };

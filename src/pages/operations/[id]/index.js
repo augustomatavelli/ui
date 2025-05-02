@@ -24,6 +24,7 @@ const OperationDetails = () => {
 	const [editPrice, setEditPrice] = useState(false);
 	const [editPriceValue, setEditPriceValue] = useState("");
 	const [available, setAvailable] = useState("");
+	const [selectionMode, setSelectionMode] = useState("");
 
 	const { id } = useParams();
 
@@ -50,8 +51,13 @@ const OperationDetails = () => {
 		setAvailable(event.target.value);
 	};
 
+	const handleChangeSelectionMode = (event) => {
+		setSelectionMode(event.target.value);
+	};
+
 	useEffect(() => {
 		setAvailable(operationDetails.available_at);
+		setSelectionMode(operationDetails.visible);
 	}, [operationDetails]);
 
 	/* const handleAlertClose = () => {
@@ -167,6 +173,20 @@ const OperationDetails = () => {
 															<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 															<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 															<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+														</RadioGroup>
+													</Stack>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
+										<ListItem>
+											<Grid container spacing={3}>
+												<Grid item xs={12} md={6}>
+													<Stack spacing={0.5}>
+														<InputLabel htmlFor="unit">Tipo de atribuição do serviço</InputLabel>
+														<RadioGroup aria-label="size" value={selectionMode} name="radio-buttons-group" onChange={handleChangeSelectionMode} row>
+															<FormControlLabel value="S" control={<Radio />} label="Manual" />
+															<FormControlLabel value="N" control={<Radio />} label="Automático" />
 														</RadioGroup>
 													</Stack>
 												</Grid>
