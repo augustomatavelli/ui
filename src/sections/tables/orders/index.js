@@ -22,6 +22,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const [editFuel, setEditFuel] = useState(false);
 	const [editFuelValue, setEditFuelValue] = useState("");
 	const [open, setOpen] = useState(false);
+	const [selectedOrder, setSelectedOrder] = useState();
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
@@ -123,7 +124,14 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										<TableCell align="center">
 											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
 												<Typography>{itemOrder.name}</Typography>
-												{itemOrder.checklist === "S" && itemOrder.order_status === "E" && <FileSearchOutlined onClick={() => setOpen(true)} />}
+												{itemOrder.checklist === "S" && itemOrder.order_status === "E" && (
+													<FileSearchOutlined
+														onClick={() => {
+															setOpen(true);
+															setSelectedOrder(itemOrder.id_order);
+														}}
+													/>
+												)}
 											</Grid>
 										</TableCell>
 										<TableCell align="center">
@@ -193,7 +201,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						)}
 					</TableBody>
 				</Table>
-				<AlertChecklist open={open} handleClose={handleClose} />
+				<AlertChecklist open={open} handleClose={handleClose} selectedOrder={selectedOrder} />
 			</TableContainer>
 		</>
 	);

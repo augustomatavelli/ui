@@ -13,8 +13,6 @@ export const RequestResume = ({}) => {
 
 	useEffect(() => {}, []);
 
-	console.log(requestResume);
-
 	return (
 		<TableContainer>
 			<Table sx={{ minWidth: "auto" }} size="small" aria-label="simple table">

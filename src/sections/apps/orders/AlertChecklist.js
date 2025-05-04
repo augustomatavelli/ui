@@ -1,10 +1,45 @@
 import PropTypes from "prop-types";
-import { Button, Dialog, DialogContent, FormControlLabel, Radio, RadioGroup, Stack, Typography, useTheme } from "@mui/material";
+import { Button, Dialog, DialogContent, FormControlLabel, Radio, RadioGroup, Stack, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import { PopupTransition } from "components/@extended/Transitions";
+import useInspection from "hooks/useInspection";
+import { useContext, useEffect, useState } from "react";
+import InspectionContext from "contexts/InspectionsContext";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+export default function AlertChecklist({ open, handleClose, selectedOrder }) {
+	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 
-export default function AlertChecklist({ open, handleClose }) {
-	const selectionMode = "";
-	const handleChangeSelectionMode = () => {};
+	const { inspections } = useContext(InspectionContext);
+
+	const [objCompliance, setObjCompliance] = useState({});
+
+	const handleChangeSelectionMode = (inspectionId, event) => {
+		const value = event.target.value;
+		setObjCompliance((prev) => ({ ...prev, [inspectionId]: value }));
+	};
+
+	const handleUpdate = async (orderId) => {
+		const response = await updateInspectionOrderCompliance(orderId, objCompliance);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		handleClose();
+	};
+
+	useEffect(() => {
+		if (open) {
+			findAllInspectionsByOrder(selectedOrder);
+		}
+	}, [open]);
 
 	return (
 		<Dialog
@@ -12,7 +47,7 @@ export default function AlertChecklist({ open, handleClose }) {
 			onClose={() => handleClose(false)}
 			keepMounted
 			TransitionComponent={PopupTransition}
-			maxWidth="sm"
+			maxWidth="xs"
 			fullWidth
 			aria-labelledby="column-delete-title"
 			aria-describedby="column-delete-description"
@@ -23,23 +58,71 @@ export default function AlertChecklist({ open, handleClose }) {
 						<Typography variant="h4" align="start">
 							Checklist de inspeção
 						</Typography>
-						{["A", "B"].map((e) => {
-							<Stack spacing={1}>
-								<Typography variant="h5" align="start">
-									{e.name}
-								</Typography>
-								<RadioGroup aria-label="size" value={selectionMode} defaultValue="N" name="radio-buttons-group" onChange={handleChangeSelectionMode} row>
-									<FormControlLabel value="S" control={<Radio />} label="Conforme" />
-									<FormControlLabel value="N" control={<Radio />} label="Não conforme" />
-								</RadioGroup>
-							</Stack>;
+						{inspections.map((e) => {
+							return (
+								<Stack spacing={1} direction="row" alignItems="center" gap={2}>
+									<ToggleButtonGroup
+										value={objCompliance[e.id_inspection] ?? ""}
+										exclusive
+										onChange={(event, newValue) => {
+											if (newValue !== null) {
+												handleChangeSelectionMode(e.id_inspection, { target: { value: newValue } });
+											}
+										}}
+										aria-label="conformidade"
+									>
+										<ToggleButton
+											value="S"
+											aria-label="conforme"
+											sx={{
+												"&.Mui-selected": {
+													bgcolor: "green",
+													color: "white",
+												},
+												"&:not(.Mui-selected)": {
+													bgcolor: "white",
+													color: "black",
+												},
+											}}
+										>
+											<CheckCircleOutlined style={{ fontSize: 24, color: "inherit" }} />
+										</ToggleButton>
+										<ToggleButton
+											value="N"
+											aria-label="nao-conforme"
+											sx={{
+												"&.Mui-selected": {
+													bgcolor: "red",
+													color: "white",
+												},
+												"&:not(.Mui-selected)": {
+													bgcolor: "white",
+													color: "black",
+												},
+											}}
+										>
+											<CloseCircleOutlined style={{ fontSize: 24, color: "inherit" }} />
+										</ToggleButton>
+									</ToggleButtonGroup>
+									<Typography variant="h5" align="start">
+										{e.name}
+									</Typography>
+								</Stack>
+							);
 						})}
 					</Stack>
 					<Stack direction="row" spacing={2} justifyContent="end" sx={{ width: 1 }}>
 						<Button onClick={() => handleClose(false)} color="secondary" variant="outlined">
 							Fechar
 						</Button>
-						<Button color="primary" variant="contained" onClick={() => {}} autoFocus>
+						<Button
+							color="primary"
+							variant="contained"
+							onClick={() => {
+								handleUpdate(selectedOrder, objCompliance);
+							}}
+							autoFocus
+						>
 							Salvar
 						</Button>
 					</Stack>

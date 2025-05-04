@@ -118,7 +118,6 @@ const RequestDetails = () => {
 	};
 
 	const handleChangeProductAmount = (id, newAmount) => {
-		console.log(newAmount, typeof newAmount);
 		setEditRequest((prev) => ({
 			...prev,
 			products: prev.products.map((p) => (p.id_product === id ? { ...p, amount: newAmount === "" ? 0 : Number(newAmount) } : p)),
