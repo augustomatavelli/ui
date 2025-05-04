@@ -46,7 +46,7 @@ const SearchRequestByAdmin = ({ setSearch }) => {
 							onMouseLeave={() => setHover(false)}
 						/>
 					}
-					placeholder="Pesquisar solicitação pelo número, nome do usuário, matrícula, aeródromo..."
+					placeholder="Pesquisar solicitação pelo número, nome do usuário, matrícula, helicentro..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

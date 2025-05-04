@@ -34,7 +34,7 @@ const UserDetails = () => {
 	return (
 		<>
 			<Grid item xs={12} sm={7} md={8} xl={9}>
-				<MainCard title="Detalhes do aeródromo">
+				<MainCard title="Detalhes do helicentro">
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							{loadingLandingSite ? (

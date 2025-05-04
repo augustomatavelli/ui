@@ -99,7 +99,7 @@ const AddLandingSite = ({ onCancel }) => {
 				setErrors({});
 				console.error(err);
 				const message =
-					err.response.status === 409 ? "Aeródromo já existe!" : err.response.status === 400 ? "Erro ao cadastrar aeródromo! Confira se os dados estão corretos!" : "Erro ao cadastrar aeródromo!";
+					err.response.status === 409 ? "Helicentro já existe!" : err.response.status === 400 ? "Erro ao cadastrar helicentro! Confira se os dados estão corretos!" : "Erro ao cadastrar helicentro!";
 				if (scriptedRef.current) {
 					setStatus({ success: false });
 					setErrors({ submit: message });
@@ -116,7 +116,7 @@ const AddLandingSite = ({ onCancel }) => {
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
 					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-						<DialogTitle>Criar aeródromo</DialogTitle>
+						<DialogTitle>Criar helicentro</DialogTitle>
 						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
@@ -165,7 +165,7 @@ const AddLandingSite = ({ onCancel }) => {
 								<Grid item xs={12} display="flex" width="100%" alignItems="center" gap={2}>
 									<Grid item xs={8}>
 										<Stack spacing={1}>
-											<InputLabel htmlFor="email-signup">Tipo do aeródromo</InputLabel>
+											<InputLabel htmlFor="email-signup">Tipo do helicentro</InputLabel>
 											<Select
 												value={values.type}
 												name="type"

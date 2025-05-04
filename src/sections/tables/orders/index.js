@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -9,8 +9,9 @@ import dayjs from "dayjs";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { EditOutlined, SaveOutlined, FileSearchOutlined } from "@ant-design/icons";
 import useRequest from "hooks/useRequest";
+import AlertChecklist from "sections/apps/orders/AlertChecklist";
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
@@ -20,6 +21,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 
 	const [editFuel, setEditFuel] = useState(false);
 	const [editFuelValue, setEditFuelValue] = useState("");
+	const [open, setOpen] = useState(false);
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
@@ -54,6 +56,10 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 			})
 		);
 		setEditFuel(false);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	useEffect(() => {}, [orders]);
@@ -114,7 +120,12 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 															})()
 														: "Não agendado"}
 										</TableCell>
-										<TableCell align="center">{itemOrder.name}</TableCell>
+										<TableCell align="center">
+											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+												<Typography>{itemOrder.name}</Typography>
+												{itemOrder.checklist === "S" && itemOrder.order_status === "E" && <FileSearchOutlined onClick={() => setOpen(true)} />}
+											</Grid>
+										</TableCell>
 										<TableCell align="center">
 											{!editFuel ? (
 												<Box display="inline-flex" alignItems="center" gap={1}>
@@ -182,6 +193,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						)}
 					</TableBody>
 				</Table>
+				<AlertChecklist open={open} handleClose={handleClose} />
 			</TableContainer>
 		</>
 	);

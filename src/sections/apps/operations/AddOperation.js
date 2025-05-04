@@ -29,12 +29,13 @@ import { useFormik, Form, FormikProvider } from "formik";
 
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
+import { InfoCircleOutlined } from "@ant-design/icons";
 import useScriptRef from "hooks/useScriptRef";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import useOperation from "hooks/useOperation";
 import OperationsContext from "contexts/OperationContext";
+import AlertInfoAttributionOperation from "./AlertInfoAttributionOperation";
 
 const getInitialValues = () => {
 	const newOperation = {
@@ -42,6 +43,7 @@ const getInitialValues = () => {
 		price: "",
 		unit: "",
 		available_at: "A",
+		selectionMode: "A",
 		category: "",
 	};
 
@@ -57,6 +59,8 @@ const AddOperation = ({ onCancel }) => {
 
 	const [available, setAvailable] = useState("A");
 	const [selectionMode, setSelectionMode] = useState("N");
+	const [checklist, setChecklist] = useState("N");
+	const [open, setOpen] = useState(false);
 
 	const scriptedRef = useScriptRef();
 
@@ -68,6 +72,14 @@ const AddOperation = ({ onCancel }) => {
 
 	const handleChangeSelectionMode = (event) => {
 		setSelectionMode(event.target.value);
+	};
+
+	const handleChangeChecklist = (event) => {
+		setChecklist(event.target.value);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	useEffect(() => {
@@ -91,6 +103,7 @@ const AddOperation = ({ onCancel }) => {
 					price: parseFloat(values.price.replace(",", ".")).toFixed(1),
 					unit: values.unit,
 					available_at: available,
+					selection: selectionMode,
 					id_category: Number(values.category),
 				};
 				const response = await createOperation(payload);
@@ -228,22 +241,37 @@ const AddOperation = ({ onCancel }) => {
 									<Stack spacing={1}>
 										<InputLabel htmlFor="unit">Disponibilidade do serviço</InputLabel>
 										<RadioGroup aria-label="size" value={available} defaultValue="A" name="radio-buttons-group" onChange={handleChangeAvailable} row>
-											<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 											<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 											<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+											<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 										</RadioGroup>
 									</Stack>
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="unit">Tipo de atribuição do serviço</InputLabel>
-										<RadioGroup aria-label="size" value={selectionMode} defaultValue="S" name="radio-buttons-group" onChange={handleChangeSelectionMode} row>
+										<Grid display="flex" alignItems="center" gap={1}>
+											<InputLabel htmlFor="unit">Tipo de atribuição do serviço</InputLabel>
+											<InfoCircleOutlined onClick={() => setOpen(true)} />
+										</Grid>
+										<RadioGroup aria-label="size" value={selectionMode} defaultValue="N" name="radio-buttons-group" onChange={handleChangeSelectionMode} row>
 											<FormControlLabel value="S" control={<Radio />} label="Manual" />
 											<FormControlLabel value="N" control={<Radio />} label="Automático" />
 										</RadioGroup>
 									</Stack>
 								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<Grid display="flex" alignItems="center" gap={1}>
+											<InputLabel htmlFor="unit">Necessita checklist?</InputLabel>
+										</Grid>
+										<RadioGroup aria-label="size" value={checklist} defaultValue="N" name="radio-buttons-group" onChange={handleChangeChecklist} row>
+											<FormControlLabel value="S" control={<Radio />} label="Sim" />
+											<FormControlLabel value="N" control={<Radio />} label="Não" />
+										</RadioGroup>
+									</Stack>
+								</Grid>
 							</Grid>
+							{open && <AlertInfoAttributionOperation open={open} handleClose={handleClose} />}
 						</DialogContent>
 						{errors.submit && (
 							<Grid item xs={12}>

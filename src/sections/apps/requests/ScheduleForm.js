@@ -117,7 +117,7 @@ const ScheduleForm = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbo
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
-										<InputLabel htmlFor="Aeródromo">Aeródromo</InputLabel>
+										<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
 										<Autocomplete
 											options={searchLandingSites}
 											getOptionLabel={(option) => option.label}

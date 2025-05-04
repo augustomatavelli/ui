@@ -19,11 +19,12 @@ export const ErrorMessages = {
 	request_user_exists: "Existe uma solicitação em aberto com esse usuário",
 	request_product_exists: "Existe uma solicitação em aberto com esse produto",
 	request_aircraft_exists: "Existe uma solicitação em aberto com essa aeronave",
-	request_landing_site_exists: "Existe uma solicitação em aberto com esse aeródromo",
+	request_landing_site_exists: "Existe uma solicitação em aberto com esse helicentro",
 	request_operation_exists: "Existe uma solicitação em aberto com esse serviço",
 	failed_to_search_registration: "Erro ao buscar os dados. Verifique a matrícula e tente novamente",
 	orders_open: "Você precisa concluir todas as ordens de serviço antes de finalizar a solicitação",
 	orders_already_started: "Você não pode cancelar a solicitação, pois existe um serviço em execução ou já finalizado",
 	request_order_execution_or_finalized: "Você não pode alterar a solicitação, pois existe uma ordem em execução ou finalizada",
 	order_already_finalized: "Você não pode selecionar a quantidade desejada, pois parte da quantidade já foi finalizada",
+	inspection_not_checked: "Existem itens de inspeção não marcados",
 };

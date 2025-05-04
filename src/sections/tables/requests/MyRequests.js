@@ -71,7 +71,7 @@ export default function MyRequestsTable({ openFilter }) {
 						<TableRow>
 							<TableCell />
 							<TableCell align="center">Aeronave</TableCell>
-							<TableCell align="center">Aeródromo</TableCell>
+							<TableCell align="center">Helicentro</TableCell>
 							<TableCell align="center">Pouso</TableCell>
 							<TableCell align="center">Decolagem</TableCell>
 							<TableCell align="center">Status</TableCell>

@@ -45,7 +45,7 @@ const admin = {
 		},
 		{
 			id: "landing sites",
-			title: <FormattedMessage id="Aeródromos" />,
+			title: <FormattedMessage id="Helicentro" />,
 			type: "item",
 			url: "/landing-sites/admin",
 			icon: icons.EnvironmentOutlined,

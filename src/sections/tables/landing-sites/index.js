@@ -66,7 +66,7 @@ export default function LandingSitesTable() {
 								paddingY: 0,
 							}}
 						>
-							Criar aeródromo
+							Criar helicentro
 						</Button>
 					</Stack>
 				</Grid>
@@ -113,13 +113,13 @@ export default function LandingSitesTable() {
 						) : search ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum aeródromo encontrado</Typography>
+									<Typography variant="h5">Nenhum helicentro encontrado</Typography>
 								</TableCell>
 							</TableRow>
 						) : (
 							<TableRow>
 								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum aeródromo cadastrado</Typography>
+									<Typography variant="h5">Nenhum helicentro cadastrado</Typography>
 								</TableCell>
 							</TableRow>
 						)}

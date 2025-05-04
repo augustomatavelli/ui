@@ -341,9 +341,9 @@ const AddProduct = ({ onCancel }) => {
 											<Stack spacing={1}>
 												<InputLabel htmlFor="unit">Disponibilidade do produto</InputLabel>
 												<RadioGroup aria-label="size" value={available} defaultValue="available" name="radio-buttons-group" onChange={handleChangeAvailable} row>
-													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 													<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 													<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
+													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
 												</RadioGroup>
 											</Stack>
 										</Grid>

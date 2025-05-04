@@ -20,7 +20,7 @@ export const RequestResume = ({}) => {
 			<Table sx={{ minWidth: "auto" }} size="small" aria-label="simple table">
 				<TableBody>
 					<TableRow>
-						<TableCell sx={{ opacity: 0.5 }}>Aeródromo</TableCell>
+						<TableCell sx={{ opacity: 0.5 }}>Helicentro</TableCell>
 						<TableCell align="right" sx={{ opacity: 0.5 }}>
 							{requestResume.name_landing_site}
 						</TableCell>

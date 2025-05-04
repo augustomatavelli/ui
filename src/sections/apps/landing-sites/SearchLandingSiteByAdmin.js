@@ -46,7 +46,7 @@ const SearchLandingSiteByAdmin = ({ setSearch }) => {
 							onMouseLeave={() => setHover(false)}
 						/>
 					}
-					placeholder="Pesquisar aeródromo por nome, cidade ou estado..."
+					placeholder="Pesquisar helicentro por nome, cidade ou estado..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

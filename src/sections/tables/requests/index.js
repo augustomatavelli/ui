@@ -105,7 +105,7 @@ export default function RequestsTable({ openFilter }) {
 							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
 							<TableCell align="center">Matrícula</TableCell>
-							<TableCell align="center">Aeródromo</TableCell>
+							<TableCell align="center">Helicentro</TableCell>
 							<TableCell align="center">Pouso</TableCell>
 							<TableCell align="center">Decolagem</TableCell>
 							<TableCell align="center">Status</TableCell>
