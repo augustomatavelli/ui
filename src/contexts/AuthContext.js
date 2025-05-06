@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useEffect, useReducer, useContext } from "react";
+import { createContext, useEffect, useReducer, useContext, useState } from "react";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
 import Loader from "components/Loader";
 import authReducer from "store/reducers/auth";
@@ -49,6 +49,9 @@ export const AuthProvider = ({ children }) => {
 	const { user } = useContext(UserContext);
 
 	const [state, dispatchAuth] = useReducer(authReducer, initialState);
+	const [loadingResetPassword, setLoadingResetPassword] = useState(false);
+	const [emailSent, setEmailSent] = useState("");
+	const [resetToken, setResetToken] = useState("");
 
 	useEffect(() => {
 		const init = async () => {
@@ -91,7 +94,11 @@ export const AuthProvider = ({ children }) => {
 
 	const resetAuthState = () => {};
 
-	return <AuthContext.Provider value={{ ...state, dispatchAuth, resetAuthState }}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={{ ...state, dispatchAuth, resetAuthState, loadingResetPassword, setLoadingResetPassword, emailSent, setEmailSent, resetToken, setResetToken }}>
+			{children}
+		</AuthContext.Provider>
+	);
 };
 
 AuthProvider.propTypes = {

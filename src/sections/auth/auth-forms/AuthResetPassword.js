@@ -16,22 +16,22 @@ import AnimateButton from "components/@extended/AnimateButton";
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { strengthColor, strengthIndicator } from "utils/password-strength";
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import AuthContext from "contexts/AuthContext";
-
-// ============================|| STATIC - RESET PASSWORD ||============================ //
+import useAuth from "hooks/useAuth";
 
 const AuthResetPassword = () => {
+	const { resetPassword } = useAuth();
+
+	const { resetToken, emailSent } = useContext(AuthContext);
+
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
-	const { isLoggedIn } = useContext(AuthContext);
-
-	const [level, setLevel] = useState();
 	const [showPassword, setShowPassword] = useState(false);
+
 	const handleClickShowPassword = () => {
 		setShowPassword(!showPassword);
 	};
@@ -40,14 +40,11 @@ const AuthResetPassword = () => {
 		event.preventDefault();
 	};
 
-	const changePassword = (value) => {
-		const temp = strengthIndicator(value);
-		setLevel(strengthColor(temp));
-	};
-
 	useEffect(() => {
-		changePassword("");
-	}, []);
+		if (!resetToken || !emailSent) {
+			navigate("/", { replace: true });
+		}
+	}, [resetToken, emailSent]);
 
 	return (
 		<Formik
@@ -60,11 +57,16 @@ const AuthResetPassword = () => {
 				password: Yup.string().max(255).required("Senha é obrigatória"),
 				confirmPassword: Yup.string()
 					.required("Senha é obrigatória")
-					.test("confirmPassword", "As senhas devem ser iguais!", (confirmPassword, yup) => yup.parent.password === confirmPassword),
+					.test("confirmPassword", "As senhas devem ser iguais", (confirmPassword, yup) => yup.parent.password === confirmPassword),
 			})}
 			onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
 				try {
-					// password reset
+					const payload = {
+						email: emailSent,
+						uuid: resetToken,
+						...values,
+					};
+					const response = await resetPassword(payload);
 					if (scriptedRef.current) {
 						setStatus({ success: true });
 						setSubmitting(false);
@@ -72,7 +74,7 @@ const AuthResetPassword = () => {
 						dispatch(
 							openSnackbar({
 								open: true,
-								message: "Successfuly reset password.",
+								message: response.message,
 								variant: "alert",
 								alert: {
 									color: "success",
@@ -81,9 +83,7 @@ const AuthResetPassword = () => {
 							})
 						);
 
-						setTimeout(() => {
-							navigate(isLoggedIn ? "/auth/login" : "/", { replace: true });
-						}, 1500);
+						navigate("/", { replace: true });
 					}
 				} catch (err) {
 					console.error(err);
@@ -111,7 +111,6 @@ const AuthResetPassword = () => {
 									onBlur={handleBlur}
 									onChange={(e) => {
 										handleChange(e);
-										changePassword(e.target.value);
 									}}
 									endAdornment={
 										<InputAdornment position="end">

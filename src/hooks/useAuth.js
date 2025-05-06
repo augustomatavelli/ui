@@ -13,10 +13,8 @@ import OperationsContext from "contexts/OperationContext";
 import ProductsContext from "contexts/ProductsContext";
 import RequestContext from "contexts/RequestContext";
 
-// ==============================|| AUTH HOOKS ||============================== //
-
 const useAuth = () => {
-	const { authAxios } = UseAxios();
+	const { authAxios, publicAxios } = UseAxios();
 
 	const { resetAircraftstates } = useContext(AircraftContext);
 	const { resetLandingSiteStates } = useContext(LandingSiteContext);
@@ -24,7 +22,7 @@ const useAuth = () => {
 	const { resetProductStates } = useContext(ProductsContext);
 	const { resetRequestStates } = useContext(RequestContext);
 	const { user, setUser, resetUserStates } = useContext(UserContext);
-	const { dispatchAuth } = useContext(AuthContext);
+	const { dispatchAuth, setLoadingResetPassword, setResetToken } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
@@ -65,6 +63,79 @@ const useAuth = () => {
 		}
 	};
 
+	const requestResetPasswordCode = async (data) => {
+		try {
+			setLoadingResetPassword(true);
+			const response = await publicAxios.post(`/auth/request-code`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingResetPassword(false);
+		}
+	};
+
+	const checkResetPasswordCode = async (data) => {
+		try {
+			setLoadingResetPassword(true);
+			const response = await publicAxios.post(`/auth/check-code`, data);
+			setResetToken(response.data.token);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingResetPassword(false);
+		}
+	};
+
+	const resetPassword = async (data) => {
+		try {
+			setLoadingResetPassword(true);
+			const response = await publicAxios.patch(`/auth/reset-password`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingResetPassword(false);
+		}
+	};
+
 	const logout = () => {
 		localStorage.clear();
 		resetUserStates();
@@ -82,7 +153,7 @@ const useAuth = () => {
 		navigate("/");
 	};
 
-	return { login, logout };
+	return { login, logout, requestResetPasswordCode, checkResetPasswordCode, resetPassword };
 };
 
 export default useAuth;

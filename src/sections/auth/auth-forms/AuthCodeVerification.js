@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Button, Grid, Stack, Typography } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 
 // third-party
 import OtpInput from "react18-input-otp";
@@ -10,14 +10,50 @@ import OtpInput from "react18-input-otp";
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { ThemeMode } from "config";
-
-// ============================|| STATIC - CODE VERIFICATION ||============================ //
+import useAuth from "hooks/useAuth";
+import AuthContext from "contexts/AuthContext";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
+import { useNavigate } from "react-router";
 
 const AuthCodeVerification = () => {
+	const { checkResetPasswordCode } = useAuth();
+
+	const { emailSent } = useContext(AuthContext);
+
 	const theme = useTheme();
 	const [otp, setOtp] = useState();
 
+	const navigate = useNavigate();
+
 	const borderColor = theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[200] : theme.palette.grey[300];
+
+	const handleVerify = async () => {
+		try {
+			const payload = { code: otp, email: emailSent };
+			const response = await checkResetPasswordCode(payload);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.message,
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				})
+			);
+			navigate("/reset-password", { replace: true });
+		} catch (error) {
+			console.error("Erro ao verificar o código:", error);
+		}
+	};
+
+	useEffect(() => {
+		if (!emailSent) {
+			navigate("/", { replace: true });
+		}
+	}, [emailSent]);
 
 	return (
 		<Grid container spacing={3}>
@@ -46,7 +82,7 @@ const AuthCodeVerification = () => {
 			</Grid>
 			<Grid item xs={12}>
 				<AnimateButton>
-					<Button disableElevation fullWidth size="large" type="submit" variant="contained">
+					<Button disableElevation fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
 						Verificar
 					</Button>
 				</AnimateButton>

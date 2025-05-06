@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 // material-ui
-import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
+import { Button, CircularProgress, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -15,15 +15,15 @@ import AnimateButton from "components/@extended/AnimateButton";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { useContext } from "react";
-import JWTContext from "contexts/JWTContext";
-
-// ============================|| FIREBASE - FORGOT PASSWORD ||============================ //
+import AuthContext from "contexts/AuthContext";
 
 const AuthForgotPassword = () => {
+	const { requestResetPasswordCode } = useAuth();
+
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
 
-	const { isLoggedIn, resetPassword } = useContext(JWTContext);
+	const { loadingResetPassword, setEmailSent } = useContext(AuthContext);
 
 	return (
 		<>
@@ -37,14 +37,14 @@ const AuthForgotPassword = () => {
 				})}
 				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
 					try {
-						await resetPassword(values.email).then(
-							() => {
+						await requestResetPasswordCode(values).then(
+							(res) => {
 								setStatus({ success: true });
 								setSubmitting(false);
 								dispatch(
 									openSnackbar({
 										open: true,
-										message: "Check mail for reset password link",
+										message: res.message,
 										variant: "alert",
 										alert: {
 											color: "success",
@@ -52,15 +52,11 @@ const AuthForgotPassword = () => {
 										close: false,
 									})
 								);
-								setTimeout(() => {
-									navigate(isLoggedIn ? "/auth/check-mail" : "/check-mail", { replace: true });
-								}, 1500);
 
-								// WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-								// Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-								// To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-								// github issue: https://github.com/formium/formik/issues/2430
+								setEmailSent(values.email);
+								navigate("/code-verification", { replace: true });
 							},
+
 							(err) => {
 								setStatus({ success: false });
 								setErrors({ submit: err.message });
@@ -111,7 +107,7 @@ const AuthForgotPassword = () => {
 							<Grid item xs={12}>
 								<AnimateButton>
 									<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-										Enviar
+										{loadingResetPassword ? <CircularProgress size={20} /> : "Enviar"}
 									</Button>
 								</AnimateButton>
 							</Grid>
