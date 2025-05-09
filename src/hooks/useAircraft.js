@@ -6,7 +6,6 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import UserContext from "contexts/UserContext";
-import { is } from "immutable";
 
 const useAircraft = () => {
 	const { publicAxios } = UseAxios();

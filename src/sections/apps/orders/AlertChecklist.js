@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import { Button, Dialog, DialogContent, FormControlLabel, Radio, RadioGroup, Stack, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
+import { Button, Dialog, DialogContent, Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { PopupTransition } from "components/@extended/Transitions";
 import useInspection from "hooks/useInspection";
 import { useContext, useEffect, useState } from "react";
 import InspectionContext from "contexts/InspectionsContext";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled } from "@ant-design/icons";
 export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 
@@ -107,6 +107,7 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 									<Typography variant="h5" align="start">
 										{e.name}
 									</Typography>
+									<CameraFilled style={{ fontSize: 18 }} />
 								</Stack>
 							);
 						})}
