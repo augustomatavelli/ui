@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import { Button, Dialog, DialogContent, Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { PopupTransition } from "components/@extended/Transitions";
 import useInspection from "hooks/useInspection";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import InspectionContext from "contexts/InspectionsContext";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled, EditOutlined } from "@ant-design/icons";
 export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 
@@ -14,9 +14,11 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 
 	const [objCompliance, setObjCompliance] = useState({});
 
+	const fileInputRefs = useRef({});
+
 	const handleChangeSelectionMode = (inspectionId, event) => {
 		const value = event.target.value;
-		setObjCompliance((prev) => ({ ...prev, [inspectionId]: value }));
+		setObjCompliance((prev) => ({ ...prev, [inspectionId]: { ...prev[inspectionId], compliance: value } }));
 	};
 
 	const handleUpdate = async (orderId) => {
@@ -34,6 +36,83 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		);
 		handleClose();
 	};
+
+	const handleFileChange = async (e, itemId) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			const validFormats = ["image/png", "image/jpeg"];
+			const maxSize = 2 * 1024 * 1024;
+
+			if (!validFormats.includes(file.type)) {
+				dispatch(
+					openSnackbar({
+						open: true,
+						message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+						variant: "alert",
+						alert: { color: "warning" },
+						close: false,
+					})
+				);
+				return;
+			}
+
+			if (file.size > maxSize) {
+				dispatch(
+					openSnackbar({
+						open: true,
+						message: "O tamanho máximo permitido é 2MB",
+						variant: "alert",
+						alert: { color: "warning" },
+						close: false,
+					})
+				);
+				return;
+			}
+
+			let base64Image = "";
+			base64Image = await readFile(file);
+
+			setObjCompliance((prev) => ({
+				...prev,
+				[itemId]: {
+					...prev[itemId],
+					image: base64Image,
+				},
+			}));
+		}
+	};
+
+	async function readFile(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
+	const ImagePreview = ({ src, onClick }) => (
+		<Box
+			sx={{
+				position: "relative",
+				"&:hover": { opacity: 0.9 },
+				cursor: "pointer",
+			}}
+			onClick={onClick}
+		>
+			<img
+				src={src}
+				alt="Preview"
+				style={{
+					width: 80,
+					height: 80,
+					objectFit: "cover",
+					borderRadius: 8,
+					boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+				}}
+			/>
+		</Box>
+	);
 
 	useEffect(() => {
 		if (open) {
@@ -54,61 +133,89 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		>
 			<DialogContent sx={{ mt: 2, my: 1 }}>
 				<Stack alignItems="start" spacing={3.5}>
-					<Stack spacing={2}>
+					<Stack spacing={2} width={1}>
 						<Typography variant="h4" align="start">
 							Checklist de inspeção
 						</Typography>
+						<Divider />
 						{inspections.map((e) => {
 							return (
-								<Stack spacing={1} direction="row" alignItems="center" gap={2}>
-									<ToggleButtonGroup
-										value={objCompliance[e.id_inspection] ?? ""}
-										exclusive
-										onChange={(event, newValue) => {
-											if (newValue !== null) {
-												handleChangeSelectionMode(e.id_inspection, { target: { value: newValue } });
-											}
-										}}
-										aria-label="conformidade"
-									>
-										<ToggleButton
-											value="S"
-											aria-label="conforme"
-											sx={{
-												"&.Mui-selected": {
-													bgcolor: "green",
-													color: "white",
-												},
-												"&:not(.Mui-selected)": {
-													bgcolor: "white",
-													color: "black",
-												},
-											}}
-										>
-											<CheckCircleOutlined style={{ fontSize: 24, color: "inherit" }} />
-										</ToggleButton>
-										<ToggleButton
-											value="N"
-											aria-label="nao-conforme"
-											sx={{
-												"&.Mui-selected": {
-													bgcolor: "red",
-													color: "white",
-												},
-												"&:not(.Mui-selected)": {
-													bgcolor: "white",
-													color: "black",
-												},
-											}}
-										>
-											<CloseCircleOutlined style={{ fontSize: 24, color: "inherit" }} />
-										</ToggleButton>
-									</ToggleButtonGroup>
-									<Typography variant="h5" align="start">
-										{e.name}
-									</Typography>
-									<CameraFilled style={{ fontSize: 18 }} />
-								</Stack>
+								<>
+									<Grid sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+										<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+											<ToggleButtonGroup
+												value={objCompliance[e.id_inspection]?.compliance ? objCompliance[e.id_inspection]?.compliance : e.compliance}
+												exclusive
+												onChange={(event, newValue) => {
+													if (newValue !== null) {
+														handleChangeSelectionMode(e.id_inspection, { target: { value: newValue } });
+													}
+												}}
+												size="small"
+												sx={{ borderRadius: 2, overflow: "hidden" }}
+											>
+												<ToggleButton
+													value="S"
+													sx={{
+														p: 1,
+														transition: "all 0.2s ease",
+														"&.Mui-selected": {
+															bgcolor: "success.main",
+															color: "white",
+															"&:hover": { bgcolor: "success.dark" },
+														},
+														"&:not(.Mui-selected)": {
+															bgcolor: "grey.100",
+															color: "grey.600",
+														},
+													}}
+												>
+													<CheckCircleOutlined style={{ fontSize: 28 }} />
+												</ToggleButton>
+												<ToggleButton
+													value="N"
+													sx={{
+														p: 1,
+														transition: "all 0.2s ease",
+														"&.Mui-selected": {
+															bgcolor: "error.main",
+															color: "white",
+															"&:hover": { bgcolor: "error.dark" },
+														},
+														"&:not(.Mui-selected)": {
+															bgcolor: "grey.100",
+															color: "grey.600",
+														},
+													}}
+												>
+													<CloseCircleOutlined style={{ fontSize: 28 }} />
+												</ToggleButton>
+											</ToggleButtonGroup>
+											<Typography variant="h5" color="text.secondary" align="start">
+												{e.name}
+											</Typography>
+										</Grid>
+										<Grid>
+											<TextField type="file" sx={{ display: "none" }} inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)} onChange={(event) => handleFileChange(event, e.id_inspection)} />
+											{objCompliance[e.id_inspection]?.image ? (
+												<ImagePreview src={`data:image/jpeg;base64,${objCompliance[e.id_inspection].image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+											) : e.image ? (
+												<ImagePreview src={`data:image/jpeg;base64,${e.image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+											) : (
+												<IconButton
+													onClick={() => fileInputRefs.current[e.id_inspection]?.click()}
+													sx={{
+														bgcolor: "grey.100",
+														"&:hover": { bgcolor: "grey.200" },
+													}}
+												>
+													<CameraFilled style={{ fontSize: 24, color: "primary.main" }} />
+												</IconButton>
+											)}
+										</Grid>
+									</Grid>
+									<Divider />
+								</>
 							);
 						})}
 					</Stack>
