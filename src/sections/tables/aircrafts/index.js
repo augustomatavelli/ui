@@ -1,7 +1,4 @@
-// material-ui
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
-
-// project imports
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -43,16 +40,26 @@ export default function AircraftsTable({ openFilter }) {
 	};
 
 	const handleAdd = async () => {
+		setOpen(!open);
+
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		setOpen(!open);
 		user.type === "A" ? await findAllAircrafts(search, page, paramsStatus) : await searchAllAircrafts(search, page);
 	};
 
 	const handleRedirect = (aircraftId) => {
 		navigate(`/aircrafts/${aircraftId}`);
+	};
+
+	const handleApprove = async (event, aircraft, status) => {
+		event.stopPropagation();
+		await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: status });
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+		await findAllAircrafts(search, page, paramsStatus);
 	};
 
 	useEffect(() => {
@@ -121,9 +128,7 @@ export default function AircraftsTable({ openFilter }) {
 															cursor: "pointer",
 														}}
 														onClick={async (event) => {
-															event.stopPropagation();
-															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "S" });
-															await findAllAircrafts(search, page);
+															await handleApprove(event, aircraft, "S");
 														}}
 													/>
 												</Tooltip>
@@ -135,9 +140,7 @@ export default function AircraftsTable({ openFilter }) {
 															cursor: "pointer",
 														}}
 														onClick={async (event) => {
-															event.stopPropagation();
-															await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: "N" });
-															await findAllAircrafts(search, page);
+															await handleApprove(event, aircraft, "N");
 														}}
 													/>
 												</Tooltip>

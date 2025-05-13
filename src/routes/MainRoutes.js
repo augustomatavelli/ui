@@ -133,7 +133,7 @@ const MainRoutes = {
 						},
 					],
 				},
-				{
+				/* 	{
 					path: "landing-sites",
 					children: [
 						{
@@ -153,7 +153,7 @@ const MainRoutes = {
 							),
 						},
 					],
-				},
+				}, */
 				{
 					path: "requests",
 					children: [

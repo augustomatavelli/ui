@@ -21,7 +21,7 @@ const CreateRequest = () => {
 	}, []);
 
 	return (
-		<MainCard content={false} title="Solicitar pouso" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
+		<MainCard content={false} title="Criar solicitação" sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}>
 			<CreateRequestStepper aircraft={requestAircraft} />
 		</MainCard>
 	);

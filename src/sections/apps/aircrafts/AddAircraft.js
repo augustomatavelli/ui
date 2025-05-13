@@ -162,6 +162,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 				};
 
 				const response = await createAircraft(newAircraft);
+				console.log(response);
 				if (response) {
 					dispatch(
 						openSnackbar({
@@ -174,7 +175,10 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 							close: false,
 						})
 					);
-					user.type === "A" ? await findAllAircrafts("", 1) : await searchAllAircrafts("", 1);
+					const statusParams = Object.keys({});
+					const paramsStatus = new URLSearchParams();
+					paramsStatus.set("status", statusParams.join(","));
+					user.type === "A" ? await findAllAircrafts("", 1, paramsStatus) : await searchAllAircrafts("", 1);
 					setStatus({ success: true });
 					setSubmitting(false);
 					onCancel();

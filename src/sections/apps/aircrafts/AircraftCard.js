@@ -115,7 +115,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							}}
 							sx={{ width: "100%" }}
 						>
-							Solicitar pouso
+							Criar solicitação
 						</Button>
 					</Stack>
 				) : hasRequest === 1 ? (

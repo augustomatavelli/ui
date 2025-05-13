@@ -41,7 +41,7 @@ export default function AlertInfoAttributionOperation({ open, handleClose }) {
 							<Typography component="span" sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
 								Automático:
 							</Typography>{" "}
-							O serviço será disparado automaticamente ao confirmar a solicitação.
+							O serviço será disparado automaticamente ao abrir a solicitação.
 						</Typography>
 					</Stack>
 					<Stack direction="row" spacing={2} sx={{ width: 1 }}>

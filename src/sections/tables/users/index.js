@@ -1,7 +1,4 @@
-// material-ui
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
-
-// project imports
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
@@ -59,6 +56,20 @@ export default function UsersTable({ openFilter }) {
 
 	const handleRedirect = (userId) => {
 		navigate(`/users/${userId}`);
+	};
+
+	const handleApprove = async (event, user, approve) => {
+		event.stopPropagation();
+		await approveUser({ id_user: user.id_user, approve: approve });
+		const roleParams = Object.keys(selectedRole);
+		const params = new URLSearchParams();
+		params.set("role", roleParams.join(","));
+
+		const statusParams = Object.keys(selectedStatus);
+		const paramsStatus = new URLSearchParams();
+		paramsStatus.set("status", statusParams.join(","));
+		setOpen(false);
+		await findAllUsers(search, page, params, paramsStatus);
 	};
 
 	useEffect(() => {
@@ -131,9 +142,7 @@ export default function UsersTable({ openFilter }) {
 															cursor: "pointer",
 														}}
 														onClick={async (event) => {
-															event.stopPropagation();
-															await approveUser({ id_user: user.id_user, approve: "S" });
-															await findAllUsers(search, page);
+															await handleApprove(event, user, "S");
 														}}
 													/>
 												</Tooltip>
@@ -145,9 +154,7 @@ export default function UsersTable({ openFilter }) {
 															cursor: "pointer",
 														}}
 														onClick={async (event) => {
-															event.stopPropagation();
-															await approveUser({ id_user: user.id_user, approve: "N" });
-															await findAllUsers(search, page);
+															await handleApprove(event, user, "N");
 														}}
 													/>
 												</Tooltip>

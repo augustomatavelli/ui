@@ -43,13 +43,13 @@ const admin = {
 			url: "/aircrafts/admin",
 			icon: icons.UnorderedListOutlined,
 		},
-		{
+		/* {
 			id: "landing sites",
 			title: <FormattedMessage id="Helicentro" />,
 			type: "item",
 			url: "/landing-sites/admin",
 			icon: icons.EnvironmentOutlined,
-		},
+		}, */
 		{
 			id: "requests",
 			title: <FormattedMessage id="Solicitações" />,

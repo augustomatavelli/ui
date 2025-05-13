@@ -21,6 +21,7 @@ const OperationDetails = () => {
 		available: "",
 		selectionMode: "",
 		checklist: "",
+		allow_schedule: "",
 	});
 	const [editPrice, setEditPrice] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -39,6 +40,7 @@ const OperationDetails = () => {
 			available: operationDetails.available_at || "",
 			selectionMode: operationDetails.visible || "",
 			checklist: operationDetails.checklist || "",
+			allow_schedule: operationDetails.allow_schedule || "",
 		});
 	}, [operationDetails]);
 
@@ -57,6 +59,7 @@ const OperationDetails = () => {
 				available_at: formData.available,
 				visible: formData.selectionMode,
 				checklist: formData.checklist,
+				allow_schedule: formData.allow_schedule,
 			});
 			dispatch(
 				openSnackbar({
@@ -202,6 +205,20 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="checklist">Necessita checklist?</InputLabel>
 												<RadioGroup aria-label="checklist" value={formData.checklist} name="checklist" onChange={handleChange} row>
+													<FormControlLabel value="S" control={<Radio />} label="Sim" />
+													<FormControlLabel value="N" control={<Radio />} label="Não" />
+												</RadioGroup>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<InputLabel htmlFor="allow_schedule">Necessita reserva?</InputLabel>
+												<RadioGroup aria-label="allow_schedule" value={formData.allow_schedule} name="allow_schedule" onChange={handleChange} row>
 													<FormControlLabel value="S" control={<Radio />} label="Sim" />
 													<FormControlLabel value="N" control={<Radio />} label="Não" />
 												</RadioGroup>

@@ -1,5 +1,5 @@
 import { Grid, Card, CardContent, Typography, TextField, Box, Checkbox, Switch, FormControlLabel } from "@mui/material";
-import { FaGasPump, FaTaxi } from "react-icons/fa";
+import { FaGasPump, FaTaxi, FaHotel } from "react-icons/fa";
 import { useState } from "react";
 
 export const OperationsList = ({ checked, setChecked, searchOperations, requestObject, handleChange, handleCheckboxChange }) => {
@@ -60,13 +60,20 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 										justifyContent: "center",
 									}}
 								>
-									{e.name === "Taxi" ? <FaTaxi style={{ fontSize: 50, color: "#ffc107" }} /> : <FaGasPump style={{ fontSize: 50, color: "#FF0000" }} />}
+									{e.name === "Taxi" ? (
+										<FaTaxi style={{ fontSize: 50, color: "#ffc107" }} />
+									) : e.name === "Hospedagem" ? (
+										<FaHotel style={{ fontSize: 50, color: "#0000FF" }} />
+									) : (
+										<FaGasPump style={{ fontSize: 50, color: "#FF0000" }} />
+									)}
 								</Box>
 								<Typography variant="subtitle1">{e.name}</Typography>
 							</Grid>
 							{e.unit === "L" && (
 								<>
 									<FormControlLabel
+										sx={{ m: 0 }}
 										control={
 											<Switch
 												checked={fillTank[e.name] || false}

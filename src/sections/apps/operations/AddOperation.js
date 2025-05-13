@@ -1,7 +1,5 @@
-// material-ui
 import { useContext, useEffect, useState } from "react";
 
-// material-ui
 import {
 	Button,
 	Grid,
@@ -21,11 +19,8 @@ import {
 	FormControlLabel,
 } from "@mui/material";
 
-// third party
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// project import
 
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -50,8 +45,6 @@ const getInitialValues = () => {
 	return newOperation;
 };
 
-// ==============================|| TAB - PERSONAL ||============================== //
-
 const AddOperation = ({ onCancel }) => {
 	const { createOperation, findCategories } = useOperation();
 
@@ -60,6 +53,8 @@ const AddOperation = ({ onCancel }) => {
 	const [available, setAvailable] = useState("A");
 	const [selectionMode, setSelectionMode] = useState("N");
 	const [checklist, setChecklist] = useState("N");
+	const [allowSchedule, setAllowSchedule] = useState("N");
+	const [allowScheduleCapacity, setAllowScheduleCapacity] = useState();
 	const [open, setOpen] = useState(false);
 
 	const scriptedRef = useScriptRef();
@@ -76,6 +71,15 @@ const AddOperation = ({ onCancel }) => {
 
 	const handleChangeChecklist = (event) => {
 		setChecklist(event.target.value);
+	};
+
+	const handleChangeAllowSchedule = (event) => {
+		setAllowSchedule(event.target.value);
+		event.target.value === "N" && setAllowScheduleCapacity(undefined);
+	};
+
+	const handleChangeAllowScheduleCapacity = (event) => {
+		allowSchedule === "S" && setAllowScheduleCapacity(Number(event.target.value));
 	};
 
 	const handleClose = () => {
@@ -105,6 +109,9 @@ const AddOperation = ({ onCancel }) => {
 					available_at: available,
 					selection: selectionMode,
 					id_category: Number(values.category),
+					checklist: checklist,
+					allow_schedule: allowSchedule,
+					allow_schedule_capacity: allowScheduleCapacity,
 				};
 				const response = await createOperation(payload);
 				if (scriptedRef.current) {
@@ -268,6 +275,33 @@ const AddOperation = ({ onCancel }) => {
 											<FormControlLabel value="S" control={<Radio />} label="Sim" />
 											<FormControlLabel value="N" control={<Radio />} label="Não" />
 										</RadioGroup>
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<Grid display="flex" alignItems="center" gap={1}>
+											<InputLabel htmlFor="unit">Necessita reserva?</InputLabel>
+										</Grid>
+										<Grid>
+											<RadioGroup aria-label="size" value={allowSchedule} defaultValue="N" name="radio-buttons-group" onChange={handleChangeAllowSchedule} row>
+												<FormControlLabel value="S" control={<Radio />} label="Sim" />
+												<FormControlLabel value="N" control={<Radio />} label="Não" />
+												<OutlinedInput
+													id="capacity"
+													type="number"
+													disabled={allowSchedule === "N"}
+													value={allowSchedule === "N" ? "" : allowScheduleCapacity || ""}
+													name="capacity"
+													onBlur={handleBlur}
+													onChange={(event) => {
+														handleChangeAllowScheduleCapacity(event);
+													}}
+													placeholder="Digite a capacidade..."
+													sx={{ width: "50%" }}
+													error={Boolean(touched.price && errors.price)}
+												/>
+											</RadioGroup>
+										</Grid>
 									</Stack>
 								</Grid>
 							</Grid>
