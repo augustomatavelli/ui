@@ -55,7 +55,7 @@ const UserProfile = () => {
 					color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "R" ? "primary" : "warning"}
 					variant="filled"
 					size="medium"
-					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "R" ? "Responsável" : "Comum"}
+					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "R" ? "Operador" : "Comum"}
 					sx={{ fontWeight: "bold" }}
 				/>
 			}

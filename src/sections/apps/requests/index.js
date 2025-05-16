@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
-import ScheduleForm from "./ScheduleForm";
+import ScheduleFormLanding from "./ScheduleFormLanding";
 import { useNavigate } from "react-router";
 import { RequestResume } from "./RequestResume";
 import RequestContext from "contexts/RequestContext";
@@ -10,6 +10,7 @@ import OperationsForm from "./OperationsForm";
 import useRequest from "hooks/useRequest";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
+import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
 
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();
@@ -21,8 +22,18 @@ const CreateRequestStepper = ({ aircraft }) => {
 	const [isFormValidFirst, setIsFormValidFirst] = useState(false);
 	const [isFormValidSecond, setIsFormValidSecond] = useState(false);
 	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
+	const [landingCheckbox, setLandingCheckbox] = useState(false);
 
-	const steps = takeoffCheckbox ? ["Agendamento", "Serviços", "Serviço de Bordo", "Resumo"] : ["Agendamento", "Serviços", "Resumo"];
+	const { membership } = aircraft;
+
+	const steps =
+		membership === "S"
+			? landingCheckbox
+				? ["Agendamento", "Serviço de Bordo", "Serviços", "Resumo"]
+				: ["Agendamento", "Serviço de Bordo", "Resumo"]
+			: takeoffCheckbox
+				? ["Agendamento", "Serviços", "Serviço de Bordo", "Resumo"]
+				: ["Agendamento", "Serviços", "Resumo"];
 
 	const navigate = useNavigate();
 
@@ -84,7 +95,6 @@ const CreateRequestStepper = ({ aircraft }) => {
 				})}
 			</Stepper>
 			<Grid container spacing={5} sx={{ alignItems: "flex-start", display: "flex", justifyContent: "center", p: 2.5, width: "100%" }}>
-				{/* Imagem fixa ocupando 25% */}
 				<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
 					<Box
 						sx={{
@@ -112,15 +122,36 @@ const CreateRequestStepper = ({ aircraft }) => {
 					<Typography variant="h4">{aircraft.registration}</Typography>
 					<Typography variant="h5">Categoria {aircraft.category}</Typography>
 				</Grid>
-				{/* Formulário ocupando o resto */}
-				<Grid item xs={12} md={9} container sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
-					{activeStep === 0 && <ScheduleForm aircraft={aircraft} onValidate={handleFormValidation} takeoffCheckbox={takeoffCheckbox} setTakeoffCheckbox={setTakeoffCheckbox} />}
-					{activeStep === 1 && <OperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{takeoffCheckbox && activeStep === 2 && takeoffCheckbox && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
-					{(takeoffCheckbox ? activeStep === 3 : activeStep === 2) && <RequestResume aircraft={aircraft} />}
+				<Grid
+					item
+					xs={12}
+					md={9}
+					container
+					sx={{
+						flexGrow: 1,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "flex-start",
+						width: "100%",
+					}}
+				>
+					{membership === "S" ? (
+						<>
+							{activeStep === 0 && <ScheduleFormTakeoff aircraft={aircraft} onValidate={handleFormValidation} landingCheckbox={landingCheckbox} setLandingCheckbox={setLandingCheckbox} />}
+							{activeStep === 1 && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+							{landingCheckbox && activeStep === 2 && <OperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+							{(landingCheckbox ? activeStep === 3 : activeStep === 2) && <RequestResume aircraft={aircraft} />}
+						</>
+					) : (
+						<>
+							{activeStep === 0 && <ScheduleFormLanding aircraft={aircraft} onValidate={handleFormValidation} takeoffCheckbox={takeoffCheckbox} setTakeoffCheckbox={setTakeoffCheckbox} />}
+							{activeStep === 1 && <OperationsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+							{takeoffCheckbox && activeStep === 2 && <TakeoffProductsForm aircraft={aircraft} onValidate={handleFormValidation} />}
+							{(takeoffCheckbox ? activeStep === 3 : activeStep === 2) && <RequestResume aircraft={aircraft} />}
+						</>
+					)}
 				</Grid>
 			</Grid>
-
 			<Divider />
 			<Stack direction="row" justifyContent="space-between">
 				<Button onClick={handleBack} color="error" sx={{ my: 3, ml: 1 }}>
@@ -128,7 +159,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 				</Button>
 				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
-						{(takeoffCheckbox && activeStep !== 3) || (!takeoffCheckbox && activeStep !== 2) ? (
+						{(takeoffCheckbox && activeStep !== 3) || (!takeoffCheckbox && activeStep !== 2) || (landingCheckbox && activeStep !== 3) || (!landingCheckbox && activeStep !== 2) ? (
 							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
 								Próximo
 							</Button>

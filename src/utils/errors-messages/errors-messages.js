@@ -27,4 +27,5 @@ export const ErrorMessages = {
 	request_order_execution_or_finalized: "Você não pode alterar a solicitação, pois existe uma ordem em execução ou finalizada",
 	order_already_finalized: "Você não pode selecionar a quantidade desejada, pois parte da quantidade já foi finalizada",
 	inspection_not_checked: "Existem itens não marcados no checklist",
+	schedule_service_capacity: "Hospedagem indisponível para a data selecionada",
 };

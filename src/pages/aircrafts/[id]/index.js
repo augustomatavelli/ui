@@ -178,7 +178,7 @@ const AircraftDetails = () => {
 									</Grid>
 								</ListItem>
 								<Divider />
-								<ListItem>
+								{/* <ListItem>
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
@@ -210,7 +210,7 @@ const AircraftDetails = () => {
 										</Grid>
 									</Grid>
 								</ListItem>
-								<Divider />
+								<Divider /> */}
 							</List>
 							<Box sx={{ p: 2.5 }}>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }} spacing={2}>

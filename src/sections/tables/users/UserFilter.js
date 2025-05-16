@@ -71,7 +71,7 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 						{userRole.map((e) => (
 							<Chip
 								key={e}
-								label={e === "A" ? "Administrador" : e === "P" ? "Piloto" : e === "R" ? "Responsável" : "Comum"}
+								label={e === "A" ? "Administrador" : e === "P" ? "Piloto" : e === "R" ? "Operador" : "Comum"}
 								color={selectedRole[e] ? "primary" : "default"}
 								sx={{ fontWeight: "bold", color: selectedRole[e] ? "white" : theme.palette.action.active }}
 								onClick={() => {

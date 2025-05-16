@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-
-// material-ui
 import {
 	Box,
 	Button,
@@ -31,19 +29,12 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
-// third-party.png
 import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// project imports
 /* import AlertCustomerDelete from "./AlertCustomerDelete"; */
-
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
-// assets
 import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import InputMask from "react-input-mask";
@@ -54,10 +45,10 @@ const getInitialValues = (aircraft) => {
 	const newAircraft = {
 		registration: "",
 		category: "",
-		name: "",
+		/* name: "",
 		doc: "",
 		email: "",
-		phone: "",
+		phone: "", */
 		membership: "",
 		image: "",
 	};
@@ -116,7 +107,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 	const AircraftSchema = Yup.object().shape({
 		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
 		category: Yup.string().required("Categoria é obrigatório"),
-		name: Yup.string().max(255).required("Nome é obrigatório"),
+		/* name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
@@ -125,17 +116,17 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		phone: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
-			.required("Celular é obrigatório"),
+			.required("Celular é obrigatório"), */
 		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
 	});
 
 	const AircraftNewUserSchema = Yup.object().shape({
 		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
 		category: Yup.string().required("Categoria é obrigatório"),
-		name: Yup.string(),
+		/* name: Yup.string(),
 		doc: Yup.string(),
 		email: Yup.string(),
-		phone: Yup.string(),
+		phone: Yup.string(), */
 		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
 	});
 
@@ -153,12 +144,12 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					name: name,
+					/* name: name,
 					email: email,
 					phone: phone,
 					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
 					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
-					isNewUserResp: showUserResp,
+					isNewUserResp: showUserResp, */
 				};
 
 				const response = await createAircraft(newAircraft);
@@ -331,7 +322,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 												)}
 											</Stack>
 										</Grid>
-										<Grid item xs={12}>
+										{/* 	<Grid item xs={12}>
 											<FormControlLabel
 												control={
 													<Checkbox
@@ -467,7 +458,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 													</Stack>
 												</Grid>
 											</>
-										)}
+										)} */}
 										<Grid item xs={12}>
 											<Stack spacing={1}>
 												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>

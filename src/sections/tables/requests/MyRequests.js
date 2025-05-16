@@ -96,7 +96,7 @@ export default function MyRequestsTable({ openFilter }) {
 									</TableCell>
 									<TableCell align="center">{e.registration}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
-									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
+									<TableCell align="center">{e.landing_date ? format(new Date(e.landing_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">
 										<Chip

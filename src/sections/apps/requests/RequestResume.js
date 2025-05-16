@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { TableContainer, Table, TableBody, TableRow, TableCell, Typography, Button, Collapse, Box, Grid, List, ListItem } from "@mui/material";
 import RequestContext from "contexts/RequestContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
-export const RequestResume = ({}) => {
+export const RequestResume = ({ aircraft }) => {
 	const { requestResume } = useContext(RequestContext);
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
 
-	useEffect(() => {}, []);
+	const { membership } = aircraft;
+	const { amount } = requestResume;
 
 	return (
 		<TableContainer>
@@ -23,24 +24,45 @@ export const RequestResume = ({}) => {
 							{requestResume.name_landing_site}
 						</TableCell>
 					</TableRow>
-					<TableRow>
-						<TableCell sx={{ opacity: 0.5 }}>Data agendada para pouso</TableCell>
-						<TableCell align="right" sx={{ opacity: 0.5 }}>
-							{dayjs(requestResume.landing_date).format("DD/MM/YYYY HH:mm")}
-						</TableCell>
-					</TableRow>
+					{membership === "S" ? (
+						<>
+							<TableRow>
+								<TableCell sx={{ opacity: 0.5 }}>Data agendada para decolagem</TableCell>
+								<TableCell align="right" sx={{ opacity: 0.5 }}>
+									{dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm")}
+								</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell sx={{ opacity: 0.5 }}>Data agendada para pouso</TableCell>
+								<TableCell align="right" sx={{ opacity: 0.5 }}>
+									{requestResume.landing_date ? dayjs(requestResume.landing_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
+								</TableCell>
+							</TableRow>
+						</>
+					) : (
+						<>
+							<TableRow>
+								<TableCell sx={{ opacity: 0.5 }}>Data agendada para pouso</TableCell>
+								<TableCell align="right" sx={{ opacity: 0.5 }}>
+									{dayjs(requestResume.landing_date).format("DD/MM/YYYY HH:mm")}
+								</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell sx={{ opacity: 0.5 }}>Data agendada para decolagem</TableCell>
+								<TableCell align="right" sx={{ opacity: 0.5 }}>
+									{requestResume.takeoff_date ? dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
+								</TableCell>
+							</TableRow>
+						</>
+					)}
+
 					<TableRow>
 						<TableCell sx={{ opacity: 0.5 }}>Número de passageiros</TableCell>
 						<TableCell align="right" sx={{ opacity: 0.5 }}>
-							<Typography>{requestResume.amount}</Typography>
+							<Typography>{amount ? amount : "Não informado"}</Typography>
 						</TableCell>
 					</TableRow>
-					<TableRow>
-						<TableCell sx={{ opacity: 0.5 }}>Data agendada para decolagem</TableCell>
-						<TableCell align="right" sx={{ opacity: 0.5 }}>
-							{requestResume.takeoff_date ? dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
-						</TableCell>
-					</TableRow>
+
 					{requestResume.services && requestResume.services.length > 0 && (
 						<>
 							<TableRow onClick={() => setOpenOperations(!openOperations)} sx={{ cursor: "pointer" }}>

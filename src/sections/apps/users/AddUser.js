@@ -221,7 +221,7 @@ const AddUser = ({ user, onCancel }) => {
 											}}
 										>
 											<FormControlLabel value={1} control={<Radio />} label="Piloto" />
-											<FormControlLabel value={2} control={<Radio />} label="Responsável" />
+											<FormControlLabel value={2} control={<Radio />} label="Operador" />
 											<FormControlLabel value={3} control={<Radio />} label="Comum" />
 										</RadioGroup>
 										{isPilot === 1 && (

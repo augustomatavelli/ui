@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import AddRequest from "sections/apps/requests/ScheduleForm";
+import AddRequest from "sections/apps/requests/ScheduleFormLanding";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import Loader from "components/Loader";
@@ -145,7 +145,7 @@ export default function RequestsTable({ openFilter }) {
 									<TableCell align="center">{e.user}</TableCell>
 									<TableCell align="center">{e.registration}</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
-									<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
+									<TableCell align="center">{e.landing_date ? format(new Date(e.landing_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">
 										<Chip

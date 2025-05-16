@@ -295,7 +295,7 @@ const RequestDetails = () => {
 																/>
 															</LocalizationProvider>
 														) : (
-															<Typography>{dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>
+															<Typography>{landing_date ? dayjs(landing_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
 														)}
 													</Stack>
 												</Grid>
