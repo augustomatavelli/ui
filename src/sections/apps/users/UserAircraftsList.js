@@ -25,7 +25,7 @@ export const UserAircraftsList = ({ data }) => {
 								style={{
 									width: "100px",
 									height: "100%",
-									objectFit: "contain",
+									objectFit: "fill",
 								}}
 							/>
 						</Box>

@@ -5,8 +5,6 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import CreateRequestStepper from "sections/apps/requests";
 
-// ==============================|| TAB - PERSONAL ||============================== //
-
 const CreateRequest = () => {
 	const { user } = useContext(UserContext);
 	const { requestAircraft } = useContext(AircraftContext);

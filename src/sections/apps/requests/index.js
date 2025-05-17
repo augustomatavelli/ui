@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider } from "@mui/material";
+import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
 import ScheduleFormLanding from "./ScheduleFormLanding";
 import { useNavigate } from "react-router";
@@ -24,7 +24,10 @@ const CreateRequestStepper = ({ aircraft }) => {
 	const [takeoffCheckbox, setTakeoffCheckbox] = useState(false);
 	const [landingCheckbox, setLandingCheckbox] = useState(false);
 
-	const { membership } = aircraft;
+	const { membership, modelo } = aircraft;
+
+	const theme = useTheme();
+	const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
 	const steps =
 		membership === "S"
@@ -94,19 +97,35 @@ const CreateRequestStepper = ({ aircraft }) => {
 					);
 				})}
 			</Stepper>
-			<Grid container spacing={5} sx={{ alignItems: "flex-start", display: "flex", justifyContent: "center", p: 2.5, width: "100%" }}>
-				<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, maxWidth: "25%" }}>
+			<Grid
+				container
+				spacing={isSmallScreen ? 0 : 5}
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					p: {
+						xs: 1,
+						sm: 2,
+						md: 2.5,
+					},
+					alignItems: {
+						xs: "center",
+						sm: "center",
+						md: "flex-start",
+					},
+					width: "100%",
+				}}
+			>
+				<Grid item xs={12} md={3} sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
 					<Box
 						sx={{
 							width: "100%",
-							height: "250px",
-							borderRadius: "50%",
+							height: "200px",
+							borderRadius: "4px",
 							overflow: "hidden",
-							border: "2px solid #ccc",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							backgroundColor: "#f0f0f0",
 						}}
 					>
 						<img
@@ -120,7 +139,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 						/>
 					</Box>
 					<Typography variant="h4">{aircraft.registration}</Typography>
-					<Typography variant="h5">Categoria {aircraft.category}</Typography>
+					<Typography variant="h5">Modelo {modelo}</Typography>
 				</Grid>
 				<Grid
 					item

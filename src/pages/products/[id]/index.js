@@ -93,7 +93,7 @@ const ProductDetails = () => {
 														<Box
 															sx={{
 																width: "fit-content",
-																height: "50px",
+																height: "100px",
 																overflow: "hidden",
 																display: "flex",
 																alignItems: "center",
@@ -106,7 +106,7 @@ const ProductDetails = () => {
 																alt="Product"
 																style={{
 																	height: "100%",
-																	objectFit: "cover",
+																	objectFit: "fill",
 																}}
 															/>
 														</Box>

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button } from "@mui/material";
+import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -11,6 +11,8 @@ import { useFormik, Form, FormikProvider } from "formik";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 import RequestContext from "contexts/RequestContext";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import AlertLandingSiteInfo from "../customer/AlertLandingSiteInfo";
 
 const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLandingCheckbox }) => {
 	const { searchAllLandingSites } = useLandingSite();
@@ -19,6 +21,7 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 
 	const [selectedInterval, setSelectedInterval] = useState(null);
 	const [checkAmount, setCheckAmount] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	const getInitialValues = (aircraft) => ({
 		id_aircraft: aircraft.id_aircraft,
@@ -28,6 +31,7 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 		flight_time: "",
 		landing_date: null,
 		takeoff_date: null,
+		html_about: null,
 	});
 
 	const handleToggleCheckBox = (event) => {
@@ -45,6 +49,10 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 		if (!event.target.checked) {
 			formik.setFieldValue("amount", undefined);
 		}
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	useEffect(() => {
@@ -82,7 +90,6 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 		onValidate(formik.isValid && formik.dirty, formik.values);
 	}, [formik.isValid, formik.dirty, formik.values]);
 
-	// Monitora mudanças no landing_date e ajusta o takeoff_date
 	useEffect(() => {
 		const { landing_date, takeoff_date } = formik.values;
 
@@ -90,17 +97,14 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 			const previousLandingDate = dayjs(requestResume.landing_date);
 			const previousTakeoffDate = dayjs(takeoff_date);
 			if (previousLandingDate.isValid() && previousTakeoffDate.isValid()) {
-				// Calcula a diferença em minutos entre o landing_date anterior e o takeoff_date
 				const timeDifference = previousTakeoffDate.diff(previousLandingDate, "minute");
 
-				// Aplica a mesma diferença ao novo landing_date
 				const newTakeoffDate = dayjs(landing_date).add(timeDifference, "minute").toDate();
 
 				formik.setFieldValue("takeoff_date", newTakeoffDate);
 				setRequestResume((prev) => ({ ...prev, takeoff_date: newTakeoffDate }));
 			}
 		} else if (landing_date && takeoff_date && landingCheckbox && selectedInterval === null) {
-			// Reseta takeoff_date se selectedInterval for null
 			formik.setFieldValue("takeoff_date", null);
 			setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
 		}
@@ -117,7 +121,23 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
-										<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
+										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+											<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
+											{/* {formik.values.html && (
+												<Button sx={{ display: "flex", alignItems: "center", justifyContent: "center", m: 0, p: 0.5, width: "fit-content" }} onClick={() => setOpen(true)}>
+													<QuestionCircleOutlined />
+													<Typography variant="subtitle2" sx={{ ml: 0.5 }}>
+														Sobre
+													</Typography>
+												</Button>
+											)} */}
+											<Button sx={{ display: "flex", alignItems: "center", justifyContent: "center", m: 0, p: 0.5, width: "fit-content" }} onClick={() => setOpen(true)}>
+												<QuestionCircleOutlined />
+												<Typography variant="subtitle2" sx={{ ml: 0.5 }}>
+													Sobre
+												</Typography>
+											</Button>
+										</Grid>
 										<Autocomplete
 											options={searchLandingSites}
 											getOptionLabel={(option) => option.label}
@@ -126,6 +146,7 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 											onChange={(event, value) => {
 												formik.setFieldValue("id_landing_site", value ? value.value : "");
 												formik.setFieldValue("name_landing_site", value ? value.label : "");
+												formik.setFieldValue("html_about", value.html ? true : false);
 											}}
 										/>
 									</Stack>
@@ -241,6 +262,7 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 								</Grid>
 							</Grid>
 						</Grid>
+						<AlertLandingSiteInfo open={open} handleClose={handleClose} data={formik.values.html_about} />
 					</Form>
 				</LocalizationProvider>
 			</FormikProvider>
