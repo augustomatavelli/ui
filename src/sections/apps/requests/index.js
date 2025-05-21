@@ -59,6 +59,13 @@ const CreateRequestStepper = ({ aircraft }) => {
 	};
 
 	const handleCreateRequest = async () => {
+		if (Array.isArray(requestResume.products)) {
+			requestResume.products = requestResume.products.map((product) => ({
+				...product,
+				amount: String(product.amount),
+			}));
+		}
+
 		const response = await createRequest(requestResume);
 		dispatch(
 			openSnackbar({
@@ -178,7 +185,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 				</Button>
 				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
-						{(takeoffCheckbox && activeStep !== 3) || (!takeoffCheckbox && activeStep !== 2) || (landingCheckbox && activeStep !== 3) || (!landingCheckbox && activeStep !== 2) ? (
+						{activeStep !== 3 || (!takeoffCheckbox && !landingCheckbox && activeStep !== 2) ? (
 							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
 								Próximo
 							</Button>

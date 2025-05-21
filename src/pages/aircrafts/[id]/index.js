@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -28,7 +28,7 @@ const AircraftDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_aircraft, registration, category, image, membership, status, is_restricted, id_user_resp, name, email, mobile } = aircraftDetails;
+	const { id_aircraft, registration, category, image, membership, status, is_restricted, users } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -107,17 +107,18 @@ const AircraftDetails = () => {
 										variant="contained"
 										color="warning"
 										onClick={() => {
-											if (Number(userId) !== id_user_resp && user.type !== "A") {
+											if (user.type !== "A" && users && !users.some((item) => item.id_user === Number(userId))) {
 												handleremoveLinkUserAircraft();
 											} else {
 												setOpenConfirmRemove(true);
 												setSearchUser([]);
 											}
 										}}
+										sx={{ color: "black" }}
 									>
 										Desvincular
 									</Button>
-									{(Number(userId) === id_user_resp || user.type === "A") && (
+									{user.type === "A" && users && !users.some((item) => item.id_user === Number(userId)) && (
 										<Button
 											variant="contained"
 											color="primary"
@@ -178,39 +179,21 @@ const AircraftDetails = () => {
 									</Grid>
 								</ListItem>
 								<Divider />
-								{/* <ListItem>
+								<ListItem>
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
 											<Stack spacing={0.5}>
-												<Typography color="secondary">Nome do responsável</Typography>
-												<Typography>{name}</Typography>
+												<Typography color="secondary">Operadores</Typography>
+												{users && users.length === 0 ? (
+													<Typography>Aeronave não possui nenhum operador vinculado</Typography>
+												) : (
+													users && users.length > 0 && users.map((user, index) => <Chip key={index} label={user.name} sx={{ width: "fit-content" }} />)
+												)}
 											</Stack>
 										</Grid>
 									</Grid>
 								</ListItem>
 								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Email do responsável</Typography>
-												<Typography>{email}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Celular do responsável</Typography>
-												<Typography>{mobile}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider /> */}
 							</List>
 							<Box sx={{ p: 2.5 }}>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 2.5 }} spacing={2}>
@@ -224,7 +207,7 @@ const AircraftDetails = () => {
 									>
 										Voltar
 									</Button>
-									{(Number(userId) === id_user_resp || user.type === "A") && (
+									{user.type === "A" && users && !users.some((item) => item.id_user === Number(userId)) && (
 										<Button
 											variant="contained"
 											color="error"

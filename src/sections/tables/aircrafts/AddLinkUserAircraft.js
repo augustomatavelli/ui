@@ -24,8 +24,6 @@ export const header = [
 	{ label: "Status", key: "status" },
 ];
 
-// ==============================|| MUI TABLE - BASIC ||============================== //
-
 export default function AddLinkUserAircraftTable() {
 	const { searchAllUsers } = useUser();
 	const { addLinkUserAircraft } = useAircraft();

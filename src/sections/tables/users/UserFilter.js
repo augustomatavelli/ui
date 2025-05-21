@@ -4,7 +4,7 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 	const theme = useTheme();
 
 	const userStatus = ["A", "P"];
-	const userRole = ["A", "P", "R", "C"];
+	const userRole = ["A", "P", "O", "C"];
 
 	return (
 		<Grid sx={{ display: "flex", mx: 2.5, mt: 0, mb: 2.5, gap: 5 }}>
@@ -71,7 +71,7 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 						{userRole.map((e) => (
 							<Chip
 								key={e}
-								label={e === "A" ? "Administrador" : e === "P" ? "Piloto" : e === "R" ? "Operador" : "Comum"}
+								label={e === "A" ? "Administrador" : e === "P" ? "Piloto" : e === "O" ? "Operador" : "Comum"}
 								color={selectedRole[e] ? "primary" : "default"}
 								sx={{ fontWeight: "bold", color: selectedRole[e] ? "white" : theme.palette.action.active }}
 								onClick={() => {

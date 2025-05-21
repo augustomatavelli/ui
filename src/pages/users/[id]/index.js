@@ -81,7 +81,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Tipo</Typography>
-													<Typography>{type === "A" ? "Administrador" : type === "P" ? "Piloto" : type === "R" ? "Operador" : "Comum"}</Typography>
+													<Typography>{type === "A" ? "Administrador" : type === "P" ? "Piloto" : type === "O" ? "Operador" : "Comum"}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>

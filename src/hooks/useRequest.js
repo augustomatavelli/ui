@@ -197,6 +197,41 @@ const useRequest = () => {
 		}
 	};
 
+	const findSummaryPdf = async (requestId) => {
+		try {
+			setLoadingRequest(true);
+
+			const response = await publicAxios.get(`/requests/admin/find-pdf/${requestId}`, {
+				responseType: "blob",
+			});
+			const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", `solicitacao-#${requestId}.pdf`);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.log(error);
+			const err = error?.response?.data?.errors?.[0]?.type || error?.response?.data?.errors?.[0]?.message || "Ocorreu um erro";
+
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
 	const findOneRequestById = async (requestId) => {
 		try {
 			setLoadingRequest(true);
@@ -245,7 +280,7 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests, deleteRequest };
+	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests, deleteRequest, findSummaryPdf };
 };
 
 export default useRequest;

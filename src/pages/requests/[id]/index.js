@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton, IconButton, Tooltip } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
-import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined, FilePdfOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -25,7 +25,7 @@ import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import UserContext from "contexts/UserContext";
 
 const RequestDetails = () => {
-	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
+	const { findOneRequestById, updateRequest, deleteRequest, findSummaryPdf } = useRequest();
 	const { searchAllProducts } = useProduct();
 	const { searchAllOperations } = useOperation();
 
@@ -214,13 +214,22 @@ const RequestDetails = () => {
 					title="Detalhes da solicitação"
 					secondary={
 						!loadingRequest && (
-							<Chip
-								color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : status === "C" ? "error" : "error"}
-								variant="filled"
-								size="medium"
-								label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
-								sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
-							/>
+							<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+								<Chip
+									color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : status === "C" ? "error" : "error"}
+									variant="filled"
+									size="medium"
+									label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
+									sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
+								/>
+								{status === "F" && (
+									<Tooltip title="Baixar PDF" placement="top">
+										<IconButton sx={{ height: 32, width: 32, cursor:	 "pointer" }} onClick={async () => await findSummaryPdf(id)}>
+											<FilePdfOutlined style={{ fontSize: 20 }} />
+										</IconButton>
+									</Tooltip>
+								)}
+							</Grid>
 						)
 					}
 				>

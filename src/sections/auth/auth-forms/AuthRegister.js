@@ -84,7 +84,7 @@ const AuthRegister = () => {
 							phone: values.phone.replace(/\D/g, ""),
 							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
 							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-							type: isPilot ? "P" : "R",
+							type: isPilot ? "P" : "O",
 							pilotRegister: values.pilot,
 							password: values.password,
 						};

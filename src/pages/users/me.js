@@ -52,10 +52,10 @@ const UserProfile = () => {
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
 				<Chip
-					color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "R" ? "primary" : "warning"}
+					color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "O" ? "primary" : "warning"}
 					variant="filled"
 					size="medium"
-					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "R" ? "Operador" : "Comum"}
+					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "O" ? "Operador" : "Comum"}
 					sx={{ fontWeight: "bold" }}
 				/>
 			}

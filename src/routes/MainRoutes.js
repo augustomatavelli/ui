@@ -65,7 +65,7 @@ const MainRoutes = {
 		{
 			path: "/",
 			element: (
-				<AuthGuard requiredUserType="['A', 'P', 'C', 'R']">
+				<AuthGuard requiredUserType="['A', 'P', 'C', 'O']">
 					<MainLayout />
 				</AuthGuard>
 			),
@@ -110,7 +110,7 @@ const MainRoutes = {
 						{
 							path: "me",
 							element: (
-								<AuthGuard requiredUserType="['R', 'P']">
+								<AuthGuard requiredUserType="['O', 'P']">
 									<MyAircrafts />
 								</AuthGuard>
 							),
@@ -118,7 +118,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A', 'R', 'P']">
+								<AuthGuard requiredUserType="['A', 'O', 'P']">
 									<AircraftDetails />
 								</AuthGuard>
 							),
@@ -168,7 +168,7 @@ const MainRoutes = {
 						{
 							path: "me",
 							element: (
-								<AuthGuard requiredUserType="['P', 'R']">
+								<AuthGuard requiredUserType="['P', 'O']">
 									<ListMyRequests />
 								</AuthGuard>
 							),
@@ -176,7 +176,7 @@ const MainRoutes = {
 						{
 							path: "my-aircrafts",
 							element: (
-								<AuthGuard requiredUserType="['R']">
+								<AuthGuard requiredUserType="['O']">
 									<ListMyAircraftsRequests />
 								</AuthGuard>
 							),
@@ -184,7 +184,7 @@ const MainRoutes = {
 						{
 							path: "create",
 							element: (
-								<AuthGuard requiredUserType="['R', 'P']">
+								<AuthGuard requiredUserType="['O', 'P']">
 									<CreateRequest />
 								</AuthGuard>
 							),
@@ -192,7 +192,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A', 'R', 'P']">
+								<AuthGuard requiredUserType="['A', 'O', 'P']">
 									<RequestDetails />
 								</AuthGuard>
 							),

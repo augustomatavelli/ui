@@ -1,19 +1,26 @@
 import PropTypes from "prop-types";
 import { useContext } from "react";
-
-// material-ui
 import { Button, DialogActions, DialogTitle, Divider, Grid, Stack } from "@mui/material";
-
-// third-party.png
 import ConfirmRemoveLinkUserAircraftTable from "sections/tables/aircrafts/ConfirmRemoveLinkUserAircraft";
 import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
-
-// ==============================|| CUSTOMER ADD / EDIT / DELETE ||============================== //
+import { useParams } from "react-router-dom";
+import useAircraft from "hooks/useAircraft";
 
 const ConfirmRemoveLinkUserAircraft = ({ setOpenConfirmRemove }) => {
+	const { findOneAircraftById } = useAircraft();
+
 	const { setUserAircraftLink } = useContext(AircraftContext);
 	const { setSearchUser } = useContext(UserContext);
+
+	const { id } = useParams();
+
+	const handleClose = async () => {
+		setOpenConfirmRemove(false);
+		setUserAircraftLink("");
+		setSearchUser([]);
+		await findOneAircraftById(id);
+	};
 
 	return (
 		<>
@@ -27,14 +34,7 @@ const ConfirmRemoveLinkUserAircraft = ({ setOpenConfirmRemove }) => {
 				<Grid container justifyContent="flex-end" alignItems="center">
 					<Grid item>
 						<Stack direction="row" spacing={2} alignItems="center">
-							<Button
-								color="error"
-								onClick={() => {
-									setOpenConfirmRemove(false);
-									setUserAircraftLink("");
-									setSearchUser([]);
-								}}
-							>
+							<Button color="error" onClick={handleClose}>
 								Fechar
 							</Button>
 						</Stack>

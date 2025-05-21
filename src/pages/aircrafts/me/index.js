@@ -100,7 +100,7 @@ const MyAircrafts = () => {
 									})}
 								</Select>
 							</FormControl>
-							{(user.type === "R" || user.type === "P") && (
+							{(user.type === "O" || user.type === "P") && (
 								<Button
 									variant="contained"
 									startIcon={<PlusOutlined />}

@@ -141,7 +141,7 @@ const Navigation = () => {
 					);
 				}
 				break;
-			case "R":
+			case "O":
 				if (item.type === "userResp") {
 					return (
 						<NavGroup

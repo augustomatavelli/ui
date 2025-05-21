@@ -66,7 +66,7 @@ const AddUser = ({ user, onCancel }) => {
 					phone: values.phone.replace(/\D/g, ""),
 					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
 					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-					type: isPilot === 1 ? "P" : isPilot === 2 ? "R" : "C",
+					type: isPilot === 1 ? "P" : isPilot === 2 ? "O" : "C",
 					pilotRegister: values.pilot,
 				};
 
