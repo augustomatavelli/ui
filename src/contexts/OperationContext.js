@@ -10,6 +10,7 @@ export const OperationsProvider = ({ children }) => {
 	const [searchOperations, setSearchOperations] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [operationDetails, setOperationDetails] = useState({});
+	const [icons, setIcons] = useState([]);
 
 	const resetOperationStates = () => {
 		setLoadingOperation(false);
@@ -18,6 +19,7 @@ export const OperationsProvider = ({ children }) => {
 		setSearchOperations([]);
 		setCategories([]);
 		setOperationDetails({});
+		setIcons([]);
 	};
 
 	return (
@@ -36,6 +38,8 @@ export const OperationsProvider = ({ children }) => {
 				operationDetails,
 				setOperationDetails,
 				resetOperationStates,
+				icons,
+				setIcons,
 			}}
 		>
 			{children}

@@ -14,6 +14,7 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { useNavigate } from "react-router";
 import { RequestFilter } from "./RequestFilter";
+import AlertFinalizeRequest from "sections/apps/requests/AlertFinalizeRequest";
 
 export default function RequestsTable({ openFilter }) {
 	const { findAllRequests, updateStatus } = useRequest();
@@ -26,6 +27,8 @@ export default function RequestsTable({ openFilter }) {
 	const [selectedStatus, setSelectedStatus] = useState({});
 	const [selectedPeriod, setSelectedPeriod] = useState("");
 	const [dateFilter, setDateFilter] = useState({});
+	const [openFinalizeRequest, setOpenFinalizeRequest] = useState(false);
+	const [selectedRequestId, setSelectedRequestId] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -63,6 +66,11 @@ export default function RequestsTable({ openFilter }) {
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 		await findAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+	};
+
+	const handleClose = async () => {
+		setOpenFinalizeRequest(false);
+		setSelectedRequestId(null);
 	};
 
 	useEffect(() => {
@@ -117,47 +125,50 @@ export default function RequestsTable({ openFilter }) {
 							<Loader />
 						) : requests.length > 0 ? (
 							requests.map((e) => (
-								<TableRow
-									hover
-									key={e.id_request}
-									sx={{ cursor: "pointer" }}
-									onClick={() => {
-										handleRedirect(e.id_request);
-									}}
-								>
-									<TableCell align="center">
-										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
-									</TableCell>
-									<TableCell align="center">
-										{e.status === "A" && (
-											<Button
-												variant="contained"
+								<>
+									<TableRow
+										hover
+										key={e.id_request}
+										sx={{ cursor: "pointer" }}
+										onClick={() => {
+											handleRedirect(e.id_request);
+										}}
+									>
+										<TableCell align="center">
+											<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
+										</TableCell>
+										<TableCell align="center">
+											{e.status === "A" && (
+												<Button
+													variant="contained"
+													size="small"
+													onClick={async (event) => {
+														event.stopPropagation();
+														setSelectedRequestId(e.id_request);
+														setOpenFinalizeRequest(true);
+													}}
+												>
+													Finalizar
+												</Button>
+											)}
+										</TableCell>
+										<TableCell align="center">{e.user}</TableCell>
+										<TableCell align="center">{e.registration}</TableCell>
+										<TableCell align="center">{e.name}</TableCell>
+										<TableCell align="center">{e.landing_date ? format(new Date(e.landing_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
+										<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
+										<TableCell align="center">
+											<Chip
+												color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
+												variant="filled"
 												size="small"
-												onClick={async (event) => {
-													event.stopPropagation();
-													await handleFinalize(e.id_request);
-												}}
-											>
-												Finalizar
-											</Button>
-										)}
-									</TableCell>
-									<TableCell align="center">{e.user}</TableCell>
-									<TableCell align="center">{e.registration}</TableCell>
-									<TableCell align="center">{e.name}</TableCell>
-									<TableCell align="center">{e.landing_date ? format(new Date(e.landing_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
-									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
-									<TableCell align="center">
-										<Chip
-											color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
-											variant="filled"
-											size="small"
-											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
-											sx={{ color: e.status === "P" ? "black" : "white" }}
-										/>
-									</TableCell>
-									<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
-								</TableRow>
+												label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
+												sx={{ color: e.status === "P" ? "black" : "white" }}
+											/>
+										</TableCell>
+										<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
+									</TableRow>
+								</>
 							))
 						) : search || openFilter ? (
 							<TableRow>
@@ -175,7 +186,7 @@ export default function RequestsTable({ openFilter }) {
 					</TableBody>
 				</Table>
 			</TableContainer>
-
+			<AlertFinalizeRequest open={openFinalizeRequest} id={selectedRequestId} handleClose={handleClose} handleDelete={handleFinalize} />
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddRequest onCancel={handleAdd} />
 			</Dialog>

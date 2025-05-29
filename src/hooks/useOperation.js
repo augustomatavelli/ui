@@ -8,7 +8,7 @@ import OperationsContext from "contexts/OperationContext";
 const useOperation = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingOperation, setSearchOperations, setOperations, setTotalOperations, setCategories, setOperationDetails } = useContext(OperationsContext);
+	const { setLoadingOperation, setSearchOperations, setOperations, setTotalOperations, setCategories, setOperationDetails, setIcons } = useContext(OperationsContext);
 
 	const createOperation = async (data) => {
 		try {
@@ -131,6 +131,30 @@ const useOperation = () => {
 		}
 	};
 
+	const findIcons = async () => {
+		try {
+			setLoadingOperation(true);
+			const response = await publicAxios.get(`/operations/icons`);
+			setIcons(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingOperation(false);
+		}
+	};
+
 	const deleteOperation = async (operationId) => {
 		try {
 			setLoadingOperation(true);
@@ -179,7 +203,7 @@ const useOperation = () => {
 		}
 	};
 
-	return { createOperation, findAllOperations, searchAllOperations, findCategories, deleteOperation, findOneOperationById, updateOperation };
+	return { createOperation, findAllOperations, searchAllOperations, findCategories, deleteOperation, findOneOperationById, updateOperation, findIcons };
 };
 
 export default useOperation;

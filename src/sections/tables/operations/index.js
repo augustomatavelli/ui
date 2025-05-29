@@ -78,7 +78,7 @@ export default function OperationsTable({ openFilter }) {
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell align="center">Nome do produto</TableCell>
+							<TableCell align="center">Nome do serviço</TableCell>
 							<TableCell align="center">Categoria</TableCell>
 							<TableCell align="center">Preço unitário</TableCell>
 							<TableCell align="center">Unidade de medida</TableCell>

@@ -34,13 +34,14 @@ const Navigation = () => {
 	}, [user]);
 
 	const getMenu = Menu();
+	console.log(menuItem);
 
 	const handlerMenuItem = () => {
 		const filteredItems = menuItem.items.filter((item) => {
 			if (item.id === "group-dashboard") {
 				return true;
 			}
-			if (item.id === "group-admin" && user.type !== "A") {
+			if (item.id === "group-admin" && user.type !== "A" && user.type !== "S") {
 				return false;
 			}
 			return true;
@@ -75,26 +76,10 @@ const Navigation = () => {
 			icon: item.icon,
 		}));
 	}
-
-	/* const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
-		return (
-			<NavGroup
-				key={item.id}
-				setSelectedItems={setSelectedItems}
-				setSelectedLevel={setSelectedLevel}
-				selectedLevel={selectedLevel}
-				selectedItems={selectedItems}
-				lastItem={lastItem}
-				remItems={remItems}
-				lastItemId={lastItemId}
-				item={item}
-			/>
-		);
-	}); */
-
+	console.log(menuItems);
 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
 		switch (user.type) {
-			case "A":
+			case "S":
 				return (
 					<NavGroup
 						key={item.id}
@@ -107,8 +92,10 @@ const Navigation = () => {
 						lastItemId={lastItemId}
 						item={item}
 					/>
-				); /* 
-				if (item.type === "admin") {
+				);
+				break;
+			case "A":
+				if (item.type === "admin" || item.type === "staff") {
 					return (
 						<NavGroup
 							key={item.id}
@@ -122,7 +109,7 @@ const Navigation = () => {
 							item={item}
 						/>
 					);
-				} */
+				}
 				break;
 			case "P":
 				if (item.type === "user") {

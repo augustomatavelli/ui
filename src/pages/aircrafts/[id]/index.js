@@ -28,7 +28,7 @@ const AircraftDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_aircraft, registration, category, image, membership, status, is_restricted, users } = aircraftDetails;
+	const { id_aircraft, registration, category, image, membership, status, is_restricted, users, modelo } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -82,7 +82,7 @@ const AircraftDetails = () => {
 				<MainCard
 					title="Detalhes da aeronave"
 					secondary={
-						user.type === "A" && (
+						(user.type === "A" || user.type === "S") && (
 							<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 								<Checkbox style={{ padding: 0 }} checked={checked} onChange={handleToggleChecked} />
 								<Typography>Tornar aeronave restrita</Typography>
@@ -107,7 +107,7 @@ const AircraftDetails = () => {
 										variant="contained"
 										color="warning"
 										onClick={() => {
-											if (user.type !== "A" && users && !users.some((item) => item.id_user === Number(userId))) {
+											if (user.type !== "A" && user.type !== "S" && users && !users.some((item) => item.id_user === Number(userId))) {
 												handleremoveLinkUserAircraft();
 											} else {
 												setOpenConfirmRemove(true);
@@ -118,7 +118,7 @@ const AircraftDetails = () => {
 									>
 										Desvincular
 									</Button>
-									{user.type === "A" && users && !users.some((item) => item.id_user === Number(userId)) && (
+									{(user.type === "A" || user.type === "S") && users && !users.some((item) => item.id_user === Number(userId)) && (
 										<Button
 											variant="contained"
 											color="primary"
@@ -141,6 +141,17 @@ const AircraftDetails = () => {
 											<Stack spacing={0.5}>
 												<Typography color="secondary">Matrícula</Typography>
 												<Typography>{registration}</Typography>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<Typography color="secondary">Modelo</Typography>
+												<Typography>{modelo}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>
@@ -207,7 +218,7 @@ const AircraftDetails = () => {
 									>
 										Voltar
 									</Button>
-									{user.type === "A" && users && !users.some((item) => item.id_user === Number(userId)) && (
+									{(user.type === "A" || user.type === "S") && users && !users.some((item) => item.id_user === Number(userId)) && (
 										<Button
 											variant="contained"
 											color="error"

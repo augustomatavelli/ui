@@ -39,14 +39,19 @@ export default function AircraftsTable({ openFilter }) {
 		setPage(value);
 	};
 
+	const handleOpen = () => {
+		setOpen(true);
+	};
+
 	const handleAdd = async () => {
-		setOpen(!open);
+		console.log("teste", open);
+		setOpen(false);
 
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		user.type === "A" ? await findAllAircrafts(search, page, paramsStatus) : await searchAllAircrafts(search, page);
+		user.type === "A" || user.type === "S" ? await findAllAircrafts(search, page, paramsStatus) : await searchAllAircrafts(search, page);
 	};
 
 	const handleRedirect = (aircraftId) => {
@@ -67,7 +72,7 @@ export default function AircraftsTable({ openFilter }) {
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		user.type === "A" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
+		user.type === "A" || user.type === "S" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
 	}, [search, page, selectedStatus]);
 
 	useEffect(() => {}, [aircrafts]);
@@ -82,7 +87,7 @@ export default function AircraftsTable({ openFilter }) {
 						<Button
 							variant="contained"
 							startIcon={<PlusOutlined />}
-							onClick={handleAdd}
+							onClick={handleOpen}
 							sx={{
 								height: 40,
 								paddingY: 0,
@@ -98,10 +103,8 @@ export default function AircraftsTable({ openFilter }) {
 						<TableRow>
 							<TableCell />
 							<TableCell align="center">Matrícula</TableCell>
+							<TableCell align="center">Modelo</TableCell>
 							<TableCell align="center">Categoria</TableCell>
-							<TableCell align="center">Nome</TableCell>
-							<TableCell align="center">Email</TableCell>
-							<TableCell align="center">Celular</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -150,10 +153,8 @@ export default function AircraftsTable({ openFilter }) {
 										)}
 									</TableCell>
 									<TableCell align="center">{aircraft.registration}</TableCell>
+									<TableCell align="center">{aircraft.modelo}</TableCell>
 									<TableCell align="center">{aircraft.category}</TableCell>
-									<TableCell align="center">{aircraft.name}</TableCell>
-									<TableCell align="center">{aircraft.email}</TableCell>
-									<TableCell align="center">{aircraft.mobile}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (

@@ -224,7 +224,7 @@ const RequestDetails = () => {
 								/>
 								{status === "F" && (
 									<Tooltip title="Baixar PDF" placement="top">
-										<IconButton sx={{ height: 32, width: 32, cursor:	 "pointer" }} onClick={async () => await findSummaryPdf(id)}>
+										<IconButton sx={{ height: 32, width: 32, cursor: "pointer" }} onClick={async () => await findSummaryPdf(id)}>
 											<FilePdfOutlined style={{ fontSize: 20 }} />
 										</IconButton>
 									</Tooltip>
@@ -554,7 +554,7 @@ const RequestDetails = () => {
 													Salvar
 												</Button>
 											)}
-											{status === "A" && (user.type === "A" || id_user === user.id_user) && (
+											{status === "A" && (user.type === "A" || user.type === "S" || id_user === user.id_user) && (
 												<Button
 													variant="contained"
 													color="error"

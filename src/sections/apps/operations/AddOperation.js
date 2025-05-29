@@ -18,6 +18,7 @@ import {
 	Radio,
 	FormControlLabel,
 } from "@mui/material";
+import * as Icons from "@mui/icons-material";
 
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
@@ -40,15 +41,16 @@ const getInitialValues = () => {
 		available_at: "A",
 		selectionMode: "A",
 		category: "",
+		icon: "",
 	};
 
 	return newOperation;
 };
 
 const AddOperation = ({ onCancel }) => {
-	const { createOperation, findCategories } = useOperation();
+	const { createOperation, findCategories, findIcons } = useOperation();
 
-	const { categories } = useContext(OperationsContext);
+	const { categories, icons } = useContext(OperationsContext);
 
 	const [available, setAvailable] = useState("A");
 	const [selectionMode, setSelectionMode] = useState("N");
@@ -88,6 +90,7 @@ const AddOperation = ({ onCancel }) => {
 
 	useEffect(() => {
 		findCategories();
+		findIcons();
 	}, []);
 
 	const NewOperationSchema = Yup.object().shape({
@@ -95,6 +98,7 @@ const AddOperation = ({ onCancel }) => {
 		price: Yup.string().max(255).required("Preço	 é obrigatório"),
 		unit: Yup.string().max(255).required("Unidade é obrigatória"),
 		category: Yup.string().max(255).required("Categoria é obrigatória"),
+		icon: Yup.number().required("Ícone é obrigatório"),
 	});
 
 	const formik = useFormik({
@@ -112,6 +116,7 @@ const AddOperation = ({ onCancel }) => {
 					checklist: checklist,
 					allow_schedule: allowSchedule,
 					allow_schedule_capacity: allowScheduleCapacity,
+					id_icon: Number(values.icon),
 				};
 				const response = await createOperation(payload);
 				if (scriptedRef.current) {
@@ -179,71 +184,107 @@ const AddOperation = ({ onCancel }) => {
 										)}
 									</Stack>
 								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1}>
-										<InputLabel htmlFor="category">Categoria</InputLabel>
-										<Select
-											value={values.category}
-											name="category"
-											onChange={handleChange}
-											displayEmpty
-											inputProps={{ "aria-label": "Without label" }}
-											renderValue={values.category ? undefined : () => <Typography variant="subtitle1">Selecione uma categoria</Typography>}
-										>
-											{categories.map((e) => {
-												return <MenuItem value={e.id_category}>{e.name}</MenuItem>;
-											})}
-										</Select>
-										{touched.category && errors.category && (
-											<FormHelperText error id="helper-text-category-signup">
-												{errors.category}
-											</FormHelperText>
-										)}
-									</Stack>
+								<Grid item xs={12} display="flex" width="100%" alignItems="center" gap={2}>
+									<Grid item xs={6}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="category">Categoria</InputLabel>
+											<Select
+												value={values.category}
+												name="category"
+												onChange={handleChange}
+												displayEmpty
+												inputProps={{ "aria-label": "Without label" }}
+												renderValue={values.category ? undefined : () => <Typography variant="subtitle1">Selecione uma categoria</Typography>}
+											>
+												{categories.map((e) => {
+													return (
+														<MenuItem key={e.id_category} value={e.id_category}>
+															{e.name}
+														</MenuItem>
+													);
+												})}
+											</Select>
+											{touched.category && errors.category && (
+												<FormHelperText error id="helper-text-category-signup">
+													{errors.category}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
+									<Grid item xs={6}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="icon">Ícone</InputLabel>
+											<Select
+												value={values.icon}
+												name="icon"
+												onChange={handleChange}
+												displayEmpty
+												inputProps={{ "aria-label": "Without label" }}
+												renderValue={values.icon ? undefined : () => <Typography variant="subtitle1">Selecione um ícone</Typography>}
+											>
+												{icons.map((e) => {
+													const IconComponent = Icons[e.name];
+													return (
+														<MenuItem key={e.id_icon} value={e.id_icon}>
+															{IconComponent && <IconComponent style={{ fontSize: 30, color: "grey", alignItems: "center" }} />}
+														</MenuItem>
+													);
+												})}
+											</Select>
+											{touched.category && errors.category && (
+												<FormHelperText error id="helper-text-category-signup">
+													{errors.category}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1}>
-										<InputLabel htmlFor="price">Preço</InputLabel>
-										<OutlinedInput
-											id="price"
-											type="text"
-											value={values.price}
-											name="price"
-											onBlur={handleBlur}
-											onChange={handleChange}
-											placeholder="Digite o preço..."
-											fullWidth
-											error={Boolean(touched.price && errors.price)}
-										/>
-										{touched.price && errors.price && (
-											<FormHelperText error id="helper-text-price-signup">
-												{errors.price}
-											</FormHelperText>
-										)}
-									</Stack>
+								<Grid item xs={12} display="flex" width="100%" alignItems="center" gap={2}>
+									<Grid item xs={6}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="price">Preço</InputLabel>
+											<OutlinedInput
+												id="price"
+												type="text"
+												value={values.price}
+												name="price"
+												onBlur={handleBlur}
+												onChange={handleChange}
+												placeholder="Digite o preço..."
+												fullWidth
+												error={Boolean(touched.price && errors.price)}
+											/>
+											{touched.price && errors.price && (
+												<FormHelperText error id="helper-text-price-signup">
+													{errors.price}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
+									<Grid item xs={6}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="unit">Unidade de medida</InputLabel>
+											<Select
+												value={values.unit}
+												name="unit"
+												onChange={handleChange}
+												displayEmpty
+												inputProps={{ "aria-label": "Without label" }}
+												renderValue={values.unit ? undefined : () => <Typography variant="subtitle1">Selecione uma unidade de medida</Typography>}
+											>
+												{units.map((e) => {
+													return <MenuItem value={e}>{e}</MenuItem>;
+												})}
+											</Select>
+											{touched.unit && errors.unit && (
+												<FormHelperText error id="helper-text-unit-signup">
+													{errors.unit}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1}>
-										<InputLabel htmlFor="unit">Unidade de medida</InputLabel>
-										<Select
-											value={values.unit}
-											name="unit"
-											onChange={handleChange}
-											displayEmpty
-											inputProps={{ "aria-label": "Without label" }}
-											renderValue={values.unit ? undefined : () => <Typography variant="subtitle1">Selecione uma unidade de medida</Typography>}
-										>
-											{units.map((e) => {
-												return <MenuItem value={e}>{e}</MenuItem>;
-											})}
-										</Select>
-										{touched.unit && errors.unit && (
-											<FormHelperText error id="helper-text-unit-signup">
-												{errors.unit}
-											</FormHelperText>
-										)}
-									</Stack>
-								</Grid>
+
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<InputLabel htmlFor="unit">Disponibilidade do serviço</InputLabel>
@@ -269,7 +310,7 @@ const AddOperation = ({ onCancel }) => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<Grid display="flex" alignItems="center" gap={1}>
-											<InputLabel htmlFor="unit">Necessita checklist?</InputLabel>
+											<InputLabel htmlFor="unit">Necessita de checklist de inspeção?</InputLabel>
 										</Grid>
 										<RadioGroup aria-label="size" value={checklist} defaultValue="N" name="radio-buttons-group" onChange={handleChangeChecklist} row>
 											<FormControlLabel value="S" control={<Radio />} label="Sim" />
@@ -280,7 +321,7 @@ const AddOperation = ({ onCancel }) => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<Grid display="flex" alignItems="center" gap={1}>
-											<InputLabel htmlFor="unit">Necessita reserva?</InputLabel>
+											<InputLabel htmlFor="unit">Necessita serviço de reserva?</InputLabel>
 										</Grid>
 										<Grid>
 											<RadioGroup aria-label="size" value={allowSchedule} defaultValue="N" name="radio-buttons-group" onChange={handleChangeAllowSchedule} row>

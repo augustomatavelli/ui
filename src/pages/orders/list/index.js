@@ -3,15 +3,13 @@ import useOrder from "hooks/useOrder";
 import { useNavigate } from "react-router";
 import { useState, useEffect, useContext } from "react";
 import { FilterOutlined } from "@ant-design/icons";
-
-// material-ui
 import { Stack, Pagination } from "@mui/material";
-
 import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
 import MainCard from "components/MainCard";
 import { OrderFilter } from "./OrderFilter";
 import OrdersTabs from "./OrderTab";
+import dayjs from "dayjs";
 
 const ListOrders = () => {
 	const { user } = useContext(UserContext);
@@ -34,7 +32,7 @@ const ListOrders = () => {
 
 	useEffect(() => {
 		if (!user) return;
-		if (user.type !== "A" && user.type !== "C") {
+		if (user.type !== "A" && user.type !== "S" && user.type !== "C") {
 			navigate("/aircrafts/me", { replace: true });
 		}
 		const fetchCategories = async () => {

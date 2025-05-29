@@ -80,7 +80,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 		);
 		navigate("/aircrafts/me");
 	};
-
+	console.log(takeoffCheckbox, landingCheckbox, activeStep);
 	return (
 		<Grid sx={{ py: "20px", px: "50px" }}>
 			<Stepper activeStep={activeStep} sx={{ mt: 3, mb: 5 }}>
@@ -185,7 +185,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 				</Button>
 				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
-						{activeStep !== 3 || (!takeoffCheckbox && !landingCheckbox && activeStep !== 2) ? (
+						{((takeoffCheckbox || landingCheckbox) && activeStep !== 3) || (!takeoffCheckbox && !landingCheckbox && activeStep !== 2) ? (
 							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
 								Próximo
 							</Button>

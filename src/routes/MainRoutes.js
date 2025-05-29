@@ -57,15 +57,13 @@ const MaintenanceComingSoon = Loadable(lazy(() => import("pages/maintenance/comi
 
 const ContactUs = Loadable(lazy(() => import("pages/contact-us")));
 
-// ==============================|| MAIN ROUTING ||============================== //
-
 const MainRoutes = {
 	path: "/",
 	children: [
 		{
 			path: "/",
 			element: (
-				<AuthGuard requiredUserType="['A', 'P', 'C', 'O']">
+				<AuthGuard requiredUserType="['A', 'P', 'C', 'O', 'S']">
 					<MainLayout />
 				</AuthGuard>
 			),
@@ -89,7 +87,7 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ListUsersForAdmin />
 								</AuthGuard>
 							),
@@ -97,7 +95,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<UserDetails />
 								</AuthGuard>
 							),
@@ -110,7 +108,7 @@ const MainRoutes = {
 						{
 							path: "me",
 							element: (
-								<AuthGuard requiredUserType="['O', 'P']">
+								<AuthGuard requiredUserType="['O', 'P', 'S']">
 									<MyAircrafts />
 								</AuthGuard>
 							),
@@ -118,7 +116,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A', 'O', 'P']">
+								<AuthGuard requiredUserType="['A', 'O', 'P', 'S']">
 									<AircraftDetails />
 								</AuthGuard>
 							),
@@ -126,7 +124,7 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ListAircraftsForAdmin />
 								</AuthGuard>
 							),
@@ -160,7 +158,7 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ListRequestsForAdmin />
 								</AuthGuard>
 							),
@@ -168,7 +166,7 @@ const MainRoutes = {
 						{
 							path: "me",
 							element: (
-								<AuthGuard requiredUserType="['P', 'O']">
+								<AuthGuard requiredUserType="['P', 'O', 'S']">
 									<ListMyRequests />
 								</AuthGuard>
 							),
@@ -176,7 +174,7 @@ const MainRoutes = {
 						{
 							path: "my-aircrafts",
 							element: (
-								<AuthGuard requiredUserType="['O']">
+								<AuthGuard requiredUserType="['O', 'S']">
 									<ListMyAircraftsRequests />
 								</AuthGuard>
 							),
@@ -192,7 +190,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A', 'O', 'P']">
+								<AuthGuard requiredUserType="['A', 'O', 'P', 'S']">
 									<RequestDetails />
 								</AuthGuard>
 							),
@@ -205,7 +203,7 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ListProductsForAdmin />
 								</AuthGuard>
 							),
@@ -213,7 +211,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ProductDetails />
 								</AuthGuard>
 							),
@@ -226,7 +224,7 @@ const MainRoutes = {
 						{
 							path: "admin",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<ListOperationsForAdmin />
 								</AuthGuard>
 							),
@@ -234,7 +232,7 @@ const MainRoutes = {
 						{
 							path: ":id",
 							element: (
-								<AuthGuard requiredUserType="['A']">
+								<AuthGuard requiredUserType="['A', 'S']">
 									<OperationDetails />
 								</AuthGuard>
 							),
@@ -247,7 +245,7 @@ const MainRoutes = {
 						{
 							path: "",
 							element: (
-								<AuthGuard requiredUserType="['A', 'C']">
+								<AuthGuard requiredUserType="['A', 'C', 'S']">
 									<ListOrders />
 								</AuthGuard>
 							),
