@@ -80,7 +80,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 		);
 		navigate("/aircrafts/me");
 	};
-	console.log(takeoffCheckbox, landingCheckbox, activeStep);
+
 	return (
 		<Grid sx={{ py: "20px", px: "50px" }}>
 			<Stepper activeStep={activeStep} sx={{ mt: 3, mb: 5 }}>

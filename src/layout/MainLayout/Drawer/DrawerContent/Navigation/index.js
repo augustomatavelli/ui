@@ -34,7 +34,6 @@ const Navigation = () => {
 	}, [user]);
 
 	const getMenu = Menu();
-	console.log(menuItem);
 
 	const handlerMenuItem = () => {
 		const filteredItems = menuItem.items.filter((item) => {
@@ -76,7 +75,7 @@ const Navigation = () => {
 			icon: item.icon,
 		}));
 	}
-	console.log(menuItems);
+
 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
 		switch (user.type) {
 			case "S":

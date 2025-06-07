@@ -14,6 +14,10 @@ const UserProfile = Loadable(lazy(() => import("pages/users/me")));
 const ListUsersForAdmin = Loadable(lazy(() => import("pages/users/admin")));
 const UserDetails = Loadable(lazy(() => import("pages/users/[id]")));
 
+// render - operators
+const ListOperatorsForAdmin = Loadable(lazy(() => import("pages/operators/admin")));
+const OperatorDetails = Loadable(lazy(() => import("pages/operators/[id]")));
+
 // render - aircrafts
 const MyAircrafts = Loadable(lazy(() => import("pages/aircrafts/me")));
 const AircraftDetails = Loadable(lazy(() => import("pages/aircrafts/[id]")));
@@ -152,6 +156,27 @@ const MainRoutes = {
 						},
 					],
 				}, */
+				{
+					path: "operators",
+					children: [
+						{
+							path: "admin",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<ListOperatorsForAdmin />
+								</AuthGuard>
+							),
+						},
+						{
+							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<OperatorDetails />
+								</AuthGuard>
+							),
+						},
+					],
+				},
 				{
 					path: "requests",
 					children: [

@@ -44,7 +44,6 @@ export default function AircraftsTable({ openFilter }) {
 	};
 
 	const handleAdd = async () => {
-		console.log("teste", open);
 		setOpen(false);
 
 		const statusParams = Object.keys(selectedStatus);

@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip, IconButton } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -14,21 +14,24 @@ import AddLinkUserAircraft from "sections/apps/aircrafts/AddLinkUserAircraft";
 import ConfirmRemoveLinkUserAircraft from "sections/apps/aircrafts/ConfirmRemoveLinkUserAircraft";
 import UserContext from "contexts/UserContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import AddIcon from "@mui/icons-material/Add";
+import AddLinkOperatorAircraft from "sections/apps/aircrafts/AddLinkOperatorAircraft";
 
 const AircraftDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft } = useAircraft();
+	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft } = useAircraft();
 
-	const { aircraftDetails, setAircraftDetails, loadingAircraft } = useContext(AircraftContext);
+	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
 
 	const [open, setOpen] = useState(false);
+	const [openOperator, setOpenOperator] = useState(false);
 	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
 	const [openAlert, setOpenAlert] = useState(false);
 	const [checked, setChecked] = useState(false);
 
 	const { id } = useParams();
 
-	const { id_aircraft, registration, category, image, membership, status, is_restricted, users, modelo } = aircraftDetails;
+	const { id_aircraft, registration, category, image, membership, status, is_restricted, operators, modelo } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -66,6 +69,22 @@ const AircraftDetails = () => {
 				close: false,
 			})
 		);
+	};
+
+	const handleDeleteOperatorAircraft = async (operatorId, aircraftId) => {
+		const response = await removeLinkOperatorAircraft(operatorId, aircraftId);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		await findOneAircraftById(aircraftId);
 	};
 
 	useEffect(() => {
@@ -107,7 +126,7 @@ const AircraftDetails = () => {
 										variant="contained"
 										color="warning"
 										onClick={() => {
-											if (user.type !== "A" && user.type !== "S" && users && !users.some((item) => item.id_user === Number(userId))) {
+											if (user.type !== "A" && user.type !== "S" /* && users && !users.some((item) => item.id_user === Number(userId)) */) {
 												handleremoveLinkUserAircraft();
 											} else {
 												setOpenConfirmRemove(true);
@@ -118,7 +137,7 @@ const AircraftDetails = () => {
 									>
 										Desvincular
 									</Button>
-									{(user.type === "A" || user.type === "S") && users && !users.some((item) => item.id_user === Number(userId)) && (
+									{(user.type === "A" || user.type === "S") /* && users && !users.some((item) => item.id_user === Number(userId)) */ && (
 										<Button
 											variant="contained"
 											color="primary"
@@ -193,12 +212,42 @@ const AircraftDetails = () => {
 								<ListItem>
 									<Grid container spacing={3}>
 										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Operadores</Typography>
-												{users && users.length === 0 ? (
-													<Typography>Aeronave não possui nenhum operador vinculado</Typography>
+											<Stack spacing={1}>
+												<Grid container alignItems="center" spacing={2}>
+													<Grid item>
+														<Typography color="secondary">Operadores</Typography>
+													</Grid>
+													{(user.type == "S" || user.type == "A") && (
+														<Grid item>
+															<Button
+																variant="outlined"
+																color="primary"
+																startIcon={<AddIcon />}
+																onClick={() => {
+																	setOpenOperator(true);
+																}}
+																size="small"
+															>
+																Adicionar
+															</Button>
+														</Grid>
+													)}
+												</Grid>
+												{!operators || operators.length === 0 ? (
+													<Typography>Nenhum operador vinculado à aeronave.</Typography>
 												) : (
-													users && users.length > 0 && users.map((user, index) => <Chip key={index} label={user.name} sx={{ width: "fit-content" }} />)
+													<Stack direction="row" spacing={1} flexWrap="wrap">
+														{operators.map((operator) => (
+															<Chip
+																key={operator.id_operator}
+																label={operator.name}
+																sx={{ width: "fit-content" }}
+																onDelete={async () => {
+																	await handleDeleteOperatorAircraft(operator.id_operator, id);
+																}}
+															/>
+														))}
+													</Stack>
 												)}
 											</Stack>
 										</Grid>
@@ -218,7 +267,7 @@ const AircraftDetails = () => {
 									>
 										Voltar
 									</Button>
-									{(user.type === "A" || user.type === "S") && users && !users.some((item) => item.id_user === Number(userId)) && (
+									{(user.type === "A" || user.type === "S") /* && users && !users.some((item) => item.id_user === Number(userId)) */ && (
 										<Button
 											variant="contained"
 											color="error"
@@ -259,6 +308,18 @@ const AircraftDetails = () => {
 				sx={{ "& .MuiDialog-paper": { p: 0 } }}
 			>
 				<ConfirmRemoveLinkUserAircraft setOpenConfirmRemove={setOpenConfirmRemove} />
+			</Dialog>
+			<Dialog
+				maxWidth="sm"
+				fullWidth
+				TransitionComponent={PopupTransition}
+				onClose={() => {
+					setOpenOperator(false);
+				}}
+				open={openOperator}
+				sx={{ "& .MuiDialog-paper": { p: 0 } }}
+			>
+				<AddLinkOperatorAircraft setOpen={setOpenOperator} />
 			</Dialog>
 		</>
 	);

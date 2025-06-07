@@ -111,10 +111,58 @@ const useAircraft = () => {
 		}
 	};
 
+	const addLinkOperatorAircraft = async (data) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.post(`/aircrafts/link/operator/add`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
 	const removeLinkUserAircraft = async (userId, aircraftId) => {
 		try {
 			setLoadingAircraft(true);
 			const response = await publicAxios.delete(`/aircrafts/link/remove/${aircraftId}?userId=${userId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
+	const removeLinkOperatorAircraft = async (operatorId, aircraftId) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.delete(`/aircrafts/link/operator/remove/${aircraftId}?operatorId=${operatorId}`);
 			return response.data;
 		} catch (error) {
 			console.log(error);
@@ -212,7 +260,7 @@ const useAircraft = () => {
 	const anacSearch = async (search) => {
 		try {
 			setLoadingAircraft(true);
-			const response = await publicAxios.post(`/rab-search/${search}`);
+			const response = await publicAxios.get(`/rab-search/${search}`);
 			return response.data;
 		} catch (error) {
 			console.log(error);
@@ -268,6 +316,8 @@ const useAircraft = () => {
 		deleteAircraft,
 		anacSearch,
 		toggleRestrictedAircraft,
+		addLinkOperatorAircraft,
+		removeLinkOperatorAircraft,
 	};
 };
 

@@ -9,6 +9,7 @@ import {
 	ScheduleOutlined,
 	UnorderedListOutlined,
 	FieldTimeOutlined,
+	FolderOpenOutlined,
 } from "@ant-design/icons";
 // Ícones
 const icons = {
@@ -21,6 +22,7 @@ const icons = {
 	ToolOutlined,
 	ScheduleOutlined,
 	FieldTimeOutlined,
+	FolderOpenOutlined,
 };
 
 const admin = {
@@ -42,6 +44,13 @@ const admin = {
 			type: "item",
 			url: "/aircrafts/admin",
 			icon: icons.UnorderedListOutlined,
+		},
+		{
+			id: "operators",
+			title: <FormattedMessage id="Operadores" />,
+			type: "item",
+			url: "/operators/admin",
+			icon: icons.FolderOpenOutlined,
 		},
 		/* {
 			id: "landing sites",

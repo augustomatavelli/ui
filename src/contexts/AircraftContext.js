@@ -9,6 +9,7 @@ export const AircraftProvider = ({ children }) => {
 	const [totalSearchAircrafts, setTotalSearchAircrafts] = useState(0);
 	const [aircraftDetails, setAircraftDetails] = useState({});
 	const [searchUserAircraftLink, setUserAircraftLink] = useState("");
+	const [searchOperatorAircraftLink, setSearchOperatorAircraftLink] = useState("");
 	const [aircrafts, setAircrafts] = useState([]);
 	const [totalAircrafts, setTotalAircrafts] = useState(0);
 	const [requestAircraft, setRequestAircraft] = useState({});
@@ -23,6 +24,7 @@ export const AircraftProvider = ({ children }) => {
 		setTotalAircrafts(0);
 		setTotalSearchAircrafts(0);
 		setRequestAircraft({});
+		setSearchOperatorAircraftLink("");
 	};
 
 	return (
@@ -45,6 +47,8 @@ export const AircraftProvider = ({ children }) => {
 				resetAircraftstates,
 				requestAircraft,
 				setRequestAircraft,
+				searchOperatorAircraftLink,
+				setSearchOperatorAircraftLink,
 			}}
 		>
 			{children}
