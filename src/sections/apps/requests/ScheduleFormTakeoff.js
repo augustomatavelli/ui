@@ -123,14 +123,6 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 											<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
-											{/* {formik.values.html && (
-												<Button sx={{ display: "flex", alignItems: "center", justifyContent: "center", m: 0, p: 0.5, width: "fit-content" }} onClick={() => setOpen(true)}>
-													<QuestionCircleOutlined />
-													<Typography variant="subtitle2" sx={{ ml: 0.5 }}>
-														Sobre
-													</Typography>
-												</Button>
-											)} */}
 											<Button sx={{ display: "flex", alignItems: "center", justifyContent: "center", m: 0, p: 0.5, width: "fit-content" }} onClick={() => setOpen(true)}>
 												<QuestionCircleOutlined />
 												<Typography variant="subtitle2" sx={{ ml: 0.5 }}>

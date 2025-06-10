@@ -1,12 +1,8 @@
 import PropTypes from "prop-types";
 import { useCallback, useContext, useEffect, useState } from "react";
-
-// material-ui
-import { Box, Grid, InputLabel, Stack, TextField, Typography, Card, CardContent, Checkbox } from "@mui/material";
+import { Box, Grid, InputLabel, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
-// third-party.png
 import { useFormik, Form, FormikProvider } from "formik";
 import RequestContext from "contexts/RequestContext";
 import OperationsContext from "contexts/OperationContext";
@@ -72,7 +68,7 @@ const OperationsForm = ({ onValidate }) => {
 		<>
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+					<Form autoComplete="off" noValidate onSubmit={handleSubmit} style={{ width: "100%", marginTop: "20px" }}>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								{loadingOperation ? (
@@ -84,8 +80,32 @@ const OperationsForm = ({ onValidate }) => {
 												<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 2 }}>
 													<InputLabel>Adicione serviços (opcional)</InputLabel>
 												</Grid>
-												<Grid container spacing={3}>
-													<OperationsList checked={checked} searchOperations={searchOperations} requestObject={requestResume} handleChange={handleChange} handleCheckboxChange={handleCheckboxChange} />
+												<Grid>
+													<Box
+														sx={{
+															display: "flex",
+															overflowX: "auto",
+															padding: "1rem",
+															whiteSpace: "nowrap",
+															"&::-webkit-scrollbar": {
+																height: "8px",
+															},
+															"&::-webkit-scrollbar-thumb": {
+																backgroundColor: "#888",
+															},
+															"&::-webkit-scrollbar-thumb:hover": {
+																backgroundColor: "#555",
+															},
+														}}
+													>
+														<OperationsList
+															checked={checked}
+															searchOperations={searchOperations}
+															requestObject={requestResume}
+															handleChange={handleChange}
+															handleCheckboxChange={handleCheckboxChange}
+														/>
+													</Box>
 												</Grid>
 											</Stack>
 										</Grid>

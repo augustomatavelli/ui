@@ -66,7 +66,7 @@ const TakeoffProductsForm = ({ onValidate }) => {
 		<Grid sx={{ width: "100%" }}>
 			<FormikProvider value={formik}>
 				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+					<Form autoComplete="off" noValidate onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								{searchProducts.length > 0 && (

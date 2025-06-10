@@ -425,14 +425,34 @@ const RequestDetails = () => {
 															) : loadingService ? (
 																<CircularProgress size={20} />
 															) : (
-																<OperationsList
-																	checked={checked}
-																	setChecked={setChecked}
-																	searchOperations={searchOperations}
-																	requestObject={editRequest}
-																	handleChange={handleChange}
-																	handleCheckboxChange={handleCheckboxChange}
-																/>
+																<Grid>
+																	<Box
+																		sx={{
+																			display: "flex",
+																			overflowX: "auto",
+																			padding: "1rem",
+																			whiteSpace: "nowrap",
+																			"&::-webkit-scrollbar": {
+																				height: "8px",
+																			},
+																			"&::-webkit-scrollbar-thumb": {
+																				backgroundColor: "#888",
+																			},
+																			"&::-webkit-scrollbar-thumb:hover": {
+																				backgroundColor: "#555",
+																			},
+																		}}
+																	>
+																		<OperationsList
+																			checked={checked}
+																			setChecked={setChecked}
+																			searchOperations={searchOperations}
+																			requestObject={editRequest}
+																			handleChange={handleChange}
+																			handleCheckboxChange={handleCheckboxChange}
+																		/>
+																	</Box>
+																</Grid>
 															)}
 														</Box>
 													</Collapse>

@@ -1,7 +1,4 @@
-// material-ui
 import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip, IconButton } from "@mui/material";
-
-// project import
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import AircraftContext from "contexts/AircraftContext";
@@ -237,16 +234,20 @@ const AircraftDetails = () => {
 													<Typography>Nenhum operador vinculado à aeronave.</Typography>
 												) : (
 													<Stack direction="row" spacing={1} flexWrap="wrap">
-														{operators.map((operator) => (
-															<Chip
-																key={operator.id_operator}
-																label={operator.name}
-																sx={{ width: "fit-content" }}
-																onDelete={async () => {
-																	await handleDeleteOperatorAircraft(operator.id_operator, id);
-																}}
-															/>
-														))}
+														{operators.map((operator) => {
+															return user.type === "S" || user.type === "A" ? (
+																<Chip
+																	key={operator.id_operator}
+																	label={operator.name}
+																	sx={{ width: "fit-content" }}
+																	onDelete={async () => {
+																		await handleDeleteOperatorAircraft(operator.id_operator, id);
+																	}}
+																/>
+															) : (
+																<Chip key={operator.id_operator} label={operator.name} sx={{ width: "fit-content" }} />
+															);
+														})}
 													</Stack>
 												)}
 											</Stack>
