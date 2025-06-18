@@ -18,7 +18,18 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 
 	const handleChangeSelectionMode = (inspectionId, event) => {
 		const value = event.target.value;
-		setObjCompliance((prev) => ({ ...prev, [inspectionId]: { ...prev[inspectionId], compliance: value } }));
+		setObjCompliance((prev) => ({ ...prev, [inspectionId]: { ...prev[inspectionId], compliance: value, observation: null } }));
+	};
+
+	const handleChangeObservation = (e, event) => {
+		const value = event.target.value;
+		setObjCompliance((prev) => ({
+			...prev,
+			[e.id_inspection]: {
+				...prev[e.id_inspection],
+				observation: value.trim() === "" ? null : value,
+			},
+		}));
 	};
 
 	const handleUpdate = async (orderId) => {
@@ -120,13 +131,28 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		}
 	}, [open]);
 
+	useEffect(() => {
+		if (inspections.length > 0) {
+			const initialCompliance = {};
+			inspections.forEach((item) => {
+				initialCompliance[item.id_inspection] = {
+					compliance: item.compliance ?? null,
+					image: item.image ?? null,
+					observation: item.observation ?? null,
+				};
+			});
+			setObjCompliance(initialCompliance);
+		}
+	}, [inspections]);
+
+	console.log(objCompliance);
 	return (
 		<Dialog
 			open={open}
 			onClose={() => handleClose(false)}
 			keepMounted
 			TransitionComponent={PopupTransition}
-			maxWidth="xs"
+			maxWidth="sm"
 			fullWidth
 			aria-labelledby="column-delete-title"
 			aria-describedby="column-delete-description"
@@ -138,10 +164,10 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 							Checklist de inspeção
 						</Typography>
 						<Divider />
-						{inspections.map((e) => {
+						{inspections.map((e, index) => {
 							return (
 								<>
-									<Grid sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+									<Grid key={index} sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
 										<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 											<ToggleButtonGroup
 												value={objCompliance[e.id_inspection]?.compliance ? objCompliance[e.id_inspection]?.compliance : e.compliance}
@@ -195,22 +221,42 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 												{e.name}
 											</Typography>
 										</Grid>
-										<Grid>
-											<TextField type="file" sx={{ display: "none" }} inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)} onChange={(event) => handleFileChange(event, e.id_inspection)} />
-											{objCompliance[e.id_inspection]?.image ? (
-												<ImagePreview src={`data:image/jpeg;base64,${objCompliance[e.id_inspection].image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
-											) : e.image ? (
-												<ImagePreview src={`data:image/jpeg;base64,${e.image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
-											) : (
-												<IconButton
-													onClick={() => fileInputRefs.current[e.id_inspection]?.click()}
-													sx={{
-														bgcolor: "grey.100",
-														"&:hover": { bgcolor: "grey.200" },
-													}}
-												>
-													<CameraFilled style={{ fontSize: 24, color: "primary.main" }} />
-												</IconButton>
+										<Grid sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+											<Grid>
+												<TextField
+													type="file"
+													sx={{ display: "none" }}
+													inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)}
+													onChange={(event) => handleFileChange(event, e.id_inspection)}
+												/>
+												{objCompliance[e.id_inspection]?.image ? (
+													<ImagePreview src={`data:image/jpeg;base64,${objCompliance[e.id_inspection].image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+												) : e.image ? (
+													<ImagePreview src={`data:image/jpeg;base64,${e.image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+												) : (
+													<IconButton
+														onClick={() => fileInputRefs.current[e.id_inspection]?.click()}
+														sx={{
+															bgcolor: "grey.100",
+															"&:hover": { bgcolor: "grey.200" },
+														}}
+													>
+														<CameraFilled style={{ fontSize: 24, color: "primary.main" }} />
+													</IconButton>
+												)}
+											</Grid>
+											{objCompliance[e.id_inspection]?.compliance === "N" && (
+												<Grid>
+													<TextField
+														label="Observações"
+														multiline
+														rows={4}
+														value={objCompliance[e.id_inspection]?.observation || ""}
+														onChange={(event) => {
+															handleChangeObservation(e, event);
+														}}
+													/>
+												</Grid>
 											)}
 										</Grid>
 									</Grid>

@@ -25,8 +25,8 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 
 	const getInitialValues = (aircraft) => ({
 		id_aircraft: aircraft.id_aircraft,
-		id_landing_site: "",
-		name_landing_site: "",
+		id_landing_site: 1,
+		name_landing_site: "Heliforte",
 		amount: null,
 		flight_time: "",
 		landing_date: null,
@@ -61,8 +61,6 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 
 	const RequestSchema = Yup.object().shape({
 		id_aircraft: Yup.number(),
-		id_landing_site: Yup.number().required(),
-		name_landing_site: Yup.string().required(),
 		amount: checkAmount ? Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório") : Yup.number().optional().nullable(),
 		flight_time: Yup.number().required("Tempo estimado de voo é obrigatório"),
 		landing_date: Yup.date().nullable().optional(),
@@ -75,8 +73,8 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
 			const newRequest = {
 				id_aircraft: values.id_aircraft,
-				id_landing_site: values.id_landing_site,
-				name_landing_site: values.name_landing_site,
+				id_landing_site: 1,
+				name_landing_site: "Heliforte",
 				amount: values.amount,
 				flight_time: values.flight_time,
 				landing_date: values.landing_date,
@@ -132,7 +130,9 @@ const ScheduleFormTakeoff = ({ aircraft, onValidate, landingCheckbox, setLanding
 										</Grid>
 										<Autocomplete
 											options={searchLandingSites}
+											disabled
 											getOptionLabel={(option) => option.label}
+											value={searchLandingSites.find((option) => option.value === 1) || null}
 											isOptionEqualToValue={(option, value) => option.value === value.value}
 											renderInput={(params) => <TextField {...params} />}
 											onChange={(event, value) => {

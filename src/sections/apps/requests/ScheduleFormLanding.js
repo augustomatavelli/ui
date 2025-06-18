@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect, useState } from "react";
-import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button } from "@mui/material";
+import { Grid, InputLabel, Stack, TextField, Autocomplete, Checkbox, Button, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -11,6 +11,8 @@ import { useFormik, Form, FormikProvider } from "formik";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import useLandingSite from "hooks/useLandingSite";
 import RequestContext from "contexts/RequestContext";
+import AlertLandingSiteInfo from "../customer/AlertLandingSiteInfo";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoffCheckbox }) => {
 	const { searchAllLandingSites } = useLandingSite();
@@ -19,15 +21,17 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 
 	const [selectedInterval, setSelectedInterval] = useState(null);
 	const [checkAmount, setCheckAmount] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	const getInitialValues = (aircraft) => ({
 		id_aircraft: aircraft.id_aircraft,
-		id_landing_site: "",
-		name_landing_site: "",
+		id_landing_site: 1,
+		name_landing_site: "Heliforte",
 		amount: null,
 		flight_time: "",
 		landing_date: null,
 		takeoff_date: null,
+		html_about: null,
 	});
 
 	const handleToggleCheckBox = (event) => {
@@ -47,14 +51,16 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 		}
 	};
 
+	const handleClose = () => {
+		setOpen(false);
+	};
+
 	useEffect(() => {
 		searchAllLandingSites();
 	}, []);
 
 	const RequestSchema = Yup.object().shape({
 		id_aircraft: Yup.number(),
-		id_landing_site: Yup.number().required(),
-		name_landing_site: Yup.string().required(),
 		amount: checkAmount ? Yup.number().min(1, "Número de passageiros tem que ser maior que 0").required("Número de passageiros é obrigatório") : Yup.number().optional().nullable(),
 		flight_time: Yup.number().required("Tempo estimado de voo é obrigatório"),
 		landing_date: Yup.date().nullable().required("Data e hora previstos é obrigatório"),
@@ -67,8 +73,8 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus }) => {
 			const newRequest = {
 				id_aircraft: values.id_aircraft,
-				id_landing_site: values.id_landing_site,
-				name_landing_site: values.name_landing_site,
+				id_landing_site: 1,
+				name_landing_site: "Heliforte",
 				amount: values.amount,
 				flight_time: values.flight_time,
 				landing_date: values.landing_date,
@@ -117,15 +123,26 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Stack spacing={1.25} sx={{ width: "100%" }}>
-										<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
+										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+											<InputLabel htmlFor="Helicentro">Helicentro</InputLabel>
+											<Button sx={{ display: "flex", alignItems: "center", justifyContent: "center", m: 0, p: 0.5, width: "fit-content" }} onClick={() => setOpen(true)}>
+												<QuestionCircleOutlined />
+												<Typography variant="subtitle2" sx={{ ml: 0.5 }}>
+													Sobre
+												</Typography>
+											</Button>
+										</Grid>
 										<Autocomplete
 											options={searchLandingSites}
+											disabled
 											getOptionLabel={(option) => option.label}
+											value={searchLandingSites.find((option) => option.value === 1) || null}
 											isOptionEqualToValue={(option, value) => option.value === value.value}
 											renderInput={(params) => <TextField {...params} />}
 											onChange={(event, value) => {
 												formik.setFieldValue("id_landing_site", value ? value.value : "");
 												formik.setFieldValue("name_landing_site", value ? value.label : "");
+												formik.setFieldValue("html_about", value.html ? true : false);
 											}}
 										/>
 									</Stack>
@@ -242,6 +259,7 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 								</Grid>
 							</Grid>
 						</Grid>
+						<AlertLandingSiteInfo open={open} handleClose={handleClose} data={formik.values.html_about} />
 					</Form>
 				</LocalizationProvider>
 			</FormikProvider>

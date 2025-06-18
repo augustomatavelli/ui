@@ -25,7 +25,7 @@ import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import UserContext from "contexts/UserContext";
 
 const RequestDetails = () => {
-	const { findOneRequestById, updateRequest, deleteRequest, findSummaryPdf } = useRequest();
+	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
 	const { searchAllProducts } = useProduct();
 	const { searchAllOperations } = useOperation();
 
@@ -222,13 +222,6 @@ const RequestDetails = () => {
 									label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
 									sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
 								/>
-								{status === "F" && (
-									<Tooltip title="Baixar PDF" placement="top">
-										<IconButton sx={{ height: 32, width: 32, cursor: "pointer" }} onClick={async () => await findSummaryPdf(id)}>
-											<FilePdfOutlined style={{ fontSize: 20 }} />
-										</IconButton>
-									</Tooltip>
-								)}
 							</Grid>
 						)
 					}

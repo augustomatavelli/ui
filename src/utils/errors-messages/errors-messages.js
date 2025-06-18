@@ -28,4 +28,6 @@ export const ErrorMessages = {
 	order_already_finalized: "Você não pode selecionar a quantidade desejada, pois parte da quantidade já foi finalizada",
 	inspection_not_checked: "Existem itens não marcados no checklist",
 	schedule_service_capacity: "Hospedagem indisponível para a data selecionada",
+	dates_missing: "Data de pouso ou decolagem não informada",
+	failed_inspection: "Itens de inspeção não conforme precisam de foto ou observação",
 };
