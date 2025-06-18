@@ -17,11 +17,11 @@ const Login = () => {
 		<Box
 			sx={{
 				backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), ${isSmallScreen ? `url(${backgroundImageP})` : `url(${backgroundImageG})`}`,
-				backgroundSize: "fill",
+				backgroundSize: "cover",
 				backgroundRepeat: "no-repeat",
 				backgroundPosition: "center",
 				minHeight: "100vh",
-				width: "100%",
+				width: "100vw",
 			}}
 		>
 			<AuthWrapper>
