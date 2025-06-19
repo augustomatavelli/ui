@@ -1,20 +1,13 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
-
-// material-ui
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { Menu } from "menu-items/dashboard";
-
 import { useSelector } from "store";
 import useConfig from "hooks/useConfig";
 import { HORIZONTAL_MAX_ITEM, MenuOrientation } from "config";
-
-// project import
 import NavGroup from "./NavGroup";
 import menuItem from "menu-items";
 import UserContext from "contexts/UserContext";
-
-// ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
 const Navigation = () => {
 	const { user } = useContext(UserContext);
@@ -77,6 +70,22 @@ const Navigation = () => {
 	}
 
 	const navGroups = menuItems.items.slice(0, lastItemIndex + 1).map((item) => {
+		if (item.type === "help") {
+			return (
+				<NavGroup
+					key={item.id}
+					setSelectedItems={setSelectedItems}
+					setSelectedLevel={setSelectedLevel}
+					selectedLevel={selectedLevel}
+					selectedItems={selectedItems}
+					lastItem={lastItem}
+					remItems={remItems}
+					lastItemId={lastItemId}
+					item={item}
+				/>
+			);
+		}
+
 		switch (user.type) {
 			case "S":
 				return (

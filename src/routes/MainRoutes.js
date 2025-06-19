@@ -295,7 +295,11 @@ const MainRoutes = {
 			children: [
 				{
 					path: "",
-					element: <ContactUs />,
+					element: (
+						<AuthGuard requiredUserType="['A', 'P', 'C', 'O', 'S']">
+							<ContactUs />
+						</AuthGuard>
+					),
 				},
 			],
 		},
