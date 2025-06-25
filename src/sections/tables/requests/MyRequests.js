@@ -104,7 +104,7 @@ export default function MyRequestsTable({ openFilter }) {
 											variant="filled"
 											size="small"
 											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
-											sx={{ color: e.status === "P" ? "black" : "white" }}
+											sx={{ color: e.status === "P" ? "#252525" : "white" }}
 										/>
 									</TableCell>
 									<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>

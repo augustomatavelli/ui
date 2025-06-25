@@ -105,7 +105,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 									variant="filled"
 									size="small"
 									label={status === "A" ? "Ativo" : "Pendente"}
-									sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
+									sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
 								/>
 							</ListItem>
 							<ListItem disablePadding sx={{ width: "auto", pr: 0.75, pb: 0.75 }}>
@@ -138,7 +138,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							variant="filled"
 							sx={{
 								width: "100%",
-								color: "black",
+								color: "#252525",
 								justifyContent: "center",
 							}}
 						/>

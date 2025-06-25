@@ -98,23 +98,25 @@ export default function RequestsTable() {
 											sx={{
 												...(isSoon(schedule.date) ? pulseAnimation : {}),
 												backgroundColor: currentIndex % 2 === 0 ? "#424242" : "#9e9e9e",
-												color: index % 2 === 0 ? "white" : "black",
+												color: index % 2 === 0 ? "white" : "#252525",
 											}}
 										>
-											<TableCell align="center">{<Chip color="warning" variant="filled" size="large" label={`# ${e.id_request}`} sx={{ fontWeight: "bold", height: 30, color: "black" }} />}</TableCell>
-											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
+											<TableCell align="center">
+												{<Chip color="warning" variant="filled" size="large" label={`# ${e.id_request}`} sx={{ fontWeight: "bold", height: 30, color: "#252525" }} />}
+											</TableCell>
+											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18, fontWeight: "bold" }}>
 												{e.registration}
 											</TableCell>
-											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
+											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18, fontWeight: "bold" }}>
 												{e.model}
 											</TableCell>
-											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18, fontWeight: "bold" }}>
+											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18, fontWeight: "bold" }}>
 												{e.user}
 											</TableCell>
-											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18 }}>
+											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
 												{new Date(schedule.date).toLocaleString("pt-BR")}
 											</TableCell>
-											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "black	" : "white", fontSize: 18 }}>
+											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
 												{schedule.type === "landing_date" ? (
 													<Grid>
 														<Typography variant="h4" a sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>

@@ -100,7 +100,7 @@ const OperationDetails = () => {
 							variant="filled"
 							size="medium"
 							label={status === "D" ? "Disponível" : "Indisponível"}
-							sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
+							sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
 						/>
 					)
 				}

@@ -81,7 +81,7 @@ const admin = {
 			icon: icons.ToolOutlined,
 		},
 		{
-			id: "Programação",
+			id: "programação",
 			title: <FormattedMessage id="Programação" />,
 			type: "item",
 			url: "/live-requests",

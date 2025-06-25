@@ -20,7 +20,7 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 		const IconComponent = Icons[e.icon_name];
 		return (
 			<Card key={e.id_service} sx={{ minWidth: 200, marginRight: "1rem" }}>
-				<Box sx={{ position: "absolute", top: 8, left: 8 }}>
+				<Box>
 					<Checkbox checked={checked[e.name]} onChange={() => handleCheckboxChange(e)} onClick={(event) => event.stopPropagation()} />
 				</Box>
 				<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

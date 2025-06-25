@@ -105,7 +105,7 @@ export default function AddLinkUserAircraftTable() {
 											variant="filled"
 											size="small"
 											label={user.status === "P" ? "Pendente" : user.status === "A" ? "Ativo" : ""}
-											sx={{ color: user.status === "P" ? "black" : "white" }}
+											sx={{ color: user.status === "P" ? "#252525" : "white" }}
 										/>
 									</TableCell>
 								</TableRow>

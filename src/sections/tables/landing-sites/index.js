@@ -100,7 +100,7 @@ export default function LandingSitesTable() {
 											variant="filled"
 											size="small"
 											label={e.status === "P" ? "Pendente" : "Ativo"}
-											sx={{ color: e.status === "P" ? "black" : "white" }}
+											sx={{ color: e.status === "P" ? "#252525" : "white" }}
 										/>
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>

@@ -290,6 +290,28 @@ const MainRoutes = {
 			],
 		},
 		{
+			path: "reports",
+			element: <CommonLayout />,
+			children: [
+				{
+					path: "fuel",
+					element: (
+						<AuthGuard requiredUserType="['A', 'S']">
+							<UserDetails />
+						</AuthGuard>
+					),
+				},
+				{
+					path: "requests",
+					element: (
+						<AuthGuard requiredUserType="['A', 'S']">
+							<UserDetails />
+						</AuthGuard>
+					),
+				},
+			],
+		},
+		{
 			path: "/contact-us",
 			element: <CommonLayout />,
 			children: [

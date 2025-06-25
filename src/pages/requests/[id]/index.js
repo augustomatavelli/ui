@@ -220,7 +220,7 @@ const RequestDetails = () => {
 									variant="filled"
 									size="medium"
 									label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
-									sx={{ fontWeight: "bold", color: status === "P" ? "black" : "white" }}
+									sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
 								/>
 							</Grid>
 						)

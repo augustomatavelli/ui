@@ -172,7 +172,7 @@ export default function UsersTable({ openFilter }) {
 											variant="filled"
 											size="small"
 											label={user.type === "P" ? "Piloto" : user.type === "O" ? "Operador" : user.type === "A" ? "Administrador" : "Comum"}
-											sx={{ color: user.type === "C" ? "black" : "white" }}
+											sx={{ color: user.type === "C" ? "#252525" : "white" }}
 										/>
 									</TableCell>
 									<TableCell align="center">{user?.license ?? <Typography>-</Typography>}</TableCell>

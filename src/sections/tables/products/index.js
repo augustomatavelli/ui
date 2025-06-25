@@ -112,7 +112,7 @@ export default function ProductsTable({ openFilter }) {
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">
-										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "black" }} />
+										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "#252525" }} />
 									</TableCell>
 									<TableCell align="center">
 										<>
@@ -124,8 +124,8 @@ export default function ProductsTable({ openFilter }) {
 											}).format(e.price)}{" "}
 											<Tooltip title={e.hide_price === "S" ? "Mostrar" : "Esconder"}>
 												<IconButton
-													onClick={(e) => {
-														e.stopPropagation();
+													onClick={(event) => {
+														event.stopPropagation();
 														handleClickVisibility(e.id_product, e.hide_price);
 													}}
 													edge="end"

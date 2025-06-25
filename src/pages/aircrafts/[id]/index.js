@@ -130,7 +130,7 @@ const AircraftDetails = () => {
 												setSearchUser([]);
 											}
 										}}
-										sx={{ color: "black" }}
+										sx={{ color: "#252525" }}
 									>
 										Desvincular
 									</Button>

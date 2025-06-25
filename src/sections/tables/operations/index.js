@@ -104,7 +104,7 @@ export default function OperationsTable({ openFilter }) {
 									</TableCell>
 									<TableCell align="center">{e.name}</TableCell>
 									<TableCell align="center">
-										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "black" }} />
+										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "#252525" }} />
 									</TableCell>
 									<TableCell align="center">
 										{new Intl.NumberFormat("pt-BR", {
