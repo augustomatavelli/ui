@@ -46,6 +46,9 @@ const OperationDetails = Loadable(lazy(() => import("pages/operations/[id]")));
 // render - serviços
 const ListOrders = Loadable(lazy(() => import("pages/orders/list")));
 
+// render - relatórios
+const ReportFuelPeriod = Loadable(lazy(() => import("pages/reports/fuel")));
+
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
@@ -98,6 +101,27 @@ const MainRoutes = {
 						},
 						{
 							path: ":id",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<UserDetails />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "reports",
+					children: [
+						{
+							path: "fuel",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<ReportFuelPeriod />
+								</AuthGuard>
+							),
+						},
+						{
+							path: "requests",
 							element: (
 								<AuthGuard requiredUserType="['A', 'S']">
 									<UserDetails />
@@ -286,28 +310,6 @@ const MainRoutes = {
 				{
 					path: "",
 					element: <LiveRequests />,
-				},
-			],
-		},
-		{
-			path: "reports",
-			element: <CommonLayout />,
-			children: [
-				{
-					path: "fuel",
-					element: (
-						<AuthGuard requiredUserType="['A', 'S']">
-							<UserDetails />
-						</AuthGuard>
-					),
-				},
-				{
-					path: "requests",
-					element: (
-						<AuthGuard requiredUserType="['A', 'S']">
-							<UserDetails />
-						</AuthGuard>
-					),
 				},
 			],
 		},
