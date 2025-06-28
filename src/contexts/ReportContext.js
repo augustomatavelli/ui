@@ -8,19 +8,11 @@ export const ReportProvider = ({ children }) => {
 	const [loadingReport, setLoadingReport] = useState(false);
 	const [reportFuelList, setReportFuelList] = useState([]);
 	const [period, setPeriod] = useState("day");
-	const [reportDateFilter, setReportDateFilter] = useState({
-		start: dayjs().subtract(6, "day").startOf("day"),
-		end: dayjs().endOf("day"),
-	});
-	console.log(reportDateFilter);
+
 	const resetRequestStates = () => {
 		setLoadingReport(false);
 		setReportFuelList([]);
 		setPeriod("day");
-		setReportDateFilter({
-			start: dayjs().subtract(6, "day").startOf("day"),
-			end: dayjs().endOf("day"),
-		});
 	};
 
 	return (
@@ -33,8 +25,6 @@ export const ReportProvider = ({ children }) => {
 				resetRequestStates,
 				period,
 				setPeriod,
-				reportDateFilter,
-				setReportDateFilter,
 			}}
 		>
 			{children}

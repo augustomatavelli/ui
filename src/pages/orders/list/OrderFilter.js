@@ -78,7 +78,7 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 					)}
 				</Grid>
 				<Grid sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-					<Typography variant="subtitle1">Por período</Typography>
+					<Typography variant="subtitle1">Por data</Typography>
 					<Grid sx={{ display: "flex", gap: 1 }}>
 						<Stack
 							direction="row"

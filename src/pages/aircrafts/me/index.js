@@ -84,7 +84,7 @@ const MyAircrafts = () => {
 											return <Typography variant="subtitle1">Ordenar por</Typography>;
 										}
 
-										return <Typography variant="subtitle2">Ordenar por ({sortBy})</Typography>;
+										return <Typography variant="subtitle2">{sortBy}</Typography>;
 									}}
 									sx={{
 										height: 40,
