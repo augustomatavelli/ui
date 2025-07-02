@@ -1,11 +1,11 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { ReportFilter } from "./ReportFilter";
+import { ReportFuelFilter } from "./ReportFuelFilter";
 import dayjs from "dayjs";
 
 const allColumns = [
@@ -114,7 +114,7 @@ export function Row({ period }) {
 export default function ReportFuelTable({ openFilter }) {
 	const { reportFuel } = useReport();
 
-	const { reportFuelList, loadingReport, period, setPeriod } = useContext(ReportContext);
+	const { reportFuelList, loadingReport, period, setPeriod, reportTotalFuelList } = useContext(ReportContext);
 
 	const [selectedPeriod, setSelectedPeriod] = useState("last_7_days");
 	const [dateFilter, setDateFilter] = useState({ start: dayjs().subtract(6, "day").startOf("day"), end: dayjs().endOf("day") });
@@ -131,7 +131,7 @@ export default function ReportFuelTable({ openFilter }) {
 	return (
 		<>
 			<TableContainer>
-				{openFilter && <ReportFilter selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} dateFilter={dateFilter} setDateFilter={setDateFilter} />}
+				{openFilter && <ReportFuelFilter selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} dateFilter={dateFilter} setDateFilter={setDateFilter} />}
 				{/* <Grid
 					container
 					sx={{
@@ -197,6 +197,20 @@ export default function ReportFuelTable({ openFilter }) {
 							</TableRow>
 						)}
 					</TableBody>
+					<TableFooter>
+						<TableRow>
+							<TableCell />
+							<TableCell align="center">Total: {reportTotalFuelList.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
+							<TableCell align="center">
+								Total:{" "}
+								{Number(reportTotalFuelList.totalValue).toLocaleString("pt-BR", {
+									style: "currency",
+									currency: "BRL",
+								})}
+							</TableCell>
+							<TableCell />
+						</TableRow>
+					</TableFooter>
 				</Table>
 			</TableContainer>
 		</>

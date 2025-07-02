@@ -11,10 +11,11 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export const ReportFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
+export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
 	const theme = useTheme();
 
 	const periods = [
+		{ label: "Mês atual", value: "current_month" },
 		{ label: "Últimos 7 dias", value: "last_7_days" },
 		{ label: "Ontem", value: "yesterday" },
 		{ label: "Hoje", value: "today" },
@@ -29,6 +30,10 @@ export const ReportFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter, se
 		let endDate = null;
 
 		switch (value) {
+			case "current_month":
+				startDate = today.startOf("month");
+				endDate = today.endOf("month");
+				break;
 			case "last_7_days":
 				startDate = today.subtract(7, "day").startOf("day");
 				endDate = today.endOf("day");

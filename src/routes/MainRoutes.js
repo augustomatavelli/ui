@@ -48,6 +48,7 @@ const ListOrders = Loadable(lazy(() => import("pages/orders/list")));
 
 // render - relatórios
 const ReportFuelPeriod = Loadable(lazy(() => import("pages/reports/fuel")));
+const ReportRequestsPeriod = Loadable(lazy(() => import("pages/reports/requests")));
 
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
@@ -124,7 +125,7 @@ const MainRoutes = {
 							path: "requests",
 							element: (
 								<AuthGuard requiredUserType="['A', 'S']">
-									<UserDetails />
+									<ReportRequestsPeriod />
 								</AuthGuard>
 							),
 						},

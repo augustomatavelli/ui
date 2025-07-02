@@ -8,13 +8,14 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useReport = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingReport, setReportFuelList } = useContext(ReportContext);
+	const { setLoadingReport, setReportFuelList, setReportTotalFuelList } = useContext(ReportContext);
 
 	const reportFuel = async (period, start, end) => {
 		try {
 			setLoadingReport(true);
 			const response = await publicAxios.get(`/reports/fuel?period=${period}&start=${start}&end=${end}`);
 			setReportFuelList(response.data.items);
+			setReportTotalFuelList(response.data.total);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -34,7 +35,31 @@ const useReport = () => {
 		}
 	};
 
-	return { reportFuel };
+	const reportRequests = async (period, start, end) => {
+		try {
+			setLoadingReport(true);
+			const response = await publicAxios.get(`/reports/requests?period=${period}&start=${start}&end=${end}`);
+			console.log(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingReport(false);
+		}
+	};
+
+	return { reportFuel, reportRequests };
 };
 
 export default useReport;

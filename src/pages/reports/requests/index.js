@@ -2,10 +2,10 @@ import MainCard from "components/MainCard";
 import UserContext from "contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import ReportFuelTable from "sections/tables/reports/fuel";
 import { FilterOutlined } from "@ant-design/icons";
+import ReportRequestsTable from "sections/tables/reports/requests";
 
-const ReportFuelPeriod = () => {
+const ReportRequestsPeriod = () => {
 	const { user } = useContext(UserContext);
 
 	const [openFilter, setOpenFilter] = useState(false);
@@ -22,7 +22,7 @@ const ReportFuelPeriod = () => {
 	return (
 		<MainCard
 			content={false}
-			title="Relatório Combustível"
+			title="Relatório Solicitações"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
 				<FilterOutlined
@@ -33,9 +33,9 @@ const ReportFuelPeriod = () => {
 				/>
 			}
 		>
-			<ReportFuelTable openFilter={openFilter} />
+			<ReportRequestsTable openFilter={openFilter} />
 		</MainCard>
 	);
 };
 
-export default ReportFuelPeriod;
+export default ReportRequestsPeriod;
