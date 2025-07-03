@@ -192,7 +192,7 @@ export default function ReportFuelTable({ openFilter }) {
 						) : (
 							<TableRow>
 								<TableCell colSpan={4} align="center">
-									<Typography variant="h5">Nenhum dado encontrado</Typography>
+									<Typography variant="h5">Nenhum registro encontrado</Typography>
 								</TableCell>
 							</TableRow>
 						)}
@@ -200,10 +200,10 @@ export default function ReportFuelTable({ openFilter }) {
 					<TableFooter>
 						<TableRow>
 							<TableCell />
-							<TableCell align="center">Total: {reportTotalFuelList.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
+							<TableCell align="center">Total: {reportTotalFuelList?.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
 							<TableCell align="center">
 								Total:{" "}
-								{Number(reportTotalFuelList.totalValue).toLocaleString("pt-BR", {
+								{Number(reportTotalFuelList?.totalValue ? reportTotalFuelList.totalValue : 0).toLocaleString("pt-BR", {
 									style: "currency",
 									currency: "BRL",
 								})}

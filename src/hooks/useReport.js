@@ -8,7 +8,7 @@ import { ErrorMessages } from "utils/errors-messages/errors-messages";
 const useReport = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingReport, setReportFuelList, setReportTotalFuelList } = useContext(ReportContext);
+	const { setLoadingReport, setReportFuelList, setReportTotalFuelList, setReportRequestsList } = useContext(ReportContext);
 
 	const reportFuel = async (period, start, end) => {
 		try {
@@ -39,7 +39,7 @@ const useReport = () => {
 		try {
 			setLoadingReport(true);
 			const response = await publicAxios.get(`/reports/requests?period=${period}&start=${start}&end=${end}`);
-			console.log(response.data);
+			setReportRequestsList(response.data.items);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

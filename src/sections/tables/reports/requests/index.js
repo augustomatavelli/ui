@@ -22,90 +22,14 @@ const allColumns = [
 ];
 
 export function Row({ period }) {
-	const [open, setOpen] = useState(false);
-
 	return (
 		<>
 			<TableRow hover>
 				<TableCell align="center">{period.date}</TableCell>
-				<TableCell align="center">{period.totalQuantity} L</TableCell>
-				<TableCell align="center">
-					{Number(period.totalValue).toLocaleString("pt-BR", {
-						style: "currency",
-						currency: "BRL",
-					})}
-				</TableCell>
-				<TableCell align="center">
-					<IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
-				</TableCell>
-			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-					<Collapse in={open} timeout="auto" unmountOnExit>
-						<Box sx={{ margin: 1 }}>
-							{period.fuelUps && period.fuelUps.length > 0 ? (
-								<Table size="small" aria-label="purchases">
-									<TableHead
-										sx={{
-											backgroundColor: "#666666",
-											"& .MuiTableRow-root": {
-												"&:hover": {
-													backgroundColor: "transparent",
-													cursor: "default",
-												},
-											},
-										}}
-									>
-										<TableRow>
-											<TableCell align="center" sx={{ color: "white" }}>
-												Solicitação
-											</TableCell>
-											<TableCell align="center" sx={{ color: "white" }}>
-												Aeronave
-											</TableCell>
-											<TableCell align="center" sx={{ color: "white" }}>
-												Quantidade
-											</TableCell>
-											<TableCell align="center" sx={{ color: "white" }}>
-												Preço por litro
-											</TableCell>
-											<TableCell align="center" sx={{ color: "white" }}>
-												Valor Total
-											</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{period.fuelUps.map((fuelUp) => (
-											<TableRow key={fuelUp.id_request}>
-												<TableCell align="center">#{fuelUp.id_request}</TableCell>
-												<TableCell align="center">{fuelUp.aircraft}</TableCell>
-												<TableCell align="center">{fuelUp.quantity} L</TableCell>
-												<TableCell align="center">
-													{Number(fuelUp.price).toLocaleString("pt-BR", {
-														style: "currency",
-														currency: "BRL",
-													})}
-												</TableCell>
-												<TableCell align="center">
-													{Number(fuelUp.value).toLocaleString("pt-BR", {
-														style: "currency",
-														currency: "BRL",
-													})}
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							) : (
-								<Typography variant="body2" color="textSecondary" sx={{ ml: 2, mb: 1 }}>
-									Nenhum solicitação para este período.
-								</Typography>
-							)}
-						</Box>
-					</Collapse>
-				</TableCell>
+				<TableCell align="center">{0}</TableCell>
+				<TableCell align="center">{period.statuses.find((e) => e.status === "A")?.total ?? 0}</TableCell>
+				<TableCell align="center">{period.statuses.find((e) => e.status === "F")?.total ?? 0}</TableCell>
+				<TableCell align="center">{period.statuses.find((e) => e.status === "C")?.total ?? 0}</TableCell>
 			</TableRow>
 		</>
 	);
@@ -114,9 +38,9 @@ export function Row({ period }) {
 export default function ReportRequestsTable({ openFilter }) {
 	const { reportRequests } = useReport();
 
-	const { reportFuelList, loadingReport, period, setPeriod, reportTotalFuelList } = useContext(ReportContext);
+	const { reportRequestsList, loadingReport, period, setPeriod } = useContext(ReportContext);
 
-	const [selectedPeriod, setSelectedPeriod] = useState("last_7_days");
+	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
 	const [dateFilter, setDateFilter] = useState({ start: dayjs().subtract(6, "day").startOf("day"), end: dayjs().endOf("day") });
 
 	const handleChange = (event) => {
@@ -179,38 +103,25 @@ export default function ReportRequestsTable({ openFilter }) {
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Data</TableCell>
-							<TableCell align="center">Quantidade</TableCell>
-							<TableCell align="center">Valor Total</TableCell>
-							<TableCell align="center" />
+							<TableCell align="center">Total</TableCell>
+							<TableCell align="center">Abertas</TableCell>
+							<TableCell align="center">Finalizadas</TableCell>
+							<TableCell align="center">Canceladas</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{loadingReport ? (
 							<Loader />
-						) : reportFuelList && reportFuelList.length > 0 ? (
-							reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
+						) : reportRequestsList && reportRequestsList.length > 0 ? (
+							reportRequestsList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 						) : (
 							<TableRow>
-								<TableCell colSpan={4} align="center">
-									<Typography variant="h5">Nenhum dado encontrado</Typography>
+								<TableCell colSpan={5} align="center">
+									<Typography variant="h5">Nenhum registro encontrado</Typography>
 								</TableCell>
 							</TableRow>
 						)}
 					</TableBody>
-					<TableFooter>
-						<TableRow>
-							<TableCell />
-							<TableCell align="center">Total: {reportTotalFuelList.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
-							<TableCell align="center">
-								Total:{" "}
-								{Number(reportTotalFuelList.totalValue).toLocaleString("pt-BR", {
-									style: "currency",
-									currency: "BRL",
-								})}
-							</TableCell>
-							<TableCell />
-						</TableRow>
-					</TableFooter>
 				</Table>
 			</TableContainer>
 		</>
