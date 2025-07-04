@@ -145,7 +145,6 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		}
 	}, [inspections]);
 
-	console.log(objCompliance);
 	return (
 		<Dialog
 			open={open}

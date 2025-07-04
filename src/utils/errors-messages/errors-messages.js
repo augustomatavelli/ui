@@ -30,4 +30,5 @@ export const ErrorMessages = {
 	schedule_service_capacity: "Hospedagem indisponível para a data selecionada",
 	dates_missing: "Data de pouso ou decolagem não informada",
 	failed_inspection: "Itens de inspeção não conforme precisam de foto ou observação",
+	fuel_without_amount: "Atualize a quantidade de combustível abastecida",
 };

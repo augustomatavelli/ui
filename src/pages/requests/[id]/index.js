@@ -1,14 +1,11 @@
-// material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton, IconButton, Tooltip } from "@mui/material";
-
-// project import
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton, IconButton, Tooltip, Card, useTheme } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState, useCallback } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import RequestContext from "contexts/RequestContext";
 import useRequest from "hooks/useRequest";
 import dayjs from "dayjs";
-import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined, FilePdfOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined, PlusOutlined, FilePdfOutlined, FileSearchOutlined } from "@ant-design/icons";
 import Loader from "components/Loader";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -23,6 +20,7 @@ import OperationsContext from "contexts/OperationContext";
 import { OperationsList } from "sections/apps/requests/OperationsList";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import UserContext from "contexts/UserContext";
+import AlertChecklistView from "sections/apps/orders/AlertChecklistView";
 
 const RequestDetails = () => {
 	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
@@ -36,16 +34,34 @@ const RequestDetails = () => {
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
+	const [openChecklists, setOpenChecklists] = useState(false);
+	const [open, setOpen] = useState(false);
 	const [editRequest, setEditRequest] = useState({});
 	const [openEditInput, setOpenEditInput] = useState({});
 	const [openAddProducts, setOpenAddProducts] = useState(false);
 	const [openAddServices, setOpenAddServices] = useState(false);
 	const [checked, setChecked] = useState({});
 	const [openAlert, setOpenAlert] = useState(false);
+	const [selectedOrder, setSelectedOrder] = useState();
 
 	const { id } = useParams();
+	const theme = useTheme();
 
-	const { id_request, landing_date, takeoff_date, status, created_at, id_user, user_name, type, registration, landing_site, products, services } = requestDetails;
+	const {
+		id_request,
+		landing_date,
+		takeoff_date,
+		status,
+		created_at,
+		id_user,
+		user_name,
+		registration,
+		landing_site,
+		id_landing_order,
+		id_landing_compliance,
+		id_takeoff_order,
+		id_takeoff_compliance,
+	} = requestDetails;
 
 	const resetStates = () => {
 		setRequestDetails({});
@@ -195,6 +211,16 @@ const RequestDetails = () => {
 
 	const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
+	};
+
+	const handleOpenChecklist = (event, id_order) => {
+		event.stopPropagation();
+		setOpen(true);
+		setSelectedOrder(id_order);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	useEffect(() => {
@@ -549,6 +575,80 @@ const RequestDetails = () => {
 											</Grid>
 										</ListItem>
 										<Divider />
+										<ListItem onClick={() => setOpenChecklists(!openChecklists)} sx={{ cursor: "pointer" }}>
+											<Grid container spacing={3} alignItems="center">
+												<Grid item xs={6}>
+													<Typography color="secondary">Checklists</Typography>
+												</Grid>
+												<Grid item xs={6} display="flex" justifyContent="flex-end">
+													<Button type="secondary" onClick={() => setOpenChecklists(!openChecklists)} color="secondary">
+														{openChecklists ? <UpOutlined /> : <DownOutlined />}
+													</Button>
+												</Grid>
+												<Grid item xs={12}>
+													<Collapse in={openChecklists}>
+														<Box sx={{ padding: 0 }}>
+															<Grid>
+																<Box
+																	sx={{
+																		display: "flex",
+																		overflowX: "auto",
+																		gap: 2,
+																		padding: "1rem",
+																		whiteSpace: "nowrap",
+																		"&::-webkit-scrollbar": {
+																			height: "8px",
+																		},
+																		"&::-webkit-scrollbar-thumb": {
+																			backgroundColor: "#888",
+																		},
+																		"&::-webkit-scrollbar-thumb:hover": {
+																			backgroundColor: "#555",
+																		},
+																	}}
+																>
+																	{id_landing_order && (
+																		<Card
+																			sx={{
+																				p: 2,
+																				width: "200px",
+																				border: "2px solid",
+																				borderColor:
+																					id_landing_compliance === 0 ? theme.palette.secondary.light : id_landing_compliance === 1 ? theme.palette.success.light : theme.palette.error.light,
+																			}}
+																			onClick={(event) => handleOpenChecklist(event, id_landing_order)}
+																		>
+																			<Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+																				<FileSearchOutlined style={{ fontSize: "20px" }} />
+																				Inspeção pós-pouso
+																			</Grid>
+																		</Card>
+																	)}
+																	{id_takeoff_order && (
+																		<Card
+																			sx={{
+																				p: 2,
+																				width: "200px",
+																				border: "2px solid",
+																				borderColor:
+																					id_takeoff_compliance === 0 ? theme.palette.secondary.light : id_takeoff_compliance === 1 ? theme.palette.success.light : theme.palette.error.light,
+																			}}
+																			onClick={(event) => handleOpenChecklist(event, id_takeoff_order)}
+																		>
+																			<Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+																				<FileSearchOutlined style={{ fontSize: "20px" }} />
+																				Inspeção pré-decolagem
+																			</Grid>
+																		</Card>
+																	)}
+																</Box>
+															</Grid>
+														</Box>
+													</Collapse>
+												</Grid>
+											</Grid>
+										</ListItem>
+										<Divider />
 									</List>
 									<Box sx={{ p: 2.5 }}>
 										<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
@@ -586,6 +686,7 @@ const RequestDetails = () => {
 						</Grid>
 					</Grid>
 				</MainCard>
+				<AlertChecklistView open={open} handleClose={handleClose} selectedOrder={selectedOrder} />
 			</Grid>
 		</>
 	);
