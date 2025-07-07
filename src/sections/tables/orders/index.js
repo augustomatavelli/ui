@@ -12,12 +12,14 @@ import { dispatch } from "store";
 import { EditOutlined, SaveOutlined, FileSearchOutlined } from "@ant-design/icons";
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
+import InspectionContext from "contexts/InspectionsContext";
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
 	const { updateRequest } = useRequest();
 
 	const { orders, loadingOrders } = useContext(OrderContext);
+	const { loadingInspection } = useContext(InspectionContext);
 
 	const [editFuel, setEditFuel] = useState(false);
 	const [editFuelValue, setEditFuelValue] = useState("");
@@ -81,7 +83,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOrders ? (
+						{loadingOrders || loadingInspection ? (
 							<Loader />
 						) : orders.length > 0 ? (
 							orders.map((item, indexItem) =>

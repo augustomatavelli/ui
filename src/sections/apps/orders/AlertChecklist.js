@@ -271,8 +271,8 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 						<Button
 							color="primary"
 							variant="contained"
-							onClick={() => {
-								handleUpdate(selectedOrder, objCompliance);
+							onClick={async () => {
+								await handleUpdate(selectedOrder, objCompliance);
 							}}
 							autoFocus
 						>
