@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme } from "@mui/material";
+import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme, CircularProgress } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
 import ScheduleFormLanding from "./ScheduleFormLanding";
 import { useNavigate } from "react-router";
@@ -15,7 +15,7 @@ import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();
 
-	const { setRequestResume, requestResume } = useContext(RequestContext);
+	const { setRequestResume, requestResume, loadingRequest } = useContext(RequestContext);
 
 	const [activeStep, setActiveStep] = useState(0);
 	const [errorIndex, setErrorIndex] = useState(null);
@@ -191,7 +191,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 							</Button>
 						) : (
 							<Button variant="contained" onClick={handleCreateRequest} sx={{ my: 3, ml: 1 }}>
-								Confirmar
+								{loadingRequest ? <CircularProgress size={20} /> : "Confirmar"}
 							</Button>
 						)}
 					</AnimateButton>

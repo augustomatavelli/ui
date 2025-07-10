@@ -22,12 +22,13 @@ const useAuth = () => {
 	const { resetProductStates } = useContext(ProductsContext);
 	const { resetRequestStates } = useContext(RequestContext);
 	const { user, setUser, resetUserStates } = useContext(UserContext);
-	const { dispatchAuth, setLoadingResetPassword, setResetToken } = useContext(AuthContext);
+	const { dispatchAuth, setLoadingResetPassword, setResetToken, setLoadingLogin } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
 	const login = async (data) => {
 		try {
+			setLoadingLogin(true);
 			const response = await authAxios.post("/auth/login", data);
 			const { token, name, userType, userId, userStatus } = response.data;
 			setSession(token);
@@ -60,6 +61,8 @@ const useAuth = () => {
 					close: true,
 				})
 			);
+		} finally {
+			setLoadingLogin(false);
 		}
 	};
 

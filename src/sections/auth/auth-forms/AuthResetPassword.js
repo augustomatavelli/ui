@@ -1,23 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// material-ui
-import { Box, Button, FormControl, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
-
-// third party
+import { Box, Button, CircularProgress, FormControl, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useContext } from "react";
-
-// project import
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
-
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import AuthContext from "contexts/AuthContext";
 import useAuth from "hooks/useAuth";
@@ -25,7 +16,7 @@ import useAuth from "hooks/useAuth";
 const AuthResetPassword = () => {
 	const { resetPassword } = useAuth();
 
-	const { resetToken, emailSent } = useContext(AuthContext);
+	const { resetToken, emailSent, loadingResetPassword } = useContext(AuthContext);
 
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
@@ -152,7 +143,7 @@ const AuthResetPassword = () => {
 						<Grid item xs={12}>
 							<AnimateButton>
 								<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-									Atualizar
+									{loadingResetPassword ? <CircularProgress size={20} /> : "Atualizar"}
 								</Button>
 							</AnimateButton>
 						</Grid>

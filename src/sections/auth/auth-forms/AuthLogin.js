@@ -1,30 +1,22 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
-
-// material-ui
-import { Button, FormHelperText, Grid, Link, InputAdornment, InputLabel, OutlinedInput, Stack } from "@mui/material";
-
-// third party
+import { Button, FormHelperText, Grid, Link, InputAdornment, InputLabel, OutlinedInput, Stack, CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import { Formik } from "formik";
-
-// project import
 import useScriptRef from "hooks/useScriptRef";
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
-
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import useAuth from "hooks/useAuth";
-
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-
-// ============================|| JWT - LOGIN ||============================ //
+import AuthContext from "contexts/AuthContext";
 
 const AuthLogin = ({ isDemo = false }) => {
 	const { login } = useAuth();
+
+	const { loadingLogin } = useContext(AuthContext);
 
 	const scriptedRef = useScriptRef();
 
@@ -153,8 +145,8 @@ const AuthLogin = ({ isDemo = false }) => {
 							)}
 							<Grid item xs={12}>
 								<AnimateButton>
-									<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-										Login
+									<Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
+										{loadingLogin ? <CircularProgress size={20} /> : "Login"}
 									</Button>
 								</AnimateButton>
 							</Grid>

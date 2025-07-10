@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
 	const { user } = useContext(UserContext);
 
 	const [state, dispatchAuth] = useReducer(authReducer, initialState);
+	const [loadingLogin, setLoadingLogin] = useState(false);
 	const [loadingResetPassword, setLoadingResetPassword] = useState(false);
 	const [emailSent, setEmailSent] = useState("");
 	const [resetToken, setResetToken] = useState("");
@@ -95,7 +96,9 @@ export const AuthProvider = ({ children }) => {
 	const resetAuthState = () => {};
 
 	return (
-		<AuthContext.Provider value={{ ...state, dispatchAuth, resetAuthState, loadingResetPassword, setLoadingResetPassword, emailSent, setEmailSent, resetToken, setResetToken }}>
+		<AuthContext.Provider
+			value={{ ...state, dispatchAuth, resetAuthState, loadingResetPassword, setLoadingResetPassword, emailSent, setEmailSent, resetToken, setResetToken, loadingLogin, setLoadingLogin }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

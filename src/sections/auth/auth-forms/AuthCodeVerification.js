@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Button, Grid } from "@mui/material";
+import { Button, CircularProgress, Grid } from "@mui/material";
 
 // third-party
 import OtpInput from "react18-input-otp";
@@ -19,7 +19,7 @@ import { useNavigate } from "react-router";
 const AuthCodeVerification = () => {
 	const { checkResetPasswordCode } = useAuth();
 
-	const { emailSent } = useContext(AuthContext);
+	const { emailSent, loadingResetPassword } = useContext(AuthContext);
 
 	const theme = useTheme();
 	const [otp, setOtp] = useState();
@@ -83,7 +83,7 @@ const AuthCodeVerification = () => {
 			<Grid item xs={12}>
 				<AnimateButton>
 					<Button disableElevation fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
-						Verificar
+						{loadingResetPassword ? <CircularProgress size={20} /> : "Verificar"}
 					</Button>
 				</AnimateButton>
 			</Grid>

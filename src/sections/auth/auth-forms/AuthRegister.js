@@ -1,30 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// material-ui
-import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, RadioGroup, FormControlLabel, Radio, Checkbox } from "@mui/material";
-
-// third party
+import { Button, FormHelperText, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, RadioGroup, FormControlLabel, Radio, Checkbox, CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import { Formik } from "formik";
-
-// project import
 import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
-
 import useScriptRef from "hooks/useScriptRef";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import InputMask from "react-input-mask";
 import useUser from "hooks/useUser";
-
-// ============================|| JWT - REGISTER ||============================ //
+import UserContext from "contexts/UserContext";
 
 const AuthRegister = () => {
 	const { createUser } = useUser();
+
+	const { loadingUser } = useContext(UserContext);
 
 	const scriptedRef = useScriptRef();
 	const navigate = useNavigate();
@@ -262,8 +254,8 @@ const AuthRegister = () => {
 							)}
 							<Grid item xs={12}>
 								<AnimateButton>
-									<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-										Cadastrar
+									<Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
+										{loadingUser ? <CircularProgress size={20} /> : "Cadastrar"}
 									</Button>
 								</AnimateButton>
 							</Grid>
