@@ -145,7 +145,7 @@ const AuthLogin = ({ isDemo = false }) => {
 							)}
 							<Grid item xs={12}>
 								<AnimateButton>
-									<Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
+									<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
 										{loadingLogin ? <CircularProgress size={20} /> : "Login"}
 									</Button>
 								</AnimateButton>

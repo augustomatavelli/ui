@@ -82,7 +82,7 @@ const AuthCodeVerification = () => {
 			</Grid>
 			<Grid item xs={12}>
 				<AnimateButton>
-					<Button disableElevation fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
+					<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
 						{loadingResetPassword ? <CircularProgress size={20} /> : "Verificar"}
 					</Button>
 				</AnimateButton>
