@@ -1,13 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-
-// material-ui
 import { useTheme } from "@mui/material/styles";
 import { Button, CircularProgress, Grid } from "@mui/material";
-
-// third-party
 import OtpInput from "react18-input-otp";
-
-// project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { ThemeMode } from "config";
 import useAuth from "hooks/useAuth";
@@ -82,7 +76,7 @@ const AuthCodeVerification = () => {
 			</Grid>
 			<Grid item xs={12}>
 				<AnimateButton>
-					<Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
+					<Button disableElevation disabled={loadingResetPassword} fullWidth size="large" type="submit" variant="contained" onClick={handleVerify}>
 						{loadingResetPassword ? <CircularProgress size={20} /> : "Verificar"}
 					</Button>
 				</AnimateButton>
