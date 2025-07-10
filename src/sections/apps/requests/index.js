@@ -190,7 +190,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 								Próximo
 							</Button>
 						) : (
-							<Button variant="contained" onClick={handleCreateRequest} sx={{ my: 3, ml: 1 }}>
+							<Button variant="contained" disabled={loadingRequest} onClick={handleCreateRequest} sx={{ my: 3, ml: 1 }}>
 								{loadingRequest ? <CircularProgress size={20} /> : "Confirmar"}
 							</Button>
 						)}
