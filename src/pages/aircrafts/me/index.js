@@ -15,6 +15,7 @@ import useAircraft from "hooks/useAircraft";
 import UserContext from "contexts/UserContext";
 import Loader from "components/Loader";
 import SearchAircraft from "sections/apps/aircrafts/SearchAircraft";
+import RequestContext from "contexts/RequestContext";
 
 const allColumns = [
 	{
@@ -36,6 +37,7 @@ const MyAircrafts = () => {
 
 	const { searchAircrafts, totalSearchAircrafts, loadingAircraft } = useContext(AircraftContext);
 	const { user } = useContext(UserContext);
+	const { setRequestResume } = useContext(RequestContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -61,6 +63,7 @@ const MyAircrafts = () => {
 	};
 
 	useEffect(() => {
+		setRequestResume({});
 		searchAllAircrafts(search, page);
 	}, [search, page, reload]);
 

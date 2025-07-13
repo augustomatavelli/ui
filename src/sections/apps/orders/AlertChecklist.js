@@ -10,7 +10,7 @@ import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled, EditOutlined } 
 export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 
-	const { inspections } = useContext(InspectionContext);
+	const { inspections, loadingInspection } = useContext(InspectionContext);
 
 	const [objCompliance, setObjCompliance] = useState({});
 
@@ -265,10 +265,11 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 						})}
 					</Stack>
 					<Stack direction="row" spacing={2} justifyContent="end" sx={{ width: 1 }}>
-						<Button onClick={() => handleClose(false)} color="secondary" variant="outlined">
+						<Button disabled={loadingInspection} onClick={() => handleClose(false)} color="secondary" variant="outlined">
 							Fechar
 						</Button>
 						<Button
+							disabled={loadingInspection}
 							color="primary"
 							variant="contained"
 							onClick={async () => {

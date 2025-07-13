@@ -19,7 +19,7 @@ import AlertFinalizeRequest from "sections/apps/requests/AlertFinalizeRequest";
 export default function RequestsTable({ openFilter }) {
 	const { findAllRequests, updateStatus } = useRequest();
 
-	const { requests, totalRequests, loadingRequest } = useContext(RequestContext);
+	const { requests, totalRequests, loadingRequest, setRequestResume } = useContext(RequestContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -62,6 +62,8 @@ export default function RequestsTable({ openFilter }) {
 				close: false,
 			})
 		);
+		setOpenFinalizeRequest(false);
+		setRequestResume({});
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
