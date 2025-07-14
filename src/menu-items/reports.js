@@ -10,14 +10,14 @@ const reports = {
 	type: "reports",
 	children: [
 		{
-			id: "fuel",
+			id: "reportFuel",
 			title: <FormattedMessage id="Combustível" />,
 			type: "item",
 			url: "/reports/fuel",
 			icon: icons.LineChartOutlined,
 		},
 		{
-			id: "requests",
+			id: "reportRequests",
 			title: <FormattedMessage id="Solicitações" />,
 			type: "item",
 			url: "/reports/requests",

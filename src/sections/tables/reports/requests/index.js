@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Chip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import useReport from "hooks/useReport";
@@ -22,14 +22,24 @@ const allColumns = [
 ];
 
 export function Row({ period }) {
+	const total = period.statuses.reduce((acc, status) => acc + status.total, 0);
+
 	return (
 		<>
 			<TableRow hover>
 				<TableCell align="center">{period.date}</TableCell>
-				<TableCell align="center">{0}</TableCell>
-				<TableCell align="center">{period.statuses.find((e) => e.status === "A")?.total ?? 0}</TableCell>
-				<TableCell align="center">{period.statuses.find((e) => e.status === "F")?.total ?? 0}</TableCell>
-				<TableCell align="center">{period.statuses.find((e) => e.status === "C")?.total ?? 0}</TableCell>
+				<TableCell align="center">
+					<Chip color="primary" label={total} />
+				</TableCell>
+				<TableCell align="center">
+					<Chip color="warning" sx={{ color: "black" }} label={period.statuses.find((e) => e.status === "A")?.total ?? 0} />
+				</TableCell>
+				<TableCell align="center">
+					<Chip color="success" label={period.statuses.find((e) => e.status === "F")?.total ?? 0} />
+				</TableCell>
+				<TableCell align="center">
+					<Chip color="error" label={period.statuses.find((e) => e.status === "C")?.total ?? 0} />
+				</TableCell>
 			</TableRow>
 		</>
 	);
