@@ -7,6 +7,10 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ReportFuelFilter } from "./ReportFuelFilter";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const allColumns = [
 	{
@@ -117,7 +121,10 @@ export default function ReportFuelTable({ openFilter }) {
 	const { reportFuelList, loadingReport, period, setPeriod, reportTotalFuelList } = useContext(ReportContext);
 
 	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
-	const [dateFilter, setDateFilter] = useState({ start: dayjs().tz("America/Sao_Paulo").startOf("month"), end: dayjs().tz("America/Sao_Paulo").endOf("month") });
+	const [dateFilter, setDateFilter] = useState({
+		start: dayjs().tz("America/Sao_Paulo").startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		end: dayjs().tz("America/Sao_Paulo").endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+	});
 
 	const handleChange = (event) => {
 		setPeriod(event.target.value);

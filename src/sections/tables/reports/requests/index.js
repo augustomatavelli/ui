@@ -51,7 +51,10 @@ export default function ReportRequestsTable({ openFilter }) {
 	const { reportRequestsList, loadingReport, period, setPeriod } = useContext(ReportContext);
 
 	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
-	const [dateFilter, setDateFilter] = useState({ start: dayjs().subtract(6, "day").startOf("day"), end: dayjs().endOf("day") });
+	const [dateFilter, setDateFilter] = useState({
+		start: dayjs().tz("America/Sao_Paulo").startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		end: dayjs().tz("America/Sao_Paulo").endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+	});
 
 	const handleChange = (event) => {
 		setPeriod(event.target.value);
