@@ -116,8 +116,8 @@ export default function ReportFuelTable({ openFilter }) {
 
 	const { reportFuelList, loadingReport, period, setPeriod, reportTotalFuelList } = useContext(ReportContext);
 
-	const [selectedPeriod, setSelectedPeriod] = useState("last_7_days");
-	const [dateFilter, setDateFilter] = useState({ start: dayjs().subtract(6, "day").startOf("day"), end: dayjs().endOf("day") });
+	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
+	const [dateFilter, setDateFilter] = useState({ start: dayjs().tz("America/Sao_Paulo").startOf("month"), end: dayjs().tz("America/Sao_Paulo").endOf("month") });
 
 	const handleChange = (event) => {
 		setPeriod(event.target.value);
@@ -197,20 +197,22 @@ export default function ReportFuelTable({ openFilter }) {
 							</TableRow>
 						)}
 					</TableBody>
-					<TableFooter>
-						<TableRow>
-							<TableCell />
-							<TableCell align="center">Total: {reportTotalFuelList?.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
-							<TableCell align="center">
-								Total:{" "}
-								{Number(reportTotalFuelList?.totalValue ? reportTotalFuelList.totalValue : 0).toLocaleString("pt-BR", {
-									style: "currency",
-									currency: "BRL",
-								})}
-							</TableCell>
-							<TableCell />
-						</TableRow>
-					</TableFooter>
+					{!loadingReport && (
+						<TableFooter>
+							<TableRow>
+								<TableCell />
+								<TableCell align="center">Total: {reportTotalFuelList?.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
+								<TableCell align="center">
+									Total:{" "}
+									{Number(reportTotalFuelList?.totalValue ? reportTotalFuelList.totalValue : 0).toLocaleString("pt-BR", {
+										style: "currency",
+										currency: "BRL",
+									})}
+								</TableCell>
+								<TableCell />
+							</TableRow>
+						</TableFooter>
+					)}
 				</Table>
 			</TableContainer>
 		</>
