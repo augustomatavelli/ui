@@ -1,27 +1,17 @@
 // material-ui
 import { useState } from "react";
-
-// material-ui
 import { Box, Button, Divider, Grid, InputLabel, Stack, TextField, Chip, InputAdornment, FormHelperText, OutlinedInput } from "@mui/material";
-
-// third party
 import * as Yup from "yup";
 import { Formik } from "formik";
-
-// project import
 import MainCard from "components/MainCard";
 import IconButton from "components/@extended/IconButton";
-
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { useContext } from "react";
 import UserContext from "contexts/UserContext";
-
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import useUser from "hooks/useUser";
 import { useNavigate } from "react-router";
-
-// ==============================|| TAB - PERSONAL ||============================== //
 
 const UserProfile = () => {
 	const { updatePassword } = useUser();

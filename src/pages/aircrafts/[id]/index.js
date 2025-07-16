@@ -233,7 +233,7 @@ const AircraftDetails = () => {
 												{!operators || operators.length === 0 ? (
 													<Typography>Nenhum operador vinculado à aeronave.</Typography>
 												) : (
-													<Stack direction="row" spacing={1} flexWrap="wrap">
+													<Stack direction="row" spacing={1}>
 														{operators.map((operator) => {
 															return user.type === "S" || user.type === "A" ? (
 																<Chip

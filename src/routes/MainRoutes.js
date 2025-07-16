@@ -192,14 +192,14 @@ const MainRoutes = {
 								</AuthGuard>
 							),
 						},
-						/* {
+						{
 							path: ":id",
 							element: (
 								<AuthGuard requiredUserType="['A', 'S']">
 									<OperatorDetails />
 								</AuthGuard>
 							),
-						}, */
+						},
 					],
 				},
 				{

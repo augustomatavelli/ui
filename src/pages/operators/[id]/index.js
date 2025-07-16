@@ -1,45 +1,69 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse } from "@mui/material";
-
-// project import
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, OutlinedInput } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
-import UserContext from "contexts/UserContext";
-import useUser from "hooks/useUser";
 import Loader from "components/Loader";
-import dayjs from "dayjs";
-import { UpOutlined, DownOutlined } from "@ant-design/icons";
-import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
-import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import OperatorContext from "contexts/OperatorContext";
+import useOperator from "hooks/useOperator";
+import { formatCpfCnpj } from "utils/format/formatDoc";
+import { EditOutlined } from "@ant-design/icons";
+import InputMask from "react-input-mask";
 
 const OperatorDetails = () => {
-	const { findOneUserById, deleteUser } = useUser();
+	const { findOneOperatorById, updateOperator } = useOperator();
 
-	const { loadingUser, userDetails, setUserDetails } = useContext(UserContext);
+	const { loadingOperator, operatorDetails, setOperatorDetails } = useContext(OperatorContext);
 
-	const [openUserAircrafts, setOpenUserAircrafts] = useState(false);
-	const [openAlert, setOpenAlert] = useState(false);
+	const [editOperator, setEditOperator] = useState({});
+	const [openEditInput, setOpenEditInput] = useState({});
 
 	const { id } = useParams();
 
-	const { name, email, mobile, type, license, status, created_at } = userDetails;
+	const { name, email, mobile, cpf, cnpj } = operatorDetails;
 
-	const handleAlertClose = () => {
-		setOpenAlert(!openAlert);
+	const handleUpdate = (field) => {
+		setOpenEditInput((prev) => {
+			const newState = { ...prev };
+
+			if (newState[field]) {
+				delete newState[field];
+			} else {
+				newState[field] = true;
+			}
+
+			return newState;
+		});
+	};
+
+	const handleChangeValue = (field, value) => {
+		setEditOperator((prev) => {
+			const newState = { ...prev };
+			newState[field] = value;
+			return newState;
+		});
+	};
+
+	const handleEditSave = async () => {
+		const response = await updateOperator(Number(id), editOperator);
+		if (!response.errors) {
+			setEditOperator({});
+			setOpenEditInput({});
+			await findOneOperatorById(id);
+		}
 	};
 
 	useEffect(() => {
-		findOneUserById(id);
+		findOneOperatorById(id);
 	}, [id]);
 
 	return (
 		<>
 			<Grid item xs={12} sm={7} md={8} xl={9}>
-				<MainCard title="Detalhes do usuário">
+				<MainCard title="Detalhes do operador">
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
-							{loadingUser ? (
+							{loadingOperator ? (
 								<Loader />
 							) : (
 								<List sx={{ py: 0 }}>
@@ -58,8 +82,26 @@ const OperatorDetails = () => {
 										<Grid container spacing={3}>
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
-													<Typography color="secondary">Email</Typography>
-													<Typography>{email}</Typography>
+													<Stack spacing={0.5}>
+														<Stack direction="row" alignItems="center" spacing={1}>
+															<Typography color="secondary">Email</Typography>
+															{!openEditInput["email"] && <EditOutlined style={{ cursor: "pointer" }} onClick={() => handleUpdate("email")} />}
+														</Stack>
+														{!openEditInput["email"] ? (
+															<Typography>{email}</Typography>
+														) : (
+															<OutlinedInput
+																id="email"
+																fullWidth
+																type="email"
+																value={editOperator["email"]}
+																name="email"
+																sx={{ height: "30px", mt: 0.5 }}
+																inputProps={{ style: { padding: 5 } }}
+																onChange={(e) => handleChangeValue("email", e.target.value)}
+															/>
+														)}
+													</Stack>
 												</Stack>
 											</Grid>
 										</Grid>
@@ -69,102 +111,47 @@ const OperatorDetails = () => {
 										<Grid container spacing={3}>
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
-													<Typography color="secondary">Celular</Typography>
-													<Typography>{mobile}</Typography>
-												</Stack>
-											</Grid>
-										</Grid>
-									</ListItem>
-									<Divider />
-									<ListItem>
-										<Grid container spacing={3}>
-											<Grid item xs={12} md={6}>
-												<Stack spacing={0.5}>
-													<Typography color="secondary">Tipo</Typography>
-													<Typography>{type === "A" ? "Administrador" : type === "P" ? "Piloto" : type === "O" ? "Operador" : "Comum"}</Typography>
-												</Stack>
-											</Grid>
-										</Grid>
-									</ListItem>
-									<Divider />
-									<ListItem>
-										<Grid container spacing={3}>
-											<Grid item xs={12} md={6}>
-												<Stack spacing={0.5}>
-													<Typography color="secondary">Licença</Typography>
-													{license ? <Typography>{license}</Typography> : <Typography>Usuário não possui licença de piloto</Typography>}
-												</Stack>
-											</Grid>
-										</Grid>
-									</ListItem>
-									<Divider />
-									<ListItem>
-										<Grid container spacing={3}>
-											<Grid item xs={12} md={6}>
-												<Stack spacing={0.5}>
-													<Typography color="secondary">Status</Typography>
-													<Typography>{status === "A" ? "Ativo" : status === "P" ? "Pendente" : "Inativo"}</Typography>
-												</Stack>
-											</Grid>
-										</Grid>
-									</ListItem>
-									<Divider />
-									<ListItem>
-										<Grid container spacing={3}>
-											<Grid item xs={12} md={6}>
-												<Stack spacing={0.5}>
-													<Typography color="secondary">Criado em</Typography>
-													<Typography> {dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
-												</Stack>
-											</Grid>
-										</Grid>
-									</ListItem>
-									<Divider />
-									<ListItem onClick={() => setOpenUserAircrafts(!openUserAircrafts)} sx={{ cursor: "pointer" }}>
-										<Grid container spacing={3}>
-											<Grid item xs={6}>
-												<Typography color="secondary">Aeronaves</Typography>
-											</Grid>
-											<>
-												<Grid item xs={6} display="flex" justifyContent="flex-end">
-													<Button type="secondary" color="secondary">
-														{openUserAircrafts ? <UpOutlined /> : <DownOutlined />}
-													</Button>
-												</Grid>
-												<Grid item xs={12}>
-													<Collapse in={openUserAircrafts}>
-														<Box sx={{ padding: 0 }}>
-															<Grid>
-																<Box
-																	sx={{
-																		display: "flex",
-																		overflowX: "auto",
-																		padding: "1rem",
-																		whiteSpace: "nowrap",
-																		"&::-webkit-scrollbar": {
-																			height: "8px",
-																		},
-																		"&::-webkit-scrollbar-thumb": {
-																			backgroundColor: "#888",
-																		},
-																		"&::-webkit-scrollbar-thumb:hover": {
-																			backgroundColor: "#555",
-																		},
+													<Stack direction="row" alignItems="center" spacing={1}>
+														<Typography color="secondary">Celular</Typography>
+														{!openEditInput["phone"] && <EditOutlined style={{ cursor: "pointer" }} onClick={() => handleUpdate("phone")} />}
+													</Stack>
+													{!openEditInput["phone"] ? (
+														<Typography>{mobile}</Typography>
+													) : (
+														<InputMask
+															mask={"(99) 99999-9999"}
+															value={editOperator["phone"]}
+															sx={{ width: "100%" }}
+															onChange={(e) => {
+																handleChangeValue("phone", e.target.value);
+															}}
+														>
+															{() => (
+																<OutlinedInput
+																	id="phone-signup"
+																	name="phone"
+																	sx={{ height: "30px" }}
+																	inputProps={{
+																		style: { padding: 5, width: "100%" },
 																	}}
-																>
-																	{userDetails.aircrafts && userDetails.aircrafts.length > 0 ? (
-																		<UserAircraftsList data={userDetails.aircrafts} />
-																	) : (
-																		<Grid sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-																			<Typography variant="subtitle1">Usuário não possui nenhuma aeronave vinculada</Typography>
-																		</Grid>
-																	)}
-																</Box>
-															</Grid>
-														</Box>
-													</Collapse>
-												</Grid>
-											</>
+																/>
+															)}
+														</InputMask>
+													)}
+													<Typography>{}</Typography>
+												</Stack>
+											</Grid>
+										</Grid>
+									</ListItem>
+									<Divider />
+									<ListItem>
+										<Grid container spacing={3}>
+											<Grid item xs={12} md={6}>
+												<Stack spacing={0.5}>
+													<Typography color="secondary">Documento</Typography>
+													<Typography>{formatCpfCnpj(`${cpf ? cpf : cnpj}`)}</Typography>
+												</Stack>
+											</Grid>
 										</Grid>
 									</ListItem>
 									<Divider />
@@ -177,21 +164,16 @@ const OperatorDetails = () => {
 										color="error"
 										onClick={() => {
 											window.history.back();
-											setUserDetails({});
+											setOperatorDetails({});
 										}}
 									>
 										Voltar
 									</Button>
-									<Button
-										variant="contained"
-										color="error"
-										onClick={() => {
-											setOpenAlert(true);
-										}}
-									>
-										Excluir
-									</Button>
-									<AlertCustomerDelete title={name} open={openAlert} handleClose={handleAlertClose} id={Number(id)} handleDelete={deleteUser} />
+									{Object.keys(editOperator).length > 0 && Object.keys(openEditInput).length > 0 && (
+										<Button variant="contained" onClick={handleEditSave}>
+											Salvar
+										</Button>
+									)}
 								</Stack>
 							</Box>
 						</Grid>

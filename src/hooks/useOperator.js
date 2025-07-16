@@ -107,10 +107,10 @@ const useOperator = () => {
 		}
 	};
 
-	const deleteOperator = async (operatorId) => {
+	const updateOperator = async (operatorId, body) => {
 		try {
 			setLoadingOperator(true);
-			const response = await publicAxios.delete(`/operators/admin/delete/${operatorId}`);
+			const response = await publicAxios.patch(`/operators/admin/update/${operatorId}`, body);
 			return response.data;
 		} catch (error) {
 			console.log(error);
@@ -131,7 +131,7 @@ const useOperator = () => {
 		}
 	};
 
-	return { createOperator, findAllOperators, findOneOperatorById, deleteOperator, searchAllOperators };
+	return { createOperator, findAllOperators, findOneOperatorById, updateOperator, searchAllOperators };
 };
 
 export default useOperator;
