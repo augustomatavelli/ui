@@ -38,7 +38,7 @@ const HeaderContent = () => {
 
 				{/* Direita */}
 				<Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
-					<Notification />
+					{/* <Notification /> */}
 					{!downLG && <Profile />}
 					{downLG && <MobileSection />}
 				</Box>

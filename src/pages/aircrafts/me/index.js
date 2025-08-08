@@ -75,48 +75,53 @@ const MyAircrafts = () => {
 				<Stack direction="row" alignItems="center">
 					<Stack direction={matchDownSM ? "column" : "row"} sx={{ width: "100%" }} spacing={1} justifyContent="space-between" alignItems="center">
 						<SearchAircraft setSearch={setSearch} />
-						<Stack direction={matchDownSM ? "column" : "row"} alignItems="center" spacing={1}>
-							<FormControl sx={{ m: 1, minWidth: 120 }}>
-								<Select
-									value={sortBy}
-									onChange={handleChange}
-									displayEmpty
-									inputProps={{ "aria-label": "Without label" }}
-									renderValue={(selected) => {
-										if (!selected) {
-											return <Typography variant="subtitle1">Ordenar por</Typography>;
-										}
+						<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", width: "100%" }}>
+							<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
+								<Pagination count={totalSearchAircrafts} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+							</Stack>
+							<Stack direction={matchDownSM ? "column" : "row"} alignItems="center" spacing={1}>
+								<FormControl sx={{ m: 1, minWidth: 120 }}>
+									<Select
+										value={sortBy}
+										onChange={handleChange}
+										displayEmpty
+										inputProps={{ "aria-label": "Without label" }}
+										renderValue={(selected) => {
+											if (!selected) {
+												return <Typography variant="subtitle1">Ordenar por</Typography>;
+											}
 
-										return <Typography variant="subtitle2">{sortBy}</Typography>;
-									}}
-									sx={{
-										height: 40,
-										paddingY: 0,
-									}}
-								>
-									{allColumns.map((column) => {
-										return (
-											<MenuItem key={column.id} value={column.header}>
-												{column.header}
-											</MenuItem>
-										);
-									})}
-								</Select>
-							</FormControl>
-							{(user.type === "O" || user.type === "P") && (
-								<Button
-									variant="contained"
-									startIcon={<PlusOutlined />}
-									onClick={handleAdd}
-									sx={{
-										height: 40,
-										paddingY: 0,
-									}}
-								>
-									Adicionar Aeronave
-								</Button>
-							)}
-						</Stack>
+											return <Typography variant="subtitle2">{sortBy}</Typography>;
+										}}
+										sx={{
+											height: 40,
+											paddingY: 0,
+										}}
+									>
+										{allColumns.map((column) => {
+											return (
+												<MenuItem key={column.id} value={column.header}>
+													{column.header}
+												</MenuItem>
+											);
+										})}
+									</Select>
+								</FormControl>
+								{(user.type === "O" || user.type === "P") && (
+									<Button
+										variant="contained"
+										startIcon={<PlusOutlined />}
+										onClick={handleAdd}
+										sx={{
+											height: 40,
+											paddingY: 0,
+										}}
+									>
+										Adicionar Aeronave
+									</Button>
+								)}
+							</Stack>
+						</Grid>
 					</Stack>
 				</Stack>
 			</Box>
@@ -142,10 +147,6 @@ const MyAircrafts = () => {
 					<EmptyUserCard title={"Não há nenhuma aeronave vinculada a você."} />
 				</Grid>
 			)}
-			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-				<Pagination count={totalSearchAircrafts} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
-			</Stack>
-
 			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={add} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddAircraft aircraft={aircraft} onCancel={handleAdd} />
 			</Dialog>

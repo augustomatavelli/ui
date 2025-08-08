@@ -65,8 +65,6 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 		setOpen(false);
 	};
 
-	useEffect(() => {}, [orders]);
-
 	return (
 		<>
 			<TableContainer>
@@ -193,7 +191,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										<Typography variant="h5">Nenhuma ordem de serviço aberta</Typography>
 									) : tab === 2 ? (
 										<Typography variant="h5">Nenhuma ordem de serviço em execução</Typography>
-									) : tab === 2 ? (
+									) : tab === 3 ? (
 										<Typography variant="h5">Nenhuma ordem de serviço finalizada</Typography>
 									) : (
 										<Typography variant="h5">Nenhuma ordem de serviço cancelada</Typography>

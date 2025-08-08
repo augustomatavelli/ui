@@ -1,19 +1,12 @@
 import PropTypes from "prop-types";
 import { useContext, useRef, useState } from "react";
-
-// material-ui
 import { useTheme } from "@mui/material/styles";
 import { Box, ButtonBase, CardContent, ClickAwayListener, Grid, Paper, Popper, Stack, Tab, Tabs, Typography } from "@mui/material";
-
-// project import
 import ProfileTab from "./ProfileTab";
 import Avatar from "components/@extended/Avatar";
 import MainCard from "components/MainCard";
 import Transitions from "components/@extended/Transitions";
-
 import { ThemeMode } from "config";
-
-// assets
 import { UserOutlined } from "@ant-design/icons";
 import UserContext from "contexts/UserContext";
 
@@ -38,8 +31,6 @@ function a11yProps(index) {
 		"aria-controls": `profile-tabpanel-${index}`,
 	};
 }
-
-// ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
 	const theme = useTheme();

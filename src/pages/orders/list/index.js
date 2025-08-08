@@ -4,12 +4,10 @@ import { useNavigate } from "react-router";
 import { useState, useEffect, useContext } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import { Stack, Pagination } from "@mui/material";
-import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
 import MainCard from "components/MainCard";
 import { OrderFilter } from "./OrderFilter";
 import OrdersTabs from "./OrderTab";
-import dayjs from "dayjs";
 
 const ListOrders = () => {
 	const { user } = useContext(UserContext);
@@ -92,8 +90,7 @@ const ListOrders = () => {
 					setDateFilter={setDateFilter}
 				/>
 			)}
-			{loadingOrder ? <Loader /> : <OrdersTabs reload={reload} setReload={setReload} search={search} setSelectedStatus={setSelectedStatus} value={value} setValue={setValue} />}
-			{/* {loadingOrder ? <Loader /> : orders && orders.length > 0 && <OrdersTable reload={reload} setReload={setReload} search={search} />} */}
+			<OrdersTabs reload={reload} setReload={setReload} search={search} setSelectedStatus={setSelectedStatus} value={value} setValue={setValue} />
 			<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
 				<Pagination count={totalOrders} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 			</Stack>

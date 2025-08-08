@@ -139,7 +139,7 @@ const UserDetails = () => {
 																	sx={{
 																		display: "flex",
 																		overflowX: "auto",
-																		padding: "1rem",
+																		padding: "0.5rem",
 																		whiteSpace: "nowrap",
 																		"&::-webkit-scrollbar": {
 																			height: "8px",
@@ -155,7 +155,7 @@ const UserDetails = () => {
 																	{userDetails.aircrafts && userDetails.aircrafts.length > 0 ? (
 																		<UserAircraftsList data={userDetails.aircrafts} />
 																	) : (
-																		<Grid sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+																		<Grid sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
 																			<Typography variant="subtitle1">Usuário não possui nenhuma aeronave vinculada</Typography>
 																		</Grid>
 																	)}
