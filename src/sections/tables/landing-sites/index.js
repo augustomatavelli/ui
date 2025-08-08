@@ -83,7 +83,11 @@ export default function LandingSitesTable() {
 					</TableHead>
 					<TableBody>
 						{loadingLandingSite ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : landingSites.length > 0 ? (
 							landingSites.map((e) => (
 								<TableRow

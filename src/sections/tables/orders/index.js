@@ -82,7 +82,11 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 					</TableHead>
 					<TableBody>
 						{loadingOrders || loadingInspection ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : orders.length > 0 ? (
 							orders.map((item, indexItem) =>
 								item.itemOrders.map((itemOrder, indexOrder) => (

@@ -1,4 +1,3 @@
-import { FormattedMessage } from "react-intl";
 import {
 	ClockCircleOutlined,
 	IdcardOutlined,
@@ -11,7 +10,7 @@ import {
 	FieldTimeOutlined,
 	FolderOpenOutlined,
 } from "@ant-design/icons";
-// Ícones
+
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
@@ -27,62 +26,62 @@ const icons = {
 
 const admin = {
 	id: "group-admin",
-	title: <FormattedMessage id="Admin" />,
+	title: "Admin",
 	icon: icons.IdcardOutlined,
 	type: "admin",
 	children: [
 		{
 			id: "users",
-			title: <FormattedMessage id="Usuários" />,
+			title: "Usuários",
 			type: "item",
 			url: "/users/admin",
 			icon: icons.UserOutlined,
 		},
 		{
 			id: "aircrafts",
-			title: <FormattedMessage id="Aeronaves" />,
+			title: "Aeronaves",
 			type: "item",
 			url: "/aircrafts/admin",
 			icon: icons.UnorderedListOutlined,
 		},
 		{
 			id: "operators",
-			title: <FormattedMessage id="Operadores" />,
+			title: "Operadores",
 			type: "item",
 			url: "/operators/admin",
 			icon: icons.FolderOpenOutlined,
 		},
 		/* {
 			id: "landing sites",
-			title: <FormattedMessage id="Helicentro" />,
+			title: "Helicentro",
 			type: "item",
 			url: "/landing-sites/admin",
 			icon: icons.EnvironmentOutlined,
 		}, */
 		{
 			id: "requests",
-			title: <FormattedMessage id="Solicitações" />,
+			title: "Solicitações",
 			type: "item",
 			url: "/requests/admin",
 			icon: icons.ScheduleOutlined,
 		},
 		{
 			id: "products",
-			title: <FormattedMessage id="Produtos" />,
+			title: "Produtos",
 			type: "item",
 			url: "/products/admin",
 			icon: icons.AppstoreAddOutlined,
 		},
 		{
 			id: "operations",
-			title: <FormattedMessage id="Serviços" />,
+			title: "Serviços",
 			type: "item",
 			url: "/operations/admin",
 			icon: icons.ToolOutlined,
 		},
 		{
 			id: "programação",
-			title: <FormattedMessage id="Programação" />,
+			title: "Programação",
 			type: "item",
 			url: "/live-requests",
 			icon: icons.FieldTimeOutlined,

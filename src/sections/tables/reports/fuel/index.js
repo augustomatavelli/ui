@@ -193,7 +193,11 @@ export default function ReportFuelTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingReport ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : reportFuelList && reportFuelList.length > 0 ? (
 							reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 						) : (

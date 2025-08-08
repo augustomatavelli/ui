@@ -73,7 +73,11 @@ export default function AddLinkOperatorAircraftTable() {
 					</TableHead>
 					<TableBody>
 						{loadingOperator || loadingAircraft ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : searchOperator.length > 0 ? (
 							searchOperator.map((operator) => (
 								<TableRow hover key={operator.id_operator}>

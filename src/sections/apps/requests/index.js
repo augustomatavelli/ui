@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme, CircularProgress } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
-import ScheduleFormLanding from "./ScheduleFormLanding";
 import { useNavigate } from "react-router";
 import { RequestResume } from "./RequestResume";
 import RequestContext from "contexts/RequestContext";
@@ -11,6 +10,7 @@ import useRequest from "hooks/useRequest";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
+import ScheduleFormLanding from "./ScheduleFormLanding";
 
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();

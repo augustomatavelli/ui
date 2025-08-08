@@ -73,7 +73,11 @@ export default function ConfirmRemoveLinkUserAircraftTable() {
 					</TableHead>
 					<TableBody>
 						{loadingUser || loadingAircraft ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>

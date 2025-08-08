@@ -124,7 +124,11 @@ export default function ReportRequestsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingReport ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : reportRequestsList && reportRequestsList.length > 0 ? (
 							reportRequestsList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 						) : (

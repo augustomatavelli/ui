@@ -96,7 +96,11 @@ export default function ProductsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingProduct ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : products.length > 0 ? (
 							products.map((e) => (
 								<TableRow

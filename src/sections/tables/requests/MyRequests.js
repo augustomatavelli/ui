@@ -80,7 +80,11 @@ export default function MyRequestsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : searchRequests.length > 0 ? (
 							searchRequests.map((e) => (
 								<TableRow

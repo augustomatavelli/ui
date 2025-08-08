@@ -84,7 +84,11 @@ export default function OperatorsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingOperator ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : operators.length > 0 ? (
 							operators.map((operator) => (
 								<TableRow

@@ -108,7 +108,11 @@ export default function AircraftsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingAircraft ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : aircrafts.length > 0 ? (
 							aircrafts.map((aircraft) => (
 								<TableRow

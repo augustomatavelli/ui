@@ -120,7 +120,11 @@ export default function UsersTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingUser ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : users.length > 0 ? (
 							users.map((user) => (
 								<TableRow

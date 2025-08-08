@@ -1,24 +1,23 @@
-import { FormattedMessage } from "react-intl";
 import { AppstoreAddOutlined, BarChartOutlined, LineChartOutlined } from "@ant-design/icons";
 
 const icons = { AppstoreAddOutlined, BarChartOutlined, LineChartOutlined };
 
 const reports = {
 	id: "group-reports",
-	title: <FormattedMessage id="Relatórios" />,
+	title: "Relatórios",
 	icon: icons.AppstoreAddOutlined,
 	type: "reports",
 	children: [
 		{
 			id: "reportFuel",
-			title: <FormattedMessage id="Combustível" />,
+			title: "Combustível",
 			type: "item",
 			url: "/reports/fuel",
 			icon: icons.LineChartOutlined,
 		},
 		{
 			id: "reportRequests",
-			title: <FormattedMessage id="Solicitações" />,
+			title: "Solicitações",
 			type: "item",
 			url: "/reports/requests",
 			icon: icons.BarChartOutlined,

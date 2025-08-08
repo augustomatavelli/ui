@@ -159,7 +159,7 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 			<DialogContent sx={{ mt: 2, my: 1 }}>
 				<Stack alignItems="start" spacing={3.5}>
 					<Stack spacing={2} width={1}>
-						<Typography variant="h4" align="start">
+						<Typography variant="h4" align="left">
 							Checklist de inspeção
 						</Typography>
 						<Divider />

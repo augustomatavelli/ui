@@ -88,7 +88,11 @@ export default function OperationsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingOperation ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : operations.length > 0 ? (
 							operations.map((e) => (
 								<TableRow

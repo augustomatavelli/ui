@@ -124,7 +124,11 @@ export default function RequestsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : requests.length > 0 ? (
 							requests.map((e) => (
 								<>

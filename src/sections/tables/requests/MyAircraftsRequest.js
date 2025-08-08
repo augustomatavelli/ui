@@ -77,7 +77,11 @@ export default function MyAircraftsRequestsTable({ openFilter }) {
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : searchAircraftsRequests.length > 0 ? (
 							searchAircraftsRequests.map((e) => (
 								<TableRow

@@ -87,7 +87,11 @@ export default function RequestsTable() {
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
-							<Loader />
+							<TableRow>
+								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+									<Loader />
+								</TableCell>
+							</TableRow>
 						) : liveRequests && liveRequests.items && liveRequests.items.length > 0 ? (
 							liveRequests.items.flatMap((e) =>
 								e.schedules.map((schedule, index) => {
