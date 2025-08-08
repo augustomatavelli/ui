@@ -38,7 +38,7 @@ const style = (theme, value, tabValue, colorKey) => ({
 });
 
 export default function OrdersTabs({ reload, setReload, search, setSelectedStatus, value, setValue }) {
-	const { totalTabOrders } = useContext(OrderContext);
+	const { totalTabOrders, loadingOrder } = useContext(OrderContext);
 
 	const theme = useTheme();
 
@@ -71,11 +71,11 @@ export default function OrdersTabs({ reload, setReload, search, setSelectedStatu
 		<Box sx={{ width: "100%" }}>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs value={value} onChange={handleChange} TabIndicatorProps={{ style: { backgroundColor: indicatorColors[value] } }} variant="scrollable">
-					<Tab label={`Todas (${totalTabOrders.amount_total})`} {...a11yProps(0)} sx={style(theme, value, 0, "secondary")} />
-					<Tab label={`Abertas (${totalTabOrders.amount_open})`} {...a11yProps(1)} sx={style(theme, value, 1, "primary")} />
-					<Tab label={`Em execução (${totalTabOrders.amount_execution})`} {...a11yProps(2)} sx={style(theme, value, 2, "warning")} />
-					<Tab label={`Finalizadas (${totalTabOrders.amount_finalized})`} {...a11yProps(3)} sx={style(theme, value, 3, "success")} />
-					<Tab label={`Canceladas (${totalTabOrders.amount_canceled})`} {...a11yProps(4)} sx={style(theme, value, 4, "error")} />
+					<Tab label={`Todas${!loadingOrder ? ` (${totalTabOrders.amount_total})` : ""}`} {...a11yProps(0)} sx={style(theme, value, 0, "secondary")} disabled={loadingOrder} />
+					<Tab label={`Abertas${!loadingOrder ? ` (${totalTabOrders.amount_open})` : ""}`} {...a11yProps(1)} sx={style(theme, value, 1, "primary")} disabled={loadingOrder} />
+					<Tab label={`Em execução${!loadingOrder ? ` (${totalTabOrders.amount_execution})` : ""}`} {...a11yProps(2)} sx={style(theme, value, 2, "warning")} disabled={loadingOrder} />
+					<Tab label={`Finalizadas${!loadingOrder ? ` (${totalTabOrders.amount_finalized})` : ""}`} {...a11yProps(3)} sx={style(theme, value, 3, "success")} disabled={loadingOrder} />
+					<Tab label={`Canceladas${!loadingOrder ? ` (${totalTabOrders.amount_canceled})` : ""}`} {...a11yProps(4)} sx={style(theme, value, 4, "error")} disabled={loadingOrder} />
 				</Tabs>
 			</Box>
 			{[0, 1, 2, 3, 4].map((index) => (

@@ -93,6 +93,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 									<TableRow hover key={`${itemOrder.id_order}-${itemOrder.id_item}`}>
 										<TableCell align="center">
 											<Button
+												disabled={loadingOrder}
 												variant="contained"
 												color={itemOrder.order_status === "P" ? "primary" : itemOrder.order_status === "E" ? "warning" : itemOrder.order_status === "C" ? "error" : "success"}
 												sx={{ px: 1, py: 0.25, color: itemOrder.order_status === "E" ? "#252525" : "white" }}
