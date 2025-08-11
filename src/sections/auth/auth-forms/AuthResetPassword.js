@@ -45,10 +45,13 @@ const AuthResetPassword = () => {
 				submit: null,
 			}}
 			validationSchema={Yup.object().shape({
-				password: Yup.string().max(255).required("Senha é obrigatória"),
-				confirmPassword: Yup.string()
+				password: Yup.string()
+					.max(255, "Senha deve ter no máximo 255 caracteres")
 					.required("Senha é obrigatória")
-					.test("confirmPassword", "As senhas devem ser iguais", (confirmPassword, yup) => yup.parent.password === confirmPassword),
+					.matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/`~]).*$/, "A senha deve conter ao menos uma letra maiúscula, um número e um caractere especial"),
+				confirmPassword: Yup.string()
+					.oneOf([Yup.ref("password"), null], "As senhas devem ser iguais")
+					.required("Confirmação de senha é obrigatória"),
 			})}
 			onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
 				try {

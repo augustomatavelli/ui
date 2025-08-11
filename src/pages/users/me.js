@@ -41,13 +41,15 @@ const UserProfile = () => {
 			title="Perfil"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
-				<Chip
-					color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "O" ? "primary" : "warning"}
-					variant="filled"
-					size="medium"
-					label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "O" ? "Operador" : "Comum"}
-					sx={{ fontWeight: "bold" }}
-				/>
+				typeUser != "S" && (
+					<Chip
+						color={typeUser === "P" ? "success" : typeUser === "A" ? "info" : typeUser === "O" ? "primary" : "warning"}
+						variant="filled"
+						size="medium"
+						label={typeUser === "P" ? "Piloto" : typeUser === "A" ? "Administrador" : typeUser === "O" ? "Operador" : "Comum"}
+						sx={{ fontWeight: "bold" }}
+					/>
+				)
 			}
 		>
 			<Formik
