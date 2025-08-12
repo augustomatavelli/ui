@@ -31,4 +31,6 @@ export const ErrorMessages = {
 	dates_missing: "Data de pouso ou decolagem não informada",
 	failed_inspection: "Itens de inspeção não conforme precisam de foto ou observação",
 	fuel_without_amount: "Atualize a quantidade de combustível abastecida",
+	operator_already_exists: "Operador já existe",
+	invalid_document: "Documento inválido",
 };
