@@ -103,7 +103,7 @@ const Navigation = () => {
 				);
 				break;
 			case "A":
-				if (item.type === "admin" || item.type === "staff") {
+				if (item.type === "admin" || item.type === "staff" || item.type === "reports") {
 					return (
 						<NavGroup
 							key={item.id}

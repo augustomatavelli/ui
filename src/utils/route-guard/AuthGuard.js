@@ -1,26 +1,28 @@
+import { useContext, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import AuthContext from "contexts/AuthContext";
 import UserContext from "contexts/UserContext";
-import PropTypes from "prop-types";
-import { useEffect, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
-// ==============================|| AUTH GUARD ||============================== //
 
 const AuthGuard = ({ children, requiredUserType }) => {
+	console.log(children);
 	const { isLoggedIn } = useContext(AuthContext);
 	const { user } = useContext(UserContext);
 
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	//TODO: ajuste da permissão das páginas tanto pelo link quanto pelo url
-	/* useEffect(() => {
-		if (user && !requiredUserType.includes(user.type)) {
+	useEffect(() => {
+		const allowedTypes = typeof requiredUserType === "string" ? requiredUserType : requiredUserType;
+
+		if (user && !allowedTypes.includes(user.type)) {
 			switch (user.type) {
 				case "A":
 					navigate("/users/admin", { replace: true });
 					break;
-				case "R":
+				case "O":
+					navigate("/aircrafts/me", { replace: true });
+					break;
 				case "P":
 					navigate("/aircrafts/me", { replace: true });
 					break;
@@ -37,7 +39,7 @@ const AuthGuard = ({ children, requiredUserType }) => {
 				replace: true,
 			});
 		}
-	}, [isLoggedIn, user, navigate, location, requiredUserType]); */
+	}, [isLoggedIn, user, navigate, location, requiredUserType]);
 
 	return children;
 };
