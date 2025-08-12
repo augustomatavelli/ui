@@ -20,27 +20,27 @@ const ContactUs = () => {
 					<Typography variant="h3" color="primary" fontWeight="bold" gutterBottom>
 						CONTATOS
 					</Typography>
-					<Typography variant="body1">Av. Mal. Mascarenhas de Morais, 3000 - Imbiribeira, Recife - PE</Typography>
+					<Typography variant="body1">Rua Gonçalves de Magalhães, s/n - Imbiribeira, Recife - PE</Typography>
 
 					<Box mt={3}>
 						<Typography variant="subtitle1" color="primary" fontWeight="bold">
 							Telefone
 						</Typography>
-						<Typography variant="body1">+55 (81) 99114-4483</Typography>
+						<Typography variant="body1">+55 (81) 99267-4934</Typography>
 					</Box>
 
 					<Box mt={2}>
 						<Typography variant="subtitle1" color="primary" fontWeight="bold">
 							Whatsapp
 						</Typography>
-						<Typography variant="body1">+55 (81) 99114-4483</Typography>
+						<Typography variant="body1">+55 (81) 99267-4934</Typography>
 					</Box>
 
 					<Box mt={2}>
 						<Typography variant="subtitle1" color="primary" fontWeight="bold">
 							Horários
 						</Typography>
-						<Typography variant="body1">De segunda a sexta, das 8h às 18h. Sábado, das 8h às 12h.</Typography>
+						<Typography variant="body1">Todos os dias 8h às 18h.</Typography>
 					</Box>
 				</Box>
 			</Grid>
@@ -56,7 +56,7 @@ const ContactUs = () => {
 				>
 					<iframe
 						title="Localização"
-						src="https://www.google.com/maps?q=Av.+Mal.+Mascarenhas+de+Morais,+3000+-+Imbiribeira,+Recife+-+PE&output=embed"
+						src="https://www.google.com/maps?q=Rua+Goncalves+de+Magalhaes+s%2Fn,+Recife+-+PE&output=embed"
 						width="100%"
 						height="100%"
 						style={{ border: 0 }}
@@ -72,7 +72,7 @@ const ContactUs = () => {
 							<Typography fontWeight="bold">Atendimento por telefone</Typography>
 							<Typography display="flex" alignItems="center" marginTop={1}>
 								<PhoneIcon fontSize="small" sx={{ mr: 1 }} />
-								+55 (81) 99114-4483
+								+55 (81) 99267-4934
 							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={6} md={3} alignItems={"center"}>
@@ -80,13 +80,7 @@ const ContactUs = () => {
 							<Typography display="flex" alignItems="center" marginTop={1}>
 								<EmailIcon fontSize="small" sx={{ mr: 1 }} />
 								<Link href="mailto:diretoria1@heliforte.com.br" color="inherit">
-									diretoria1@heliforte.com.br
-								</Link>
-							</Typography>
-							<Typography display="flex" alignItems="center" marginTop={1}>
-								<EmailIcon fontSize="small" sx={{ mr: 1 }} />
-								<Link href="mailto:financeiro@heliforte.com.br" color="inherit">
-									financeiro@heliforte.com.br
+									recepcao@heliforte.com.br
 								</Link>
 							</Typography>
 						</Grid>
@@ -94,14 +88,14 @@ const ContactUs = () => {
 							<Typography fontWeight="bold">Atendimento pelo whatsapp</Typography>
 							<Typography display="flex" alignItems="center" marginTop={1}>
 								<WhatsAppIcon fontSize="small" sx={{ mr: 1 }} />
-								+55 (81) 99114-4483
+								+55 (81) 99267-4934
 							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={6} md={3}>
 							<Typography fontWeight="bold">Onde estamos</Typography>
 							<Typography display="flex" alignItems="center" marginTop={1}>
 								<LocationOnIcon fontSize="small" sx={{ mr: 1 }} />
-								Av. Mal. Mascarenhas de Morais, 3000 - Imbiribeira, Recife - PE
+								Rua Gonçalves de Magalhães, s/n - Imbiribeira, Recife - PE
 							</Typography>
 						</Grid>
 					</Grid>
