@@ -18,7 +18,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
 	const { updateRequest } = useRequest();
 
-	const { orders, loadingOrders } = useContext(OrderContext);
+	const { orders, loadingOrder } = useContext(OrderContext);
 	const { loadingInspection } = useContext(InspectionContext);
 
 	const [editFuel, setEditFuel] = useState(false);
@@ -81,7 +81,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOrders || loadingInspection ? (
+						{loadingOrder || loadingInspection ? (
 							<TableRow>
 								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
 									<Loader />
