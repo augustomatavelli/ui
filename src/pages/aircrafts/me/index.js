@@ -26,10 +26,6 @@ const allColumns = [
 		id: 2,
 		header: "Matrícula",
 	},
-	{
-		id: 3,
-		header: "Categoria",
-	},
 ];
 
 const MyAircrafts = () => {
@@ -133,7 +129,6 @@ const MyAircrafts = () => {
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
 							if (sortBy === "Matrícula") return a.registration.localeCompare(b.registration);
-							if (sortBy === "Categoria") return a.category.localeCompare(b.category);
 							return a;
 						})
 						.map((aircraft) => (

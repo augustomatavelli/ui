@@ -44,8 +44,8 @@ import AircraftContext from "contexts/AircraftContext";
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
 		registration: "",
-		category: "",
-		/* name: "",
+		/* category: "",
+		name: "",
 		doc: "",
 		email: "",
 		phone: "", */
@@ -106,8 +106,8 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 
 	const AircraftSchema = Yup.object().shape({
 		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
-		category: Yup.string().required("Categoria é obrigatório"),
-		/* name: Yup.string().max(255).required("Nome é obrigatório"),
+		/* category: Yup.string().required("Categoria é obrigatório"),
+		name: Yup.string().max(255).required("Nome é obrigatório"),
 		doc: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
@@ -122,8 +122,8 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 
 	const AircraftNewUserSchema = Yup.object().shape({
 		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
-		category: Yup.string().required("Categoria é obrigatório"),
-		/* name: Yup.string(),
+		/* category: Yup.string().required("Categoria é obrigatório"),
+		name: Yup.string(),
 		doc: Yup.string(),
 		email: Yup.string(),
 		phone: Yup.string(), */
@@ -135,16 +135,16 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		validationSchema: selectedUserResp ? AircraftNewUserSchema : AircraftSchema,
 		onSubmit: async (values, { setSubmitting, setErrors, setStatus, errors }) => {
 			try {
-				const { registration, category, membership, name, email, doc, phone } = values;
+				const { registration, membership, name, email, doc, phone } = values;
 
 				let base64Image = "";
 				base64Image = await readFile(selectedImage);
 				const newAircraft = {
 					registration: registration,
-					category: category,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					/* name: name,
+					/* category: category,
+					name: name,
 					email: email,
 					phone: phone,
 					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
@@ -290,7 +290,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 												/>
 											</Stack>
 										</Grid>
-										<Grid item xs={12}>
+										{/* <Grid item xs={12}>
 											<Stack spacing={1.25}>
 												<InputLabel htmlFor="category">Categoria</InputLabel>
 												<FormControl fullWidth>
@@ -321,7 +321,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 													</FormHelperText>
 												)}
 											</Stack>
-										</Grid>
+										</Grid>*/}
 										{/* 	<Grid item xs={12}>
 											<FormControlLabel
 												control={

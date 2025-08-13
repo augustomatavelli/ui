@@ -28,7 +28,7 @@ const AircraftDetails = () => {
 
 	const { id } = useParams();
 
-	const { id_aircraft, registration, category, image, membership, status, is_restricted, operators, modelo } = aircraftDetails;
+	const { id_aircraft, registration, image, membership, status, is_restricted, operators, modelo } = aircraftDetails;
 
 	const userId = localStorage.getItem("_userId");
 
@@ -168,17 +168,6 @@ const AircraftDetails = () => {
 											<Stack spacing={0.5}>
 												<Typography color="secondary">Modelo</Typography>
 												<Typography>{modelo}</Typography>
-											</Stack>
-										</Grid>
-									</Grid>
-								</ListItem>
-								<Divider />
-								<ListItem>
-									<Grid container spacing={3}>
-										<Grid item xs={12} md={6}>
-											<Stack spacing={0.5}>
-												<Typography color="secondary">Categoria</Typography>
-												<Typography>{category}</Typography>
 											</Stack>
 										</Grid>
 									</Grid>

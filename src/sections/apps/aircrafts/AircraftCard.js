@@ -18,7 +18,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 
 	const [addRequest, setAddRequest] = useState(false);
 
-	const { id_aircraft, registration, category, image, membership, status, name, email, mobile, hasRequest } = data;
+	const { id_aircraft, registration, image, membership, status, name, email, mobile, hasRequest } = data;
 
 	const navigate = useNavigate();
 
@@ -84,7 +84,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 					<Grid item xs={12}>
 						<Grid container spacing={1}>
 							<Grid item xs={12}>
-								<ListItemText primary={<Typography variant="subtitle1">{registration}</Typography>} secondary={`Categoria ${category}`} />
+								<ListItemText primary={<Typography variant="subtitle1">{registration}</Typography>} />
 							</Grid>
 						</Grid>
 					</Grid>

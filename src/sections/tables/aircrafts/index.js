@@ -15,7 +15,6 @@ import { AircraftFilter } from "./AircraftFilter";
 export const header = [
 	{ label: "", key: "icon" },
 	{ label: "Matrícula", key: "registration" },
-	{ label: "Categoria", key: "category" },
 	{ label: "Nome", key: "name" },
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
@@ -103,7 +102,6 @@ export default function AircraftsTable({ openFilter }) {
 							<TableCell />
 							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Modelo</TableCell>
-							<TableCell align="center">Categoria</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -157,7 +155,6 @@ export default function AircraftsTable({ openFilter }) {
 									</TableCell>
 									<TableCell align="center">{aircraft.registration}</TableCell>
 									<TableCell align="center">{aircraft.modelo}</TableCell>
-									<TableCell align="center">{aircraft.category}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (
