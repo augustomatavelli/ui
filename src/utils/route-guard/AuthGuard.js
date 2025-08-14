@@ -5,14 +5,13 @@ import AuthContext from "contexts/AuthContext";
 import UserContext from "contexts/UserContext";
 
 const AuthGuard = ({ children, requiredUserType }) => {
-	console.log(children);
 	const { isLoggedIn } = useContext(AuthContext);
 	const { user } = useContext(UserContext);
 
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	useEffect(() => {
+	/* useEffect(() => {
 		const allowedTypes = typeof requiredUserType === "string" ? requiredUserType : requiredUserType;
 
 		if (user && !allowedTypes.includes(user.type)) {
@@ -39,7 +38,7 @@ const AuthGuard = ({ children, requiredUserType }) => {
 				replace: true,
 			});
 		}
-	}, [isLoggedIn, user, navigate, location, requiredUserType]);
+	}, [isLoggedIn, user, navigate, location, requiredUserType]); */
 
 	return children;
 };
