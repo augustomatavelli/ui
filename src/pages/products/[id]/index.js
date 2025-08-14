@@ -102,7 +102,7 @@ const ProductDetails = () => {
 															}}
 														>
 															<img
-																src={`data:image/jpeg;base64,${image}`}
+																src={image}
 																alt="Product"
 																style={{
 																	height: "100%",

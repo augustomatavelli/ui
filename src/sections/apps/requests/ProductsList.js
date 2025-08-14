@@ -30,7 +30,7 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 						}}
 					>
 						<img
-							src={`data:image/jpeg;base64,${e.image}`}
+							src={e.image}
 							alt="Product"
 							style={{
 								width: "100%",

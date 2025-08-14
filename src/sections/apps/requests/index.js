@@ -136,7 +136,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 						}}
 					>
 						<img
-							src={`data:image/jpeg;base64,${aircraft.image}`}
+							src={aircraft.image}
 							alt="Aircraft"
 							style={{
 								width: "100%",

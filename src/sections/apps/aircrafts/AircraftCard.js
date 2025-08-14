@@ -68,7 +68,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 							}}
 						>
 							<img
-								src={`data:image/jpeg;base64,${image}`}
+								src={image}
 								alt="Aircraft"
 								style={{
 									width: "100%",

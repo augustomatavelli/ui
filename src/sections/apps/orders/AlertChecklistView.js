@@ -142,9 +142,9 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 											<Grid>
 												<TextField type="file" sx={{ display: "none" }} inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)} />
 												{objCompliance[e.id_inspection]?.image ? (
-													<ImagePreview src={`data:image/jpeg;base64,${objCompliance[e.id_inspection].image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={objCompliance[e.id_inspection].image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
 												) : e.image ? (
-													<ImagePreview src={`data:image/jpeg;base64,${e.image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
 												) : (
 													<></>
 												)}

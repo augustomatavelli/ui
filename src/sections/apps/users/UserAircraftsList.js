@@ -20,7 +20,7 @@ export const UserAircraftsList = ({ data }) => {
 							}}
 						>
 							<img
-								src={`data:image/jpeg;base64,${e.image}`}
+								src={e.image}
 								alt="Aircraft"
 								style={{
 									width: "100px",

@@ -110,7 +110,7 @@ const AircraftDetails = () => {
 						<Grid item xs={12} sm={4} md={3}>
 							<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 								<img
-									src={`data:image/jpeg;base64,${image}`}
+									src={image}
 									alt="Aircraft"
 									style={{
 										width: "100%",

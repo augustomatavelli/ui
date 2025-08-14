@@ -89,14 +89,14 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		});
 	}
 
-	const handleBlurRegistration = async (e) => {
+	/* const handleBlurRegistration = async (e) => {
 		handleBlur(e);
 		const currentValue = e.target.value.trim();
 		if (currentValue && currentValue !== previousRegistration) {
 			setPreviousRegistration(currentValue);
 			await anacSearch(currentValue);
 		}
-	};
+	}; */
 
 	useEffect(() => {
 		if (selectedImage) {
@@ -284,7 +284,6 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 													id="registration"
 													placeholder="Digite a matrícula"
 													{...getFieldProps("registration")}
-													onBlur={handleBlurRegistration}
 													error={Boolean(touched.registration && errors.registration)}
 													helperText={touched.registration && errors.registration}
 												/>

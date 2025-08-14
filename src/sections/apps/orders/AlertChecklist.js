@@ -229,9 +229,9 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 													onChange={(event) => handleFileChange(event, e.id_inspection)}
 												/>
 												{objCompliance[e.id_inspection]?.image ? (
-													<ImagePreview src={`data:image/jpeg;base64,${objCompliance[e.id_inspection].image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={objCompliance[e.id_inspection].image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
 												) : e.image ? (
-													<ImagePreview src={`data:image/jpeg;base64,${e.image}`} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
 												) : (
 													<IconButton
 														onClick={() => fileInputRefs.current[e.id_inspection]?.click()}
