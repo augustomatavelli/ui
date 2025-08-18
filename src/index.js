@@ -24,6 +24,7 @@ import { OrderProvider } from "contexts/OrdersContext";
 import { InspectionProvider } from "contexts/InspectionsContext";
 import { OperatorProvider } from "contexts/OperatorContext";
 import { ReportProvider } from "contexts/ReportContext";
+import { LogProvider } from "contexts/LogContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -32,31 +33,33 @@ root.render(
 		<PersistGate loading={null} persistor={persister}>
 			<ConfigProvider>
 				<BrowserRouter>
-					<JWTProvider>
-						<AuthProvider>
-							<UserProvider>
-								<ReportProvider>
-									<AircraftProvider>
-										<LandingSiteProvider>
-											<RequestProvider>
-												<ProductsProvider>
-													<OperationsProvider>
-														<OrderProvider>
-															<InspectionProvider>
-																<OperatorProvider>
-																	<App />
-																</OperatorProvider>
-															</InspectionProvider>
-														</OrderProvider>
-													</OperationsProvider>
-												</ProductsProvider>
-											</RequestProvider>
-										</LandingSiteProvider>
-									</AircraftProvider>
-								</ReportProvider>
-							</UserProvider>
-						</AuthProvider>
-					</JWTProvider>
+					<LogProvider>
+						<JWTProvider>
+							<AuthProvider>
+								<UserProvider>
+									<ReportProvider>
+										<AircraftProvider>
+											<LandingSiteProvider>
+												<RequestProvider>
+													<ProductsProvider>
+														<OperationsProvider>
+															<OrderProvider>
+																<InspectionProvider>
+																	<OperatorProvider>
+																		<App />
+																	</OperatorProvider>
+																</InspectionProvider>
+															</OrderProvider>
+														</OperationsProvider>
+													</ProductsProvider>
+												</RequestProvider>
+											</LandingSiteProvider>
+										</AircraftProvider>
+									</ReportProvider>
+								</UserProvider>
+							</AuthProvider>
+						</JWTProvider>
+					</LogProvider>
 				</BrowserRouter>
 			</ConfigProvider>
 		</PersistGate>

@@ -50,6 +50,9 @@ const ListOrders = Loadable(lazy(() => import("pages/orders/list")));
 const ReportFuelPeriod = Loadable(lazy(() => import("pages/reports/fuel")));
 const ReportRequestsPeriod = Loadable(lazy(() => import("pages/reports/requests")));
 
+// render - logs
+const ListLogsForAdmin = Loadable(lazy(() => import("pages/logs/admin")));
+
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
@@ -297,6 +300,19 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A', 'C', 'S']">
 									<ListOrders />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "logs",
+					children: [
+						{
+							path: "admin",
+							element: (
+								<AuthGuard requiredUserType="['S']">
+									<ListLogsForAdmin />
 								</AuthGuard>
 							),
 						},
