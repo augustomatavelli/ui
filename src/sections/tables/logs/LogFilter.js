@@ -7,7 +7,7 @@ export const LogFilter = ({ selectedEntity, setSelectedEntity, selectedAction, s
 	const action = ["C", "E", "D", "A"];
 
 	return (
-		<Grid sx={{ display: "flex", mx: 2.5, mt: 0, mb: 2.5, gap: 5 }}>
+		<Grid sx={{ display: "flex", p: 2.5, gap: 2, flexDirection: "column" }}>
 			<Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
 				<Typography variant="subtitle1">Por entidade</Typography>
 				{entities.length > 0 && (

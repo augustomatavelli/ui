@@ -19,7 +19,7 @@ export const header = [
 export default function LogsTable({ openFilter }) {
 	const { findAllLogs } = useLog();
 
-	const { logs, totalLogs, loadingLogs } = useContext(LogContext);
+	const { logs, totalLogs, loadingLog } = useContext(LogContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -72,7 +72,7 @@ export default function LogsTable({ openFilter }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingLogs ? (
+						{loadingLog ? (
 							<TableRow>
 								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
 									<Loader />
@@ -99,7 +99,6 @@ export default function LogsTable({ openFilter }) {
 											return value ?? "-";
 										})()}
 									</TableCell>
-
 									<TableCell align="center">{log.field}</TableCell>
 									<TableCell align="center">{log.old ? log.old : "-"}</TableCell>
 									<TableCell align="center">{log.new}</TableCell>
@@ -108,13 +107,13 @@ export default function LogsTable({ openFilter }) {
 							))
 						) : search || openFilter ? (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
+								<TableCell colSpan={10} align="center">
 									<Typography variant="h5">Nenhum log encontrado</Typography>
 								</TableCell>
 							</TableRow>
 						) : (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
+								<TableCell colSpan={10} align="center">
 									<Typography variant="h5">Nenhum log registrado</Typography>
 								</TableCell>
 							</TableRow>
