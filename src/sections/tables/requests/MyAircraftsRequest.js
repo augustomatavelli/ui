@@ -11,7 +11,7 @@ import { useNavigate } from "react-router";
 import Loader from "components/Loader";
 import { RequestFilter } from "./RequestFilter";
 
-export default function MyAircraftsRequestsTable({ openFilter }) {
+export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 	const { searchMyAircraftsRequests } = useRequest();
 
 	const { searchAircraftsRequests, totalSearchAircraftsRequests, loadingRequest } = useContext(RequestContext);
@@ -38,7 +38,7 @@ export default function MyAircraftsRequestsTable({ openFilter }) {
 		paramsStatus.set("status", statusParams.join(","));
 
 		searchMyAircraftsRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
-	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
 
 	useEffect(() => {}, [searchAircraftsRequests]);
 

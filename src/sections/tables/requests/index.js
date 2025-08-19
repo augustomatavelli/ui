@@ -16,7 +16,7 @@ import { useNavigate } from "react-router";
 import { RequestFilter } from "./RequestFilter";
 import AlertFinalizeRequest from "sections/apps/requests/AlertFinalizeRequest";
 
-export default function RequestsTable({ openFilter }) {
+export default function RequestsTable({ openFilter, reload }) {
 	const { findAllRequests, updateStatus } = useRequest();
 
 	const { requests, totalRequests, loadingRequest, setRequestResume } = useContext(RequestContext);
@@ -85,7 +85,7 @@ export default function RequestsTable({ openFilter }) {
 		paramsStatus.set("status", statusParams.join(","));
 
 		findAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
-	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
 
 	useEffect(() => {}, [requests]);
 

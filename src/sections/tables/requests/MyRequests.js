@@ -12,7 +12,7 @@ import Loader from "components/Loader";
 import { RequestFilter } from "./RequestFilter";
 import { date } from "yup";
 
-export default function MyRequestsTable({ openFilter }) {
+export default function MyRequestsTable({ openFilter, reload }) {
 	const { searchAllRequests } = useRequest();
 
 	const { searchRequests, totalSearchRequests, loadingRequest } = useContext(RequestContext);
@@ -43,7 +43,7 @@ export default function MyRequestsTable({ openFilter }) {
 		paramsStatus.set("status", statusParams.join(","));
 
 		searchAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
-	}, [search, page, selectedStatus, selectedPeriod, dateFilter]);
+	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
 
 	useEffect(() => {}, [searchRequests]);
 

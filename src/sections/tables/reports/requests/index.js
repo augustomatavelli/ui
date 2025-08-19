@@ -3,8 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ReportRequestsFilter } from "./ReportRequestFilter";
 import dayjs from "dayjs";
 
@@ -45,7 +43,7 @@ export function Row({ period }) {
 	);
 }
 
-export default function ReportRequestsTable({ openFilter }) {
+export default function ReportRequestsTable({ openFilter, reload }) {
 	const { reportRequests } = useReport();
 
 	const { reportRequestsList, loadingReport, period, setPeriod } = useContext(ReportContext);
@@ -63,7 +61,7 @@ export default function ReportRequestsTable({ openFilter }) {
 	useEffect(() => {
 		const { start, end } = dateFilter;
 		reportRequests(period, start, end);
-	}, [period, dateFilter]);
+	}, [period, dateFilter, reload]);
 
 	return (
 		<>

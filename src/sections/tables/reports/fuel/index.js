@@ -115,7 +115,7 @@ export function Row({ period }) {
 	);
 }
 
-export default function ReportFuelTable({ openFilter }) {
+export default function ReportFuelTable({ openFilter, reload }) {
 	const { reportFuel } = useReport();
 
 	const { reportFuelList, loadingReport, period, setPeriod, reportTotalFuelList } = useContext(ReportContext);
@@ -133,7 +133,7 @@ export default function ReportFuelTable({ openFilter }) {
 	useEffect(() => {
 		const { start, end } = dateFilter;
 		reportFuel(period, start, end);
-	}, [period, dateFilter]);
+	}, [period, dateFilter, reload]);
 
 	return (
 		<>

@@ -20,7 +20,7 @@ export const header = [
 	{ label: "Licença", key: "license" },
 ];
 
-export default function UsersTable({ openFilter }) {
+export default function UsersTable({ openFilter, reload }) {
 	const { findAllUsers, approveUser } = useUser();
 
 	const { users, totalUser, loadingUser } = useContext(UserContext);
@@ -82,7 +82,7 @@ export default function UsersTable({ openFilter }) {
 		paramsStatus.set("status", statusParams.join(","));
 
 		findAllUsers(search, page, params, paramsStatus);
-	}, [search, page, selectedRole, selectedStatus]);
+	}, [search, page, selectedRole, selectedStatus, reload]);
 
 	useEffect(() => {}, [users]);
 

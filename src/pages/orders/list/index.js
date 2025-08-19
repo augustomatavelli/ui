@@ -2,8 +2,8 @@ import UserContext from "contexts/UserContext";
 import useOrder from "hooks/useOrder";
 import { useNavigate } from "react-router";
 import { useState, useEffect, useContext } from "react";
-import { FilterOutlined } from "@ant-design/icons";
-import { Stack, Pagination } from "@mui/material";
+import { FilterOutlined, FilterFilled, ReloadOutlined } from "@ant-design/icons";
+import { Stack, Pagination, Grid, Button } from "@mui/material";
 import OrderContext from "contexts/OrdersContext";
 import MainCard from "components/MainCard";
 import { OrderFilter } from "./OrderFilter";
@@ -68,14 +68,22 @@ const ListOrders = () => {
 		<MainCard
 			title="Ordens de serviço"
 			content={false}
-			sx={{ marginTop: 2 }}
+			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
-				<FilterOutlined
-					onClick={() => {
-						setOpenFilter(!openFilter);
-					}}
-					style={{ fontSize: 20 }}
-				/>
+				<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+					<Button
+						color="inherit"
+						variant={openFilter ? "contained" : "outlined"}
+						onClick={() => {
+							setOpenFilter(!openFilter);
+						}}
+					>
+						{openFilter ? <FilterFilled style={{ fontSize: 20 }} /> : <FilterOutlined style={{ fontSize: 20 }} />}
+					</Button>
+					<Button color="inherit" variant="outlined" onClick={() => setReload(!reload)}>
+						<ReloadOutlined style={{ fontSize: 20 }} />
+					</Button>
+				</Grid>
 			}
 		>
 			{openFilter && (

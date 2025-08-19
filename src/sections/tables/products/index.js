@@ -13,7 +13,7 @@ import Loader from "components/Loader";
 import { ProductFilter } from "./ProductFilter";
 import { useNavigate } from "react-router";
 
-export default function ProductsTable({ openFilter }) {
+export default function ProductsTable({ openFilter, reload }) {
 	const { findAllProducts, updateProduct, findCategories } = useProduct();
 
 	const { products, totalProducts, loadingProduct } = useContext(ProductsContext);
@@ -57,7 +57,7 @@ export default function ProductsTable({ openFilter }) {
 		params.set("categories", categoriesParams.join(","));
 
 		findAllProducts(search, page, params);
-	}, [search, page, selectedCategory]);
+	}, [search, page, selectedCategory, reload]);
 
 	useEffect(() => {}, [products]);
 

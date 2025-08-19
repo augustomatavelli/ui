@@ -13,7 +13,7 @@ import Loader from "components/Loader";
 import { OperationFilter } from "./OperationFilter";
 import { useNavigate } from "react-router";
 
-export default function OperationsTable({ openFilter }) {
+export default function OperationsTable({ openFilter, reload }) {
 	const { findAllOperations, findCategories } = useOperation();
 
 	const { operations, totalOperations, loadingOperation } = useContext(OperationsContext);
@@ -49,7 +49,7 @@ export default function OperationsTable({ openFilter }) {
 		params.set("categories", categoriesParams.join(","));
 
 		findAllOperations(search, page, params);
-	}, [search, page, selectedCategory]);
+	}, [search, page, selectedCategory, reload]);
 
 	useEffect(() => {}, [operations]);
 

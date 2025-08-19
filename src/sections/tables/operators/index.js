@@ -20,7 +20,7 @@ export const header = [
 	{ label: "Documento", key: "doc" },
 ];
 
-export default function OperatorsTable({ openFilter }) {
+export default function OperatorsTable({ openFilter, reload }) {
 	const { findAllOperators } = useOperator();
 
 	const { operators, totalOperators, loadingOperator } = useContext(OperatorContext);
@@ -50,7 +50,7 @@ export default function OperatorsTable({ openFilter }) {
 
 	useEffect(() => {
 		findAllOperators(search, page);
-	}, [search, page]);
+	}, [search, page, reload]);
 
 	return (
 		<>

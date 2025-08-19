@@ -20,7 +20,7 @@ const Navigation = () => {
 	const [selectedItems, setSelectedItems] = useState("");
 	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [menuItems, setMenuItems] = useState({ items: [] });
-	console.log(menuItems);
+
 	useEffect(() => {
 		handlerMenuItem();
 		// eslint-disable-next-line

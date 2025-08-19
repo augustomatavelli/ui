@@ -20,7 +20,7 @@ export const header = [
 	{ label: "Celular", key: "mobile" },
 ];
 
-export default function AircraftsTable({ openFilter }) {
+export default function AircraftsTable({ openFilter, reload }) {
 	const { findAllAircrafts, approveAircraft, searchAllAircrafts } = useAircraft();
 
 	const { aircrafts, totalAircrafts, loadingAircraft } = useContext(AircraftContext);
@@ -71,7 +71,7 @@ export default function AircraftsTable({ openFilter }) {
 		paramsStatus.set("status", statusParams.join(","));
 
 		user.type === "A" || user.type === "S" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
-	}, [search, page, selectedStatus]);
+	}, [search, page, selectedStatus, reload]);
 
 	useEffect(() => {}, [aircrafts]);
 
