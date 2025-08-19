@@ -20,7 +20,7 @@ const Navigation = () => {
 	const [selectedItems, setSelectedItems] = useState("");
 	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [menuItems, setMenuItems] = useState({ items: [] });
-
+	console.log(menuItems);
 	useEffect(() => {
 		handlerMenuItem();
 		// eslint-disable-next-line
@@ -103,7 +103,7 @@ const Navigation = () => {
 				);
 				break;
 			case "A":
-				if (item.type === "admin" || item.type === "staff" || item.type === "reports") {
+				if (item.type === "admin" || item.type === "staff" || item.type === "reports" || item.type === "user") {
 					return (
 						<NavGroup
 							key={item.id}

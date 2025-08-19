@@ -140,7 +140,7 @@ const MainRoutes = {
 						{
 							path: "me",
 							element: (
-								<AuthGuard requiredUserType="['O', 'P', 'S']">
+								<AuthGuard requiredUserType="['A', 'O', 'P', 'S']">
 									<MyAircrafts />
 								</AuthGuard>
 							),

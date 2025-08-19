@@ -33,4 +33,9 @@ export const ErrorMessages = {
 	fuel_without_amount: "Atualize a quantidade de combustível abastecida",
 	operator_already_exists: "Operador já existe",
 	invalid_document: "Documento inválido",
+	cpf_already_exists: "CPF já cadastrado",
+	cnpj_already_exists: "CNPJ já cadastrado",
+	registration_already_exists: "Licença já cadastrada",
+	email_already_exists: "Email já cadastrado",
+	mobile_already_exists: "Número de celular já cadastrado",
 };
