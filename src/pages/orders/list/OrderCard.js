@@ -43,13 +43,13 @@ const OrderCard = ({ data }) => {
 										<ListItemIcon>
 											<CalendarOutlined />
 										</ListItemIcon>
-										<ListItemText primary={<Typography color="secondary">Pouso: {dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>} />
+										<ListItemText primary={<Typography color="secondary">Pouso: {dayjs.utc(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>} />
 									</ListItem>
 									<ListItem>
 										<ListItemIcon>
 											<CalendarFilled />
 										</ListItemIcon>
-										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>} />
+										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? dayjs.utc(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>} />
 									</ListItem>
 									{itemOrders.map((item, index) => (
 										<ListItem key={index}>

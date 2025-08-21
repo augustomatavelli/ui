@@ -122,8 +122,8 @@ export default function ReportFuelTable({ openFilter, reload }) {
 
 	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
 	const [dateFilter, setDateFilter] = useState({
-		start: dayjs().tz("America/Sao_Paulo").startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
-		end: dayjs().tz("America/Sao_Paulo").endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		start: dayjs.utc().startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		end: dayjs.utc().endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
 	});
 
 	const handleChange = (event) => {

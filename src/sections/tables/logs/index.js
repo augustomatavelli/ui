@@ -16,7 +16,7 @@ export const header = [
 	{ label: "Licença", key: "license" },
 ];
 
-export default function LogsTable({ openFilter }) {
+export default function LogsTable({ openFilter, reload }) {
 	const { findAllLogs } = useLog();
 
 	const { logs, totalLogs, loadingLog } = useContext(LogContext);
@@ -42,7 +42,7 @@ export default function LogsTable({ openFilter }) {
 		paramsEntities.set("entity", entitiesParams.join(","));
 
 		findAllLogs(search, page, paramsAction, paramsEntities);
-	}, [search, page, selectedAction, selectedEntity]);
+	}, [search, page, selectedAction, selectedEntity, reload]);
 
 	useEffect(() => {}, [logs]);
 
@@ -102,7 +102,7 @@ export default function LogsTable({ openFilter }) {
 									<TableCell align="center">{log.field}</TableCell>
 									<TableCell align="center">{log.old ? log.old : "-"}</TableCell>
 									<TableCell align="center">{log.new}</TableCell>
-									<TableCell align="center">{dayjs(log.date).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{dayjs.utc(log.date).format("DD/MM/YYYY HH:mm")}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (

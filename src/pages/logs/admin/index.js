@@ -2,13 +2,15 @@ import MainCard from "components/MainCard";
 import UserContext from "contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { FilterOutlined } from "@ant-design/icons";
+import { FilterOutlined, FilterFilled, ReloadOutlined } from "@ant-design/icons";
 import LogsTable from "sections/tables/logs";
+import { Button, Grid } from "@mui/material";
 
 const ListLogsForAdmin = () => {
 	const { user } = useContext(UserContext);
 
 	const [openFilter, setOpenFilter] = useState(false);
+	const [reload, setReload] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -25,15 +27,23 @@ const ListLogsForAdmin = () => {
 			title="Logs"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
-				<FilterOutlined
-					onClick={() => {
-						setOpenFilter(!openFilter);
-					}}
-					style={{ fontSize: 20 }}
-				/>
+				<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+					<Button
+						color="inherit"
+						variant={openFilter ? "contained" : "outlined"}
+						onClick={() => {
+							setOpenFilter(!openFilter);
+						}}
+					>
+						{openFilter ? <FilterFilled style={{ fontSize: 20 }} /> : <FilterOutlined style={{ fontSize: 20 }} />}
+					</Button>
+					<Button color="inherit" variant="outlined" onClick={() => setReload(!reload)}>
+						<ReloadOutlined style={{ fontSize: 20 }} />
+					</Button>
+				</Grid>
 			}
 		>
-			<LogsTable openFilter={openFilter} />
+			<LogsTable openFilter={openFilter} reload={reload} />
 		</MainCard>
 	);
 };
