@@ -1,17 +1,17 @@
-// material-ui
 import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse } from "@mui/material";
-
-// project import
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import Loader from "components/Loader";
-import dayjs from "dayjs";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const UserDetails = () => {
 	const { findOneUserById, deleteUser } = useUser();

@@ -1,7 +1,4 @@
-// material-ui
 import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button } from "@mui/material";
-
-// project import
 import MainCard from "components/MainCard";
 import { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
@@ -11,6 +8,10 @@ import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import { useState } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const UserDetails = () => {
 	const { findOneLandingSiteById, deleteLandingSite } = useLandingSite();

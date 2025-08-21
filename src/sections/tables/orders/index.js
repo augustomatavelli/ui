@@ -1,11 +1,7 @@
-// material-ui
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid } from "@mui/material";
-
-// project imports
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
-import dayjs from "dayjs";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
@@ -13,6 +9,10 @@ import { EditOutlined, SaveOutlined, FileSearchOutlined } from "@ant-design/icon
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();

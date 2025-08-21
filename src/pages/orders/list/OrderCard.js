@@ -1,15 +1,11 @@
 import PropTypes from "prop-types";
-// material-ui
 import { Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
-
-// third-party
-
-// project import
 import MainCard from "components/MainCard";
-
-// assets
 import { CalendarOutlined, CalendarFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const OrderCard = ({ data }) => {
 	const { id_request, registration, landing_date, takeoff_date, itemOrders } = data;

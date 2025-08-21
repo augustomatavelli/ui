@@ -3,9 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import useLog from "hooks/useLogs";
 import LogContext from "contexts/LogContext";
-import dayjs from "dayjs";
 import SearchLogByAdmin from "sections/apps/logs/SearchLogByAdmin";
 import { LogFilter } from "./LogFilter";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const header = [
 	{ label: "", key: "icon" },

@@ -5,6 +5,9 @@ import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import { ReportRequestsFilter } from "./ReportRequestFilter";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const allColumns = [
 	{
