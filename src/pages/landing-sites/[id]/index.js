@@ -3,7 +3,6 @@ import MainCard from "components/MainCard";
 import { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import Loader from "components/Loader";
-import dayjs from "dayjs";
 import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
