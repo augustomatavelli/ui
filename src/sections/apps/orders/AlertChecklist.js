@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import InspectionContext from "contexts/InspectionsContext";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled, EditOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled } from "@ant-design/icons";
 export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 

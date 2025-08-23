@@ -115,7 +115,7 @@ const AircraftDetails = () => {
 									style={{
 										width: "100%",
 										height: "200px",
-										objectFit: "contain",
+										objectFit: "cover",
 									}}
 								/>
 								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>

@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -150,12 +150,14 @@ const ProductDetails = () => {
 																		currency: "BRL",
 																	}).format(Number(price))}
 																</Typography>
-																<EditOutlined
-																	style={{ cursor: "pointer" }}
+																<IconButton
+																	size="small"
 																	onClick={() => {
 																		setEditPrice(true);
 																	}}
-																/>
+																>
+																	<EditOutlined />
+																</IconButton>
 															</Box>
 														) : (
 															<Box display="inline-flex" alignItems="center" gap={1}>

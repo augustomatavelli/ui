@@ -77,7 +77,6 @@ export default function OperatorsTable({ openFilter, reload }) {
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Nome</TableCell>
-							<TableCell align="center">Email</TableCell>
 							<TableCell align="center">Celular</TableCell>
 							<TableCell align="center">Documento</TableCell>
 						</TableRow>
@@ -100,7 +99,6 @@ export default function OperatorsTable({ openFilter, reload }) {
 									}}
 								>
 									<TableCell align="center">{operator.name}</TableCell>
-									<TableCell align="center">{operator.email}</TableCell>
 									<TableCell align="center">{formatPhoneNumber(operator.mobile)}</TableCell>
 									<TableCell align="center">{formatCpfCnpj(operator.doc)}</TableCell>
 								</TableRow>

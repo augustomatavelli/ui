@@ -1,7 +1,4 @@
-// material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button, Tooltip } from "@mui/material";
-
-// project imports
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
@@ -66,7 +63,6 @@ export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 						<TableRow>
 							<TableCell />
 							<TableCell align="center">Solicitado por</TableCell>
-							{/* <TableCell align="center">Tipo de usuário</TableCell> */}
 							<TableCell align="center">Aeronave</TableCell>
 							<TableCell align="center">Helicentro</TableCell>
 							<TableCell align="center">Pouso</TableCell>

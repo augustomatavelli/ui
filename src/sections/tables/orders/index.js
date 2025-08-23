@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
@@ -144,12 +144,14 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 												<Box display="inline-flex" alignItems="center" gap={1}>
 													{itemOrder.unit === "un" ? "-" : itemOrder.amount === "full" ? "Full" : `${itemOrder.amount} ${itemOrder.unit}`}
 													{itemOrder.unit === "L" && (itemOrder.order_status === "E" || itemOrder.order_status === "P") && (
-														<EditOutlined
-															style={{ cursor: "pointer" }}
+														<IconButton
+															size="small"
 															onClick={() => {
 																setEditFuel(true);
 															}}
-														/>
+														>
+															<EditOutlined />
+														</IconButton>
 													)}
 												</Box>
 											) : (

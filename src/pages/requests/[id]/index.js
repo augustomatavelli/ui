@@ -299,12 +299,14 @@ const RequestDetails = () => {
 														<Stack direction="row" alignItems="center" spacing={1.5}>
 															<Typography color="secondary">Data agendada para pouso</Typography>
 															{status === "A" && (
-																<EditOutlined
-																	style={{ cursor: "pointer" }}
+																<IconButton
+																	size="small"
 																	onClick={() => {
 																		handleOpenEditInput("landingDateField");
 																	}}
-																/>
+																>
+																	<EditOutlined />
+																</IconButton>
 															)}
 														</Stack>
 														{openEditInput["landingDateField"] ? (
@@ -337,12 +339,14 @@ const RequestDetails = () => {
 														<Stack direction="row" alignItems="center" spacing={1.5}>
 															<Typography color="secondary">Data agendada para decolagem</Typography>
 															{status === "A" && (
-																<EditOutlined
-																	style={{ cursor: "pointer" }}
+																<IconButton
+																	size="small"
 																	onClick={() => {
 																		handleOpenEditInput("takeoffDateField");
 																	}}
-																/>
+																>
+																	<EditOutlined />
+																</IconButton>
 															)}
 														</Stack>
 														{openEditInput["takeoffDateField"] ? (

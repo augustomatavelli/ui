@@ -1,30 +1,47 @@
-// material-ui
 import { useState } from "react";
-
-// material-ui
-import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, DialogActions, Divider, DialogTitle, DialogContent } from "@mui/material";
-
-// third party
+import {
+	Button,
+	Grid,
+	InputLabel,
+	Stack,
+	FormHelperText,
+	OutlinedInput,
+	RadioGroup,
+	FormControlLabel,
+	Radio,
+	DialogActions,
+	Divider,
+	DialogTitle,
+	DialogContent,
+	IconButton,
+	Box,
+} from "@mui/material";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// project import
-
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
 import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import useOperator from "hooks/useOperator";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const getInitialValues = () => {
 	const newOperator = {
 		name: "",
-		email: "",
+		email0: "",
+		email1: "",
+		email2: "",
+		email3: "",
+		email4: "",
+		email5: "",
+		email6: "",
+		email7: "",
 		phone: "",
 		doc: "",
+		social: "",
 	};
 
 	return newOperator;
@@ -36,10 +53,31 @@ const AddOperator = ({ onCancel }) => {
 	const scriptedRef = useScriptRef();
 
 	const [typeDoc, setTypeDoc] = useState("cpf");
+	const [emailFields, setEmailFields] = useState([0]);
+
+	const addEmailField = () => {
+		if (emailFields.length < 8) {
+			setEmailFields([...emailFields, emailFields.length]);
+		}
+	};
+
+	const removeEmailField = (indexToRemove) => {
+		if (emailFields.length > 1) {
+			setEmailFields(emailFields.filter((_, index) => index !== indexToRemove));
+			setFieldValue(`email${indexToRemove}`, "");
+		}
+	};
 
 	const NewOperatorSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
-		email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
+		email0: Yup.string().email("E-mail deve ser válido").max(255).required("E-mail é obrigatório"),
+		email1: Yup.string().email("E-mail deve ser válido").max(255),
+		email2: Yup.string().email("E-mail deve ser válido").max(255),
+		email3: Yup.string().email("E-mail deve ser válido").max(255),
+		email4: Yup.string().email("E-mail deve ser válido").max(255),
+		email5: Yup.string().email("E-mail deve ser válido").max(255),
+		email6: Yup.string().email("E-mail deve ser válido").max(255),
+		email7: Yup.string().email("E-mail deve ser válido").max(255),
 		phone: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
@@ -48,6 +86,7 @@ const AddOperator = ({ onCancel }) => {
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
 			.required("Documento é obrigatório"),
+		social: Yup.string().max(255).required("Razão social é obrigatória"),
 	});
 
 	const formik = useFormik({
@@ -57,13 +96,22 @@ const AddOperator = ({ onCancel }) => {
 			try {
 				const payload = {
 					name: values.name,
-					email: values.email,
+					email0: values.email0,
+					email1: values.email1,
+					email2: values.email2,
+					email3: values.email3,
+					email4: values.email4,
+					email5: values.email5,
+					email6: values.email6,
+					email7: values.email7,
 					phone: values.phone.replace(/\D/g, ""),
 					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
 					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
+					social: values.social,
 				};
 
 				const response = await createOperator(payload);
+				console.log(response);
 				if (scriptedRef.current) {
 					setStatus({ success: true });
 					setSubmitting(false);
@@ -144,7 +192,7 @@ const AddOperator = ({ onCancel }) => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder={typeDoc === "cpf" ? "Digite seu nome..." : "Digite a razão social..."}
+											placeholder={typeDoc === "cpf" ? "Digite o nome..." : "Digite a razão social..."}
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -157,23 +205,90 @@ const AddOperator = ({ onCancel }) => {
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="email-signup">Email</InputLabel>
+										<InputLabel htmlFor="social-signup">Razão social</InputLabel>
 										<OutlinedInput
 											fullWidth
-											error={Boolean(touched.email && errors.email)}
-											id="email-login"
-											type="email"
-											value={values.email}
-											name="email"
+											error={Boolean(touched.social && errors.social)}
+											id="social-login"
+											type="social"
+											value={values.social}
+											name="social"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite o email..."
+											placeholder="Digite a razão social..."
 											inputProps={{}}
 										/>
-										{touched.email && errors.email && (
-											<FormHelperText error id="helper-text-email-signup">
-												{errors.email}
+										{touched.social && errors.social && (
+											<FormHelperText error id="helper-text-social-signup">
+												{errors.social}
 											</FormHelperText>
+										)}
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<Box display="flex" alignItems="center" justifyContent="space-between">
+											<InputLabel htmlFor="email-signup">E-mail</InputLabel>
+											<IconButton
+												onClick={addEmailField}
+												disabled={emailFields.length >= 8}
+												size="small"
+												color="primary"
+												sx={{
+													border: 1,
+													borderColor: "primary.main",
+													backgroundColor: "transparent",
+													"&:hover": {
+														backgroundColor: "primary.main",
+														color: "white",
+													},
+												}}
+											>
+												<AddIcon />
+											</IconButton>
+										</Box>
+										{emailFields.map((fieldIndex, arrayIndex) => (
+											<Box key={fieldIndex} display="flex" alignItems="center" gap={1}>
+												<OutlinedInput
+													fullWidth
+													id={`email${fieldIndex}-signup`}
+													type="email"
+													value={values[`email${fieldIndex}`] || ""}
+													name={`email${fieldIndex}`}
+													onBlur={handleBlur}
+													onChange={handleChange}
+													placeholder="Digite o e-mail..."
+													error={Boolean(touched[`email${fieldIndex}`] && errors[`email${fieldIndex}`])}
+												/>
+												{emailFields.length > 1 && (
+													<IconButton
+														onClick={() => removeEmailField(arrayIndex)}
+														size="small"
+														color="error"
+														sx={{
+															border: 1,
+															borderColor: "error.main",
+															backgroundColor: "transparent",
+															"&:hover": {
+																backgroundColor: "error.main",
+																color: "white",
+															},
+														}}
+													>
+														<RemoveIcon />
+													</IconButton>
+												)}
+											</Box>
+										))}
+
+										{emailFields.map(
+											(fieldIndex) =>
+												touched[`email${fieldIndex}`] &&
+												errors[`email${fieldIndex}`] && (
+													<FormHelperText key={`error-${fieldIndex}`} error id={`helper-text-email${fieldIndex}-signup`}>
+														{errors[`email${fieldIndex}`]}
+													</FormHelperText>
+												)
 										)}
 									</Stack>
 								</Grid>
