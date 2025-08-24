@@ -161,6 +161,7 @@ const OperatorDetails = () => {
 																	size="small"
 																	color="primary"
 																	onClick={() => handleAddEmail()}
+																	disabled={loadingOperator}
 																	sx={{
 																		border: 1,
 																		borderColor: "primary.main",
@@ -185,6 +186,7 @@ const OperatorDetails = () => {
 																			<IconButton
 																				size="small"
 																				onClick={() => handleUpdate(`email${index}`)}
+																				disabled={loadingOperator}
 																				sx={{
 																					border: 1,
 																					borderColor: "secondary.main",
@@ -202,6 +204,7 @@ const OperatorDetails = () => {
 																					size="small"
 																					color="error"
 																					onClick={() => handleRemoveEmail(index)}
+																					disabled={loadingOperator}
 																					sx={{
 																						border: 1,
 																						borderColor: "error.main",
@@ -233,6 +236,7 @@ const OperatorDetails = () => {
 																			size="small"
 																			color="error"
 																			onClick={() => handleRemoveEmail(index)}
+																			disabled={loadingOperator}
 																			sx={{
 																				border: 1,
 																				borderColor: "error.main",
@@ -262,7 +266,7 @@ const OperatorDetails = () => {
 													<Stack direction="row" alignItems="center" spacing={1}>
 														<Typography color="secondary">Celular</Typography>
 														{!openEditInput["phone"] && (
-															<IconButton size="small" onClick={() => handleUpdate("phone")}>
+															<IconButton size="small" onClick={() => handleUpdate("phone")} disabled={loadingOperator}>
 																<EditOutlined />
 															</IconButton>
 														)}
@@ -315,7 +319,7 @@ const OperatorDetails = () => {
 														<Stack direction="row" alignItems="center" spacing={1}>
 															<Typography color="secondary">Razão social</Typography>
 															{!openEditInput["social"] && (
-																<IconButton size="small" onClick={() => handleUpdate("social")}>
+																<IconButton size="small" onClick={() => handleUpdate("social")} disabled={loadingOperator}>
 																	<EditOutlined />
 																</IconButton>
 															)}

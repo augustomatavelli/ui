@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
 	Button,
 	Grid,
@@ -27,6 +27,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import useOperator from "hooks/useOperator";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import OperatorContext from "contexts/OperatorContext";
 
 const getInitialValues = () => {
 	const newOperator = {
@@ -49,6 +50,8 @@ const getInitialValues = () => {
 
 const AddOperator = ({ onCancel }) => {
 	const { createOperator } = useOperator();
+
+	const { loadingOperator } = useContext(OperatorContext);
 
 	const scriptedRef = useScriptRef();
 
@@ -231,7 +234,7 @@ const AddOperator = ({ onCancel }) => {
 											<InputLabel htmlFor="email-signup">E-mail</InputLabel>
 											<IconButton
 												onClick={addEmailField}
-												disabled={emailFields.length >= 8}
+												disabled={emailFields.length >= 8 || loadingOperator}
 												size="small"
 												color="primary"
 												sx={{
@@ -265,6 +268,7 @@ const AddOperator = ({ onCancel }) => {
 														onClick={() => removeEmailField(arrayIndex)}
 														size="small"
 														color="error"
+														disabled={loadingOperator}
 														sx={{
 															border: 1,
 															borderColor: "error.main",
