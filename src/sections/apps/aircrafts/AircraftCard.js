@@ -1,16 +1,11 @@
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
-// material-ui
-import { Box, Button, Chip, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
-
-// project import
+import { Avatar, Box, Button, Chip, Divider, Grid, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import MainCard from "components/MainCard";
-
-// assets
-import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 import AircraftContext from "contexts/AircraftContext";
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
@@ -67,15 +62,21 @@ const AircraftCard = ({ data, setReload, reload }) => {
 								justifyContent: "center",
 							}}
 						>
-							<img
-								src={image}
-								alt="Aircraft"
-								style={{
-									width: "100%",
-									height: "100%",
-									objectFit: "cover",
-								}}
-							/>
+							{!image ? (
+								<Avatar alt="aircraft" size="lg" sx={{ width: "60%", height: "90%", alignItems: "center", alignSelf: "center" }}>
+									<AirplanemodeActiveIcon style={{ fontSize: 100 }} />
+								</Avatar>
+							) : (
+								<img
+									src={image}
+									alt="Aircraft"
+									style={{
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+									}}
+								/>
+							)}{" "}
 						</Box>
 					</Grid>
 					<Grid item xs={12}>
