@@ -36,6 +36,31 @@ const useAircraft = () => {
 		}
 	};
 
+	const updateAircraft = async (aircraftId, data) => {
+		console.log(data);
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.patch(`/aircrafts/${aircraftId}`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
 	const findOneAircraftById = async (aircraftId) => {
 		try {
 			setLoadingAircraft(true);
@@ -317,6 +342,7 @@ const useAircraft = () => {
 		toggleRestrictedAircraft,
 		addLinkOperatorAircraft,
 		removeLinkOperatorAircraft,
+		updateAircraft,
 	};
 };
 

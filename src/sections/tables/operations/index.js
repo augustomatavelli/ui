@@ -43,12 +43,11 @@ export default function OperationsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
-		findCategories();
 		const categoriesParams = Object.keys(selectedCategory);
 		const params = new URLSearchParams();
 		params.set("categories", categoriesParams.join(","));
 
-		findAllOperations(search, page, params);
+		Promise.all([findCategories(), findAllOperations(search, page, params)]);
 	}, [search, page, selectedCategory, reload]);
 
 	useEffect(() => {}, [operations]);

@@ -31,14 +31,28 @@ const ReportRequestsPeriod = () => {
 					<Button
 						color="inherit"
 						variant={openFilter ? "contained" : "outlined"}
+						sx={{
+							minWidth: 50,
+							width: "fit-content",
+							padding: 1,
+						}}
 						onClick={() => {
 							setOpenFilter(!openFilter);
 						}}
 					>
-						{openFilter ? <FilterFilled style={{ fontSize: 20 }} /> : <FilterOutlined style={{ fontSize: 20 }} />}
+						{openFilter ? <FilterFilled style={{ fontSize: 18 }} /> : <FilterOutlined style={{ fontSize: 18 }} />}
 					</Button>
-					<Button color="inherit" variant="outlined" onClick={() => setReload(!reload)}>
-						<ReloadOutlined style={{ fontSize: 20 }} />
+					<Button
+						color="inherit"
+						variant="outlined"
+						sx={{
+							minWidth: 50,
+							width: "fit-content",
+							padding: 1,
+						}}
+						onClick={() => setReload(!reload)}
+					>
+						<ReloadOutlined style={{ fontSize: 18 }} />
 					</Button>
 				</Grid>
 			}

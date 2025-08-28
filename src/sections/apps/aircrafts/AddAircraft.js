@@ -7,23 +7,16 @@ import {
 	DialogContent,
 	DialogTitle,
 	Divider,
-	FormControl,
 	FormLabel,
 	Grid,
 	FormHelperText,
 	InputLabel,
-	ListItemText,
-	MenuItem,
-	OutlinedInput,
-	Select,
 	Stack,
 	TextField,
 	Typography,
 	RadioGroup,
 	FormControlLabel,
 	Radio,
-	Autocomplete,
-	Checkbox,
 	useTheme,
 	Avatar,
 } from "@mui/material";
@@ -32,23 +25,16 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import _ from "lodash";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-/* import AlertCustomerDelete from "./AlertCustomerDelete"; */
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
-import InputMask from "react-input-mask";
 import UserContext from "contexts/UserContext";
 import AircraftContext from "contexts/AircraftContext";
 
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
 		registration: "",
-		/* category: "",
-		name: "",
-		doc: "",
-		email: "",
-		phone: "", */
 		membership: "",
 		image: "",
 	};
@@ -62,21 +48,14 @@ const getInitialValues = (aircraft) => {
 	return newAircraft;
 };
 
-const allStatus = ["A", "B", "C", "D", "E"];
-
 const AddAircraft = ({ aircraft, onCancel }) => {
-	const { createAircraft, searchAllAircrafts, findAllAircrafts, anacSearch } = useAircraft();
+	const { createAircraft, searchAllAircrafts, findAllAircrafts } = useAircraft();
 
-	const { usersResp, user } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 	const { loadingAircraft } = useContext(AircraftContext);
 
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
-	const [typeDoc, setTypeDoc] = useState("cpf");
-	const [toggleCheckbox, setToggleCheckbox] = useState(false);
-	const [showUserResp, setShowUserResp] = useState(false);
-	const [selectedUserResp, setSelectedUserResp] = useState(false);
-	const [previousRegistration, setPreviousRegistration] = useState("");
 
 	const theme = useTheme();
 
@@ -89,67 +68,33 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		});
 	}
 
-	/* const handleBlurRegistration = async (e) => {
-		handleBlur(e);
-		const currentValue = e.target.value.trim();
-		if (currentValue && currentValue !== previousRegistration) {
-			setPreviousRegistration(currentValue);
-			await anacSearch(currentValue);
-		}
-	}; */
-
 	useEffect(() => {
 		if (selectedImage) {
 			setAvatar(URL.createObjectURL(selectedImage));
 		}
 	}, [selectedImage]);
 
-	const AircraftSchema = Yup.object().shape({
-		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
-		/* category: Yup.string().required("Categoria é obrigatório"),
-		name: Yup.string().max(255).required("Nome é obrigatório"),
-		doc: Yup.string()
-			.transform((value) => value.replace(/\D/g, ""))
-			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
-			.required("Documento é obrigatório"),
-		email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
-		phone: Yup.string()
-			.transform((value) => value.replace(/\D/g, ""))
-			.matches(/^\d{11}$/, "Número de celular inválido")
-			.required("Celular é obrigatório"), */
-		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
-	});
-
 	const AircraftNewUserSchema = Yup.object().shape({
 		registration: Yup.string().max(255).required("Matrícula é obrigatória"),
-		/* category: Yup.string().required("Categoria é obrigatório"),
-		name: Yup.string(),
-		doc: Yup.string(),
-		email: Yup.string(),
-		phone: Yup.string(), */
 		membership: Yup.number().required("Selecione se a aeronave é mensalista"),
 	});
 
 	const formik = useFormik({
 		initialValues: getInitialValues(aircraft),
-		validationSchema: selectedUserResp ? AircraftNewUserSchema : AircraftSchema,
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus, errors }) => {
+		validationSchema: AircraftNewUserSchema,
+		onSubmit: async (values, { setSubmitting, setStatus }) => {
 			try {
-				const { registration, membership, name, email, doc, phone } = values;
+				const { registration, membership } = values;
 
 				let base64Image = "";
-				base64Image = await readFile(selectedImage);
+				if (selectedImage) {
+					base64Image = await readFile(selectedImage);
+				}
+
 				const newAircraft = {
 					registration: registration,
 					image: selectedImage ? base64Image : "",
 					membership: membership,
-					/* category: category,
-					name: name,
-					email: email,
-					phone: phone,
-					cpf: typeDoc === "cpf" ? doc.replace(/\D/g, "") : "",
-					cnpj: typeDoc === "cnpj" ? doc.replace(/\D/g, "") : "",
-					isNewUserResp: showUserResp, */
 				};
 
 				const response = await createAircraft(newAircraft);
@@ -180,7 +125,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 		},
 	});
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
+	const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
 	return (
 		<>
@@ -289,175 +234,6 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 												/>
 											</Stack>
 										</Grid>
-										{/* <Grid item xs={12}>
-											<Stack spacing={1.25}>
-												<InputLabel htmlFor="category">Categoria</InputLabel>
-												<FormControl fullWidth>
-													<Select
-														id="column-hiding"
-														displayEmpty
-														{...getFieldProps("category")}
-														onChange={(event) => setFieldValue("category", event.target.value)}
-														input={<OutlinedInput id="select-column-hiding" placeholder="Sort by" />}
-														renderValue={(selected) => {
-															if (!selected) {
-																return <Typography variant="subtitle1">Selecione a categoria da aeronave</Typography>;
-															}
-
-															return <Typography variant="subtitle2">{selected}</Typography>;
-														}}
-													>
-														{allStatus.map((column) => (
-															<MenuItem key={column} value={column}>
-																<ListItemText primary={column} />
-															</MenuItem>
-														))}
-													</Select>
-												</FormControl>
-												{touched.category && errors.category && (
-													<FormHelperText error id="standard-weight-helper-text-email-login" sx={{ pl: 1.75 }}>
-														{errors.category}
-													</FormHelperText>
-												)}
-											</Stack>
-										</Grid>*/}
-										{/* 	<Grid item xs={12}>
-											<FormControlLabel
-												control={
-													<Checkbox
-														checked={toggleCheckbox}
-														onChange={() => {
-															setToggleCheckbox(!toggleCheckbox);
-															setShowUserResp(true);
-															setFieldValue("name", "");
-															setFieldValue("email", "");
-															setFieldValue("phone", "");
-															setFieldValue("doc", "");
-														}}
-													/>
-												}
-												label="Cadastrar novo responsável"
-												style={{ display: "flex", alignItems: "center", gap: 2 }}
-											/>
-										</Grid>
-										{!toggleCheckbox && !selectedUserResp && (
-											<Grid item xs={12}>
-												<Stack spacing={1.25}>
-													<InputLabel htmlFor="responsible">Responsável</InputLabel>
-													<Autocomplete
-														options={usersResp}
-														getOptionLabel={(option) => option.name}
-														onChange={(event, selectedUser) => {
-															if (selectedUser) {
-																setFieldValue("name", selectedUser.name);
-																setFieldValue("email", selectedUser.email);
-																setFieldValue("phone", selectedUser.mobile);
-																setFieldValue("doc", selectedUser.cpf ? selectedUser.cpf : selectedUser.cnpj);
-																selectedUser.cpf ? setTypeDoc("cpf") : setTypeDoc("cnpj");
-																setShowUserResp(false);
-																setSelectedUserResp(true);
-																setToggleCheckbox(false);
-															}
-														}}
-														renderInput={(params) => <TextField {...params} placeholder="Selecione um responsável" variant="outlined" />}
-													/>
-												</Stack>
-											</Grid>
-										)}
-										{(selectedUserResp || (!selectedUserResp && toggleCheckbox)) && (
-											<>
-												<Grid item xs={12}>
-													<Stack spacing={1.25}>
-														<InputLabel htmlFor="name">Nome do responsável (PF ou PJ)</InputLabel>
-														<TextField
-															fullWidth
-															id="name"
-															placeholder="Digite o nome do responsável"
-															{...getFieldProps("name")}
-															error={Boolean(touched.name && errors.name)}
-															helperText={touched.name && errors.name}
-															disabled={!toggleCheckbox}
-														/>
-													</Stack>
-												</Grid>
-												<Grid item xs={12}>
-													<Stack spacing={1}>
-														<InputLabel htmlFor="doc-signup">Documento do responsável</InputLabel>
-														<RadioGroup row value={typeDoc} onChange={(e) => setTypeDoc(e.target.value)}>
-															<FormControlLabel value="cpf" control={<Radio disabled={!toggleCheckbox} />} label="CPF" />
-															<FormControlLabel value="cnpj" control={<Radio disabled={!toggleCheckbox} />} label="CNPJ" />
-														</RadioGroup>
-														<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur} disabled={!toggleCheckbox}>
-															{() => (
-																<OutlinedInput
-																	fullWidth
-																	error={Boolean(touched.doc && errors.doc)}
-																	id="doc-signup"
-																	name="doc"
-																	placeholder="Digite o número do documento"
-																	sx={{
-																		"& .MuiInputBase-input": {
-																			color: !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
-																		},
-																	}}
-																/>
-															)}
-														</InputMask>
-														{touched.doc && errors.doc && (
-															<FormHelperText error id="helper-text-doc-signup">
-																{errors.doc}
-															</FormHelperText>
-														)}
-													</Stack>
-												</Grid>
-												<Grid item xs={12}>
-													<Stack spacing={1.25}>
-														<InputLabel htmlFor="email">Email do responsável</InputLabel>
-														<TextField
-															fullWidth
-															id="email"
-															placeholder="Digite o email do responsável"
-															{...getFieldProps("email")}
-															error={Boolean(touched.email && errors.email)}
-															helperText={touched.email && errors.email}
-															disabled={!toggleCheckbox}
-														/>
-													</Stack>
-												</Grid>
-												<Grid item xs={12}>
-													<Stack spacing={1}>
-														<InputLabel htmlFor="phone-signup">Celular</InputLabel>
-														{!toggleCheckbox ? (
-															<TextField fullWidth id="phone-signup" {...getFieldProps("phone")} disabled={!toggleCheckbox} />
-														) : (
-															<>
-																<InputMask mask={"(99) 99999-9999"} value={values.phone} onChange={handleChange} onBlur={handleBlur} disabled={!toggleCheckbox}>
-																	{() => (
-																		<OutlinedInput
-																			fullWidth
-																			error={Boolean(touched.phone && errors.phone)}
-																			id="phone-signup"
-																			name="phone"
-																			placeholder="Digite o número do celular do responsável"
-																			sx={{
-																				"& .MuiInputBase-input": {
-																					color: !toggleCheckbox ? "rgba(191, 191, 191, 1)" : "inherit",
-																				},
-																			}}
-																		/>
-																	)}
-																</InputMask>
-																{touched.phone && errors.phone && (
-																	<FormHelperText error id="helper-text-phone-signup">
-																		{errors.phone}
-																	</FormHelperText>
-																)}
-															</>
-														)}
-													</Stack>
-												</Grid>
-											</>
-										)} */}
 										<Grid item xs={12}>
 											<Stack spacing={1}>
 												<InputLabel htmlFor="membership">Aeronave é mensalista?</InputLabel>

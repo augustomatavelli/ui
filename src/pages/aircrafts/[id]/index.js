@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip, IconButton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Dialog, Checkbox, Chip, IconButton, FormLabel, Avatar, TextField, useTheme } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import AircraftContext from "contexts/AircraftContext";
@@ -13,9 +13,10 @@ import UserContext from "contexts/UserContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import AddIcon from "@mui/icons-material/Add";
 import AddLinkOperatorAircraft from "sections/apps/aircrafts/AddLinkOperatorAircraft";
+import { CameraOutlined } from "@ant-design/icons";
 
 const AircraftDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft } = useAircraft();
+	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft, updateAircraft } = useAircraft();
 
 	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
@@ -25,8 +26,12 @@ const AircraftDetails = () => {
 	const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
 	const [openAlert, setOpenAlert] = useState(false);
 	const [checked, setChecked] = useState(false);
+	const [selectedImage, setSelectedImage] = useState(undefined);
+	const [avatar, setAvatar] = useState();
 
 	const { id } = useParams();
+
+	const theme = useTheme();
 
 	const { id_aircraft, registration, image, membership, status, is_restricted, operators, modelo } = aircraftDetails;
 
@@ -84,6 +89,15 @@ const AircraftDetails = () => {
 		await findOneAircraftById(aircraftId);
 	};
 
+	async function readFile(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
 	useEffect(() => {
 		findOneAircraftById(id);
 	}, [id]);
@@ -91,6 +105,26 @@ const AircraftDetails = () => {
 	useEffect(() => {
 		is_restricted === "S" ? setChecked(true) : setChecked(false);
 	}, [is_restricted]);
+
+	useEffect(() => {
+		const updateAircraftImage = async () => {
+			if (selectedImage) {
+				setAvatar(URL.createObjectURL(selectedImage));
+
+				let base64Image = "";
+				base64Image = await readFile(selectedImage);
+
+				const aircraftBody = {
+					image: selectedImage ? base64Image : "",
+				};
+
+				await updateAircraft(id_aircraft, aircraftBody);
+				await findOneAircraftById(id_aircraft);
+			}
+		};
+
+		updateAircraftImage();
+	}, [selectedImage, id_aircraft]);
 
 	return (
 		<>
@@ -108,46 +142,185 @@ const AircraftDetails = () => {
 				>
 					<Grid container spacing={3}>
 						<Grid item xs={12} sm={4} md={3}>
-							<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-								<img
-									src={image}
-									alt="Aircraft"
-									style={{
-										width: "100%",
-										height: "200px",
-										objectFit: "cover",
-									}}
-								/>
-								<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-									<Button
-										variant="contained"
-										color="warning"
-										onClick={() => {
-											if (user.type !== "A" && user.type !== "S" /* && users && !users.some((item) => item.id_user === Number(userId)) */) {
-												handleremoveLinkUserAircraft();
-											} else {
-												setOpenConfirmRemove(true);
-												setSearchUser([]);
+							{image || selectedImage ? (
+								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+									<FormLabel
+										htmlFor="change-aircraft-image"
+										sx={{
+											cursor: "pointer",
+											display: "block",
+											width: "100%",
+										}}
+									>
+										<img
+											src={image ? image : selectedImage ? URL.createObjectURL(selectedImage) : ""}
+											alt="Aircraft"
+											style={{
+												width: "100%",
+												height: "200px",
+												objectFit: "cover",
+												cursor: "pointer",
+											}}
+										/>
+									</FormLabel>
+									<TextField
+										type="file"
+										id="change-aircraft-image"
+										placeholder="Outlined"
+										variant="outlined"
+										sx={{ display: "none" }}
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) {
+												const validFormats = ["image/png", "image/jpeg"];
+												const maxSize = 2 * 1024 * 1024; // 2MB
+
+												if (!validFormats.includes(file.type)) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+												if (file.size > maxSize) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "O tamanho máximo permitido é 2MB",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+
+												setSelectedImage(file);
 											}
 										}}
-										sx={{ color: "#252525" }}
+									/>
+								</Box>
+							) : (
+								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
+									<FormLabel
+										htmlFor="change-avtar"
+										sx={{
+											position: "relative",
+											borderRadius: "50%",
+											overflow: "hidden",
+											"&:hover .MuiBox-root": { opacity: 1 },
+											cursor: "pointer",
+										}}
 									>
-										Desvincular
-									</Button>
-									{(user.type === "A" || user.type === "S") /* && users && !users.some((item) => item.id_user === Number(userId)) */ && (
-										<Button
-											variant="contained"
-											color="primary"
-											onClick={() => {
-												setOpen(true);
-												setSearchUser([]);
+										<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+											{!avatar && (
+												<Stack spacing={0.5} alignItems="center">
+													<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
+												</Stack>
+											)}
+										</Avatar>
+										<Box
+											sx={{
+												position: "absolute",
+												top: 0,
+												left: 0,
+												backgroundColor: "rgba(0,0,0,.25)",
+												width: "100%",
+												height: "100%",
+												opacity: 0,
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
 											}}
-										>
-											Vincular
-										</Button>
-									)}
-								</Stack>
-							</Box>
+										/>
+									</FormLabel>
+									<TextField
+										type="file"
+										id="change-avtar"
+										placeholder="Outlined"
+										variant="outlined"
+										sx={{ display: "none" }}
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) {
+												const validFormats = ["image/png", "image/jpeg"];
+												const maxSize = 2 * 1024 * 1024; // 2MB
+
+												if (!validFormats.includes(file.type)) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+
+												if (file.size > maxSize) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "O tamanho máximo permitido é 2MB",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+
+												setSelectedImage(file);
+											}
+										}}
+									/>
+								</Box>
+							)}
+							<Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
+								<Button
+									variant="contained"
+									color="warning"
+									onClick={() => {
+										if (user.type !== "A" && user.type !== "S" /* && users && !users.some((item) => item.id_user === Number(userId)) */) {
+											handleremoveLinkUserAircraft();
+										} else {
+											setOpenConfirmRemove(true);
+											setSearchUser([]);
+										}
+									}}
+									sx={{ color: "#252525" }}
+								>
+									Desvincular
+								</Button>
+								{(user.type === "A" || user.type === "S") /* && users && !users.some((item) => item.id_user === Number(userId)) */ && (
+									<Button
+										variant="contained"
+										color="primary"
+										onClick={() => {
+											setOpen(true);
+											setSearchUser([]);
+										}}
+									>
+										Vincular
+									</Button>
+								)}
+							</Stack>
 						</Grid>
 						<Grid item xs={12} sm={8} md={9}>
 							<List sx={{ py: 0 }}>

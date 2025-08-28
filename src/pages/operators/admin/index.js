@@ -27,8 +27,17 @@ const ListOperatorsForAdmin = () => {
 			title="Operadores"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
-				<Button color="inherit" variant="outlined" onClick={() => setReload(!reload)}>
-					<ReloadOutlined style={{ fontSize: 20 }} />
+				<Button
+					color="inherit"
+					variant="outlined"
+					sx={{
+						minWidth: 50,
+						width: "fit-content",
+						padding: 1,
+					}}
+					onClick={() => setReload(!reload)}
+				>
+					<ReloadOutlined style={{ fontSize: 18 }} />
 				</Button>
 			}
 			/* secondary={

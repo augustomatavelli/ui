@@ -51,12 +51,11 @@ export default function ProductsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
-		findCategories();
 		const categoriesParams = Object.keys(selectedCategory);
 		const params = new URLSearchParams();
 		params.set("categories", categoriesParams.join(","));
 
-		findAllProducts(search, page, params);
+		Promise.all([findCategories(), findAllProducts(search, page, params)]);
 	}, [search, page, selectedCategory, reload]);
 
 	useEffect(() => {}, [products]);
