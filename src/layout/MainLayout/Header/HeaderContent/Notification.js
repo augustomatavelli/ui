@@ -133,7 +133,7 @@ const Notification = () => {
 											},
 										}}
 									>
-										{notifications.map((notification) => (
+										{notifications.slice(0, 5).map((notification) => (
 											<ListItemButton
 												key={notification.id_notification}
 												sx={{
