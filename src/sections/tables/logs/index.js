@@ -83,7 +83,7 @@ export default function LogsTable({ openFilter, reload }) {
 							</TableRow>
 						) : logs.length > 0 ? (
 							logs.map((log) => (
-								<TableRow hover key={log.id} sx={{ cursor: "pointer" }}>
+								<TableRow hover key={log.id}>
 									<TableCell align="center">#{log.id}</TableCell>
 									<TableCell align="center">{log.name}</TableCell>
 									<TableCell align="center">{log.email}</TableCell>
@@ -105,7 +105,7 @@ export default function LogsTable({ openFilter, reload }) {
 									<TableCell align="center">{log.field}</TableCell>
 									<TableCell align="center">{log.old ? log.old : "-"}</TableCell>
 									<TableCell align="center">{log.new}</TableCell>
-									<TableCell align="center">{dayjs.utc(log.date).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{dayjs(log.date).format("DD/MM/YYYY HH:mm")}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (

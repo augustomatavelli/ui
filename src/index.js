@@ -25,6 +25,7 @@ import { InspectionProvider } from "contexts/InspectionsContext";
 import { OperatorProvider } from "contexts/OperatorContext";
 import { ReportProvider } from "contexts/ReportContext";
 import { LogProvider } from "contexts/LogContext";
+import { NotificationProvider } from "contexts/NotificationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -46,7 +47,9 @@ root.render(
 															<OrderProvider>
 																<InspectionProvider>
 																	<OperatorProvider>
-																		<App />
+																		<NotificationProvider>
+																			<App />
+																		</NotificationProvider>
 																	</OperatorProvider>
 																</InspectionProvider>
 															</OrderProvider>

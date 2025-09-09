@@ -32,19 +32,19 @@ const UseAxios = () => {
 		navigate("/");
 	};
 
-	const invalidAuthorization = async (error) => {
+	/* const invalidAuthorization = async (error) => {
 		console.log(error);
 		if (error?.response?.status == 401 || error?.response?.status == 403) {
 			logout();
 		}
 
 		return Promise.reject(error);
-	};
+	}; */
 
 	authAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
-	authAxios.interceptors.response.use((response) => response, invalidAuthorization);
+	/* authAxios.interceptors.response.use((response) => response, invalidAuthorization); */
 	publicAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
-	publicAxios.interceptors.response.use((response) => response, invalidAuthorization);
+	/* publicAxios.interceptors.response.use((response) => response, invalidAuthorization); */
 
 	return { authAxios, logout, publicAxios };
 };

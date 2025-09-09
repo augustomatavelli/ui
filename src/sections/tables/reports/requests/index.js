@@ -53,8 +53,8 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 
 	const [selectedPeriod, setSelectedPeriod] = useState("current_month");
 	const [dateFilter, setDateFilter] = useState({
-		start: dayjs.utc().startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
-		end: dayjs.utc().endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		start: dayjs().startOf("month").format("YYYY-MM-DDTHH:mm:ss"),
+		end: dayjs().endOf("month").format("YYYY-MM-DDTHH:mm:ss"),
 	});
 
 	const handleChange = (event) => {

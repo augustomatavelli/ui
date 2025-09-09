@@ -32,13 +32,11 @@ const HeaderContent = () => {
 	return (
 		<>
 			<Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-				{/* Esquerda */}
 				{menuOrientation === MenuOrientation.HORIZONTAL && !downLG && <DrawerHeader open={true} />}
 				{downLG && <Box sx={{ flexGrow: 1 }} />}
 
-				{/* Direita */}
 				<Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
-					{/* <Notification /> */}
+					<Notification />
 					{!downLG && <Profile />}
 					{downLG && <MobileSection />}
 				</Box>

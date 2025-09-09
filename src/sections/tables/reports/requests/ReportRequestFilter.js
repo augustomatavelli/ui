@@ -124,7 +124,7 @@ export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFi
 										value={dateFilter.end}
 										minDateTime={dateFilter.start ? dayjs(dateFilter.start) : dayjs()}
 										onChange={(e) => {
-											if (e && dateFilter.start && dayjs.utc(e).isAfter(dateFilter.start)) {
+											if (e && dateFilter.start && dayjs(e).isAfter(dateFilter.start)) {
 												setDateFilter((prev) => ({
 													...prev,
 													end: e,

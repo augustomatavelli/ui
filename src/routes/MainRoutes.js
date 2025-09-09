@@ -53,6 +53,9 @@ const ReportRequestsPeriod = Loadable(lazy(() => import("pages/reports/requests"
 // render - logs
 const ListLogsForAdmin = Loadable(lazy(() => import("pages/logs/admin")));
 
+// render - notifications
+const ListMyNotifications = Loadable(lazy(() => import("pages/notifications/me")));
+
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
@@ -313,6 +316,19 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['S']">
 									<ListLogsForAdmin />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "notifications",
+					children: [
+						{
+							path: "me",
+							element: (
+								<AuthGuard requiredUserType="['S', 'A']">
+									<ListMyNotifications />
 								</AuthGuard>
 							),
 						},

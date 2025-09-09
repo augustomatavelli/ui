@@ -14,6 +14,7 @@ import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import AddIcon from "@mui/icons-material/Add";
 import AddLinkOperatorAircraft from "sections/apps/aircrafts/AddLinkOperatorAircraft";
 import { CameraOutlined } from "@ant-design/icons";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 const AircraftDetails = () => {
 	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft, updateAircraft } = useAircraft();
@@ -150,6 +151,7 @@ const AircraftDetails = () => {
 											cursor: "pointer",
 											display: "block",
 											width: "100%",
+											position: "relative",
 										}}
 									>
 										<img
@@ -162,6 +164,22 @@ const AircraftDetails = () => {
 												cursor: "pointer",
 											}}
 										/>
+										<Box
+											sx={{
+												position: "absolute",
+												top: "8px",
+												right: "8px",
+												backgroundColor: "rgba(0, 0, 0, 0.7)",
+												borderRadius: "50%",
+												padding: "8px",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+											}}
+										>
+											<CameraAltIcon sx={{ color: "white", fontSize: "1rem" }} />
+										</Box>
 									</FormLabel>
 									<TextField
 										type="file"

@@ -2,7 +2,7 @@ import { AppstoreAddOutlined, SearchOutlined } from "@ant-design/icons";
 
 const icons = { AppstoreAddOutlined, SearchOutlined };
 
-const reports = {
+const logs = {
 	id: "group-logs",
 	title: "Auditoria",
 	icon: icons.AppstoreAddOutlined,
@@ -18,4 +18,4 @@ const reports = {
 	],
 };
 
-export default reports;
+export default logs;

@@ -122,7 +122,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 																const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
 																const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
 																const closestDate = !takeoffDiff ? item.landing_date : landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
-																return dayjs.utc(closestDate).format("DD/MM/YYYY HH:mm");
+																return dayjs(closestDate).format("DD/MM/YYYY HH:mm");
 															})()
 														: "Não agendado"}
 										</TableCell>

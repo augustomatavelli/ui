@@ -1,28 +1,23 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-
-// material-ui
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery, Box, Container, Toolbar } from "@mui/material";
-
-// project import
 import Drawer from "./Drawer";
 import Header from "./Header";
 import Footer from "./Footer";
 import HorizontalBar from "./Drawer/HorizontalBar";
 import Breadcrumbs from "components/@extended/Breadcrumbs";
-
 import { MenuOrientation } from "config";
 import navigation from "menu-items";
 import useConfig from "hooks/useConfig";
 import { dispatch } from "store";
 import { openDrawer } from "store/reducers/menu";
 import useUser from "hooks/useUser";
-
-// ==============================|| MAIN LAYOUT ||============================== //
+import useNotification from "hooks/useNotification";
 
 const MainLayout = () => {
 	const { findOneUser } = useUser();
+	const { findAllNotifications } = useNotification();
 
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
@@ -45,6 +40,18 @@ const MainLayout = () => {
 
 	useEffect(() => {
 		findOneUser();
+		findAllNotifications(1, "T", true);
+
+		const intervalId = setInterval(
+			() => {
+				findAllNotifications(1, "T", true);
+			},
+			5 * 60 * 1000
+		);
+
+		return () => {
+			clearInterval(intervalId);
+		};
 	}, []);
 
 	return (

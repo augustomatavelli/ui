@@ -24,7 +24,7 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 	const handleChangePeriod = (value) => {
 		setSelectedPeriod(value);
 
-		const today = dayjs.utc();
+		const today = dayjs();
 		let startDate = null;
 		let endDate = null;
 
@@ -123,7 +123,7 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 										value={dateFilter.end}
 										minDateTime={dateFilter.start ? dayjs(dateFilter.start) : dayjs()}
 										onChange={(e) => {
-											if (e && dateFilter.start && dayjs.utc(e).isAfter(dateFilter.start)) {
+											if (e && dateFilter.start && dayjs(e).isAfter(dateFilter.start)) {
 												setDateFilter((prev) => ({
 													...prev,
 													end: e,
