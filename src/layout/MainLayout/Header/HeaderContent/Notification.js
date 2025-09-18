@@ -6,11 +6,16 @@ import IconButton from "components/@extended/IconButton";
 import Transitions from "components/@extended/Transitions";
 import { BellOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import NotificationContext from "contexts/NotificationContext";
-import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/pt-br";
 import useNotification from "hooks/useNotification";
 import { useNavigate } from "react-router";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");

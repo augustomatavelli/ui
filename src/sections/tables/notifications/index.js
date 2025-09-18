@@ -1,12 +1,16 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Checkbox, useTheme } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import NotificationContext from "contexts/NotificationContext";
 import useNotification from "hooks/useNotification";
 import { NotificationFilter } from "./NotificationFilter";
 import { NotificationMarkAsRead } from "./NotificationMarkAsRead";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 dayjs.extend(utc);
 
