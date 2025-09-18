@@ -12,8 +12,6 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-dayjs.extend(utc);
-
 export const header = [
 	{ label: "", key: "icon" },
 	{ label: "Nome", key: "name" },
@@ -107,7 +105,7 @@ export default function NotificationsTable({ openFilter, reload }) {
 										<Checkbox checked={selectedNotifications.includes(notification.id_notification)} onChange={() => handleSelectNotification(notification.id_notification)} />
 									</TableCell>
 									<TableCell align="start">{notification.message}</TableCell>
-									<TableCell align="center">{dayjs(notification.created_at).tz("America/Sao_Paulo").format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{dayjs.utc(notification.created_at).tz("America/Sao_Paulo").format("DD/MM/YYYY HH:mm")}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (
