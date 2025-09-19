@@ -147,7 +147,7 @@ const Notification = () => {
 													}),
 												}}
 											>
-												<ListItemText primary={<Typography variant="h6">{notification.message}</Typography>} secondary={dayjs.utc(notification.created_at).tz("America/Sao_Paulo").fromNow()} />
+												<ListItemText primary={<Typography variant="h6">{notification.message}</Typography>} secondary={dayjs.utc(notification.created_at).fromNow()} />
 											</ListItemButton>
 										))}
 									</List>
