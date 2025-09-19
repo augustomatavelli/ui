@@ -7,10 +7,8 @@ import { NotificationFilter } from "./NotificationFilter";
 import { NotificationMarkAsRead } from "./NotificationMarkAsRead";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 
 dayjs.extend(utc);
-dayjs.extend(timezone);
 
 export const header = [
 	{ label: "", key: "icon" },
