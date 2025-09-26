@@ -164,22 +164,24 @@ const AircraftDetails = () => {
 												cursor: "pointer",
 											}}
 										/>
-										<Box
-											sx={{
-												position: "absolute",
-												top: "8px",
-												right: "8px",
-												backgroundColor: "rgba(0, 0, 0, 0.7)",
-												borderRadius: "50%",
-												padding: "8px",
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
-												boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-											}}
-										>
-											<CameraAltIcon sx={{ color: "white", fontSize: "1rem" }} />
-										</Box>
+										{(user.type === "A" || user.type === "S") && (
+											<Box
+												sx={{
+													position: "absolute",
+													top: "8px",
+													right: "8px",
+													backgroundColor: "rgba(0, 0, 0, 0.7)",
+													borderRadius: "50%",
+													padding: "8px",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+												}}
+											>
+												<CameraAltIcon sx={{ color: "white", fontSize: "1rem" }} />
+											</Box>
+										)}
 									</FormLabel>
 									<TextField
 										type="file"
@@ -188,41 +190,43 @@ const AircraftDetails = () => {
 										variant="outlined"
 										sx={{ display: "none" }}
 										onChange={(e) => {
-											const file = e.target.files?.[0];
-											if (file) {
-												const validFormats = ["image/png", "image/jpeg"];
-												const maxSize = 2 * 1024 * 1024; // 2MB
+											if (user.type === "A" || user.type === "S") {
+												const file = e.target.files?.[0];
+												if (file) {
+													const validFormats = ["image/png", "image/jpeg"];
+													const maxSize = 2 * 1024 * 1024; // 2MB
 
-												if (!validFormats.includes(file.type)) {
-													dispatch(
-														openSnackbar({
-															open: true,
-															message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-															variant: "alert",
-															alert: {
-																color: "warning",
-															},
-															close: false,
-														})
-													);
-													return;
-												}
-												if (file.size > maxSize) {
-													dispatch(
-														openSnackbar({
-															open: true,
-															message: "O tamanho máximo permitido é 2MB",
-															variant: "alert",
-															alert: {
-																color: "warning",
-															},
-															close: false,
-														})
-													);
-													return;
-												}
+													if (!validFormats.includes(file.type)) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
+													if (file.size > maxSize) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "O tamanho máximo permitido é 2MB",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
 
-												setSelectedImage(file);
+													setSelectedImage(file);
+												}
 											}
 										}}
 									/>
