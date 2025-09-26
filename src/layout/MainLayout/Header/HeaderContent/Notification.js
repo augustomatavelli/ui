@@ -152,7 +152,7 @@ const Notification = () => {
 											<ListItemButton
 												key={notification.id_notification}
 												onClick={(event) => {
-													handleRedirect(notification.entity, notification.id_entity);
+													handleRedirect(notification.entity, notification.entity_id);
 													handleClose(event.target);
 												}}
 												sx={{
