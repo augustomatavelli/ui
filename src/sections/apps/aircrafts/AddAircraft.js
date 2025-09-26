@@ -136,89 +136,91 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 						<Divider />
 						<DialogContent sx={{ p: 2.5 }}>
 							<Grid container spacing={3}>
-								<Grid item xs={12} md={3}>
-									<Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
-										<FormLabel
-											htmlFor="change-avtar"
-											sx={{
-												position: "relative",
-												borderRadius: "50%",
-												overflow: "hidden",
-												"&:hover .MuiBox-root": { opacity: 1 },
-												cursor: "pointer",
-											}}
-										>
-											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
-												{!avatar && (
-													<Stack spacing={0.5} alignItems="center">
-														<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
-														<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
-													</Stack>
-												)}
-											</Avatar>
-											<Box
+								{(user.type === "A" || user.type === "S") && (
+									<Grid item xs={12} md={3}>
+										<Stack direction="row" justifyContent="center" sx={{ mt: 3 }}>
+											<FormLabel
+												htmlFor="change-avtar"
 												sx={{
-													position: "absolute",
-													top: 0,
-													left: 0,
-													backgroundColor: "rgba(0,0,0,.25)",
-													width: "100%",
-													height: "100%",
-													opacity: 0,
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
+													position: "relative",
+													borderRadius: "50%",
+													overflow: "hidden",
+													"&:hover .MuiBox-root": { opacity: 1 },
+													cursor: "pointer",
+												}}
+											>
+												<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+													{!avatar && (
+														<Stack spacing={0.5} alignItems="center">
+															<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+															<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
+														</Stack>
+													)}
+												</Avatar>
+												<Box
+													sx={{
+														position: "absolute",
+														top: 0,
+														left: 0,
+														backgroundColor: "rgba(0,0,0,.25)",
+														width: "100%",
+														height: "100%",
+														opacity: 0,
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+													}}
+												/>
+											</FormLabel>
+											<TextField
+												type="file"
+												id="change-avtar"
+												placeholder="Outlined"
+												variant="outlined"
+												sx={{ display: "none" }}
+												onChange={(e) => {
+													const file = e.target.files?.[0];
+													if (file) {
+														const validFormats = ["image/png", "image/jpeg"];
+														const maxSize = 2 * 1024 * 1024; // 2MB
+
+														if (!validFormats.includes(file.type)) {
+															dispatch(
+																openSnackbar({
+																	open: true,
+																	message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+																	variant: "alert",
+																	alert: {
+																		color: "warning",
+																	},
+																	close: false,
+																})
+															);
+															return;
+														}
+
+														if (file.size > maxSize) {
+															dispatch(
+																openSnackbar({
+																	open: true,
+																	message: "O tamanho máximo permitido é 2MB",
+																	variant: "alert",
+																	alert: {
+																		color: "warning",
+																	},
+																	close: false,
+																})
+															);
+															return;
+														}
+
+														setSelectedImage(file);
+													}
 												}}
 											/>
-										</FormLabel>
-										<TextField
-											type="file"
-											id="change-avtar"
-											placeholder="Outlined"
-											variant="outlined"
-											sx={{ display: "none" }}
-											onChange={(e) => {
-												const file = e.target.files?.[0];
-												if (file) {
-													const validFormats = ["image/png", "image/jpeg"];
-													const maxSize = 2 * 1024 * 1024; // 2MB
-
-													if (!validFormats.includes(file.type)) {
-														dispatch(
-															openSnackbar({
-																open: true,
-																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-																variant: "alert",
-																alert: {
-																	color: "warning",
-																},
-																close: false,
-															})
-														);
-														return;
-													}
-
-													if (file.size > maxSize) {
-														dispatch(
-															openSnackbar({
-																open: true,
-																message: "O tamanho máximo permitido é 2MB",
-																variant: "alert",
-																alert: {
-																	color: "warning",
-																},
-																close: false,
-															})
-														);
-														return;
-													}
-
-													setSelectedImage(file);
-												}
-											}}
-										/>
-									</Stack>
-								</Grid>
+										</Stack>
+									</Grid>
+								)}
 								<Grid item xs={12} md={8}>
 									<Grid container spacing={3}>
 										<Grid item xs={12}>

@@ -145,26 +145,26 @@ const AircraftDetails = () => {
 						<Grid item xs={12} sm={4} md={3}>
 							{image || selectedImage ? (
 								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-									<FormLabel
-										htmlFor="change-aircraft-image"
-										sx={{
-											cursor: "pointer",
-											display: "block",
-											width: "100%",
-											position: "relative",
-										}}
-									>
-										<img
-											src={image ? image : selectedImage ? URL.createObjectURL(selectedImage) : ""}
-											alt="Aircraft"
-											style={{
-												width: "100%",
-												height: "200px",
-												objectFit: "cover",
+									{user.type === "A" || user.type === "S" ? (
+										<FormLabel
+											htmlFor="change-aircraft-image"
+											sx={{
 												cursor: "pointer",
+												display: "block",
+												width: "100%",
+												position: "relative",
 											}}
-										/>
-										{(user.type === "A" || user.type === "S") && (
+										>
+											<img
+												src={image ? image : selectedImage ? URL.createObjectURL(selectedImage) : ""}
+												alt="Aircraft"
+												style={{
+													width: "100%",
+													height: "200px",
+													objectFit: "cover",
+													cursor: "pointer",
+												}}
+											/>
 											<Box
 												sx={{
 													position: "absolute",
@@ -181,16 +181,26 @@ const AircraftDetails = () => {
 											>
 												<CameraAltIcon sx={{ color: "white", fontSize: "1rem" }} />
 											</Box>
-										)}
-									</FormLabel>
-									<TextField
-										type="file"
-										id="change-aircraft-image"
-										placeholder="Outlined"
-										variant="outlined"
-										sx={{ display: "none" }}
-										onChange={(e) => {
-											if (user.type === "A" || user.type === "S") {
+										</FormLabel>
+									) : (
+										<img
+											src={image ? image : selectedImage ? URL.createObjectURL(selectedImage) : ""}
+											alt="Aircraft"
+											style={{
+												width: "100%",
+												height: "200px",
+												objectFit: "cover",
+											}}
+										/>
+									)}
+									{(user.type === "A" || user.type === "S") && (
+										<TextField
+											type="file"
+											id="change-aircraft-image"
+											placeholder="Outlined"
+											variant="outlined"
+											sx={{ display: "none" }}
+											onChange={(e) => {
 												const file = e.target.files?.[0];
 												if (file) {
 													const validFormats = ["image/png", "image/jpeg"];
@@ -227,122 +237,96 @@ const AircraftDetails = () => {
 
 													setSelectedImage(file);
 												}
-											}
-										}}
-									/>
-								</Box>
-							) : (
-								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
-									<FormLabel
-										htmlFor="change-avtar"
-										sx={{
-											position: "relative",
-											borderRadius: "50%",
-											overflow: "hidden",
-											"&:hover .MuiBox-root": { opacity: 1 },
-											cursor: "pointer",
-										}}
-									>
-										<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
-											{!avatar && (
-												<Stack spacing={0.5} alignItems="center">
-													<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
-													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
-												</Stack>
-											)}
-										</Avatar>
-										<Box
-											sx={{
-												position: "absolute",
-												top: 0,
-												left: 0,
-												backgroundColor: "rgba(0,0,0,.25)",
-												width: "100%",
-												height: "100%",
-												opacity: 0,
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
 											}}
 										/>
-									</FormLabel>
-									<TextField
-										type="file"
-										id="change-avtar"
-										placeholder="Outlined"
-										variant="outlined"
-										sx={{ display: "none" }}
-										onChange={(e) => {
-											const file = e.target.files?.[0];
-											if (file) {
-												const validFormats = ["image/png", "image/jpeg"];
-												const maxSize = 2 * 1024 * 1024; // 2MB
-
-												if (!validFormats.includes(file.type)) {
-													dispatch(
-														openSnackbar({
-															open: true,
-															message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-															variant: "alert",
-															alert: {
-																color: "warning",
-															},
-															close: false,
-														})
-													);
-													return;
-												}
-
-												if (file.size > maxSize) {
-													dispatch(
-														openSnackbar({
-															open: true,
-															message: "O tamanho máximo permitido é 2MB",
-															variant: "alert",
-															alert: {
-																color: "warning",
-															},
-															close: false,
-														})
-													);
-													return;
-												}
-
-												setSelectedImage(file);
-											}
-										}}
-									/>
+									)}
 								</Box>
+							) : (
+								// Caso não tenha imagem, só mostra o placeholder para usuários A ou S
+								(user.type === "A" || user.type === "S") && (
+									<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
+										<FormLabel
+											htmlFor="change-avtar"
+											sx={{
+												position: "relative",
+												borderRadius: "50%",
+												overflow: "hidden",
+												"&:hover .MuiBox-root": { opacity: 1 },
+												cursor: "pointer",
+											}}
+										>
+											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+												{!avatar && (
+													<Stack spacing={0.5} alignItems="center">
+														<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+														<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
+													</Stack>
+												)}
+											</Avatar>
+											<Box
+												sx={{
+													position: "absolute",
+													top: 0,
+													left: 0,
+													backgroundColor: "rgba(0,0,0,.25)",
+													width: "100%",
+													height: "100%",
+													opacity: 0,
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											/>
+										</FormLabel>
+										<TextField
+											type="file"
+											id="change-avtar"
+											placeholder="Outlined"
+											variant="outlined"
+											sx={{ display: "none" }}
+											onChange={(e) => {
+												const file = e.target.files?.[0];
+												if (file) {
+													const validFormats = ["image/png", "image/jpeg"];
+													const maxSize = 2 * 1024 * 1024; // 2MB
+
+													if (!validFormats.includes(file.type)) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
+
+													if (file.size > maxSize) {
+														dispatch(
+															openSnackbar({
+																open: true,
+																message: "O tamanho máximo permitido é 2MB",
+																variant: "alert",
+																alert: {
+																	color: "warning",
+																},
+																close: false,
+															})
+														);
+														return;
+													}
+
+													setSelectedImage(file);
+												}
+											}}
+										/>
+									</Box>
+								)
 							)}
-							<Stack direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-								<Button
-									variant="contained"
-									color="warning"
-									onClick={() => {
-										if (user.type !== "A" && user.type !== "S" /* && users && !users.some((item) => item.id_user === Number(userId)) */) {
-											handleremoveLinkUserAircraft();
-										} else {
-											setOpenConfirmRemove(true);
-											setSearchUser([]);
-										}
-									}}
-									sx={{ color: "#252525" }}
-								>
-									Desvincular
-								</Button>
-								{(user.type === "A" || user.type === "S") /* && users && !users.some((item) => item.id_user === Number(userId)) */ && (
-									<Button
-										variant="contained"
-										color="primary"
-										onClick={() => {
-											setOpen(true);
-											setSearchUser([]);
-										}}
-									>
-										Vincular
-									</Button>
-								)}
-							</Stack>
 						</Grid>
 						<Grid item xs={12} sm={8} md={9}>
 							<List sx={{ py: 0 }}>
