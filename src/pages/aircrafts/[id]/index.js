@@ -15,6 +15,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddLinkOperatorAircraft from "sections/apps/aircrafts/AddLinkOperatorAircraft";
 import { CameraOutlined } from "@ant-design/icons";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 
 const AircraftDetails = () => {
 	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft, updateAircraft } = useAircraft();
@@ -241,91 +242,94 @@ const AircraftDetails = () => {
 										/>
 									)}
 								</Box>
-							) : (
-								// Caso não tenha imagem, só mostra o placeholder para usuários A ou S
-								(user.type === "A" || user.type === "S") && (
-									<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
-										<FormLabel
-											htmlFor="change-avtar"
+							) : user.type === "A" || user.type === "S" ? (
+								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
+									<FormLabel
+										htmlFor="change-avtar"
+										sx={{
+											position: "relative",
+											borderRadius: "50%",
+											overflow: "hidden",
+											"&:hover .MuiBox-root": { opacity: 1 },
+											cursor: "pointer",
+										}}
+									>
+										<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
+											{!avatar && (
+												<Stack spacing={0.5} alignItems="center">
+													<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
+													<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
+												</Stack>
+											)}
+										</Avatar>
+										<Box
 											sx={{
-												position: "relative",
-												borderRadius: "50%",
-												overflow: "hidden",
-												"&:hover .MuiBox-root": { opacity: 1 },
-												cursor: "pointer",
-											}}
-										>
-											<Avatar alt="Avatar 1" src={avatar} sx={{ width: 144, height: 144, border: "1px dashed" }}>
-												{!avatar && (
-													<Stack spacing={0.5} alignItems="center">
-														<CameraOutlined style={{ color: theme.palette.secondary.light, fontSize: "2rem" }} />
-														<Typography sx={{ color: "secondary.lighter" }}>Carregar foto</Typography>
-													</Stack>
-												)}
-											</Avatar>
-											<Box
-												sx={{
-													position: "absolute",
-													top: 0,
-													left: 0,
-													backgroundColor: "rgba(0,0,0,.25)",
-													width: "100%",
-													height: "100%",
-													opacity: 0,
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-												}}
-											/>
-										</FormLabel>
-										<TextField
-											type="file"
-											id="change-avtar"
-											placeholder="Outlined"
-											variant="outlined"
-											sx={{ display: "none" }}
-											onChange={(e) => {
-												const file = e.target.files?.[0];
-												if (file) {
-													const validFormats = ["image/png", "image/jpeg"];
-													const maxSize = 2 * 1024 * 1024; // 2MB
-
-													if (!validFormats.includes(file.type)) {
-														dispatch(
-															openSnackbar({
-																open: true,
-																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-																variant: "alert",
-																alert: {
-																	color: "warning",
-																},
-																close: false,
-															})
-														);
-														return;
-													}
-
-													if (file.size > maxSize) {
-														dispatch(
-															openSnackbar({
-																open: true,
-																message: "O tamanho máximo permitido é 2MB",
-																variant: "alert",
-																alert: {
-																	color: "warning",
-																},
-																close: false,
-															})
-														);
-														return;
-													}
-
-													setSelectedImage(file);
-												}
+												position: "absolute",
+												top: 0,
+												left: 0,
+												backgroundColor: "rgba(0,0,0,.25)",
+												width: "100%",
+												height: "100%",
+												opacity: 0,
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
 											}}
 										/>
-									</Box>
-								)
+									</FormLabel>
+									<TextField
+										type="file"
+										id="change-avtar"
+										placeholder="Outlined"
+										variant="outlined"
+										sx={{ display: "none" }}
+										onChange={(e) => {
+											const file = e.target.files?.[0];
+											if (file) {
+												const validFormats = ["image/png", "image/jpeg"];
+												const maxSize = 2 * 1024 * 1024; // 2MB
+
+												if (!validFormats.includes(file.type)) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "Formato inválido! Apenas PNG e JPEG são permitidos",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+
+												if (file.size > maxSize) {
+													dispatch(
+														openSnackbar({
+															open: true,
+															message: "O tamanho máximo permitido é 2MB",
+															variant: "alert",
+															alert: {
+																color: "warning",
+															},
+															close: false,
+														})
+													);
+													return;
+												}
+
+												setSelectedImage(file);
+											}
+										}}
+									/>
+								</Box>
+							) : (
+								<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 3 }}>
+									<Avatar alt="aircraft" sx={{ width: 144, height: 144, justifyContent: "center", alignItems: "center", alignSelf: "center" }}>
+										<AirplanemodeActiveIcon style={{ fontSize: 100 }} />
+									</Avatar>
+								</Box>
 							)}
 						</Grid>
 						<Grid item xs={12} sm={8} md={9}>
