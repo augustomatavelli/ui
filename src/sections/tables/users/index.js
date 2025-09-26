@@ -17,7 +17,7 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 	{ label: "Tipo", key: "type" },
-	{ label: "Licença", key: "license" },
+	{ label: "Número ANAC", key: "license" },
 ];
 
 export default function UsersTable({ openFilter, reload }) {
@@ -115,7 +115,7 @@ export default function UsersTable({ openFilter, reload }) {
 							<TableCell align="center">Email</TableCell>
 							<TableCell align="center">Celular</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
-							<TableCell align="center">Licença</TableCell>
+							<TableCell align="center">Número ANAC</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

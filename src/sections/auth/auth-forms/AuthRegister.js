@@ -60,7 +60,7 @@ const AuthRegister = () => {
 						.transform((value) => value.replace(/\D/g, ""))
 						.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
 						.required("Documento é obrigatório"),
-					pilot: isPilot ? Yup.string().max(255).required("Número da licença é obrigatória") : Yup.string().max(255),
+					pilot: isPilot ? Yup.string().max(255).required("Número ANAC é obrigatório") : Yup.string().max(255),
 					password: Yup.string()
 						.required("Senha é obrigatória")
 						.matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
@@ -205,7 +205,7 @@ const AuthRegister = () => {
 											name="pilot"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder="Digite o número da licença..."
+											placeholder="Digite o número ANAC..."
 											disabled={!isPilot}
 										/>
 										{touched.pilot && errors.pilot && (

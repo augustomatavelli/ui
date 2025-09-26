@@ -16,7 +16,7 @@ const ListLogsForAdmin = () => {
 
 	useEffect(() => {
 		if (!user) return;
-		if (user.type !== "S") {
+		if (user.type !== "A" && user.type !== "S") {
 			navigate("/aircrafts/me");
 		}
 	}, []);

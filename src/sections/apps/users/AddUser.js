@@ -52,7 +52,7 @@ const AddUser = ({ user, onCancel }) => {
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}(\d{3})?$/, "Número do documento inválido")
 			.required("Documento é obrigatório"),
-		pilot: isPilot === 1 ? Yup.string().max(255).required("Número da licença é obrigatória") : Yup.string().max(255),
+		pilot: isPilot === 1 ? Yup.string().max(255).required("Número ANAC é obrigatório") : Yup.string().max(255),
 	});
 
 	const formik = useFormik({
@@ -234,7 +234,7 @@ const AddUser = ({ user, onCancel }) => {
 													name="pilot"
 													onBlur={handleBlur}
 													onChange={handleChange}
-													placeholder="Digite o número da licença..."
+													placeholder="Digite o número da ANAC..."
 													inputProps={{}}
 												/>
 												{touched.pilot && errors.pilot && (

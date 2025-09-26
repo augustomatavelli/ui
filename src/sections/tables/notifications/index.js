@@ -16,7 +16,7 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 	{ label: "Tipo", key: "type" },
-	{ label: "Licença", key: "license" },
+	{ label: "Número ANAC", key: "license" },
 ];
 
 export default function NotificationsTable({ openFilter, reload }) {

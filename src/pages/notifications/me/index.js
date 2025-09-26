@@ -16,7 +16,7 @@ const ListMyNotifications = () => {
 
 	useEffect(() => {
 		if (!user) return;
-		if (user.type !== "S" && user.type !== "A") {
+		if (user.type !== "A" && user.type !== "S") {
 			navigate("/aircrafts/me");
 		}
 	}, []);

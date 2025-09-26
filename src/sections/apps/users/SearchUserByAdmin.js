@@ -41,7 +41,7 @@ const SearchUserByAdmin = ({ setSearch }) => {
 						/>
 					}
 					aria-describedby="header-search-text"
-					placeholder="Pesquisar usuário por nome, email ou licença..."
+					placeholder="Pesquisar usuário por nome, email ou número ANAC..."
 					value={inputValue}
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}

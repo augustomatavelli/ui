@@ -35,7 +35,7 @@ export const ErrorMessages = {
 	invalid_document: "Documento inválido",
 	cpf_already_exists: "CPF já cadastrado",
 	cnpj_already_exists: "CNPJ já cadastrado",
-	registration_already_exists: "Licença já cadastrada",
+	registration_already_exists: "Número ANAC já cadastrado",
 	email_already_exists: "Email já cadastrado",
 	mobile_already_exists: "Número de celular já cadastrado",
 };

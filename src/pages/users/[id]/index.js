@@ -91,8 +91,8 @@ const UserDetails = () => {
 										<Grid container spacing={3}>
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
-													<Typography color="secondary">Licença</Typography>
-													{license ? <Typography>{license}</Typography> : <Typography>Usuário não possui licença de piloto</Typography>}
+													<Typography color="secondary">Número ANAC</Typography>
+													{license ? <Typography>{license}</Typography> : <Typography>Usuário não possui número ANAC</Typography>}
 												</Stack>
 											</Grid>
 										</Grid>
