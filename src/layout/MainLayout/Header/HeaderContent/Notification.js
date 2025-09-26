@@ -63,11 +63,7 @@ const Notification = () => {
 
 	const handleRedirect = (entity, id_entity) => {
 		if (entity === "R") {
-			if (user.type === "A" || user.type === "S") {
-				navigate(`/requests/admin/${id_entity}`);
-			} else {
-				navigate(`/requests/${id_entity}`);
-			}
+			navigate(`/requests/${id_entity}`);
 		} else {
 			navigate("/aircrafts/me");
 		}
