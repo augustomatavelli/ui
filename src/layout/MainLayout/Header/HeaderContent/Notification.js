@@ -12,6 +12,7 @@ import useNotification from "hooks/useNotification";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import UserContext from "contexts/UserContext";
 
 dayjs.extend(utc);
 dayjs.extend(relativeTime);
@@ -36,6 +37,7 @@ const Notification = () => {
 	const { findAllNotifications, updateNotificationAsRead } = useNotification();
 
 	const { notifications } = useContext(NotificationContext);
+	const { user } = useContext(UserContext);
 
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -57,6 +59,18 @@ const Notification = () => {
 	const handleMarkAllAsRead = async (data) => {
 		await updateNotificationAsRead(data, "R");
 		await findAllNotifications(1, "T", true);
+	};
+
+	const handleRedirect = (entity, id_entity) => {
+		if (entity === "R") {
+			if (user.type === "A" || user.type === "S") {
+				navigate(`/requests/admin/${id_entity}`);
+			} else {
+				navigate(`/requests/${id_entity}`);
+			}
+		} else {
+			navigate("/aircrafts/me");
+		}
 	};
 
 	return (
@@ -137,6 +151,10 @@ const Notification = () => {
 										{notifications.slice(0, 5).map((notification) => (
 											<ListItemButton
 												key={notification.id_notification}
+												onClick={(event) => {
+													handleRedirect(notification.entity, notification.id_entity);
+													handleClose(event.target);
+												}}
 												sx={{
 													...(notification.is_read === 0 && {
 														bgcolor: theme.palette.warning.lighter,
