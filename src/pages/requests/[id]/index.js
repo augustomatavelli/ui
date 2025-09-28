@@ -312,7 +312,7 @@ const RequestDetails = () => {
 														{openEditInput["landingDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
 																<DateTimePicker
-																	value={landing_date ? dayjs(landing_date).toDate() : null}
+																	value={landing_date ? landing_date.toDate() : null}
 																	disablePast
 																	minDateTime={dayjs()}
 																	onChange={(e) => {
@@ -325,7 +325,7 @@ const RequestDetails = () => {
 																/>
 															</LocalizationProvider>
 														) : (
-															<Typography>{landing_date ? dayjs(landing_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
+															<Typography>{landing_date ? landing_date : "Não agendado"}</Typography>
 														)}
 													</Stack>
 												</Grid>
@@ -352,7 +352,7 @@ const RequestDetails = () => {
 														{openEditInput["takeoffDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
 																<DateTimePicker
-																	value={takeoff_date ? dayjs(takeoff_date).toDate() : null}
+																	value={takeoff_date ? takeoff_date.toDate() : null}
 																	disablePast
 																	minDateTime={dayjs()}
 																	onChange={(e) => {
@@ -364,7 +364,7 @@ const RequestDetails = () => {
 																/>
 															</LocalizationProvider>
 														) : (
-															<Typography>{takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>
+															<Typography>{takeoff_date ? takeoff_date : "Não agendado"}</Typography>
 														)}
 													</Stack>
 												</Grid>
@@ -387,7 +387,7 @@ const RequestDetails = () => {
 												<Grid item xs={12} md={6}>
 													<Stack spacing={0.5}>
 														<Typography color="secondary">Aberta em</Typography>
-														<Typography>{dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
+														<Typography>{created_at}</Typography>
 													</Stack>
 												</Grid>
 											</Grid>

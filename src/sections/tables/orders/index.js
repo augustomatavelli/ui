@@ -113,9 +113,9 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										<TableCell align="center">{item.registration}</TableCell>
 										<TableCell align="center">
 											{itemOrder.available_at === "P"
-												? dayjs(item.landing_date).format("DD/MM/YYYY HH:mm")
+												? item.landing_date
 												: itemOrder.available_at === "D"
-													? dayjs(item.takeoff_date).format("DD/MM/YYYY HH:mm")
+													? item.takeoff_date
 													: itemOrder.available_at === "A"
 														? (() => {
 																const now = dayjs();

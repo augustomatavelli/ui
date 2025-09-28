@@ -105,7 +105,7 @@ export default function LogsTable({ openFilter, reload }) {
 									<TableCell align="center">{log.field}</TableCell>
 									<TableCell align="center">{log.old ? log.old : "-"}</TableCell>
 									<TableCell align="center">{log.new}</TableCell>
-									<TableCell align="center">{dayjs(log.date).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{log.date}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (

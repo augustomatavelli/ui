@@ -103,7 +103,7 @@ export default function NotificationsTable({ openFilter, reload }) {
 										<Checkbox checked={selectedNotifications.includes(notification.id_notification)} onChange={() => handleSelectNotification(notification.id_notification)} />
 									</TableCell>
 									<TableCell align="start">{notification.message}</TableCell>
-									<TableCell align="center">{dayjs(notification.created_at).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{notification.created_at}</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (

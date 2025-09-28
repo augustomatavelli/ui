@@ -114,7 +114,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Criado em</Typography>
-													<Typography>{dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
+													<Typography>{created_at}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>
