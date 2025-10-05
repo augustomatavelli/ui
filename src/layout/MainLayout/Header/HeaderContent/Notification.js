@@ -16,6 +16,7 @@ import UserContext from "contexts/UserContext";
 
 dayjs.extend(utc);
 dayjs.extend(relativeTime);
+dayjs.locale("pt-br");
 
 const avatarSX = {
 	width: 36,

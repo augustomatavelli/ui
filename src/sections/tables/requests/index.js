@@ -1,7 +1,4 @@
-// material-ui
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button } from "@mui/material";
-
-// project imports
 import { useContext, useEffect, useState } from "react";
 import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
@@ -15,6 +12,8 @@ import { openSnackbar } from "store/reducers/snackbar";
 import { useNavigate } from "react-router";
 import { RequestFilter } from "./RequestFilter";
 import AlertFinalizeRequest from "sections/apps/requests/AlertFinalizeRequest";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EventIcon from "@mui/icons-material/Event";
 
 export default function RequestsTable({ openFilter, reload }) {
 	const { findAllRequests, updateStatus } = useRequest();
@@ -161,8 +160,56 @@ export default function RequestsTable({ openFilter, reload }) {
 										<TableCell align="center">{e.user}</TableCell>
 										<TableCell align="center">{e.registration}</TableCell>
 										<TableCell align="center">{e.name}</TableCell>
-										<TableCell align="center">{e.landing_date ? format(new Date(e.landing_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
-										<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
+										<TableCell>
+											{e.landing_date ? (
+												<Grid
+													style={{
+														display: "flex",
+														flexDirection: "column",
+														justifyContent: "center",
+														alignItems: "center",
+													}}
+												>
+													<Grid style={{ display: "flex", alignItems: "center", fontWeight: 500 }}>
+														<EventIcon fontSize="inherit" style={{ marginRight: 4 }} />
+														{e.landing_date}
+													</Grid>
+													{e.landing_time && (
+														<Grid style={{ display: "flex", alignItems: "center", color: "green", marginTop: 2 }}>
+															<CheckCircleIcon fontSize="inherit" style={{ marginRight: 4 }} />
+															{e.landing_time}
+														</Grid>
+													)}
+												</Grid>
+											) : (
+												<Grid style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 500 }}>-</Grid>
+											)}
+										</TableCell>
+										<TableCell>
+											{e.takeoff_date ? (
+												<Grid
+													style={{
+														display: "flex",
+														flexDirection: "column",
+														justifyContent: "center",
+														alignItems: "center",
+													}}
+												>
+													<Grid style={{ display: "flex", alignItems: "center", fontWeight: 500 }}>
+														<EventIcon fontSize="inherit" style={{ marginRight: 4 }} />
+														{e.takeoff_date}
+													</Grid>
+													{e.takeoff_time && (
+														<Grid style={{ display: "flex", alignItems: "center", color: "green", marginTop: 2 }}>
+															<CheckCircleIcon fontSize="inherit" style={{ marginRight: 4 }} />
+															{e.takeoff_time}
+														</Grid>
+													)}
+												</Grid>
+											) : (
+												<Grid style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 500 }}>-</Grid>
+											)}
+										</TableCell>
 										<TableCell align="center">
 											<Chip
 												color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}

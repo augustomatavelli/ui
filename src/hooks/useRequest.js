@@ -18,6 +18,7 @@ const useRequest = () => {
 		setTotalSearchAircraftsRequests,
 		setRequestDetails,
 		setLiveRequests,
+		setRequestsControl,
 	} = useContext(RequestContext);
 
 	const createRequest = async (data) => {
@@ -127,6 +128,31 @@ const useRequest = () => {
 			setLoadingRequest(true);
 			const response = await publicAxios.get(`/requests/dashboard/live`);
 			setLiveRequests(response.data);
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
+	const findRequestsControl = async (search, page) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.get(`/requests/find-all/flight-operations?search=${search}&page=${page}`);
+			setTotalRequests(response.data.pagination.totalPages);
+			setRequestsControl(response.data.items);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
@@ -280,7 +306,44 @@ const useRequest = () => {
 		}
 	};
 
-	return { createRequest, findAllRequests, searchAllRequests, searchMyAircraftsRequests, updateStatus, findOneRequestById, updateRequest, findAllLiveRequests, deleteRequest, findSummaryPdf };
+	const updateRequestsControl = async (requestId, type) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.patch(`/requests/${requestId}/flight-operations?type=${type}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
+	return {
+		createRequest,
+		findAllRequests,
+		searchAllRequests,
+		searchMyAircraftsRequests,
+		updateStatus,
+		findOneRequestById,
+		updateRequest,
+		findAllLiveRequests,
+		deleteRequest,
+		findSummaryPdf,
+		findRequestsControl,
+		updateRequestsControl,
+	};
 };
 
 export default useRequest;

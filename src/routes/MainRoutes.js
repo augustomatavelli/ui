@@ -34,6 +34,7 @@ const ListMyAircraftsRequests = Loadable(lazy(() => import("pages/requests/my-ai
 const CreateRequest = Loadable(lazy(() => import("pages/requests/create")));
 const RequestDetails = Loadable(lazy(() => import("pages/requests/[id]")));
 const LiveRequests = Loadable(lazy(() => import("pages/requests/live")));
+const RequestsControlLandingTakeoff = Loadable(lazy(() => import("pages/requests/control")));
 
 // render - produtos
 const ListProductsForAdmin = Loadable(lazy(() => import("pages/products/admin")));
@@ -52,6 +53,9 @@ const ReportRequestsPeriod = Loadable(lazy(() => import("pages/reports/requests"
 
 // render - logs
 const ListLogsForAdmin = Loadable(lazy(() => import("pages/logs/admin")));
+
+// render - checklists
+const ListChecklistsForAdmin = Loadable(lazy(() => import("pages/checklists/admin")));
 
 // render - notifications
 const ListMyNotifications = Loadable(lazy(() => import("pages/notifications/me")));
@@ -132,6 +136,19 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A', 'S']">
 									<ReportRequestsPeriod />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "checklists",
+					children: [
+						{
+							path: "admin",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<ListChecklistsForAdmin />
 								</AuthGuard>
 							),
 						},
@@ -248,6 +265,14 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A', 'O', 'P', 'S']">
 									<RequestDetails />
+								</AuthGuard>
+							),
+						},
+						{
+							path: "control-event",
+							element: (
+								<AuthGuard requiredUserType="['A', 'C', 'S']">
+									<RequestsControlLandingTakeoff />
 								</AuthGuard>
 							),
 						},
