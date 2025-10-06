@@ -55,7 +55,7 @@ const ReportRequestsPeriod = Loadable(lazy(() => import("pages/reports/requests"
 const ListLogsForAdmin = Loadable(lazy(() => import("pages/logs/admin")));
 
 // render - checklists
-const ListChecklistsForAdmin = Loadable(lazy(() => import("pages/checklists/admin")));
+/* const ListChecklistsForAdmin = Loadable(lazy(() => import("pages/checklists/admin"))); */
 
 // render - notifications
 const ListMyNotifications = Loadable(lazy(() => import("pages/notifications/me")));
@@ -141,7 +141,7 @@ const MainRoutes = {
 						},
 					],
 				},
-				{
+				/* {
 					path: "checklists",
 					children: [
 						{
@@ -153,7 +153,7 @@ const MainRoutes = {
 							),
 						},
 					],
-				},
+				}, */
 				{
 					path: "aircrafts",
 					children: [
