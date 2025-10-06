@@ -115,10 +115,10 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 											<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 										</TableCell>
 										<TableCell align="center">{e.registration}</TableCell>
-										<TableCell align="center">{format(new Date(e.landing_date), "dd/MM/yyyy HH:mm")}</TableCell>
+										<TableCell align="center">{e.landing_date}</TableCell>
 										<TableCell align="center">
 											{e.landing_created_at
-												? format(new Date(e.landing_created_at), "dd/MM/yyyy HH:mm")
+												? e.landing_created_at
 												: e.status === "A" && (
 														<Button
 															variant="contained"
@@ -132,10 +132,10 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 													)}
 										</TableCell>
 										<TableCell align="center">{e.landing_created_by}</TableCell>
-										<TableCell align="center">{format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm")}</TableCell>
+										<TableCell align="center">{e.takeoff_date}</TableCell>
 										<TableCell align="center">
 											{e.takeoff_created_at
-												? format(new Date(e.takeoff_created_at), "dd/MM/yyyy HH:mm")
+												? e.takeoff_created_at
 												: e.status === "A" && (
 														<Button
 															variant="contained"
