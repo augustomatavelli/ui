@@ -48,7 +48,7 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 		if (inspections.length > 0) {
 			const initialCompliance = {};
 			inspections.forEach((item) => {
-				initialCompliance[item.id_inspection] = {
+				initialCompliance[item.id_checklist_item] = {
 					compliance: item.compliance ?? null,
 					image: item.image ?? null,
 					observation: item.observation ?? null,
@@ -83,7 +83,7 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 										<Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: 80 }}>
 											<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 												<ToggleButtonGroup
-													value={objCompliance[e.id_inspection]?.compliance ? objCompliance[e.id_inspection]?.compliance : e.compliance}
+													value={objCompliance[e.id_checklist_item]?.compliance ? objCompliance[e.id_checklist_item]?.compliance : e.compliance}
 													exclusive
 													size="small"
 													sx={{ borderRadius: 2, overflow: "hidden" }}
@@ -140,18 +140,18 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 
 										<Grid sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 											<Grid>
-												<TextField type="file" sx={{ display: "none" }} inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)} />
-												{objCompliance[e.id_inspection]?.image ? (
-													<ImagePreview src={objCompliance[e.id_inspection].image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+												<TextField type="file" sx={{ display: "none" }} inputRef={(el) => (fileInputRefs.current[e.id_checklist_item] = el)} />
+												{objCompliance[e.id_checklist_item]?.image ? (
+													<ImagePreview src={objCompliance[e.id_checklist_item].image} onClick={() => fileInputRefs.current[e.id_checklist_item]?.click()} />
 												) : e.image ? (
-													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_checklist_item]?.click()} />
 												) : (
 													<></>
 												)}
 											</Grid>
-											{objCompliance[e.id_inspection]?.compliance === "N" && (
+											{objCompliance[e.id_checklist_item]?.compliance === "N" && (
 												<Grid>
-													<TextField label="Observações" multiline rows={4} value={objCompliance[e.id_inspection]?.observation || ""} disabled />
+													<TextField label="Observações" multiline rows={4} value={objCompliance[e.id_checklist_item]?.observation || ""} disabled />
 												</Grid>
 											)}
 										</Grid>

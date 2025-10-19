@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-
 import {
 	Button,
 	Grid,
@@ -19,10 +18,8 @@ import {
 	FormControlLabel,
 } from "@mui/material";
 import * as Icons from "@mui/icons-material";
-
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -32,6 +29,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import useOperation from "hooks/useOperation";
 import OperationsContext from "contexts/OperationContext";
 import AlertInfoAttributionOperation from "./AlertInfoAttributionOperation";
+import useChecklist from "hooks/useChecklists";
+import ChecklistContext from "contexts/ChecklistContext";
 
 const getInitialValues = () => {
 	const newOperation = {
@@ -42,6 +41,7 @@ const getInitialValues = () => {
 		selectionMode: "A",
 		category: "",
 		icon: "",
+		id_checklist: "",
 	};
 
 	return newOperation;
@@ -49,12 +49,15 @@ const getInitialValues = () => {
 
 const AddOperation = ({ onCancel }) => {
 	const { createOperation, findCategories, findIcons } = useOperation();
+	const { findAllActive } = useChecklist();
 
 	const { categories, icons } = useContext(OperationsContext);
+	const { activeChecklists } = useContext(ChecklistContext);
 
 	const [available, setAvailable] = useState("A");
 	const [selectionMode, setSelectionMode] = useState("N");
 	const [checklist, setChecklist] = useState("N");
+	const [checklistId, setChecklistId] = useState(null);
 	const [allowSchedule, setAllowSchedule] = useState("N");
 	const [allowScheduleCapacity, setAllowScheduleCapacity] = useState();
 	const [open, setOpen] = useState(false);
@@ -75,6 +78,10 @@ const AddOperation = ({ onCancel }) => {
 		setChecklist(event.target.value);
 	};
 
+	const handleChangeChecklistItem = (event) => {
+		setChecklistId(event.target.value);
+	};
+
 	const handleChangeAllowSchedule = (event) => {
 		setAllowSchedule(event.target.value);
 		event.target.value === "N" && setAllowScheduleCapacity(undefined);
@@ -87,10 +94,11 @@ const AddOperation = ({ onCancel }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
+	console.log(activeChecklists);
 	useEffect(() => {
 		findCategories();
 		findIcons();
+		findAllActive();
 	}, []);
 
 	const NewOperationSchema = Yup.object().shape({
@@ -114,6 +122,7 @@ const AddOperation = ({ onCancel }) => {
 					selection: selectionMode,
 					id_category: Number(values.category),
 					checklist: checklist,
+					id_checklist: checklist === "S" ? checklistId : null,
 					allow_schedule: allowSchedule,
 					allow_schedule_capacity: allowScheduleCapacity,
 					id_icon: Number(values.icon),
@@ -310,11 +319,34 @@ const AddOperation = ({ onCancel }) => {
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<Grid display="flex" alignItems="center" gap={1}>
-											<InputLabel htmlFor="unit">Necessita de checklist de inspeção?</InputLabel>
+											<InputLabel htmlFor="unit">Necessita de checklist?</InputLabel>
 										</Grid>
 										<RadioGroup aria-label="size" value={checklist} defaultValue="N" name="radio-buttons-group" onChange={handleChangeChecklist} row>
 											<FormControlLabel value="S" control={<Radio />} label="Sim" />
 											<FormControlLabel value="N" control={<Radio />} label="Não" />
+											<Select
+												value={values.id_checklist}
+												name="checklist"
+												onChange={handleChangeChecklistItem}
+												sx={{ width: "fit-content", marginTop: 1 }}
+												displayEmpty
+												disabled={checklist === "N"}
+												inputProps={{ "aria-label": "Without label" }}
+												renderValue={values.id_checklist ? undefined : () => <Typography variant="subtitle1">Selecione um checklist</Typography>}
+											>
+												{activeChecklists.map((e) => {
+													return (
+														<MenuItem key={e.id_checklist} value={e.id_checklist}>
+															{e.name}
+														</MenuItem>
+													);
+												})}
+											</Select>
+											{touched.id_checklist && errors.id_checklist && (
+												<FormHelperText error id="helper-text-id_checklist-signup">
+													{errors.id_checklist}
+												</FormHelperText>
+											)}
 										</RadioGroup>
 									</Stack>
 								</Grid>

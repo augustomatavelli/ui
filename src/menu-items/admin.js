@@ -9,8 +9,8 @@ import {
 	UnorderedListOutlined,
 	FieldTimeOutlined,
 	FolderOpenOutlined,
+	CheckCircleOutlined,
 } from "@ant-design/icons";
-
 const icons = {
 	ClockCircleOutlined,
 	IdcardOutlined,
@@ -22,6 +22,7 @@ const icons = {
 	ScheduleOutlined,
 	FieldTimeOutlined,
 	FolderOpenOutlined,
+	CheckCircleOutlined,
 };
 
 const admin = {
@@ -78,6 +79,13 @@ const admin = {
 			type: "item",
 			url: "/operations/admin",
 			icon: icons.ToolOutlined,
+		},
+		{
+			id: "checklists",
+			title: "Checklists",
+			type: "item",
+			url: "/checklists/admin",
+			icon: icons.CheckCircleOutlined,
 		},
 		{
 			id: "programação",

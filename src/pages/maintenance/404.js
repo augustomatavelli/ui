@@ -34,7 +34,7 @@ function Error404() {
 					<Stack spacing={2} justifyContent="center" alignItems="center">
 						<Typography variant="h1">Página não encontrada</Typography>
 						<Typography color="textSecondary" align="center" sx={{ width: { xs: "73%", sm: "61%" } }}>
-							A página que você está procuando não existe!
+							A página que você está procurando não existe!
 						</Typography>
 						<Button component={Link} to={APP_DEFAULT_PATH} variant="contained">
 							Voltar

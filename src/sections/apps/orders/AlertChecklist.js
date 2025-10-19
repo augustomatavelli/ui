@@ -25,8 +25,8 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		const value = event.target.value;
 		setObjCompliance((prev) => ({
 			...prev,
-			[e.id_inspection]: {
-				...prev[e.id_inspection],
+			[e.id_checklist_item]: {
+				...prev[e.id_checklist_item],
 				observation: value.trim() === "" ? null : value,
 			},
 		}));
@@ -135,7 +135,7 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 		if (inspections.length > 0) {
 			const initialCompliance = {};
 			inspections.forEach((item) => {
-				initialCompliance[item.id_inspection] = {
+				initialCompliance[item.id_checklist_item] = {
 					compliance: item.compliance ?? null,
 					image: item.image ?? null,
 					observation: item.observation ?? null,
@@ -169,11 +169,11 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 									<Grid key={index} sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
 										<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 											<ToggleButtonGroup
-												value={objCompliance[e.id_inspection]?.compliance ? objCompliance[e.id_inspection]?.compliance : e.compliance}
+												value={objCompliance[e.id_checklist_item]?.compliance ? objCompliance[e.id_checklist_item]?.compliance : e.compliance}
 												exclusive
 												onChange={(event, newValue) => {
 													if (newValue !== null) {
-														handleChangeSelectionMode(e.id_inspection, { target: { value: newValue } });
+														handleChangeSelectionMode(e.id_checklist_item, { target: { value: newValue } });
 													}
 												}}
 												size="small"
@@ -225,16 +225,16 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 												<TextField
 													type="file"
 													sx={{ display: "none" }}
-													inputRef={(el) => (fileInputRefs.current[e.id_inspection] = el)}
-													onChange={(event) => handleFileChange(event, e.id_inspection)}
+													inputRef={(el) => (fileInputRefs.current[e.id_checklist_item] = el)}
+													onChange={(event) => handleFileChange(event, e.id_checklist_item)}
 												/>
-												{objCompliance[e.id_inspection]?.image ? (
-													<ImagePreview src={objCompliance[e.id_inspection].image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+												{objCompliance[e.id_checklist_item]?.image ? (
+													<ImagePreview src={objCompliance[e.id_checklist_item].image} onClick={() => fileInputRefs.current[e.id_checklist_item]?.click()} />
 												) : e.image ? (
-													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_inspection]?.click()} />
+													<ImagePreview src={e.image} onClick={() => fileInputRefs.current[e.id_checklist_item]?.click()} />
 												) : (
 													<IconButton
-														onClick={() => fileInputRefs.current[e.id_inspection]?.click()}
+														onClick={() => fileInputRefs.current[e.id_checklist_item]?.click()}
 														sx={{
 															bgcolor: "grey.100",
 															"&:hover": { bgcolor: "grey.200" },
@@ -244,13 +244,13 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 													</IconButton>
 												)}
 											</Grid>
-											{objCompliance[e.id_inspection]?.compliance === "N" && (
+											{objCompliance[e.id_checklist_item]?.compliance === "N" && (
 												<Grid>
 													<TextField
 														label="Observações"
 														multiline
 														rows={4}
-														value={objCompliance[e.id_inspection]?.observation || ""}
+														value={objCompliance[e.id_checklist_item]?.observation || ""}
 														onChange={(event) => {
 															handleChangeObservation(e, event);
 														}}
