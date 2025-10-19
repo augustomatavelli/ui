@@ -79,7 +79,9 @@ const AddOperation = ({ onCancel }) => {
 	};
 
 	const handleChangeChecklistItem = (event) => {
-		setChecklistId(event.target.value);
+		const newValue = event.target.value;
+		formik.setFieldValue("id_checklist", newValue);
+		setChecklistId(newValue);
 	};
 
 	const handleChangeAllowSchedule = (event) => {
@@ -94,7 +96,6 @@ const AddOperation = ({ onCancel }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	console.log(activeChecklists);
 	useEffect(() => {
 		findCategories();
 		findIcons();

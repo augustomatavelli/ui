@@ -114,7 +114,6 @@ const AddOperator = ({ onCancel }) => {
 				};
 
 				const response = await createOperator(payload);
-				console.log(response);
 				if (scriptedRef.current) {
 					setStatus({ success: true });
 					setSubmitting(false);

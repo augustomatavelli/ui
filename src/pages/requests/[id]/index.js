@@ -61,6 +61,7 @@ const RequestDetails = () => {
 		id_landing_compliance,
 		id_takeoff_order,
 		id_takeoff_compliance,
+		checklists,
 	} = requestDetails;
 
 	const resetStates = () => {
@@ -215,8 +216,8 @@ const RequestDetails = () => {
 
 	const handleOpenChecklist = (event, id_order) => {
 		event.stopPropagation();
-		setOpen(true);
-		setSelectedOrder(id_order);
+		/* setOpen(true);
+		setSelectedOrder(id_order); */
 	};
 
 	const handleClose = () => {
@@ -611,40 +612,26 @@ const RequestDetails = () => {
 																		},
 																	}}
 																>
-																	{id_landing_order && (
-																		<Card
-																			sx={{
-																				p: 2,
-																				width: "200px",
-																				border: "2px solid",
-																				borderColor:
-																					id_landing_compliance === 0 ? theme.palette.secondary.light : id_landing_compliance === 1 ? theme.palette.success.light : theme.palette.error.light,
-																			}}
-																			onClick={(event) => handleOpenChecklist(event, id_landing_order)}
-																		>
-																			<Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-																				<FileSearchOutlined style={{ fontSize: "20px" }} />
-																				Inspeção pós-pouso
-																			</Grid>
-																		</Card>
-																	)}
-																	{id_takeoff_order && (
-																		<Card
-																			sx={{
-																				p: 2,
-																				width: "200px",
-																				border: "2px solid",
-																				borderColor:
-																					id_takeoff_compliance === 0 ? theme.palette.secondary.light : id_takeoff_compliance === 1 ? theme.palette.success.light : theme.palette.error.light,
-																			}}
-																			onClick={(event) => handleOpenChecklist(event, id_takeoff_order)}
-																		>
-																			<Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-																				<FileSearchOutlined style={{ fontSize: "20px" }} />
-																				Inspeção pré-decolagem
-																			</Grid>
-																		</Card>
-																	)}
+																	{checklists &&
+																		checklists.map((e, index) => {
+																			return (
+																				<Card
+																					sx={{
+																						p: 2,
+																						width: "200px",
+																						border: "2px solid",
+																						borderColor: e.compliance ? theme.palette.success.light : theme.palette.error.light,
+																					}}
+																					onClick={(event) => handleOpenChecklist(event, id_landing_order)}
+																					key={index}
+																				>
+																					<Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+																						<FileSearchOutlined style={{ fontSize: "20px" }} />
+																						{e.name}
+																					</Grid>
+																				</Card>
+																			);
+																		})}
 																</Box>
 															</Grid>
 														</Box>
