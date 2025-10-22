@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton, Select, MenuItem } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -14,7 +14,6 @@ import AlertInfoAttributionOperation from "sections/apps/operations/AlertInfoAtt
 const OperationDetails = () => {
 	const { findOneOperationById, updateOperation } = useOperation();
 	const { loadingOperation, operationDetails } = useContext(OperationsContext);
-	const { user } = useContext(UserContext);
 
 	const [formData, setFormData] = useState({
 		price: "",
@@ -26,7 +25,7 @@ const OperationDetails = () => {
 	const [editPrice, setEditPrice] = useState(false);
 	const [open, setOpen] = useState(false);
 	const { id } = useParams();
-	const { id_service, name, category_name, price, status } = operationDetails;
+	const { id_service, name, category_name, price, status, checklist_name } = operationDetails;
 
 	useEffect(() => {
 		if (id) {
@@ -207,8 +206,13 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="checklist">Necessita checklist?</InputLabel>
 												<RadioGroup aria-label="checklist" value={formData.checklist} name="checklist" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Sim" />
-													<FormControlLabel value="N" control={<Radio />} label="Não" />
+													<FormControlLabel value="S" control={<Radio />} label="Sim" /* disabled */ />
+													<FormControlLabel value="N" control={<Radio />} label="Não" /* disabled */ />
+													<Select value={checklist_name} name="checklist" sx={{ width: "fit-content", marginTop: 1 }} displayEmpty /* disabled */ inputProps={{ "aria-label": "Without label" }}>
+														<MenuItem key={checklist_name} value={checklist_name}>
+															{checklist_name}
+														</MenuItem>
+													</Select>
 												</RadioGroup>
 											</Stack>
 										</Grid>

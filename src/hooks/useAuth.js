@@ -21,7 +21,7 @@ const useAuth = () => {
 	const { resetOperationStates } = useContext(OperationsContext);
 	const { resetProductStates } = useContext(ProductsContext);
 	const { resetRequestStates } = useContext(RequestContext);
-	const { user, setUser, resetUserStates } = useContext(UserContext);
+	const { user, resetUserStates } = useContext(UserContext);
 	const { dispatchAuth, setLoadingResetPassword, setResetToken, setLoadingLogin } = useContext(AuthContext);
 
 	const navigate = useNavigate();
@@ -42,10 +42,9 @@ const useAuth = () => {
 			localStorage.setItem("_userId", userId);
 			localStorage.setItem("_type", userType);
 			localStorage.setItem("_status", userStatus);
-			setUser({ name: name });
-			setTimeout(() => {
-				navigate("/aircrafts/me");
-			}, 1000);
+			console.log(userType, typeof userType);
+			userType === "C" ? navigate("/orders") : navigate("/aircrafts/me");
+
 			return response.data;
 		} catch (error) {
 			console.log(error);

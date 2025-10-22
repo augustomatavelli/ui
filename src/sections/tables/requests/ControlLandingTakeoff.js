@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button, Box } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
@@ -9,17 +9,25 @@ import { RequestFilter } from "./RequestFilter";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import SearchRequestControl from "sections/apps/requests/SearchRequestControl";
+import UserContext from "contexts/UserContext";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import dayjs from "dayjs";
+import { take } from "lodash";
 
 export default function RequestsControlLandingTakeoffTable({ openFilter, reload }) {
 	const { findRequestsControl, updateRequestsControl } = useRequest();
 
 	const { totalRequests, loadingRequest, requestsControl } = useContext(RequestContext);
+	const { user } = useContext(UserContext);
 
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	/* const [selectedStatus, setSelectedStatus] = useState({});
 	const [selectedPeriod, setSelectedPeriod] = useState("");
 	const [dateFilter, setDateFilter] = useState({}); */
+	const [landingDate, setLandingDate] = useState(null);
+	const [takeoffDate, setTakeoffDate] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -31,8 +39,8 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 		navigate(`/requests/${requestId}`);
 	};
 
-	const handleRegisterTime = async (requestId, type) => {
-		const response = await updateRequestsControl(requestId, type);
+	const handleRegisterTime = async (requestId, type, date) => {
+		const response = await updateRequestsControl(requestId, type, date);
 		dispatch(
 			openSnackbar({
 				open: true,
@@ -106,9 +114,9 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 									<TableRow
 										hover
 										key={e.id_request}
-										sx={{ cursor: "pointer" }}
+										sx={{ cursor: user.type !== "C" ? "pointer" : "default" }}
 										onClick={() => {
-											handleRedirect(e.id_request);
+											user.type !== "C" && handleRedirect(e.id_request);
 										}}
 									>
 										<TableCell align="center">
@@ -116,37 +124,87 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 										</TableCell>
 										<TableCell align="center">{e.registration}</TableCell>
 										<TableCell align="center">{e.landing_date}</TableCell>
-										<TableCell align="center">
-											{e.landing_created_at
-												? e.landing_created_at
-												: e.status === "A" && (
+										<TableCell align="center" onClick={(event) => event.stopPropagation()}>
+											<Box
+												sx={{
+													display: "flex",
+													gap: 1,
+													alignItems: "center",
+													justifyContent: "center",
+													minHeight: "40px",
+												}}
+											>
+												{e.landing_created_at ? (
+													<Typography>{e.landing_created_at}</Typography>
+												) : e.status === "A" ? (
+													<>
+														<LocalizationProvider dateAdapter={AdapterDateFns}>
+															<DateTimePicker
+																value={landingDate ? landingDate[e.id_request] : null}
+																disablePast
+																minDateTime={dayjs()}
+																onChange={(newValue) => setLandingDate(newValue)}
+																slotProps={{
+																	field: { format: "dd/MM/yyyy HH:mm" },
+																	textField: { error: false, size: "small" },
+																}}
+															/>
+														</LocalizationProvider>
 														<Button
 															variant="contained"
+															size="small"
 															onClick={async (event) => {
 																event.stopPropagation();
-																await handleRegisterTime(e.id_request, "L");
+																await handleRegisterTime(e.id_request, "L", dayjs(landingDate));
 															}}
 														>
-															Registrar
+															Salvar
 														</Button>
-													)}
+													</>
+												) : null}
+											</Box>
 										</TableCell>
 										<TableCell align="center">{e.landing_created_by}</TableCell>
 										<TableCell align="center">{e.takeoff_date}</TableCell>
-										<TableCell align="center">
-											{e.takeoff_created_at
-												? e.takeoff_created_at
-												: e.status === "A" && (
+										<TableCell align="center" onClick={(event) => event.stopPropagation()}>
+											<Box
+												sx={{
+													display: "flex",
+													gap: 1,
+													alignItems: "center",
+													justifyContent: "center",
+													minHeight: "40px",
+												}}
+											>
+												{e.takeoff_created_at ? (
+													<Typography>{e.takeoff_created_at}</Typography>
+												) : e.status === "A" ? (
+													<>
+														<LocalizationProvider dateAdapter={AdapterDateFns}>
+															<DateTimePicker
+																value={takeoffDate ? takeoffDate[e.id_request] : null}
+																disablePast
+																minDateTime={dayjs()}
+																onChange={(newValue) => setTakeoffDate(newValue)}
+																slotProps={{
+																	field: { format: "dd/MM/yyyy HH:mm" },
+																	textField: { error: false, size: "small" },
+																}}
+															/>
+														</LocalizationProvider>
 														<Button
 															variant="contained"
+															size="small"
 															onClick={async (event) => {
 																event.stopPropagation();
-																await handleRegisterTime(e.id_request, "T");
+																await handleRegisterTime(e.id_request, "T", dayjs(takeoffDate));
 															}}
 														>
-															Registrar
+															Salvar
 														</Button>
-													)}
+													</>
+												) : null}
+											</Box>
 										</TableCell>
 										<TableCell align="center">{e.takeoff_created_by}</TableCell>
 									</TableRow>

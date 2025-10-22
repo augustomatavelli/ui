@@ -306,10 +306,10 @@ const useRequest = () => {
 		}
 	};
 
-	const updateRequestsControl = async (requestId, type) => {
+	const updateRequestsControl = async (requestId, type, date) => {
 		try {
 			setLoadingRequest(true);
-			const response = await publicAxios.patch(`/requests/${requestId}/flight-operations?type=${type}`);
+			const response = await publicAxios.patch(`/requests/${requestId}/flight-operations?type=${type}&date=${date}`);
 			return response.data;
 		} catch (error) {
 			console.log(error);

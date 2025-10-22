@@ -16,6 +16,7 @@ import UserContext from "contexts/UserContext";
 import Loader from "components/Loader";
 import SearchAircraft from "sections/apps/aircrafts/SearchAircraft";
 import RequestContext from "contexts/RequestContext";
+import { useNavigate } from "react-router";
 
 const allColumns = [
 	{
@@ -36,6 +37,7 @@ const MyAircrafts = () => {
 	const { setRequestResume } = useContext(RequestContext);
 
 	const matchDownSM = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+	const navigate = useNavigate();
 
 	const [sortBy, setSortBy] = useState("");
 	const [add, setAdd] = useState(false);
