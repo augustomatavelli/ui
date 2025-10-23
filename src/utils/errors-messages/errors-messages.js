@@ -38,4 +38,5 @@ export const ErrorMessages = {
 	registration_already_exists: "Número ANAC já cadastrado",
 	email_already_exists: "Email já cadastrado",
 	mobile_already_exists: "Número de celular já cadastrado",
+	checklist_pending_executioning: "Existem checklists pendentes ou em execução",
 };

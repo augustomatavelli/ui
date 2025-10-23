@@ -10,9 +10,11 @@ import UserContext from "contexts/UserContext";
 import useOperation from "hooks/useOperation";
 import OperationsContext from "contexts/OperationContext";
 import AlertInfoAttributionOperation from "sections/apps/operations/AlertInfoAttributionOperation";
+import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 
 const OperationDetails = () => {
-	const { findOneOperationById, updateOperation } = useOperation();
+	const { findOneOperationById, updateOperation, deleteOperation } = useOperation();
 	const { loadingOperation, operationDetails } = useContext(OperationsContext);
 
 	const [formData, setFormData] = useState({
@@ -21,11 +23,15 @@ const OperationDetails = () => {
 		selectionMode: "",
 		checklist: "",
 		allow_schedule: "",
+		id_checklist: "",
+		checklists: [],
 	});
 	const [editPrice, setEditPrice] = useState(false);
 	const [open, setOpen] = useState(false);
+	const [openAlert, setOpenAlert] = useState(false);
+
 	const { id } = useParams();
-	const { id_service, name, category_name, price, status, checklist_name } = operationDetails;
+	const { id_service, name, category_name, price, status, checklist_name, id_checklist } = operationDetails;
 
 	useEffect(() => {
 		if (id) {
@@ -40,6 +46,9 @@ const OperationDetails = () => {
 			selectionMode: operationDetails.visible || "",
 			checklist: operationDetails.checklist || "",
 			allow_schedule: operationDetails.allow_schedule || "",
+			checklist_name: operationDetails.checklist_name || "",
+			id_checklist: operationDetails.id_checklist || "",
+			checklists: operationDetails.checklists || [],
 		});
 	}, [operationDetails]);
 
@@ -59,6 +68,7 @@ const OperationDetails = () => {
 				visible: formData.selectionMode,
 				checklist: formData.checklist,
 				allow_schedule: formData.allow_schedule,
+				id_checklist: formData.id_checklist,
 			});
 			dispatch(
 				openSnackbar({
@@ -72,10 +82,12 @@ const OperationDetails = () => {
 			setEditPrice(false);
 			await findOneOperationById(id);
 		} catch (error) {
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+
 			dispatch(
 				openSnackbar({
 					open: true,
-					message: "Erro ao salvar alterações",
+					message: ErrorMessages[err] ?? "Erro ao salvar alterações",
 					variant: "alert",
 					alert: { color: "error" },
 					close: false,
@@ -86,6 +98,10 @@ const OperationDetails = () => {
 
 	const handleClose = () => {
 		setOpen(false);
+	};
+
+	const handleAlertClose = () => {
+		setOpenAlert(!openAlert);
 	};
 
 	return (
@@ -208,10 +224,29 @@ const OperationDetails = () => {
 												<RadioGroup aria-label="checklist" value={formData.checklist} name="checklist" onChange={handleChange} row>
 													<FormControlLabel value="S" control={<Radio />} label="Sim" /* disabled */ />
 													<FormControlLabel value="N" control={<Radio />} label="Não" /* disabled */ />
-													<Select value={checklist_name} name="checklist" sx={{ width: "fit-content", marginTop: 1 }} displayEmpty /* disabled */ inputProps={{ "aria-label": "Without label" }}>
-														<MenuItem key={checklist_name} value={checklist_name}>
-															{checklist_name}
+													<Select
+														value={formData.checklist_name || ""}
+														name="checklist_name"
+														onChange={handleChange}
+														displayEmpty
+														disabled={formData.checklist === "N"}
+														inputProps={{ "aria-label": "Without label" }}
+														sx={{ width: "fit-content", marginTop: 1 }}
+													>
+														<MenuItem value="" disabled>
+															Selecione um checklist
 														</MenuItem>
+														{checklist_name && id_checklist ? (
+															<MenuItem key={id_checklist} value={checklist_name}>
+																{checklist_name}
+															</MenuItem>
+														) : (
+															formData.checklists.map((checklist) => (
+																<MenuItem key={checklist.id_checklist} value={checklist.name}>
+																	{checklist.name}
+																</MenuItem>
+															))
+														)}
 													</Select>
 												</RadioGroup>
 											</Stack>
@@ -238,6 +273,16 @@ const OperationDetails = () => {
 										<Button variant="outlined" color="error" onClick={() => window.history.back()}>
 											Voltar
 										</Button>
+										<Button
+											variant="contained"
+											color="error"
+											onClick={() => {
+												setOpenAlert(true);
+											}}
+										>
+											Excluir
+										</Button>
+										<AlertCustomerDelete title={name} open={openAlert} handleClose={handleAlertClose} id={Number(id_service)} handleDelete={deleteOperation} />
 										<Button variant="contained" onClick={handleSave}>
 											Salvar
 										</Button>
