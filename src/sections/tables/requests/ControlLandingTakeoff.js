@@ -1,11 +1,9 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Box } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import { format } from "date-fns";
 import Loader from "components/Loader";
 import { useNavigate } from "react-router";
-import { RequestFilter } from "./RequestFilter";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import SearchRequestControl from "sections/apps/requests/SearchRequestControl";
@@ -13,7 +11,8 @@ import UserContext from "contexts/UserContext";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import dayjs from "dayjs";
-import { take } from "lodash";
+import { SaveOutlined } from "@ant-design/icons";
+import { ptBR } from "date-fns/locale";
 
 export default function RequestsControlLandingTakeoffTable({ openFilter, reload }) {
 	const { findRequestsControl, updateRequestsControl } = useRequest();
@@ -150,16 +149,13 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 																}}
 															/>
 														</LocalizationProvider>
-														<Button
-															variant="contained"
-															size="small"
+														<SaveOutlined
+															style={{ cursor: "pointer", fontSize: "20px" }}
 															onClick={async (event) => {
 																event.stopPropagation();
 																await handleRegisterTime(e.id_request, "L", dayjs(landingDate));
 															}}
-														>
-															Salvar
-														</Button>
+														/>
 													</>
 												) : null}
 											</Box>
@@ -192,16 +188,13 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 																}}
 															/>
 														</LocalizationProvider>
-														<Button
-															variant="contained"
-															size="small"
+														<SaveOutlined
+															style={{ cursor: "pointer", fontSize: "20px" }}
 															onClick={async (event) => {
 																event.stopPropagation();
 																await handleRegisterTime(e.id_request, "T", dayjs(takeoffDate));
 															}}
-														>
-															Salvar
-														</Button>
+														/>
 													</>
 												) : null}
 											</Box>
