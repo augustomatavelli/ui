@@ -113,6 +113,7 @@ export default function UsersTable({ openFilter, reload }) {
 							<TableCell />
 							<TableCell align="center">Nome</TableCell>
 							<TableCell align="center">Email</TableCell>
+							<TableCell align="center">Login</TableCell>
 							<TableCell align="center">Celular</TableCell>
 							<TableCell align="center">Tipo de usuário</TableCell>
 							<TableCell align="center">Número ANAC</TableCell>
@@ -169,6 +170,7 @@ export default function UsersTable({ openFilter, reload }) {
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>
 									<TableCell align="center">{user.email}</TableCell>
+									<TableCell align="center">{user.login ? user.login : "-"}</TableCell>
 									<TableCell align="center">{user.mobile}</TableCell>
 									<TableCell align="center">
 										<Chip

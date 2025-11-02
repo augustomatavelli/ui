@@ -88,101 +88,99 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 								</TableCell>
 							</TableRow>
 						) : orders.length > 0 ? (
-							orders.map((item, indexItem) =>
-								item.itemOrders.map((itemOrder, indexOrder) => (
-									<TableRow hover key={`${itemOrder.id_order}-${itemOrder.id_item}`}>
-										<TableCell align="center">
-											<Button
-												disabled={loadingOrder}
-												variant="contained"
-												color={itemOrder.order_status === "P" ? "primary" : itemOrder.order_status === "E" ? "warning" : itemOrder.order_status === "C" ? "error" : "success"}
-												sx={{ px: 1, py: 0.25, color: itemOrder.order_status === "E" ? "#252525" : "white" }}
-												onClick={async () => {
-													if (itemOrder.order_status === "F") return;
-													if (itemOrder.order_status === "C") return;
-													if (itemOrder.order_status === "P") {
-														await handleStatus(itemOrder.id_order, "E");
-													} else if (itemOrder.order_status === "E") {
-														await handleStatus(itemOrder.id_order, "F");
-													}
-												}}
-											>
-												{itemOrder.order_status === "P" ? "Iniciar" : itemOrder.order_status === "E" ? "Concluir" : itemOrder.order_status === "C" ? "Cancelada" : "Finalizada"}
-											</Button>
-										</TableCell>
-										<TableCell align="center">{item.registration}</TableCell>
-										<TableCell align="center">
-											{itemOrder.available_at === "P"
-												? item.landing_date
-												: itemOrder.available_at === "D"
-													? item.takeoff_date
-													: itemOrder.available_at === "A"
-														? (() => {
-																const now = dayjs();
-																const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
-																const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
-																const closestDate = !takeoffDiff ? item.landing_date : landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
-																return dayjs(closestDate).format("DD/MM/YYYY HH:mm");
-															})()
-														: "Não agendado"}
-										</TableCell>
-										<TableCell align="center">
-											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
-												<Typography>{itemOrder.name}</Typography>
-												{itemOrder.checklist === "S" && itemOrder.order_status === "E" && (
-													<FileSearchOutlined
-														onClick={() => {
-															setOpen(true);
-															setSelectedOrder(itemOrder.id_order);
-														}}
-													/>
-												)}
-											</Grid>
-										</TableCell>
-										<TableCell align="center">
-											{!editFuel ? (
-												<Box display="inline-flex" alignItems="center" gap={1}>
-													{itemOrder.unit === "un" ? "-" : itemOrder.amount === "full" ? "Full" : `${itemOrder.amount} ${itemOrder.unit}`}
-													{itemOrder.unit === "L" && (itemOrder.order_status === "E" || itemOrder.order_status === "P") && (
-														<IconButton
-															size="small"
-															onClick={() => {
-																setEditFuel(true);
-															}}
-														>
-															<EditOutlined />
-														</IconButton>
-													)}
-												</Box>
-											) : (
-												<Box display="inline-flex" alignItems="center" gap={1}>
-													<OutlinedInput
-														id="fuel"
-														type={"number"}
-														value={editFuelValue}
-														name="fuel"
-														sx={{ height: "30px" }}
-														inputProps={{
-															style: { padding: 5, width: "50px" },
-														}}
-														onChange={(e) => {
-															setEditFuelValue(e.target.value);
-														}}
-													/>
-													<SaveOutlined
-														style={{ cursor: "pointer" }}
-														onClick={async () => {
-															handleChange(item.id_request, itemOrder);
-														}}
-													/>
-												</Box>
+							orders.map((item, indexItem) => (
+								<TableRow hover key={`${item.id_order}-${item.id_item}`}>
+									<TableCell align="center">
+										<Button
+											disabled={loadingOrder}
+											variant="contained"
+											color={item.order_status === "P" ? "primary" : item.order_status === "E" ? "warning" : item.order_status === "C" ? "error" : "success"}
+											sx={{ px: 1, py: 0.25, color: item.order_status === "E" ? "#252525" : "white" }}
+											onClick={async () => {
+												if (item.order_status === "F") return;
+												if (item.order_status === "C") return;
+												if (item.order_status === "P") {
+													await handleStatus(item.id_order, "E");
+												} else if (item.order_status === "E") {
+													await handleStatus(item.id_order, "F");
+												}
+											}}
+										>
+											{item.order_status === "P" ? "Iniciar" : item.order_status === "E" ? "Concluir" : item.order_status === "C" ? "Cancelada" : "Finalizada"}
+										</Button>
+									</TableCell>
+									<TableCell align="center">{item.registration}</TableCell>
+									<TableCell align="center">
+										{item.available_at === "P"
+											? item.landing_date
+											: item.available_at === "D"
+												? item.takeoff_date
+												: item.available_at === "A"
+													? (() => {
+															const now = dayjs();
+															const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
+															const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
+															const closestDate = !takeoffDiff ? item.landing_date : landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
+															return dayjs(closestDate).format("DD/MM/YYYY HH:mm");
+														})()
+													: "Não agendado"}
+									</TableCell>
+									<TableCell align="center">
+										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+											<Typography>{item.name}</Typography>
+											{item.checklist === "S" && item.order_status === "E" && (
+												<FileSearchOutlined
+													onClick={() => {
+														setOpen(true);
+														setSelectedOrder(item.id_order);
+													}}
+												/>
 											)}
-										</TableCell>
-										<TableCell align="center">{itemOrder.attributed_to}</TableCell>
-										<TableCell align="center">{itemOrder.finalized_by}</TableCell>
-									</TableRow>
-								))
-							)
+										</Grid>
+									</TableCell>
+									<TableCell align="center">
+										{!editFuel ? (
+											<Box display="inline-flex" alignItems="center" gap={1}>
+												{item.unit === "un" ? "-" : item.amount === "full" ? "Full" : `${item.amount} ${item.unit}`}
+												{item.unit === "L" && (item.order_status === "E" || item.order_status === "P") && (
+													<IconButton
+														size="small"
+														onClick={() => {
+															setEditFuel(true);
+														}}
+													>
+														<EditOutlined />
+													</IconButton>
+												)}
+											</Box>
+										) : (
+											<Box display="inline-flex" alignItems="center" gap={1}>
+												<OutlinedInput
+													id="fuel"
+													type={"number"}
+													value={editFuelValue}
+													name="fuel"
+													sx={{ height: "30px" }}
+													inputProps={{
+														style: { padding: 5, width: "50px" },
+													}}
+													onChange={(e) => {
+														setEditFuelValue(e.target.value);
+													}}
+												/>
+												<SaveOutlined
+													style={{ cursor: "pointer" }}
+													onClick={async () => {
+														handleChange(item.id_request, item);
+													}}
+												/>
+											</Box>
+										)}
+									</TableCell>
+									<TableCell align="center">{item.attributed_to}</TableCell>
+									<TableCell align="center">{item.finalized_by}</TableCell>
+								</TableRow>
+							))
 						) : search ? (
 							<TableRow>
 								<TableCell colSpan={7} align="center">

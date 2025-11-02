@@ -23,7 +23,7 @@ const UserDetails = () => {
 
 	const { id } = useParams();
 
-	const { name, email, mobile, type, license, status, created_at } = userDetails;
+	const { name, email, login, mobile, type, license, status, created_at } = userDetails;
 
 	const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
@@ -60,6 +60,17 @@ const UserDetails = () => {
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Email</Typography>
 													<Typography>{email}</Typography>
+												</Stack>
+											</Grid>
+										</Grid>
+									</ListItem>
+									<Divider />
+									<ListItem>
+										<Grid container spacing={3}>
+											<Grid item xs={12} md={6}>
+												<Stack spacing={0.5}>
+													<Typography color="secondary">Login</Typography>
+													<Typography>{login ? login : "-"}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>
