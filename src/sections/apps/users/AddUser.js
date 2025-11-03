@@ -1,5 +1,5 @@
 // material-ui
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // material-ui
 import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, DialogActions, Divider, DialogTitle, DialogContent } from "@mui/material";
@@ -43,7 +43,7 @@ const AddUser = ({ user, onCancel }) => {
 
 	const NewUserSchema = Yup.object().shape({
 		name: Yup.string().max(255).required("Nome é obrigatório"),
-		email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
+		email: isPilot === 3 ? null : Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
 		phone: Yup.string()
 			.transform((value) => value.replace(/\D/g, ""))
 			.matches(/^\d{11}$/, "Número de celular inválido")
@@ -106,6 +106,12 @@ const AddUser = ({ user, onCancel }) => {
 
 	const { errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue, values, handleChange, handleBlur } = formik;
 
+	useEffect(() => {
+		if (isPilot === 3) {
+			setFieldValue("email", "");
+		}
+	}, [isPilot, setFieldValue]);
+
 	return (
 		<>
 			<FormikProvider value={formik}>
@@ -167,28 +173,30 @@ const AddUser = ({ user, onCancel }) => {
 										)}
 									</Stack>
 								</Grid>
-								<Grid item xs={12}>
-									<Stack spacing={1}>
-										<InputLabel htmlFor="email-signup">Email</InputLabel>
-										<OutlinedInput
-											fullWidth
-											error={Boolean(touched.email && errors.email)}
-											id="email-login"
-											type="email"
-											value={values.email}
-											name="email"
-											onBlur={handleBlur}
-											onChange={handleChange}
-											placeholder="Digite o email..."
-											inputProps={{}}
-										/>
-										{touched.email && errors.email && (
-											<FormHelperText error id="helper-text-email-signup">
-												{errors.email}
-											</FormHelperText>
-										)}
-									</Stack>
-								</Grid>
+								{isPilot !== 3 && (
+									<Grid item xs={12}>
+										<Stack spacing={1}>
+											<InputLabel htmlFor="email-signup">Email</InputLabel>
+											<OutlinedInput
+												fullWidth
+												error={Boolean(touched.email && errors.email)}
+												id="email-login"
+												type="email"
+												value={values.email}
+												name="email"
+												onBlur={handleBlur}
+												onChange={handleChange}
+												placeholder="Digite o email..."
+												inputProps={{}}
+											/>
+											{touched.email && errors.email && (
+												<FormHelperText error id="helper-text-email-signup">
+													{errors.email}
+												</FormHelperText>
+											)}
+										</Stack>
+									</Grid>
+								)}
 								<Grid item xs={12}>
 									<Stack spacing={1}>
 										<InputLabel htmlFor="phone-signup">Celular</InputLabel>
