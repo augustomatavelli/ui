@@ -38,7 +38,6 @@ const Notification = () => {
 	const { findAllNotifications, updateNotificationAsRead } = useNotification();
 
 	const { notifications } = useContext(NotificationContext);
-	const { user } = useContext(UserContext);
 
 	const theme = useTheme();
 	const navigate = useNavigate();
