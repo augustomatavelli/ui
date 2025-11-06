@@ -97,7 +97,7 @@ export default function AlertUserPasswordExpired({ open, setOpen }) {
 					>
 						{({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue, touched, values }) => (
 							<form noValidate onSubmit={handleSubmit}>
-								<Box sx={{ mt: 1, mb: 2 }}>
+								<Box sx={{ mb: 2 }}>
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
 											<Stack spacing={1.25}>
