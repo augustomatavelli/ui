@@ -19,6 +19,7 @@ const UserProfile = () => {
 	const { user } = useContext(UserContext);
 
 	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -29,6 +30,10 @@ const UserProfile = () => {
 
 	const handleClickShowPassword = () => {
 		setShowPassword(!showPassword);
+	};
+
+	const handleClickShowConfirmPassword = () => {
+		setShowConfirmPassword(!showConfirmPassword);
 	};
 
 	const handleMouseDownPassword = (event) => {
@@ -175,11 +180,20 @@ const UserProfile = () => {
 											fullWidth
 											error={Boolean(touched.confirmNewPassword && errors.confirmNewPassword)}
 											id="confirm-password-reset"
-											type="password"
+											type={showConfirmPassword ? "text" : "password"}
 											value={values.confirmNewPassword}
 											name="confirmNewPassword"
 											onBlur={handleBlur}
-											onChange={handleChange}
+											onChange={(e) => {
+												handleChange(e);
+											}}
+											endAdornment={
+												<InputAdornment position="end">
+													<IconButton aria-label="toggle password visibility" onClick={handleClickShowConfirmPassword} onMouseDown={handleMouseDownPassword} edge="end" color="secondary">
+														{showConfirmPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+													</IconButton>
+												</InputAdornment>
+											}
 											placeholder="Digite novamente sua senha nova"
 										/>
 										{touched.confirmNewPassword && errors.confirmNewPassword && (

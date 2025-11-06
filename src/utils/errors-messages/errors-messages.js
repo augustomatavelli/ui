@@ -39,4 +39,6 @@ export const ErrorMessages = {
 	email_already_exists: "Email já cadastrado",
 	mobile_already_exists: "Número de celular já cadastrado",
 	checklist_pending_executioning: "Existem checklists pendentes ou em execução",
+	current_password_incorrect: "Senha atual incorreta",
+	new_password_same_as_old: "A nova senha não pode ser igual a senha atual",
 };

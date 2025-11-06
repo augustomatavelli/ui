@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery, Box, Container, Toolbar } from "@mui/material";
@@ -14,10 +14,15 @@ import { dispatch } from "store";
 import { openDrawer } from "store/reducers/menu";
 import useUser from "hooks/useUser";
 import useNotification from "hooks/useNotification";
+import UserContext from "contexts/UserContext";
+import AlertUserPasswordExpired from "sections/apps/users/AlertUserPasswordExpired";
+import { useState } from "react";
 
 const MainLayout = () => {
 	const { findOneUser } = useUser();
 	const { findAllNotifications } = useNotification();
+
+	const { user } = useContext(UserContext);
 
 	const theme = useTheme();
 	const matchDownXL = useMediaQuery(theme.breakpoints.down("xl"));
@@ -25,6 +30,8 @@ const MainLayout = () => {
 	const location = useLocation();
 
 	const { container, miniDrawer, menuOrientation } = useConfig();
+
+	const [open, setOpen] = useState(false);
 
 	const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
@@ -54,6 +61,12 @@ const MainLayout = () => {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (user && user.password_expired === 1) {
+			setOpen(true);
+		}
+	}, [user]);
+
 	return (
 		<Box sx={{ display: "flex", width: "100%" }}>
 			<Header />
@@ -72,9 +85,9 @@ const MainLayout = () => {
 				>
 					{shouldShowBreadcrumbs && <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />}
 					<Outlet />
-					{/* <Footer /> */}
 				</Container>
 			</Box>
+			<AlertUserPasswordExpired open={open} setOpen={setOpen} />
 		</Box>
 	);
 };
