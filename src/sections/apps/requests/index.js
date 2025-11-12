@@ -11,11 +11,15 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
 import ScheduleFormLanding from "./ScheduleFormLanding";
+import ProductsContext from "contexts/ProductsContext";
+import OperationsContext from "contexts/OperationContext";
 
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();
 
 	const { setRequestResume, requestResume, loadingRequest } = useContext(RequestContext);
+	const { loadingProduct } = useContext(ProductsContext);
+	const { loadingOperation } = useContext(OperationsContext);
 
 	const [activeStep, setActiveStep] = useState(0);
 	const [errorIndex, setErrorIndex] = useState(null);
@@ -186,7 +190,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 				{activeStep <= steps.length - 1 && (
 					<AnimateButton>
 						{((takeoffCheckbox || landingCheckbox) && activeStep !== 3) || (!takeoffCheckbox && !landingCheckbox && activeStep !== 2) ? (
-							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond}>
+							<Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }} disabled={activeStep === 0 ? !isFormValidFirst : !isFormValidSecond || loadingProduct || loadingOperation}>
 								Próximo
 							</Button>
 						) : (
