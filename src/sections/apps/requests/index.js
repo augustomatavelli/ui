@@ -184,7 +184,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 			</Grid>
 			<Divider />
 			<Stack direction="row" justifyContent="space-between">
-				<Button onClick={handleBack} color="error" sx={{ my: 3, ml: 1 }}>
+				<Button onClick={handleBack} disabled={loadingProduct || loadingOperation || loadingRequest} color="error" sx={{ my: 3, ml: 1 }}>
 					Voltar
 				</Button>
 				{activeStep <= steps.length - 1 && (

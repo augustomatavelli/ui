@@ -21,8 +21,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { orders, loadingOrder } = useContext(OrderContext);
 	const { loadingInspection } = useContext(InspectionContext);
 
-	const [editFuel, setEditFuel] = useState(false);
-	const [editFuelValue, setEditFuelValue] = useState("");
+	const [editFuel, setEditFuel] = useState({});
+	const [editFuelValue, setEditFuelValue] = useState({});
 	const [open, setOpen] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState();
 
@@ -45,7 +45,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	};
 
 	const handleChange = async (requestId, itemOrder) => {
-		const response = await updateRequest(requestId, { services: [{ id_service: itemOrder.item_id, name: itemOrder.name, amount: editFuelValue }], products: [] });
+		const itemKey = `${itemOrder.id_order}-${itemOrder.id_item}`;
+		const response = await updateRequest(requestId, { services: [{ id_service: itemOrder.item_id, name: itemOrder.name, amount: editFuelValue[itemKey] }], products: [] });
 		setReload(!reload);
 		dispatch(
 			openSnackbar({
@@ -58,7 +59,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 				close: false,
 			})
 		);
-		setEditFuel(false);
+		setEditFuel((prev) => ({ ...prev, [itemKey]: false }));
+		setEditFuelValue((prev) => ({ ...prev, [itemKey]: "" }));
 	};
 
 	const handleClose = () => {
@@ -139,14 +141,16 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										</Grid>
 									</TableCell>
 									<TableCell align="center">
-										{!editFuel ? (
+										{!editFuel[`${item.id_order}-${item.id_item}`] ? (
 											<Box display="inline-flex" alignItems="center" gap={1}>
 												{item.unit === "un" ? "-" : item.amount === "full" ? "Full" : `${item.amount} ${item.unit}`}
 												{item.unit === "L" && (item.order_status === "E" || item.order_status === "P") && (
 													<IconButton
 														size="small"
 														onClick={() => {
-															setEditFuel(true);
+															const itemKey = `${item.id_order}-${item.id_item}`;
+															setEditFuel((prev) => ({ ...prev, [itemKey]: true }));
+															setEditFuelValue((prev) => ({ ...prev, [itemKey]: item.amount === "full" ? "" : item.amount }));
 														}}
 													>
 														<EditOutlined />
@@ -158,14 +162,15 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 												<OutlinedInput
 													id="fuel"
 													type={"number"}
-													value={editFuelValue}
+													value={editFuelValue[`${item.id_order}-${item.id_item}`] || ""}
 													name="fuel"
 													sx={{ height: "30px" }}
 													inputProps={{
 														style: { padding: 5, width: "50px" },
 													}}
 													onChange={(e) => {
-														setEditFuelValue(e.target.value);
+														const itemKey = `${item.id_order}-${item.id_item}`;
+														setEditFuelValue((prev) => ({ ...prev, [itemKey]: e.target.value }));
 													}}
 												/>
 												<SaveOutlined

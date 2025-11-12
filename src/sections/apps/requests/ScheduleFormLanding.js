@@ -88,29 +88,18 @@ const ScheduleFormLanding = ({ aircraft, onValidate, takeoffCheckbox, setTakeoff
 		onValidate(formik.isValid && formik.dirty, formik.values);
 	}, [formik.isValid, formik.dirty, formik.values]);
 
-	// Monitora mudanças no landing_date e ajusta o takeoff_date
 	useEffect(() => {
-		const { landing_date, takeoff_date } = formik.values;
+		const { landing_date } = formik.values;
 
-		if (landing_date && takeoff_date && takeoffCheckbox && selectedInterval !== null) {
-			const previousLandingDate = dayjs(requestResume.landing_date);
-			const previousTakeoffDate = dayjs(takeoff_date);
-			if (previousLandingDate.isValid() && previousTakeoffDate.isValid()) {
-				// Calcula a diferença em minutos entre o landing_date anterior e o takeoff_date
-				const timeDifference = previousTakeoffDate.diff(previousLandingDate, "minute");
-
-				// Aplica a mesma diferença ao novo landing_date
-				const newTakeoffDate = dayjs(landing_date).add(timeDifference, "minute").toDate();
-
-				formik.setFieldValue("takeoff_date", newTakeoffDate);
-				setRequestResume((prev) => ({ ...prev, takeoff_date: newTakeoffDate }));
+		if (landing_date && takeoffCheckbox && selectedInterval !== null) {
+			const landingDate = dayjs(landing_date);
+			if (landingDate.isValid()) {
+				const newTakeoff = landingDate.add(selectedInterval, "minute").toDate();
+				formik.setFieldValue("takeoff_date", newTakeoff);
+				setRequestResume((prev) => ({ ...prev, takeoff_date: newTakeoff }));
 			}
-		} else if (landing_date && takeoff_date && takeoffCheckbox && selectedInterval === null) {
-			// Reseta takeoff_date se selectedInterval for null
-			formik.setFieldValue("takeoff_date", null);
-			setRequestResume((prev) => ({ ...prev, takeoff_date: null }));
 		}
-	}, [formik.values.landing_date, selectedInterval]);
+	}, [selectedInterval]);
 
 	const { errors, touched, handleSubmit, getFieldProps } = formik;
 
