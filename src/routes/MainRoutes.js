@@ -60,6 +60,9 @@ const ListChecklistsForAdmin = Loadable(lazy(() => import("pages/checklists/admi
 // render - notifications
 const ListMyNotifications = Loadable(lazy(() => import("pages/notifications/me")));
 
+// render - inventory
+const ListInventoryForAdmin = Loadable(lazy(() => import("pages/inventory/admin")));
+
 // auth routing
 const AuthLogin = Loadable(lazy(() => import("pages/auth/login")));
 const AuthRegister = Loadable(lazy(() => import("pages/auth/register")));
@@ -315,6 +318,19 @@ const MainRoutes = {
 							element: (
 								<AuthGuard requiredUserType="['A', 'S']">
 									<OperationDetails />
+								</AuthGuard>
+							),
+						},
+					],
+				},
+				{
+					path: "inventory",
+					children: [
+						{
+							path: "admin",
+							element: (
+								<AuthGuard requiredUserType="['A', 'S']">
+									<ListInventoryForAdmin />
 								</AuthGuard>
 							),
 						},
