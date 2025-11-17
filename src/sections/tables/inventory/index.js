@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import { DeleteOutlined } from "@ant-design/icons";
 import InventoryContext from "contexts/InventoryContext";
 import useInventory from "hooks/useInventory";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 
 export default function InventoryMovementsTable({ setSearch, search, page, setPage, service, typeFilter }) {
 	const { deleteInventory, findAllInventory } = useInventory();
@@ -16,7 +18,18 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 	};
 
 	const handleDelete = async (id) => {
-		await deleteInventory(id);
+		const response = await deleteInventory(id);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
 		await findAllInventory(service, search, page, typeFilter);
 	};
 

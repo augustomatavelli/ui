@@ -4,6 +4,8 @@ import { PopupTransition } from "components/@extended/Transitions";
 import InventoryContext from "contexts/InventoryContext";
 import { useContext, useState } from "react";
 import useInventory from "hooks/useInventory";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 
 export default function AlertStockIn({ open, handleClose, service }) {
 	const { createInventory } = useInventory();
@@ -69,7 +71,18 @@ export default function AlertStockIn({ open, handleClose, service }) {
 						<Button
 							disabled={loadingInventory || error || !inputValue}
 							onClick={async () => {
-								await createInventory({ type: "E", amount: Number(inputValue), id_item: service });
+								const response = await createInventory({ type: "E", amount: Number(inputValue), id_item: service });
+								dispatch(
+									openSnackbar({
+										open: true,
+										message: response.message,
+										variant: "alert",
+										alert: {
+											color: "success",
+										},
+										close: false,
+									})
+								);
 								handleClose();
 								setInputValue("");
 							}}
