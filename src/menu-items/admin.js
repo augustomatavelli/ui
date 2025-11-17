@@ -88,14 +88,15 @@ const admin = {
 			type: "item",
 			url: "/checklists/admin",
 			icon: icons.CheckCircleOutlined,
-		} 
+		},
 		{
 			id: "inventory",
 			title: "Controle de Estoques",
 			type: "item",
 			url: "/inventory/admin",
 			icon: icons.ContainerOutlined,
-		},,
+		},
+		,
 		{
 			id: "programação",
 			title: "Programação",
