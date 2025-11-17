@@ -1,0 +1,74 @@
+import PropTypes from "prop-types";
+import { Button, Dialog, DialogContent, Divider, OutlinedInput, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { PopupTransition } from "components/@extended/Transitions";
+import InventoryContext from "contexts/InventoryContext";
+import { useContext, useState } from "react";
+import useInventory from "hooks/useInventory";
+
+export default function AlertStockAdjust({ open, handleClose, service }) {
+	const { createInventory } = useInventory();
+
+	const { loadingInventory } = useContext(InventoryContext);
+
+	const [inputValue, setInputValue] = useState("");
+	const [inputObservation, setInputObservation] = useState("");
+
+	const handleInputChange = (event) => {
+		setInputValue(event.target.value);
+	};
+
+	const handleInputObservationChange = (event) => {
+		setInputObservation(event.target.value);
+	};
+
+	return (
+		<Dialog
+			open={open}
+			onClose={handleClose}
+			keepMounted
+			TransitionComponent={PopupTransition}
+			maxWidth="sm"
+			fullWidth
+			aria-labelledby="column-delete-title"
+			aria-describedby="column-delete-description"
+		>
+			<DialogContent sx={{ mt: 2, my: 1 }}>
+				<Stack alignItems="start" spacing={3.5}>
+					<Stack spacing={2} width={1}>
+						<Typography variant="h4" align="left">
+							Registro de ajuste de estoque
+						</Typography>
+						<Divider />
+						<OutlinedInput fullWidth type="number" placeholder="Digite a quantidade..." onChange={handleInputChange} />
+						<OutlinedInput fullWidth type="text" placeholder="Digite o motivo do ajuste..." onChange={handleInputObservationChange} />
+					</Stack>
+					<Stack direction="row" spacing={2} justifyContent="end" sx={{ width: 1 }}>
+						<Button disabled={loadingInventory} onClick={handleClose} color="secondary" variant="outlined">
+							Fechar
+						</Button>
+						<Button
+							disabled={loadingInventory}
+							color="primary"
+							variant="contained"
+							onClick={async () => {
+								await createInventory({ type: "A", amount: Number(inputValue), observation: String(inputObservation), id_item: service });
+								handleClose();
+								setInputValue("");
+								setInputObservation("");
+							}}
+							autoFocus
+						>
+							Salvar
+						</Button>
+					</Stack>
+				</Stack>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+AlertStockAdjust.propTypes = {
+	title: PropTypes.string,
+	open: PropTypes.bool,
+	handleClose: PropTypes.func,
+};

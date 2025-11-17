@@ -1,34 +1,30 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip } from "@mui/material";
-import { useState } from "react";
+import { useContext } from "react";
 import Loader from "components/Loader";
 import dayjs from "dayjs";
 import { DeleteOutlined } from "@ant-design/icons";
+import InventoryContext from "contexts/InventoryContext";
+import useInventory from "hooks/useInventory";
 
-const mockMovements = [
-	{ id: 1, date: "2025-11-13T10:00:00Z", type: "Entrada", finalBalance: 100, reference: "Nota Fiscal #123" },
-	{ id: 2, date: "2025-11-12T15:30:00Z", type: "Saída", finalBalance: 90, reference: "Requisição #456" },
-	{ id: 3, date: "2025-11-12T09:00:00Z", type: "Ajuste", finalBalance: 95, reference: "augustomatavelli" },
-	{ id: 4, date: "2025-11-11T11:00:00Z", type: "Saída", finalBalance: 105, reference: "Aeronave PR-ABC" },
-	{ id: 5, date: "2025-11-10T18:00:00Z", type: "Entrada", finalBalance: 110, reference: "Nota Fiscal #122" },
-];
+export default function InventoryMovementsTable({ setSearch, search, page, setPage, service, typeFilter }) {
+	const { deleteInventory, findAllInventory } = useInventory();
 
-export default function InventoryMovementsTable() {
-	const [loading] = useState(false);
-	const [page, setPage] = useState(1);
+	const { loadingInventory, inventory, totalInventoryItems } = useContext(InventoryContext);
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
-	const handleDelete = (id) => {
-		console.log(`Delete movement ${id}`);
+	const handleDelete = async (id) => {
+		await deleteInventory(id);
+		await findAllInventory(service, search, page, typeFilter);
 	};
 
 	return (
 		<>
 			<TableContainer>
 				<Stack spacing={2} sx={{ p: 2.5 }} alignItems="flex-end">
-					<Pagination count={Math.ceil(mockMovements.length / 10)} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+					<Pagination count={totalInventoryItems} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 				</Stack>
 				<Table aria-label="simple table" size="small">
 					<TableHead>
@@ -36,30 +32,30 @@ export default function InventoryMovementsTable() {
 							<TableCell align="center">Data</TableCell>
 							<TableCell align="center">Tipo de Movimentação</TableCell>
 							<TableCell align="center">Quantidade</TableCell>
-							<TableCell align="center">Saldo Final</TableCell>
 							<TableCell align="center">Referência</TableCell>
+							<TableCell align="center">Observação</TableCell>
 							<TableCell />
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loading ? (
+						{loadingInventory ? (
 							<TableRow>
 								<TableCell colSpan={5} align="center">
 									<Loader />
 								</TableCell>
 							</TableRow>
-						) : mockMovements.length > 0 ? (
-							mockMovements.map((movement) => (
-								<TableRow hover key={movement.id}>
-									<TableCell align="center">{dayjs(movement.date).format("DD/MM/YYYY HH:mm")}</TableCell>
-									<TableCell align="center">{movement.type}</TableCell>
-									<TableCell align="center">{movement.finalBalance}</TableCell>
-									<TableCell align="center">{movement.amount}</TableCell>
-									<TableCell align="center">{movement.reference}</TableCell>
+						) : inventory.length > 0 ? (
+							inventory.map((i) => (
+								<TableRow hover key={i.id}>
+									<TableCell align="center">{dayjs(i.created_at).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{i.type === "E" ? "Entrada" : i.type === "S" ? "Saída" : "Ajuste"}</TableCell>
+									<TableCell align="center">{i.amount}</TableCell>
+									<TableCell align="center">{i.created_by ? i.created_by : `#${i.id_request} - ${i.registration}`}</TableCell>
+									<TableCell align="center">{i.observation ? i.observation : "-"}</TableCell>
 									<TableCell align="center">
-										{movement.type === "Ajuste" && (
+										{i.type === "A" && (
 											<Tooltip title="Remover Ajuste">
-												<IconButton onClick={() => handleDelete(movement.id)} size="small">
+												<IconButton onClick={() => handleDelete(i.id)} size="small">
 													<DeleteOutlined style={{ color: "red" }} />
 												</IconButton>
 											</Tooltip>
@@ -69,7 +65,7 @@ export default function InventoryMovementsTable() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={5} align="center">
+								<TableCell colSpan={7} align="center">
 									<Typography variant="h5">Nenhuma movimentação encontrada</Typography>
 								</TableCell>
 							</TableRow>
