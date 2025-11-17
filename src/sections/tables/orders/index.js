@@ -19,7 +19,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateRequest } = useRequest();
 
 	const { orders, loadingOrder } = useContext(OrderContext);
-	const { loadingInspection } = useContext(InspectionContext);
+	const { loadingInspection, setInspections } = useContext(InspectionContext);
 
 	const [editFuel, setEditFuel] = useState({});
 	const [editFuelValue, setEditFuelValue] = useState({});
@@ -64,6 +64,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	};
 
 	const handleClose = () => {
+		setInspections([]);
 		setOpen(false);
 	};
 

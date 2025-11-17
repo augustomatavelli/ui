@@ -169,7 +169,7 @@ export default function UsersTable({ openFilter, reload }) {
 										)}
 									</TableCell>
 									<TableCell align="center">{user.name}</TableCell>
-									<TableCell align="center">{user.email}</TableCell>
+									<TableCell align="center">{user.email ? user.email : "-"} </TableCell>
 									<TableCell align="center">{user.login ? user.login : "-"}</TableCell>
 									<TableCell align="center">{user.mobile}</TableCell>
 									<TableCell align="center">

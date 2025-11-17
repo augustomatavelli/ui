@@ -45,6 +45,7 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 				close: false,
 			})
 		);
+		setObjCompliance({});
 		handleClose();
 	};
 

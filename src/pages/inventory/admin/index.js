@@ -16,6 +16,7 @@ const InventoryAdmin = () => {
 	const { loadingInventory, inventoryList, actualStock } = useContext(InventoryContext);
 
 	const [service, setService] = useState("");
+	const [serviceName, setServiceName] = useState("");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [typeFilter, setTypeFilter] = useState("Todos");
@@ -24,15 +25,19 @@ const InventoryAdmin = () => {
 
 	const handleServiceChange = (event) => {
 		setService(event.target.value);
+		const selected = inventoryList.find((item) => `${item.id}_${item.type}` === event.target.value);
+
+		setServiceName(selected?.name || "");
 	};
 
 	const handleTypeChange = (event) => {
 		setTypeFilter(event.target.value);
 	};
 
-	const handleClose = () => {
+	const handleClose = async () => {
 		setOpenIn(false);
 		setOpenAdjust(false);
+		await findAllInventory(service, search, page, typeFilter);
 	};
 
 	useEffect(() => {
@@ -41,7 +46,7 @@ const InventoryAdmin = () => {
 
 	useEffect(() => {
 		service && findAllInventory(service, search, page, typeFilter);
-	}, [search, page, service, typeFilter, openIn, openAdjust]);
+	}, [search, page, service, typeFilter]);
 
 	return (
 		<Grid container spacing={3}>
@@ -64,7 +69,7 @@ const InventoryAdmin = () => {
 				service && (
 					<>
 						<Grid item xs={12}>
-							<StockCard stock={actualStock} unit={"L"} />
+							<StockCard stock={actualStock} unit={"L"} serviceName={serviceName} />
 						</Grid>
 						<Grid item xs={12}>
 							<MainCard

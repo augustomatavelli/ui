@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Box, Grid, InputLabel, Stack, Typography } from "@mui/material";
+import { Box, Grid, InputLabel, Skeleton, Stack, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useFormik, Form, FormikProvider } from "formik";
@@ -72,7 +72,32 @@ const OperationsForm = ({ onValidate }) => {
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								{loadingOperation ? (
-									<Loader />
+									<Grid>
+										<Box
+											sx={{
+												display: "flex",
+												overflowX: "auto",
+												padding: "1rem",
+												whiteSpace: "nowrap",
+												gap: 1,
+												"&::-webkit-scrollbar": {
+													height: "8px",
+												},
+												"&::-webkit-scrollbar-thumb": {
+													backgroundColor: "#888",
+												},
+												"&::-webkit-scrollbar-thumb:hover": {
+													backgroundColor: "#555",
+												},
+											}}
+										>
+											{Array.from({ length: 4 }).map((_, index) => (
+												<Grid key={index} sx={{ display: "flex" }}>
+													<Skeleton variant="rectangular" width={200} height={250} />
+												</Grid>
+											))}
+										</Box>
+									</Grid>
 								) : searchOperations.length > 0 ? (
 									<Grid item xs={12}>
 										<Stack spacing={1.25}>

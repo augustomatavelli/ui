@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip, Chip } from "@mui/material";
 import { useContext } from "react";
 import Loader from "components/Loader";
 import dayjs from "dayjs";
@@ -61,7 +61,15 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 							inventory.map((i) => (
 								<TableRow hover key={i.id}>
 									<TableCell align="center">{dayjs(i.created_at).format("DD/MM/YYYY HH:mm")}</TableCell>
-									<TableCell align="center">{i.type === "E" ? "Entrada" : i.type === "S" ? "Saída" : "Ajuste"}</TableCell>
+									<TableCell align="center">
+										<Chip
+											color={i.type === "E" ? "success" : i.type === "S" ? "warning" : "error"}
+											variant="filled"
+											size="small"
+											label={i.type === "E" ? "Entrada" : i.type === "S" ? "Saída" : "Ajuste"}
+											sx={{ color: i.type === "S" ? "#252525" : "white" }}
+										/>
+									</TableCell>
 									<TableCell align="center">{i.amount}</TableCell>
 									<TableCell align="center">{i.created_by ? i.created_by : `#${i.id_request} - ${i.registration}`}</TableCell>
 									<TableCell align="center">{i.observation ? i.observation : "-"}</TableCell>
