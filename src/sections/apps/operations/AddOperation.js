@@ -55,6 +55,7 @@ const AddOperation = ({ onCancel }) => {
 	const { activeChecklists } = useContext(ChecklistContext);
 
 	const [available, setAvailable] = useState("A");
+	const [stock, setStock] = useState("N");
 	const [selectionMode, setSelectionMode] = useState("N");
 	const [checklist, setChecklist] = useState("N");
 	const [checklistId, setChecklistId] = useState(null);
@@ -68,6 +69,10 @@ const AddOperation = ({ onCancel }) => {
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
+	};
+
+	const handleChangeStock = (event) => {
+		setStock(event.target.value);
 	};
 
 	const handleChangeSelectionMode = (event) => {
@@ -120,6 +125,7 @@ const AddOperation = ({ onCancel }) => {
 					price: parseFloat(values.price.replace(",", ".")).toFixed(1),
 					unit: values.unit,
 					available_at: available,
+					inventory: stock,
 					selection: selectionMode,
 					id_category: Number(values.category),
 					checklist: checklist,
@@ -302,6 +308,17 @@ const AddOperation = ({ onCancel }) => {
 											<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 											<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
 											<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+										</RadioGroup>
+									</Stack>
+								</Grid>
+								<Grid item xs={12}>
+									<Stack spacing={1}>
+										<Grid display="flex" alignItems="center" gap={1}>
+											<InputLabel htmlFor="unit">Controle de estoque?</InputLabel>
+										</Grid>
+										<RadioGroup aria-label="size" value={stock} defaultValue="N" name="radio-buttons-group" onChange={handleChangeStock} row>
+											<FormControlLabel value="S" control={<Radio />} label="Sim" />
+											<FormControlLabel value="N" control={<Radio />} label="Não" />
 										</RadioGroup>
 									</Stack>
 								</Grid>

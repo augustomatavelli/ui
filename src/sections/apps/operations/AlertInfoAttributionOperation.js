@@ -1,16 +1,7 @@
 import PropTypes from "prop-types";
-
-// material-ui
 import { Button, Dialog, DialogContent, Stack, Typography, useTheme } from "@mui/material";
 
-// project import
-import Avatar from "components/@extended/Avatar";
 import { PopupTransition } from "components/@extended/Transitions";
-
-// assets
-import { DeleteOutlined } from "@ant-design/icons";
-
-// ==============================|| CUSTOMER - DELETE ||============================== //
 
 export default function AlertInfoAttributionOperation({ open, handleClose }) {
 	const theme = useTheme();

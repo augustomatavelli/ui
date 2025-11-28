@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { useContext } from "react";
 import Loader from "components/Loader";
 import dayjs from "dayjs";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import InventoryContext from "contexts/InventoryContext";
 import useInventory from "hooks/useInventory";
 import { dispatch } from "store";
@@ -74,13 +74,19 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 									<TableCell align="center">{i.created_by ? i.created_by : `#${i.id_request} - ${i.registration}`}</TableCell>
 									<TableCell align="center">{i.observation ? i.observation : "-"}</TableCell>
 									<TableCell align="center">
-										{i.type === "A" && (
+										{i.type === "A" ? (
 											<Tooltip title="Remover Ajuste">
 												<IconButton onClick={() => handleDelete(i.id)} size="small">
 													<DeleteOutlined style={{ color: "red" }} />
 												</IconButton>
 											</Tooltip>
-										)}
+										) : i.type === "E" && i.receipt ? (
+											<Tooltip title="Visualizar">
+												<IconButton size="small" onClick={() => window.open(i.receipt)}>
+													<EyeOutlined style={{ color: "green" }} />
+												</IconButton>
+											</Tooltip>
+										) : null}
 									</TableCell>
 								</TableRow>
 							))

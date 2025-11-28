@@ -6,7 +6,6 @@ import { EditOutlined, SaveOutlined, InfoCircleOutlined } from "@ant-design/icon
 import Loader from "components/Loader";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import UserContext from "contexts/UserContext";
 import useOperation from "hooks/useOperation";
 import OperationsContext from "contexts/OperationContext";
 import AlertInfoAttributionOperation from "sections/apps/operations/AlertInfoAttributionOperation";
@@ -43,6 +42,7 @@ const OperationDetails = () => {
 		setFormData({
 			price: operationDetails.price || "",
 			available: operationDetails.available_at || "",
+			stock: operationDetails.stock || "",
 			selectionMode: operationDetails.visible || "",
 			checklist: operationDetails.checklist || "",
 			allow_schedule: operationDetails.allow_schedule || "",
@@ -65,6 +65,7 @@ const OperationDetails = () => {
 			const response = await updateOperation(id_service, {
 				price: formData.price,
 				available_at: formData.available,
+				inventory: formData.stock,
 				visible: formData.selectionMode,
 				checklist: formData.checklist,
 				allow_schedule: formData.allow_schedule,
@@ -193,6 +194,22 @@ const OperationDetails = () => {
 													<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 													<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
 													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+												</RadioGroup>
+											</Stack>
+										</Grid>
+									</Grid>
+								</ListItem>
+								<Divider />
+								<ListItem>
+									<Grid container spacing={3}>
+										<Grid item xs={12} md={6}>
+											<Stack spacing={0.5}>
+												<Grid display="flex" alignItems="center" gap={1}>
+													<InputLabel htmlFor="stock">Controle de estoque?</InputLabel>
+												</Grid>
+												<RadioGroup aria-label="stock" value={formData.stock} name="stock" onChange={handleChange} row>
+													<FormControlLabel value="S" control={<Radio />} label="Sim" />
+													<FormControlLabel value="N" control={<Radio />} label="Não" />
 												</RadioGroup>
 											</Stack>
 										</Grid>
