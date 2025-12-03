@@ -8,7 +8,7 @@ import InventoryContext from "contexts/InventoryContext";
 const useInventory = () => {
 	const { publicAxios } = UseAxios();
 
-	const { setLoadingInventory, setInventoryList, setInventory, setTotalInventoryItems, setActualStock } = useContext(InventoryContext);
+	const { setLoadingInventory, setInventoryList, setInventory, setTotalInventoryItems, setActualStock, setStockHistory } = useContext(InventoryContext);
 
 	const createInventory = async (body) => {
 		try {
@@ -65,6 +65,7 @@ const useInventory = () => {
 			setInventory(response.data.items);
 			setTotalInventoryItems(response.data.pagination.totalPages);
 			setActualStock(response.data.actualStock);
+			setStockHistory(response.data.stockHistory);
 		} catch (error) {
 			console.log(error);
 			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;

@@ -7,7 +7,7 @@ import useInventory from "hooks/useInventory";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
-export default function AlertStockAdjust({ open, handleClose, service }) {
+export default function AlertStockAdjust({ open, handleClose, handleSave, service }) {
 	const { createInventory } = useInventory();
 
 	const { loadingInventory } = useContext(InventoryContext);
@@ -66,6 +66,7 @@ export default function AlertStockAdjust({ open, handleClose, service }) {
 									})
 								);
 								handleClose();
+								handleSave();
 								setInputValue("");
 								setInputObservation("");
 							}}

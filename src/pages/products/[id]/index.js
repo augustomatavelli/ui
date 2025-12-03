@@ -23,6 +23,7 @@ const ProductDetails = () => {
 	const [editPrice, setEditPrice] = useState(false);
 	const [editPriceValue, setEditPriceValue] = useState("");
 	const [available, setAvailable] = useState("");
+	const [stock, setStock] = useState("N");
 
 	const { id } = useParams();
 
@@ -47,6 +48,10 @@ const ProductDetails = () => {
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
+	};
+
+	const handleChangeStock = (event) => {
+		setStock(event.target.value);
 	};
 
 	useEffect(() => {
@@ -202,6 +207,22 @@ const ProductDetails = () => {
 											</Grid>
 										</ListItem>
 										<Divider />
+										<Divider />
+										<ListItem>
+											<Grid container spacing={3}>
+												<Grid item xs={12} md={6}>
+													<Stack spacing={0.5}>
+														<Grid display="flex" alignItems="center" gap={1}>
+															<InputLabel htmlFor="stock">Controle de estoque?</InputLabel>
+														</Grid>
+														<RadioGroup aria-label="stock" value={stock} name="stock" onChange={handleChangeStock} row>
+															<FormControlLabel value="S" control={<Radio />} label="Sim" />
+															<FormControlLabel value="N" control={<Radio />} label="Não" />
+														</RadioGroup>
+													</Stack>
+												</Grid>
+											</Grid>
+										</ListItem>
 									</List>
 									<Box sx={{ p: 2.5 }}>
 										<Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>

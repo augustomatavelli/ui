@@ -8,7 +8,7 @@ import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { CameraFilled } from "@ant-design/icons";
 
-export default function AlertStockIn({ open, handleClose, service }) {
+export default function AlertStockIn({ open, handleClose, handleSave, service }) {
 	const { createInventory } = useInventory();
 
 	const { loadingInventory } = useContext(InventoryContext);
@@ -171,6 +171,7 @@ export default function AlertStockIn({ open, handleClose, service }) {
 									})
 								);
 								handleCloseDialog();
+								handleSave();
 							}}
 							variant="contained"
 							color="primary"

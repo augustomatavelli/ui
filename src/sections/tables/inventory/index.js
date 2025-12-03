@@ -71,7 +71,7 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 										/>
 									</TableCell>
 									<TableCell align="center">{i.amount}</TableCell>
-									<TableCell align="center">{i.created_by ? i.created_by : `#${i.id_request} - ${i.registration}`}</TableCell>
+									<TableCell align="center">{i.id_request && i.registration ? `#${i.id_request} / ${i.registration}` : i.created_by}</TableCell>
 									<TableCell align="center">{i.observation ? i.observation : "-"}</TableCell>
 									<TableCell align="center">
 										{i.type === "A" ? (

@@ -14,6 +14,7 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 	const theme = useTheme();
 
 	const periods = [
+		{ label: "Geral", value: "general" },
 		{ label: "Mês atual", value: "current_month" },
 		{ label: "Últimos 7 dias", value: "last_7_days" },
 		{ label: "Ontem", value: "yesterday" },
@@ -29,6 +30,10 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 		let endDate = null;
 
 		switch (value) {
+			case "general":
+				startDate = dayjs("2025-01-01");
+				endDate = dayjs().endOf("year");
+				break;
 			case "current_month":
 				startDate = today.startOf("month");
 				endDate = today.endOf("month");
@@ -99,7 +104,6 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
 									<DateTimePicker
 										value={dateFilter.start}
-										minDateTime={dayjs()}
 										onChange={(e) => {
 											setDateFilter((prev) => ({
 												...prev,
@@ -121,7 +125,6 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
 									<DateTimePicker
 										value={dateFilter.end}
-										minDateTime={dateFilter.start ? dayjs(dateFilter.start) : dayjs()}
 										onChange={(e) => {
 											if (e && dateFilter.start && dayjs(e).isAfter(dateFilter.start)) {
 												setDateFilter((prev) => ({

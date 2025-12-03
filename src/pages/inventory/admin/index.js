@@ -37,6 +37,9 @@ const InventoryAdmin = () => {
 	const handleClose = async () => {
 		setOpenIn(false);
 		setOpenAdjust(false);
+	};
+
+	const handleSave = async () => {
 		await findAllInventory(service, search, page, typeFilter);
 	};
 
@@ -69,7 +72,7 @@ const InventoryAdmin = () => {
 				service && (
 					<>
 						<Grid item xs={12}>
-							<StockCard stock={actualStock} unit={"L"} serviceName={serviceName} />
+							<StockCard stock={actualStock} serviceName={serviceName} />
 						</Grid>
 						<Grid item xs={12}>
 							<MainCard
@@ -128,8 +131,8 @@ const InventoryAdmin = () => {
 					</>
 				)
 			)}
-			<AlertStockIn open={openIn} handleClose={handleClose} service={service} />
-			<AlertStockAdjust open={openAdjust} handleClose={handleClose} service={service} />
+			<AlertStockIn open={openIn} handleClose={handleClose} handleSave={handleSave} service={service} />
+			<AlertStockAdjust open={openAdjust} handleClose={handleClose} handleSave={handleSave} service={service} />
 		</Grid>
 	);
 };

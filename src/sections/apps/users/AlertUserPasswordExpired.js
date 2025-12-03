@@ -203,5 +203,5 @@ export default function AlertUserPasswordExpired({ open, setOpen }) {
 
 AlertUserPasswordExpired.propTypes = {
 	open: PropTypes.bool,
-	setOpen: PropTypes.bool,
+	setOpen: PropTypes.func,
 };

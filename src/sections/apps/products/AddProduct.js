@@ -1,7 +1,4 @@
-// material-ui
 import { useContext, useEffect, useState } from "react";
-
-// material-ui
 import {
 	Button,
 	Grid,
@@ -25,15 +22,10 @@ import {
 	FormControlLabel,
 	Radio,
 } from "@mui/material";
-
-// third party
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// project import
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
 import useScriptRef from "hooks/useScriptRef";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -48,13 +40,12 @@ const getInitialValues = () => {
 		unit: "",
 		category: "",
 		available_at: "A",
+		stock: "N",
 		image: "",
 	};
 
 	return newProduct;
 };
-
-// ==============================|| TAB - PERSONAL ||============================== //
 
 const AddProduct = ({ onCancel }) => {
 	const { createProduct, findCategories } = useProduct();
@@ -64,6 +55,7 @@ const AddProduct = ({ onCancel }) => {
 	const [selectedImage, setSelectedImage] = useState(undefined);
 	const [avatar, setAvatar] = useState();
 	const [available, setAvailable] = useState("A");
+	const [stock, setStock] = useState("N");
 
 	const scriptedRef = useScriptRef();
 
@@ -82,6 +74,10 @@ const AddProduct = ({ onCancel }) => {
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
+	};
+
+	const handleChangeStock = (event) => {
+		setStock(event.target.value);
 	};
 
 	useEffect(() => {
@@ -115,6 +111,7 @@ const AddProduct = ({ onCancel }) => {
 					unit: unit,
 					id_category: Number(category),
 					available_at: available,
+					inventory: stock,
 					image: selectedImage ? base64Image : "",
 				};
 				const response = await createProduct(payload);
@@ -344,6 +341,17 @@ const AddProduct = ({ onCancel }) => {
 													<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 													<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
 													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+												</RadioGroup>
+											</Stack>
+										</Grid>
+										<Grid item xs={12}>
+											<Stack spacing={1}>
+												<Grid display="flex" alignItems="center" gap={1}>
+													<InputLabel htmlFor="unit">Controle de estoque?</InputLabel>
+												</Grid>
+												<RadioGroup aria-label="size" value={stock} defaultValue="N" name="radio-buttons-group" onChange={handleChangeStock} row>
+													<FormControlLabel value="S" control={<Radio />} label="Sim" />
+													<FormControlLabel value="N" control={<Radio />} label="Não" />
 												</RadioGroup>
 											</Stack>
 										</Grid>

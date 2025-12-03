@@ -29,7 +29,6 @@ const ListOrders = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log(user);
 		if (!user) return;
 		if (user.type !== "A" && user.type !== "S" && user.type !== "C") {
 			navigate("/aircrafts/me", { replace: true });

@@ -9,6 +9,7 @@ export const InventoryProvider = ({ children }) => {
 	const [inventory, setInventory] = useState([]);
 	const [totalInventoryItems, setTotalInventoryItems] = useState(0);
 	const [actualStock, setActualStock] = useState(0);
+	const [stockHistory, setStockHistory] = useState([]);
 
 	const resetInventoryStates = () => {
 		setLoadingInventory(false);
@@ -16,6 +17,7 @@ export const InventoryProvider = ({ children }) => {
 		setInventoryList([]);
 		setTotalInventoryItems(0);
 		setActualStock(0);
+		setStockHistory([]);
 	};
 
 	return (
@@ -31,6 +33,8 @@ export const InventoryProvider = ({ children }) => {
 				setTotalInventoryItems,
 				actualStock,
 				setActualStock,
+				stockHistory,
+				setStockHistory,
 				resetInventoryStates,
 			}}
 		>
