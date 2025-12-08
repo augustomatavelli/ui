@@ -12,6 +12,7 @@ import { openSnackbar } from "store/reducers/snackbar";
 import UserContext from "contexts/UserContext";
 import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
+import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const ProductDetails = () => {
 	const { findOneProductById, updateProduct } = useProduct();
@@ -23,28 +24,11 @@ const ProductDetails = () => {
 	const [editPrice, setEditPrice] = useState(false);
 	const [editPriceValue, setEditPriceValue] = useState("");
 	const [available, setAvailable] = useState("");
-	const [stock, setStock] = useState("N");
+	const [stock, setStock] = useState("");
 
 	const { id } = useParams();
 
-	const { id_product, image, name, category_name, price, status } = productDetails;
-
-	const handleChange = async (productId, price) => {
-		const response = await updateProduct(productId, { price: price });
-		dispatch(
-			openSnackbar({
-				open: true,
-				message: response.message,
-				variant: "alert",
-				alert: {
-					color: "success",
-				},
-				close: false,
-			})
-		);
-		setEditPrice(false);
-		await findOneProductById(id);
-	};
+	const { id_product, image, name, category_name, available_at, price, status, inventory } = productDetails;
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
@@ -52,6 +36,38 @@ const ProductDetails = () => {
 
 	const handleChangeStock = (event) => {
 		setStock(event.target.value);
+	};
+
+	const handleSave = async () => {
+		try {
+			const response = await updateProduct(id_product, {
+				price: editPriceValue ? editPriceValue : price,
+				available_at: available,
+				inventory: stock,
+			});
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.message,
+					variant: "alert",
+					alert: { color: "success" },
+					close: false,
+				})
+			);
+			setEditPrice(false);
+			await findOneProductById(id);
+		} catch (error) {
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err] ?? "Erro ao salvar alterações",
+					variant: "alert",
+					alert: { color: "error" },
+					close: false,
+				})
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -182,7 +198,7 @@ const ProductDetails = () => {
 																<SaveOutlined
 																	style={{ cursor: "pointer" }}
 																	onClick={async () => {
-																		handleChange(id_product, editPriceValue);
+																		setEditPrice(false);
 																	}}
 																/>
 															</Box>
@@ -197,7 +213,7 @@ const ProductDetails = () => {
 												<Grid item xs={12} md={6}>
 													<Stack spacing={0.5}>
 														<InputLabel htmlFor="unit">Disponibilidade</InputLabel>
-														<RadioGroup aria-label="size" value={available} name="radio-buttons-group" onChange={handleChangeAvailable} row>
+														<RadioGroup aria-label="size" value={available ? available : available_at} name="radio-buttons-group" onChange={handleChangeAvailable} row>
 															<FormControlLabel value="P" control={<Radio />} label="No pouso" />
 															<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
 															<FormControlLabel value="A" control={<Radio />} label="Ambos" />
@@ -215,7 +231,7 @@ const ProductDetails = () => {
 														<Grid display="flex" alignItems="center" gap={1}>
 															<InputLabel htmlFor="stock">Controle de estoque?</InputLabel>
 														</Grid>
-														<RadioGroup aria-label="stock" value={stock} name="stock" onChange={handleChangeStock} row>
+														<RadioGroup aria-label="stock" value={stock ? stock : inventory} name="stock" onChange={handleChangeStock} row>
 															<FormControlLabel value="S" control={<Radio />} label="Sim" />
 															<FormControlLabel value="N" control={<Radio />} label="Não" />
 														</RadioGroup>
@@ -234,6 +250,9 @@ const ProductDetails = () => {
 												}}
 											>
 												Voltar
+											</Button>
+											<Button variant="contained" onClick={handleSave}>
+												Salvar
 											</Button>
 											{/* {status === "D" && user.type === "A" && (
 												<Button

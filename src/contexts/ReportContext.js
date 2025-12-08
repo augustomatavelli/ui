@@ -7,6 +7,7 @@ export const ReportContext = createContext({});
 export const ReportProvider = ({ children }) => {
 	const [loadingReport, setLoadingReport] = useState(false);
 	const [reportFuelList, setReportFuelList] = useState([]);
+	const [reportFuelListPDF, setReportFuelListPDF] = useState([]);
 	const [reportTotalFuelList, setReportTotalFuelList] = useState();
 	const [reportRequestsList, setReportRequestsList] = useState([]);
 	const [period, setPeriod] = useState("day");
@@ -14,6 +15,7 @@ export const ReportProvider = ({ children }) => {
 	const resetReportStates = () => {
 		setLoadingReport(false);
 		setReportFuelList([]);
+		setReportFuelListPDF([]);
 		setReportRequestsList([]);
 		setPeriod("day");
 	};
@@ -31,6 +33,8 @@ export const ReportProvider = ({ children }) => {
 				setReportTotalFuelList,
 				reportRequestsList,
 				setReportRequestsList,
+				reportFuelListPDF,
+				setReportFuelListPDF,
 				resetReportStates,
 			}}
 		>

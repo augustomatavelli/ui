@@ -7,6 +7,10 @@ import InventoryContext from "contexts/InventoryContext";
 import useInventory from "hooks/useInventory";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+dayjs.locale("pt-br");
 
 export default function InventoryMovementsTable({ setSearch, search, page, setPage, service, typeFilter }) {
 	const { deleteInventory, findAllInventory } = useInventory();

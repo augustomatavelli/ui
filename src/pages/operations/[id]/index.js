@@ -239,8 +239,8 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="checklist">Necessita checklist?</InputLabel>
 												<RadioGroup aria-label="checklist" value={formData.checklist} name="checklist" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Sim" /* disabled */ />
-													<FormControlLabel value="N" control={<Radio />} label="Não" /* disabled */ />
+													<FormControlLabel value="S" control={<Radio />} label="Sim" />
+													<FormControlLabel value="N" control={<Radio />} label="Não" />
 													<Select
 														value={formData.checklist_name || ""}
 														name="checklist_name"

@@ -313,7 +313,7 @@ const RequestDetails = () => {
 														{openEditInput["landingDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
 																<DateTimePicker
-																	value={landing_date ? landing_date.toDate() : null}
+																	value={landing_date ? dayjs(landing_date, "DD/MM/YYYY HH:mm").toDate() : null}
 																	disablePast
 																	minDateTime={dayjs()}
 																	onChange={(e) => {
@@ -353,7 +353,7 @@ const RequestDetails = () => {
 														{openEditInput["takeoffDateField"] ? (
 															<LocalizationProvider dateAdapter={AdapterDateFns}>
 																<DateTimePicker
-																	value={takeoff_date ? takeoff_date.toDate() : null}
+																	value={takeoff_date ? dayjs(takeoff_date, "DD/MM/YYYY HH:mm").toDate() : null}
 																	disablePast
 																	minDateTime={dayjs()}
 																	onChange={(e) => {

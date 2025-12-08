@@ -42,7 +42,6 @@ const useAuth = () => {
 			localStorage.setItem("_userId", userId);
 			localStorage.setItem("_type", userType);
 			localStorage.setItem("_status", userStatus);
-			console.log(userType, typeof userType);
 			userType === "C" ? navigate("/orders") : navigate("/aircrafts/me");
 
 			return response.data;

@@ -1,7 +1,4 @@
-// material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Button, Tooltip } from "@mui/material";
-
-// project imports
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
@@ -10,7 +7,6 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import Loader from "components/Loader";
 import { RequestFilter } from "./RequestFilter";
-import { date } from "yup";
 
 export default function MyRequestsTable({ openFilter, reload }) {
 	const { searchAllRequests } = useRequest();

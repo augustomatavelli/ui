@@ -1,10 +1,31 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
-import { Grid } from "@mui/material";
+import { Grid, Box, Typography, IconButton } from "@mui/material";
 import ReactApexChart from "react-apexcharts";
 import MainCard from "components/MainCard";
-import { subDays, format } from "date-fns";
+import { format } from "date-fns";
 import InventoryContext from "contexts/InventoryContext";
+import { Document, Page, StyleSheet, pdf, Image } from "@react-pdf/renderer";
+import { FilePdfOutlined } from "@ant-design/icons";
+import html2canvas from "html2canvas";
+
+const pdfStyles = StyleSheet.create({
+	page: {
+		padding: 30,
+		fontSize: 12,
+	},
+	title: {
+		fontSize: 18,
+		marginBottom: 20,
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+	chartImage: {
+		marginTop: 20,
+		width: "100%",
+		height: "auto",
+	},
+});
 
 const barChartOptions = {
 	chart: {
@@ -13,10 +34,6 @@ const barChartOptions = {
 		toolbar: {
 			show: false,
 		},
-	},
-	title: {
-		text: "Quantidade no Estoque",
-		align: "left",
 	},
 	responsive: [
 		{
@@ -57,9 +74,9 @@ const barChartOptions = {
 	},
 };
 
-const StockCard = () => {
+const StockCard = ({ serviceName }) => {
 	const { stockHistory } = useContext(InventoryContext);
-	console.log(stockHistory);
+
 	const theme = useTheme();
 	const { primary, secondary } = theme.palette.text;
 	const info = theme.palette.info.light;
@@ -67,6 +84,33 @@ const StockCard = () => {
 
 	const [series, setSeries] = useState([]);
 	const [options, setOptions] = useState(barChartOptions);
+	const chartRef = useRef();
+
+	const handleGeneratePDF = async () => {
+		if (!chartRef.current) return;
+
+		const canvas = await html2canvas(chartRef.current, {
+			scale: 2,
+			backgroundColor: "#ffffff",
+		});
+		const imgData = canvas.toDataURL("image/png");
+
+		const MyDocument = (
+			<Document>
+				<Page size="A4" style={pdfStyles.page}>
+					<Image src={imgData} style={pdfStyles.chartImage} />
+				</Page>
+			</Document>
+		);
+
+		const blob = await pdf(MyDocument).toBlob();
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = `estoque-${serviceName}.pdf`;
+		link.click();
+		URL.revokeObjectURL(url);
+	};
 
 	useEffect(() => {
 		if (stockHistory && stockHistory.length > 0) {
@@ -126,7 +170,15 @@ const StockCard = () => {
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
 				<MainCard>
-					<ReactApexChart options={options} series={series} type="bar" height={225} />
+					<div ref={chartRef}>
+						<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+							<Typography variant="h5">Estoque - {serviceName}</Typography>
+							<IconButton onClick={handleGeneratePDF}>
+								<FilePdfOutlined />
+							</IconButton>
+						</Box>
+						<ReactApexChart options={options} series={series} type="bar" height={225} />
+					</div>
 				</MainCard>
 			</Grid>
 		</Grid>

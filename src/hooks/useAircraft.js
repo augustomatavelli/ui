@@ -37,7 +37,6 @@ const useAircraft = () => {
 	};
 
 	const updateAircraft = async (aircraftId, data) => {
-		console.log(data);
 		try {
 			setLoadingAircraft(true);
 			const response = await publicAxios.patch(`/aircrafts/${aircraftId}`, data);

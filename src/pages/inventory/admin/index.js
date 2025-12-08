@@ -72,7 +72,7 @@ const InventoryAdmin = () => {
 				service && (
 					<>
 						<Grid item xs={12}>
-							<StockCard stock={actualStock} serviceName={serviceName} />
+							<StockCard serviceName={serviceName} />
 						</Grid>
 						<Grid item xs={12}>
 							<MainCard
