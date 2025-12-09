@@ -13,6 +13,9 @@ import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
 import ScheduleFormLanding from "./ScheduleFormLanding";
 import ProductsContext from "contexts/ProductsContext";
 import OperationsContext from "contexts/OperationContext";
+dayjs.extend(utc);
+dayjs.locale("pt-br");
+import "dayjs/locale/pt-br";
 
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();

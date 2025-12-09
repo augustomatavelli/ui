@@ -1,14 +1,16 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import Loader from "components/Loader";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { FilePdfOutlined, BarChartOutlined, TableOutlined } from "@ant-design/icons";
 import { ReportFuelFilter } from "./ReportFuelFilter";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import ReactApexChart from "react-apexcharts";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -115,6 +117,129 @@ export function Row({ period }) {
 	);
 }
 
+function FuelBarChart({ data }) {
+	const categories = data.map((item) => item.date);
+	const quantities = data.map((item) => item.totalQuantity);
+	const values = data.map((item) => item.totalValue);
+
+	const chartOptions = {
+		chart: {
+			type: "bar",
+			height: 430,
+			toolbar: {
+				show: true,
+			},
+		},
+		plotOptions: {
+			bar: {
+				columnWidth: "50%",
+				borderRadiusApplication: "end",
+				borderRadiusWhenStacked: "last",
+				dataLabels: {
+					position: "top",
+				},
+			},
+		},
+		dataLabels: {
+			enabled: true,
+			offsetY: -20,
+			style: {
+				fontSize: "11px",
+				colors: ["#304758"],
+				fontWeight: "bold",
+			},
+			formatter: function (val, opts) {
+				const seriesName = opts.w.config.series[opts.seriesIndex].name;
+				if (seriesName === "Quantidade") {
+					return val.toFixed(0) + " L";
+				} else if (seriesName === "Valor Total") {
+					return val.toLocaleString("pt-BR", {
+						style: "currency",
+						currency: "BRL",
+					});
+				}
+				return val;
+			},
+		},
+		stroke: {
+			show: true,
+			width: 2,
+			colors: ["transparent"],
+		},
+		xaxis: {
+			categories: categories,
+		},
+		yaxis: [
+			{
+				title: {
+					text: "Quantidade (L)",
+				},
+				labels: {
+					formatter: function (val) {
+						return val.toFixed(0) + " L";
+					},
+				},
+			},
+			{
+				opposite: true,
+				title: {
+					text: "Valor Total (R$)",
+				},
+				labels: {
+					formatter: function (val) {
+						return val.toLocaleString("pt-BR", {
+							style: "currency",
+							currency: "BRL",
+						});
+					},
+				},
+			},
+		],
+		fill: {
+			opacity: 1,
+		},
+		tooltip: {
+			y: [
+				{
+					formatter: function (val) {
+						return val + " L";
+					},
+				},
+				{
+					formatter: function (val) {
+						return val.toLocaleString("pt-BR", {
+							style: "currency",
+							currency: "BRL",
+						});
+					},
+				},
+			],
+		},
+		legend: {
+			position: "bottom",
+			horizontalAlign: "center",
+		},
+		colors: ["#00E396", "#008FFB"],
+	};
+
+	const series = [
+		{
+			name: "Quantidade",
+			data: quantities,
+		},
+		{
+			name: "Valor Total",
+			data: values,
+		},
+	];
+
+	return (
+		<Card sx={{ p: 2, mt: 2 }}>
+			<ReactApexChart options={chartOptions} series={series} type="bar" height={430} />
+		</Card>
+	);
+}
+
 export default function ReportFuelTable({ openFilter, reload }) {
 	const { reportFuel } = useReport();
 
@@ -125,9 +250,17 @@ export default function ReportFuelTable({ openFilter, reload }) {
 		start: dayjs("2025-01-01").startOf("day").format("YYYY-MM-DDTHH:mm:ss"),
 		end: dayjs().endOf("year").format("YYYY-MM-DDTHH:mm:ss"),
 	});
+	const [graph, setGraph] = useState(false);
 
 	const handleChange = (event) => {
 		setPeriod(event.target.value);
+	};
+
+	const handleToggleGraph = (showGraph) => {
+		setGraph(showGraph);
+		if (showGraph) {
+			setPeriod("month");
+		}
 	};
 
 	useEffect(() => {
@@ -139,92 +272,96 @@ export default function ReportFuelTable({ openFilter, reload }) {
 		<>
 			<TableContainer>
 				{openFilter && <ReportFuelFilter selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} dateFilter={dateFilter} setDateFilter={setDateFilter} />}
-				{/* <Grid
-					container
-					sx={{
-						display: "grid",
-						gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-						gap: 2,
-						p: 2,
-						alignItems: "center",
-						justifyItems: "center",
-					}}
-				>
-					<Card sx={{ width: "100%" }}></Card>
-					<Card sx={{ width: "100%" }}></Card>
-					<Card sx={{ width: "100%" }}></Card>
-				</Grid> */}
-				<Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
-					<FormControl sx={{ m: 1, minWidth: 100 }}>
-						<Select
-							value={period}
-							onChange={handleChange}
-							displayEmpty
-							inputProps={{ "aria-label": "Without label" }}
-							renderValue={(selected) => {
-								if (!selected) {
-									return <Typography variant="subtitle1">Agrupar por</Typography>;
-								}
-								return <Typography variant="subtitle2">{period === "day" ? "Dia" : "Mês"}</Typography>;
-							}}
-							sx={{
-								height: 40,
-								paddingY: 0,
-							}}
-						>
-							{allColumns.map((column) => {
-								return (
-									<MenuItem key={column.id} value={column.value}>
-										{column.header}
-									</MenuItem>
-								);
-							})}
-						</Select>
-					</FormControl>
-				</Grid>
-				<Table aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell align="center">Data</TableCell>
-							<TableCell align="center">Quantidade</TableCell>
-							<TableCell align="center">Valor Total</TableCell>
-							<TableCell align="center" />
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{loadingReport ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : reportFuelList && reportFuelList.length > 0 ? (
-							reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
-						) : (
-							<TableRow>
-								<TableCell colSpan={4} align="center">
-									<Typography variant="h5">Nenhum registro encontrado</Typography>
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-					{!loadingReport && (
-						<TableFooter>
-							<TableRow>
-								<TableCell />
-								<TableCell align="center">Total: {reportTotalFuelList?.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
-								<TableCell align="center">
-									Total:{" "}
-									{Number(reportTotalFuelList?.totalValue ? reportTotalFuelList.totalValue : 0).toLocaleString("pt-BR", {
-										style: "currency",
-										currency: "BRL",
+				<Grid sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", px: 1 }}>
+					{!graph ? (
+						<>
+							<FormControl sx={{ m: 1, minWidth: 100 }}>
+								<Select
+									value={period}
+									onChange={handleChange}
+									displayEmpty
+									inputProps={{ "aria-label": "Without label" }}
+									renderValue={(selected) => {
+										if (!selected) {
+											return <Typography variant="subtitle1">Agrupar por</Typography>;
+										}
+										return <Typography variant="subtitle2">{period === "day" ? "Dia" : "Mês"}</Typography>;
+									}}
+									sx={{
+										height: 40,
+										paddingY: 0,
+									}}
+								>
+									{allColumns.map((column) => {
+										return (
+											<MenuItem key={column.id} value={column.value}>
+												{column.header}
+											</MenuItem>
+										);
 									})}
-								</TableCell>
-								<TableCell />
-							</TableRow>
-						</TableFooter>
+								</Select>
+							</FormControl>
+							<IconButton color="inherit" variant="outlined" sx={{ height: "40px" }} onClick={() => handleToggleGraph(true)}>
+								<BarChartOutlined />
+							</IconButton>
+						</>
+					) : (
+						<IconButton color="inherit" variant="outlined" sx={{ height: "40px", m: 1 }} onClick={() => handleToggleGraph(false)}>
+							<TableOutlined />
+						</IconButton>
 					)}
-				</Table>
+				</Grid>
+				{graph ? (
+					loadingReport ? (
+						<Loader />
+					) : (
+						<FuelBarChart data={reportFuelList || []} />
+					)
+				) : (
+					<Table aria-label="simple table">
+						<TableHead>
+							<TableRow>
+								<TableCell align="center">Data</TableCell>
+								<TableCell align="center">Quantidade</TableCell>
+								<TableCell align="center">Valor Total</TableCell>
+								<TableCell align="center" />
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{loadingReport ? (
+								<TableRow>
+									<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
+										<Loader />
+									</TableCell>
+								</TableRow>
+							) : reportFuelList && reportFuelList.length > 0 ? (
+								reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
+							) : (
+								<TableRow>
+									<TableCell colSpan={4} align="center">
+										<Typography variant="h5">Nenhum registro encontrado</Typography>
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+						{!loadingReport && (
+							<TableFooter>
+								<TableRow>
+									<TableCell />
+									<TableCell align="center">Total: {reportTotalFuelList?.totalAmount ? reportTotalFuelList.totalAmount : 0} L</TableCell>
+									<TableCell align="center">
+										Total:{" "}
+										{Number(reportTotalFuelList?.totalValue ? reportTotalFuelList.totalValue : 0).toLocaleString("pt-BR", {
+											style: "currency",
+											currency: "BRL",
+										})}
+									</TableCell>
+									<TableCell />
+								</TableRow>
+							</TableFooter>
+						)}
+					</Table>
+				)}
 			</TableContainer>
 		</>
 	);
