@@ -14,6 +14,7 @@ import ScheduleFormLanding from "./ScheduleFormLanding";
 import ProductsContext from "contexts/ProductsContext";
 import OperationsContext from "contexts/OperationContext";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 dayjs.locale("pt-br");
 import "dayjs/locale/pt-br";
