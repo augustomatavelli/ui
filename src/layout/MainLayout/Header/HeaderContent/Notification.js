@@ -12,10 +12,12 @@ import useNotification from "hooks/useNotification";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import UserContext from "contexts/UserContext";
 
 dayjs.extend(utc);
 dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
 dayjs.locale("pt-br");
 
 const avatarSX = {
@@ -68,7 +70,6 @@ const Notification = () => {
 			navigate("/aircrafts/me");
 		}
 	};
-
 	return (
 		<Box sx={{ flexShrink: 0, ml: 0.75 }}>
 			<IconButton
@@ -157,7 +158,7 @@ const Notification = () => {
 													}),
 												}}
 											>
-												<ListItemText primary={<Typography variant="h6">{notification.message}</Typography>} secondary={dayjs.utc(notification.created_at).fromNow()} />
+												<ListItemText primary={<Typography variant="h6">{notification.message}</Typography>} secondary={dayjs(notification.created_at, "DD/MM/YYYY HH:mm").fromNow()} />
 											</ListItemButton>
 										))}
 									</List>
