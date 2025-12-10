@@ -141,7 +141,7 @@ export default function AlertStockIn({ open, handleClose, handleSave, service })
 									}}
 								>
 									<CameraFilled style={{ fontSize: 24, color: "primary.main" }} />
-									Adicionar nota fiscal
+									Adicionar
 								</IconButton>
 							</Grid>
 							{imagePreview && (
