@@ -1,11 +1,11 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton, TextField } from "@mui/material";
+import { useContext, useEffect, useState, useRef } from "react";
 import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-import { EditOutlined, SaveOutlined, FileSearchOutlined } from "@ant-design/icons";
+import { EditOutlined, SaveOutlined, FileSearchOutlined, PaperClipOutlined } from "@ant-design/icons";
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
@@ -25,9 +25,16 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const [editFuelValue, setEditFuelValue] = useState({});
 	const [open, setOpen] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState();
+	const [photoOrderId, setPhotoOrderId] = useState(null);
+	const [orderPhotos, setOrderPhotos] = useState({});
+	const fileInputRef = useRef(null);
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
+
+		if (orderPhotos[orderId]) {
+			data.ce = orderPhotos[orderId];
+		}
 
 		const response = await updateOrderStatus(orderId, data);
 		setReload(!reload);
@@ -61,6 +68,41 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 		);
 		setEditFuel((prev) => ({ ...prev, [itemKey]: false }));
 		setEditFuelValue((prev) => ({ ...prev, [itemKey]: "" }));
+	};
+
+	const handlePhotoClick = (orderId) => {
+		setPhotoOrderId(orderId);
+		fileInputRef.current.click();
+	};
+
+	const handleFileSelect = (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			convertToBase64(file);
+		}
+		event.target.value = "";
+	};
+
+	const convertToBase64 = (file) => {
+		const reader = new FileReader();
+		reader.onloadend = async () => {
+			const base64String = reader.result;
+			const base64Only = base64String.split(",")[1];
+			setOrderPhotos((prev) => ({ ...prev, [photoOrderId]: base64Only }));
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Foto adicionada com sucesso!",
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				})
+			);
+			setPhotoOrderId(null);
+		};
+		reader.readAsDataURL(file);
 	};
 
 	const handleClose = () => {
@@ -131,14 +173,16 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 									<TableCell align="center">
 										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
 											<Typography>{item.name}</Typography>
-											{item.checklist === "S" && item.order_status === "E" && (
+											{item.checklist === "S" && item.order_status === "E" ? (
 												<FileSearchOutlined
 													onClick={() => {
 														setOpen(true);
 														setSelectedOrder(item.id_order);
 													}}
 												/>
-											)}
+											) : item.item_id === 1 && item.order_status === "E" ? (
+												<PaperClipOutlined onClick={() => handlePhotoClick(item.id_order)} style={{ cursor: "pointer", color: orderPhotos[item.id_order] ? "#52c41a" : "inherit" }} />
+											) : null}
 										</Grid>
 									</TableCell>
 									<TableCell align="center">
@@ -214,6 +258,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 				</Table>
 				<AlertChecklist open={open} handleClose={handleClose} selectedOrder={selectedOrder} />
 			</TableContainer>
+
+			<input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleFileSelect} />
 		</>
 	);
 }

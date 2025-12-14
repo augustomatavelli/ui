@@ -84,7 +84,7 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 													<DeleteOutlined style={{ color: "red" }} />
 												</IconButton>
 											</Tooltip>
-										) : i.type === "E" && i.receipt ? (
+										) : (i.type === "E" || i.type === "S") && i.receipt ? (
 											<Tooltip title="Visualizar">
 												<IconButton size="small" onClick={() => window.open(i.receipt)}>
 													<EyeOutlined style={{ color: "green" }} />
