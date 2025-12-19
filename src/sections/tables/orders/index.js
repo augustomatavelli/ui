@@ -5,12 +5,13 @@ import OrderContext from "contexts/OrdersContext";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-import { EditOutlined, SaveOutlined, FileSearchOutlined, PaperClipOutlined } from "@ant-design/icons";
+import { EditOutlined, SaveOutlined, FileSearchOutlined, PaperClipOutlined, EyeOutlined } from "@ant-design/icons";
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import AlertComissary from "sections/apps/orders/AlertComissary";
 
 dayjs.extend(utc);
 
@@ -24,7 +25,9 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const [editFuel, setEditFuel] = useState({});
 	const [editFuelValue, setEditFuelValue] = useState({});
 	const [open, setOpen] = useState(false);
+	const [openComissary, setOpenComissary] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState();
+	const [selectedProducts, setSelectedProducts] = useState(null);
 	const [photoOrderId, setPhotoOrderId] = useState(null);
 	const [orderPhotos, setOrderPhotos] = useState({});
 	const fileInputRef = useRef(null);
@@ -36,19 +39,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 			data.ce = orderPhotos[orderId];
 		}
 
-		const response = await updateOrderStatus(orderId, data);
-		setReload(!reload);
-		dispatch(
-			openSnackbar({
-				open: true,
-				message: response.message,
-				variant: "alert",
-				alert: {
-					color: "success",
-				},
-				close: false,
-			})
-		);
+		return await updateOrderStatus(orderId, data);
 	};
 
 	const handleChange = async (requestId, itemOrder) => {
@@ -108,6 +99,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const handleClose = () => {
 		setInspections([]);
 		setOpen(false);
+		setOpenComissary(false);
+		setSelectedProducts(null);
 	};
 
 	return (
@@ -120,7 +113,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Hora</TableCell>
 							<TableCell align="center">Item</TableCell>
-							<TableCell align="center">Quantidade </TableCell>
+							<TableCell align="center">Quantidade</TableCell>
 							<TableCell align="center">Atribuído a</TableCell>
 							<TableCell align="center">Realizado por</TableCell>
 						</TableRow>
@@ -144,11 +137,24 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 											onClick={async () => {
 												if (item.order_status === "F") return;
 												if (item.order_status === "C") return;
-												if (item.order_status === "P") {
-													await handleStatus(item.id_order, "E");
-												} else if (item.order_status === "E") {
-													await handleStatus(item.id_order, "F");
-												}
+												const newStatus = item.order_status === "P" ? "E" : "F";
+												const orderIds = item.id_orders && item.id_orders.length > 0 ? item.id_orders : [item.id_order];
+												await Promise.all(orderIds.map((orderId) => handleStatus(orderId, newStatus)));
+												setReload(!reload);
+
+												const successMessage = "Ordem atualizada com sucesso";
+
+												dispatch(
+													openSnackbar({
+														open: true,
+														message: successMessage,
+														variant: "alert",
+														alert: {
+															color: "success",
+														},
+														close: false,
+													})
+												);
 											}}
 										>
 											{item.order_status === "P" ? "Iniciar" : item.order_status === "E" ? "Concluir" : item.order_status === "C" ? "Cancelada" : "Finalizada"}
@@ -166,29 +172,42 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 															const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
 															const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
 															const closestDate = !takeoffDiff ? item.landing_date : landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
-															return dayjs(closestDate).format("DD/MM/YYYY HH:mm");
+															return closestDate;
 														})()
 													: "Não agendado"}
 									</TableCell>
 									<TableCell align="center">
-										<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
-											<Typography>{item.name}</Typography>
-											{item.checklist === "S" && item.order_status === "E" ? (
-												<FileSearchOutlined
+										{item.products ? (
+											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+												<Typography>Comissaria</Typography>
+												<EyeOutlined
 													onClick={() => {
-														setOpen(true);
-														setSelectedOrder(item.id_order);
+														setSelectedProducts(item.products);
+														setOpenComissary(true);
 													}}
+													style={{ cursor: "pointer" }}
 												/>
-											) : item.item_id === 1 && item.order_status === "E" ? (
-												<PaperClipOutlined onClick={() => handlePhotoClick(item.id_order)} style={{ cursor: "pointer", color: orderPhotos[item.id_order] ? "#52c41a" : "inherit" }} />
-											) : null}
-										</Grid>
+											</Grid>
+										) : (
+											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+												<Typography>{item.name}</Typography>
+												{item.checklist === "S" && item.order_status === "E" ? (
+													<FileSearchOutlined
+														onClick={() => {
+															setOpen(true);
+															setSelectedOrder(item.id_order);
+														}}
+													/>
+												) : item.item_id === 1 && item.order_status === "E" ? (
+													<PaperClipOutlined onClick={() => handlePhotoClick(item.id_order)} style={{ cursor: "pointer", color: orderPhotos[item.id_order] ? "#52c41a" : "inherit" }} />
+												) : null}
+											</Grid>
+										)}
 									</TableCell>
 									<TableCell align="center">
 										{!editFuel[`${item.id_order}-${item.id_item}`] ? (
 											<Box display="inline-flex" alignItems="center" gap={1}>
-												{item.unit === "un" ? "-" : item.amount === "full" ? "Full" : `${item.amount} ${item.unit}`}
+												{item.unit === "un" || item.unit === "pacote" ? "-" : item.amount === "full" ? "Full" : `${item.amount} ${item.unit}`}
 												{item.unit === "L" && (item.order_status === "E" || item.order_status === "P") && (
 													<IconButton
 														size="small"
@@ -257,6 +276,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 					</TableBody>
 				</Table>
 				<AlertChecklist open={open} handleClose={handleClose} selectedOrder={selectedOrder} />
+				<AlertComissary open={openComissary} handleClose={handleClose} products={selectedProducts} />
 			</TableContainer>
 
 			<input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleFileSelect} />
