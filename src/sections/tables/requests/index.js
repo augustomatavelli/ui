@@ -219,7 +219,7 @@ export default function RequestsTable({ openFilter, reload }) {
 												sx={{ color: e.status === "P" ? "#252525" : "white" }}
 											/>
 										</TableCell>
-										<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
+										<TableCell align="center">{e.created_at}</TableCell>
 									</TableRow>
 								</>
 							))
