@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import { Badge, Box, ClickAwayListener, Divider, List, ListItemButton, ListItemText, Paper, Popper, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { Badge, Box, ClickAwayListener, CircularProgress, Divider, List, ListItemButton, ListItemText, Paper, Popper, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import MainCard from "components/MainCard";
 import IconButton from "components/@extended/IconButton";
 import Transitions from "components/@extended/Transitions";
@@ -39,7 +39,7 @@ const actionSX = {
 const Notification = () => {
 	const { findAllNotifications, updateNotificationAsRead } = useNotification();
 
-	const { notifications } = useContext(NotificationContext);
+	const { notifications, loadingNotification } = useContext(NotificationContext);
 
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -124,12 +124,16 @@ const Notification = () => {
 									content={false}
 									secondary={
 										<>
-											{notifications.some((e) => e.is_read === 0) && (
-												<Tooltip title="Marcar todas como lidas">
-													<IconButton color="success" size="small" onClick={() => handleMarkAllAsRead(notifications.filter((e) => e.is_read === 0).map((e) => e.id_notification))}>
-														<CheckCircleOutlined style={{ fontSize: "1.15rem" }} />
-													</IconButton>
-												</Tooltip>
+											{loadingNotification ? (
+												<CircularProgress size={20} />
+											) : (
+												notifications.some((e) => e.is_read === 0) && (
+													<Tooltip title="Marcar todas como lidas">
+														<IconButton color="success" size="small" onClick={() => handleMarkAllAsRead(notifications.filter((e) => e.is_read === 0).map((e) => e.id_notification))}>
+															<CheckCircleOutlined style={{ fontSize: "1.15rem" }} />
+														</IconButton>
+													</Tooltip>
+												)
 											)}
 										</>
 									}
