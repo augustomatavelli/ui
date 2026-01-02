@@ -21,36 +21,56 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 
 	return (
 		<>
-			<Box sx={{ display: "flex", p: 2.5, gap: 2, flexDirection: "column" }}>
+			<Box sx={{ p: 2.5 }}>
 				<Stack direction="row" alignItems="center">
 					<Stack direction={matchDownSM ? "column" : "row"} sx={{ width: "100%" }} spacing={1} justifyContent="space-between" alignItems="center">
 						<SearchOrder setSearch={setSearch} />
 					</Stack>
 				</Stack>
-				<Grid sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-					<Typography variant="subtitle1">Por categoria</Typography>
-					{categoriesArray.length > 0 && (
-						<Stack
-							direction="row"
-							spacing={1}
+			</Box>
+			<Box
+				sx={{
+					mx: 2.5,
+					mb: 2.5,
+					py: 2,
+					px: 2.5,
+					backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)",
+					borderRadius: 1.5,
+					border: `1px solid ${theme.palette.divider}`,
+				}}
+			>
+				<Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+					<Stack spacing={1} sx={{ minWidth: 180 }}>
+						<Typography
+							variant="body2"
 							sx={{
-								overflowX: "auto",
-								whiteSpace: "nowrap",
-								scrollbarWidth: "thin",
-								"&::-webkit-scrollbar": {
-									height: "6px",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									backgroundColor: "#ccc",
-									borderRadius: "4px",
-								},
+								fontWeight: 600,
+								color: theme.palette.text.secondary,
+								fontSize: "0.8125rem",
+								textTransform: "uppercase",
+								letterSpacing: 0.5,
 							}}
 						>
+							Categoria
+						</Typography>
+						<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 							<Chip
 								key={"Todos"}
 								label={"Todos"}
+								size="small"
 								color={Object.keys(selectedCategory).length === 0 ? "primary" : "default"}
-								sx={{ fontWeight: "bold", color: Object.keys(selectedCategory).length === 0 ? "white" : theme.palette.action.active }}
+								variant={Object.keys(selectedCategory).length === 0 ? "filled" : "outlined"}
+								sx={{
+									fontWeight: 500,
+									fontSize: "0.8125rem",
+									height: 28,
+									cursor: "pointer",
+									transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+									"&:hover": {
+										transform: "translateY(-1px)",
+										boxShadow: Object.keys(selectedCategory).length === 0 ? 2 : 1,
+									},
+								}}
 								onClick={() => {
 									setSelectedCategory({});
 								}}
@@ -59,8 +79,20 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 								<Chip
 									key={e.id_category}
 									label={e.name}
+									size="small"
 									color={selectedCategory[e.id_category] ? "primary" : "default"}
-									sx={{ fontWeight: "bold", color: selectedCategory[e.id_category] ? "white" : theme.palette.action.active }}
+									variant={selectedCategory[e.id_category] ? "filled" : "outlined"}
+									sx={{
+										fontWeight: 500,
+										fontSize: "0.8125rem",
+										height: 28,
+										cursor: "pointer",
+										transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+										"&:hover": {
+											transform: "translateY(-1px)",
+											boxShadow: selectedCategory[e.id_category] ? 2 : 1,
+										},
+									}}
 									onClick={() => {
 										setSelectedCategory((prev) => {
 											const newSelected = { ...prev };
@@ -75,35 +107,39 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 								/>
 							))}
 						</Stack>
-					)}
-				</Grid>
-				<Grid sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-					<Typography variant="subtitle1">Por data</Typography>
-					<Grid sx={{ display: "flex", gap: 1 }}>
-						<Stack
-							direction="row"
-							spacing={1}
+					</Stack>
+
+					<Stack spacing={1} sx={{ minWidth: 180, flex: 1 }}>
+						<Typography
+							variant="body2"
 							sx={{
-								overflowX: "auto",
-								whiteSpace: "nowrap",
-								scrollbarWidth: "thin",
-								"&::-webkit-scrollbar": {
-									height: "6px",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									backgroundColor: "#ccc",
-									borderRadius: "4px",
-								},
+								fontWeight: 600,
+								color: theme.palette.text.secondary,
+								fontSize: "0.8125rem",
+								textTransform: "uppercase",
+								letterSpacing: 0.5,
 							}}
 						>
+							Período
+						</Typography>
+						<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 							{periods.map((e) => (
 								<Chip
 									key={e.value}
 									label={e.label}
+									size="small"
 									color={selectedPeriod === e.value ? "primary" : "default"}
+									variant={selectedPeriod === e.value ? "filled" : "outlined"}
 									sx={{
-										fontWeight: "bold",
-										color: selectedPeriod === e.value ? "white" : theme.palette.action.active,
+										fontWeight: 500,
+										fontSize: "0.8125rem",
+										height: 28,
+										cursor: "pointer",
+										transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+										"&:hover": {
+											transform: "translateY(-1px)",
+											boxShadow: selectedPeriod === e.value ? 2 : 1,
+										},
 									}}
 									onClick={() => {
 										setSelectedPeriod(e.value);
@@ -174,8 +210,8 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 								</>
 							)}
 						</Stack>
-					</Grid>
-				</Grid>
+					</Stack>
+				</Stack>
 			</Box>
 		</>
 	);

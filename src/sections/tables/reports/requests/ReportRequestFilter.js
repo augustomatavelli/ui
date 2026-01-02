@@ -66,34 +66,49 @@ export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFi
 	};
 
 	return (
-		<Box sx={{ display: "flex", px: 2.5, my: 2.5, gap: 5 }}>
-			<Grid sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-				<Typography variant="subtitle1">Por data</Typography>
-				<Grid sx={{ display: "flex", gap: 1 }}>
-					<Stack
-						direction="row"
-						spacing={1}
+		<Box
+			sx={{
+				mx: 2.5,
+				mb: 2.5,
+				py: 2,
+				px: 2.5,
+				backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)",
+				borderRadius: 1.5,
+				border: `1px solid ${theme.palette.divider}`,
+			}}
+		>
+			<Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+				<Stack spacing={1} sx={{ minWidth: 180, flex: 1 }}>
+					<Typography
+						variant="body2"
 						sx={{
-							overflowX: "auto",
-							whiteSpace: "nowrap",
-							scrollbarWidth: "thin",
-							"&::-webkit-scrollbar": {
-								height: "6px",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								backgroundColor: "#ccc",
-								borderRadius: "4px",
-							},
+							fontWeight: 600,
+							color: theme.palette.text.secondary,
+							fontSize: "0.8125rem",
+							textTransform: "uppercase",
+							letterSpacing: 0.5,
 						}}
 					>
+						Período
+					</Typography>
+					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 						{periods.map((e) => (
 							<Chip
 								key={e.value}
 								label={e.label}
+								size="small"
 								color={selectedPeriod === e.value ? "primary" : "default"}
+								variant={selectedPeriod === e.value ? "filled" : "outlined"}
 								sx={{
-									fontWeight: "bold",
-									color: selectedPeriod === e.value ? "white" : theme.palette.action.active,
+									fontWeight: 500,
+									fontSize: "0.8125rem",
+									height: 28,
+									cursor: "pointer",
+									transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+									"&:hover": {
+										transform: "translateY(-1px)",
+										boxShadow: selectedPeriod === e.value ? 2 : 1,
+									},
 								}}
 								onClick={() => {
 									handleChangePeriod(e.value);
@@ -161,8 +176,8 @@ export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFi
 							</>
 						)}
 					</Stack>
-				</Grid>
-			</Grid>
+				</Stack>
+			</Stack>
 		</Box>
 	);
 };

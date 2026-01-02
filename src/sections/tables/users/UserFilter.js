@@ -1,4 +1,4 @@
-import { Box, Stack, Chip, useMediaQuery, useTheme, Typography, Grid } from "@mui/material";
+import { Box, Stack, Chip, useTheme, Typography } from "@mui/material";
 
 export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, setSelectedRole }) => {
 	const theme = useTheme();
@@ -7,32 +7,50 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 	const userRole = ["A", "P", "O", "C"];
 
 	return (
-		<Grid sx={{ display: "flex", mx: 2.5, mt: 0, mb: 2.5, gap: 5 }}>
-			<Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-				<Typography variant="subtitle1">Por status</Typography>
-				{userStatus.length > 0 && (
-					<Stack
-						direction="row"
-						spacing={1}
+		<Box
+			sx={{
+				mx: 2.5,
+				mb: 2.5,
+				py: 2,
+				px: 2.5,
+				backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)",
+				borderRadius: 1.5,
+				border: `1px solid ${theme.palette.divider}`,
+			}}
+		>
+			<Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+				<Stack spacing={1} sx={{ minWidth: 180 }}>
+					<Typography
+						variant="body2"
 						sx={{
-							overflowX: "auto",
-							whiteSpace: "nowrap",
-							scrollbarWidth: "thin",
-							"&::-webkit-scrollbar": {
-								height: "6px",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								backgroundColor: "#ccc",
-								borderRadius: "4px",
-							},
+							fontWeight: 600,
+							color: theme.palette.text.secondary,
+							fontSize: "0.8125rem",
+							textTransform: "uppercase",
+							letterSpacing: 0.5,
 						}}
 					>
+						Status
+					</Typography>
+					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 						{userStatus.map((e) => (
 							<Chip
 								key={e}
 								label={e === "P" ? "Pendente" : "Ativo"}
+								size="small"
 								color={selectedStatus[e] ? "primary" : "default"}
-								sx={{ fontWeight: "bold", color: selectedStatus[e] ? "white" : theme.palette.action.active }}
+								variant={selectedStatus[e] ? "filled" : "outlined"}
+								sx={{
+									fontWeight: 500,
+									fontSize: "0.8125rem",
+									height: 28,
+									cursor: "pointer",
+									transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+									"&:hover": {
+										transform: "translateY(-1px)",
+										boxShadow: selectedStatus[e] ? 2 : 1,
+									},
+								}}
 								onClick={() => {
 									setSelectedStatus((prev) => {
 										const newSelected = { ...prev };
@@ -47,33 +65,40 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 							/>
 						))}
 					</Stack>
-				)}
-			</Box>
-			<Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-				<Typography variant="subtitle1">Por tipo de usuário</Typography>
-				{userRole.length > 0 && (
-					<Stack
-						direction="row"
-						spacing={1}
+				</Stack>
+
+				<Stack spacing={1} sx={{ minWidth: 180 }}>
+					<Typography
+						variant="body2"
 						sx={{
-							overflowX: "auto",
-							whiteSpace: "nowrap",
-							scrollbarWidth: "thin",
-							"&::-webkit-scrollbar": {
-								height: "6px",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								backgroundColor: "#ccc",
-								borderRadius: "4px",
-							},
+							fontWeight: 600,
+							color: theme.palette.text.secondary,
+							fontSize: "0.8125rem",
+							textTransform: "uppercase",
+							letterSpacing: 0.5,
 						}}
 					>
+						Tipo
+					</Typography>
+					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 						{userRole.map((e) => (
 							<Chip
 								key={e}
-								label={e === "A" ? "Administrador" : e === "P" ? "Piloto" : e === "O" ? "Operador" : "Comum"}
+								label={e === "A" ? "Admin" : e === "P" ? "Piloto" : e === "O" ? "Operador" : "Comum"}
+								size="small"
 								color={selectedRole[e] ? "primary" : "default"}
-								sx={{ fontWeight: "bold", color: selectedRole[e] ? "white" : theme.palette.action.active }}
+								variant={selectedRole[e] ? "filled" : "outlined"}
+								sx={{
+									fontWeight: 500,
+									fontSize: "0.8125rem",
+									height: 28,
+									cursor: "pointer",
+									transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+									"&:hover": {
+										transform: "translateY(-1px)",
+										boxShadow: selectedRole[e] ? 2 : 1,
+									},
+								}}
 								onClick={() => {
 									setSelectedRole((prev) => {
 										const newSelected = { ...prev };
@@ -88,8 +113,8 @@ export const UserFilter = ({ selectedStatus, setSelectedStatus, selectedRole, se
 							/>
 						))}
 					</Stack>
-				)}
-			</Box>
-		</Grid>
+				</Stack>
+			</Stack>
+		</Box>
 	);
 };
