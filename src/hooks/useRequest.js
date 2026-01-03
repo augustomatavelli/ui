@@ -223,6 +223,30 @@ const useRequest = () => {
 		}
 	};
 
+	const updateAbsence = async (requestId) => {
+		try {
+			setLoadingRequest(true);
+			const response = await publicAxios.patch(`/requests/admin/update-absence/${requestId}`);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				})
+			);
+		} finally {
+			setLoadingRequest(false);
+		}
+	};
+
 	const findSummaryPdf = async (requestId) => {
 		try {
 			setLoadingRequest(true);
@@ -343,6 +367,7 @@ const useRequest = () => {
 		findSummaryPdf,
 		findRequestsControl,
 		updateRequestsControl,
+		updateAbsence,
 	};
 };
 

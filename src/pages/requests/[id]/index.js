@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton, IconButton, Tooltip, Card, useTheme } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, Collapse, CircularProgress, Skeleton, IconButton, Tooltip, Card, useTheme, Checkbox } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState, useCallback } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
@@ -23,7 +23,7 @@ import UserContext from "contexts/UserContext";
 import AlertChecklistView from "sections/apps/orders/AlertChecklistView";
 
 const RequestDetails = () => {
-	const { findOneRequestById, updateRequest, deleteRequest } = useRequest();
+	const { findOneRequestById, updateRequest, deleteRequest, updateAbsence } = useRequest();
 	const { searchAllProducts } = useProduct();
 	const { searchAllOperations } = useOperation();
 
@@ -43,6 +43,7 @@ const RequestDetails = () => {
 	const [checked, setChecked] = useState({});
 	const [openAlert, setOpenAlert] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState();
+	const [checkedAbsence, setCheckedAbsence] = useState(false);
 
 	const { id } = useParams();
 	const theme = useTheme();
@@ -62,6 +63,7 @@ const RequestDetails = () => {
 		id_takeoff_order,
 		id_takeoff_compliance,
 		checklists,
+		absence,
 	} = requestDetails;
 
 	const resetStates = () => {
@@ -208,6 +210,7 @@ const RequestDetails = () => {
 					return newChecked;
 				})
 			);
+		absence === "S" ? setCheckedAbsence(true) : setCheckedAbsence(false);
 	};
 
 	const handleAlertClose = () => {
@@ -224,6 +227,22 @@ const RequestDetails = () => {
 		setOpen(false);
 	};
 
+	const handleToggleCheckedAbsence = async (event) => {
+		const response = await updateAbsence(id_request);
+		dispatch(
+			openSnackbar({
+				open: true,
+				message: response.message,
+				variant: "alert",
+				alert: {
+					color: "success",
+				},
+				close: false,
+			})
+		);
+		setCheckedAbsence(event.target.checked);
+	};
+
 	useEffect(() => {
 		handleLoadPage();
 	}, [requestDetails]);
@@ -232,7 +251,7 @@ const RequestDetails = () => {
 		if (id) {
 			findOneRequestById(id);
 		}
-	}, [id]);
+	}, [id, checkedAbsence]);
 
 	return (
 		<>
@@ -241,15 +260,21 @@ const RequestDetails = () => {
 					title="Detalhes da solicitação"
 					secondary={
 						!loadingRequest && (
-							<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+							<Stack direction="row" spacing={2} alignItems="center">
 								<Chip
-									color={status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : status === "C" ? "error" : "error"}
+									color={absence === "S" ? "warning" : status === "A" ? "primary" : status === "F" ? "success" : status === "P" ? "warning" : status === "C" ? "error" : "error"}
 									variant="filled"
 									size="medium"
-									label={status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
+									label={absence === "S" ? "Ausente" : status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
 									sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
 								/>
-							</Grid>
+								{(user.type === "A" || user.type === "S") && (
+									<Stack direction="row" alignItems="center" spacing={1}>
+										<Checkbox style={{ padding: 0 }} checked={checkedAbsence} onChange={handleToggleCheckedAbsence} />
+										<Typography>Ausência programada</Typography>
+									</Stack>
+								)}
+							</Stack>
 						)
 					}
 				>
@@ -265,7 +290,7 @@ const RequestDetails = () => {
 												<Grid item xs={12} md={6}>
 													<Stack spacing={0.5}>
 														<Typography color="secondary">Número da solicitação</Typography>
-														<Typography>{`# ${id_request}`}</Typography>
+														<Typography>{`#${id_request}`}</Typography>
 													</Stack>
 												</Grid>
 											</Grid>

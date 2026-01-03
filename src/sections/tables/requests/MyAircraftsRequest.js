@@ -98,10 +98,12 @@ export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 									<TableCell align="center">{e.takeoff_date ? format(new Date(e.takeoff_date), "dd/MM/yyyy HH:mm") : "-"}</TableCell>
 									<TableCell align="center">
 										<Chip
-											color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
+											color={e.absence === "S" ? "warning" : e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
 											variant="filled"
 											size="small"
-											label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
+											label={
+												e.absence === "S" ? "Ausente" : e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"
+											}
 											sx={{ color: e.status === "P" ? "#252525" : "white" }}
 										/>
 									</TableCell>

@@ -9,7 +9,7 @@ import { dispatch } from "store";
 export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
 	const theme = useTheme();
 
-	const requestStatus = ["A", "F", "C"];
+	const requestStatus = ["A", "F", "C", "AB"];
 	const periods = [
 		{ label: "Últimos 7 dias", value: "last_7_days" },
 		{ label: "Ontem", value: "yesterday" },
@@ -31,7 +31,6 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 			}}
 		>
 			<Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
-				{/* Status Filter */}
 				<Stack spacing={1} sx={{ minWidth: 180 }}>
 					<Typography
 						variant="body2"
@@ -49,7 +48,7 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 						{requestStatus.map((e) => (
 							<Chip
 								key={e}
-								label={e === "A" ? "Em aberto" : e === "F" ? "Finalizado" : "Cancelado"}
+								label={e === "A" ? "Em aberto" : e === "F" ? "Finalizado" : e === "C" ? "Cancelado" : "Ausente"}
 								size="small"
 								color={selectedStatus[e] ? "primary" : "default"}
 								variant={selectedStatus[e] ? "filled" : "outlined"}
@@ -80,7 +79,6 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 					</Stack>
 				</Stack>
 
-				{/* Period Filter */}
 				<Stack spacing={1} sx={{ minWidth: 180, flex: 1 }}>
 					<Typography
 						variant="body2"

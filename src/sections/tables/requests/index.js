@@ -212,11 +212,23 @@ export default function RequestsTable({ openFilter, reload }) {
 										</TableCell>
 										<TableCell align="center">
 											<Chip
-												color={e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
+												color={e.absence === "S" ? "warning" : e.status === "A" ? "primary" : e.status === "P" ? "warning" : e.status === "F" ? "success" : e.status === "C" ? "error" : "error"}
 												variant="filled"
 												size="small"
-												label={e.status === "A" ? "Em aberto" : e.status === "P" ? "Pendente" : e.status === "F" ? "Finalizado" : e.status === "C" ? "Cancelado" : "Rejeitado"}
-												sx={{ color: e.status === "P" ? "#252525" : "white" }}
+												label={
+													e.absence === "S"
+														? "Ausente"
+														: e.status === "A"
+															? "Em aberto"
+															: e.status === "P"
+																? "Pendente"
+																: e.status === "F"
+																	? "Finalizado"
+																	: e.status === "C"
+																		? "Cancelado"
+																		: "Rejeitado"
+												}
+												sx={{ color: e.status === "P" || e.absence === "S" ? "#252525" : "white" }}
 											/>
 										</TableCell>
 										<TableCell align="center">{e.created_at}</TableCell>
