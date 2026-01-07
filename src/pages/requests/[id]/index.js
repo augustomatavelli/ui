@@ -57,6 +57,7 @@ const RequestDetails = () => {
 		id_user,
 		user_name,
 		registration,
+		membership,
 		landing_site,
 		id_landing_order,
 		id_landing_compliance,
@@ -241,17 +242,18 @@ const RequestDetails = () => {
 			})
 		);
 		setCheckedAbsence(event.target.checked);
+		await findOneRequestById(id);
 	};
-
-	useEffect(() => {
-		handleLoadPage();
-	}, [requestDetails]);
 
 	useEffect(() => {
 		if (id) {
 			findOneRequestById(id);
 		}
-	}, [id, checkedAbsence]);
+	}, [id]);
+
+	useEffect(() => {
+		handleLoadPage();
+	}, [requestDetails]);
 
 	return (
 		<>
@@ -268,7 +270,7 @@ const RequestDetails = () => {
 									label={absence === "S" ? "Ausente" : status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
 									sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
 								/>
-								{(user.type === "A" || user.type === "S") && (
+								{(user.type === "A" || user.type === "S") && status === "A" && membership === "S" && (
 									<Stack direction="row" alignItems="center" spacing={1}>
 										<Checkbox style={{ padding: 0 }} checked={checkedAbsence} onChange={handleToggleCheckedAbsence} />
 										<Typography>Ausência programada</Typography>
