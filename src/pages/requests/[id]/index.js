@@ -268,7 +268,7 @@ const RequestDetails = () => {
 									variant="filled"
 									size="medium"
 									label={absence === "S" ? "Ausente" : status === "A" ? "Em aberto" : status === "P" ? "Pendente" : status === "F" ? "Finalizado" : status === "C" ? "Cancelado" : "Rejeitado"}
-									sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
+									sx={{ fontWeight: "bold", color: status === "P" || absence === "S" ? "#252525" : "white" }}
 								/>
 								{(user.type === "A" || user.type === "S") && status === "A" && membership === "S" && (
 									<Stack direction="row" alignItems="center" spacing={1}>
