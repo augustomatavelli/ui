@@ -118,7 +118,7 @@ export default function RequestsTable() {
 												{e.user}
 											</TableCell>
 											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
-												{new Date(schedule.date).toLocaleString("pt-BR")}
+												{schedule.date}
 											</TableCell>
 											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
 												{schedule.type === "landing_date" ? (
@@ -147,7 +147,7 @@ export default function RequestsTable() {
 											</TableCell>
 										</TableRow>
 									);
-								})
+								}),
 							)
 						) : (
 							<TableRow>
