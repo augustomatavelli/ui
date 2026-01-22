@@ -118,7 +118,7 @@ export default function RequestsTable() {
 												{e.user}
 											</TableCell>
 											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
-												{schedule.date}
+												{schedule.timeDate}
 											</TableCell>
 											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
 												{schedule.type === "landing_date" ? (
