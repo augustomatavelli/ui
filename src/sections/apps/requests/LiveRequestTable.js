@@ -96,6 +96,7 @@ export default function RequestsTable() {
 							liveRequests.items.flatMap((e) =>
 								e.schedules.map((schedule, index) => {
 									const currentIndex = globalIndex++;
+
 									return (
 										<TableRow
 											key={`${e.id_request}-${schedule.type}`}
