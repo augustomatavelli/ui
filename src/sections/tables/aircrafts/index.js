@@ -163,10 +163,12 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 												onClick={(e) => e.stopPropagation()}
 												onChange={async (event) => {
 													event.stopPropagation();
-													await updateAircraft(aircraft.id_aircraft, {
+													const response = await updateAircraft(aircraft.id_aircraft, {
 														membership: event.target.checked ? "S" : "N",
 													});
-													setReload(!reload);
+													if (response.status === 200) {
+														setReload(!reload);
+													}
 												}}
 												color="primary"
 											/>
