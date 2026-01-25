@@ -14,7 +14,7 @@ import useUser from "hooks/useUser";
 import { useNavigate } from "react-router";
 
 const UserProfile = () => {
-	const { updatePassword } = useUser();
+	const { updateUserPassword } = useUser();
 
 	const { user } = useContext(UserContext);
 
@@ -87,7 +87,7 @@ const UserProfile = () => {
 					try {
 						const { newPassword, confirmNewPassword } = values;
 						const payload = { newPassword: newPassword, confirmNewPassword: confirmNewPassword };
-						const response = await updatePassword(payload);
+						const response = await updateUserPassword(payload);
 						if (response) {
 							dispatch(
 								openSnackbar({
@@ -98,7 +98,7 @@ const UserProfile = () => {
 										color: "success",
 									},
 									close: false,
-								})
+								}),
 							);
 							setStatus({ success: true });
 							setSubmitting(false);

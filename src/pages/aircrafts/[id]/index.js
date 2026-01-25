@@ -18,7 +18,7 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 
 const AircraftDetails = () => {
-	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft, updateAircraft } = useAircraft();
+	const { findOneAircraftById, removeLinkUserAircraft, deleteAircraft, toggleRestrictedAircraft, removeLinkOperatorAircraft, updateAircraftImage } = useAircraft();
 
 	const { aircraftDetails, setAircraftDetails } = useContext(AircraftContext);
 	const { setSearchUser, user } = useContext(UserContext);
@@ -54,7 +54,7 @@ const AircraftDetails = () => {
 					color: "success",
 				},
 				close: false,
-			})
+			}),
 		);
 		window.history.back();
 	};
@@ -71,7 +71,7 @@ const AircraftDetails = () => {
 					color: "success",
 				},
 				close: false,
-			})
+			}),
 		);
 	};
 
@@ -86,7 +86,7 @@ const AircraftDetails = () => {
 					color: "success",
 				},
 				close: false,
-			})
+			}),
 		);
 		await findOneAircraftById(aircraftId);
 	};
@@ -109,7 +109,7 @@ const AircraftDetails = () => {
 	}, [is_restricted]);
 
 	useEffect(() => {
-		const updateAircraftImage = async () => {
+		const updateAircraftImageImage = async () => {
 			if (selectedImage) {
 				setAvatar(URL.createObjectURL(selectedImage));
 
@@ -120,12 +120,12 @@ const AircraftDetails = () => {
 					image: selectedImage ? base64Image : "",
 				};
 
-				await updateAircraft(id_aircraft, aircraftBody);
+				await updateAircraftImage(id_aircraft, aircraftBody);
 				await findOneAircraftById(id_aircraft);
 			}
 		};
 
-		updateAircraftImage();
+		updateAircraftImageImage();
 	}, [selectedImage, id_aircraft]);
 
 	return (
@@ -217,7 +217,7 @@ const AircraftDetails = () => {
 																	color: "warning",
 																},
 																close: false,
-															})
+															}),
 														);
 														return;
 													}
@@ -231,7 +231,7 @@ const AircraftDetails = () => {
 																	color: "warning",
 																},
 																close: false,
-															})
+															}),
 														);
 														return;
 													}
@@ -299,7 +299,7 @@ const AircraftDetails = () => {
 																color: "warning",
 															},
 															close: false,
-														})
+														}),
 													);
 													return;
 												}
@@ -314,7 +314,7 @@ const AircraftDetails = () => {
 																color: "warning",
 															},
 															close: false,
-														})
+														}),
 													);
 													return;
 												}

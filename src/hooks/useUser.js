@@ -27,7 +27,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -51,7 +51,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -75,7 +75,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -99,7 +99,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -123,7 +123,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -148,14 +148,38 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
 		}
 	};
 
-	const updatePassword = async (data) => {
+	const updateUser = async (userId, data) => {
+		try {
+			setLoadingUser(true);
+			const response = await publicAxios.patch(`/users/admin/${userId}`, data);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				}),
+			);
+		} finally {
+			setLoadingUser(false);
+		}
+	};
+
+	const updateUserPassword = async (data) => {
 		try {
 			setLoadingUser(true);
 			const response = await publicAxios.patch("/users/update-password", data);
@@ -172,7 +196,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -196,7 +220,7 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
@@ -220,14 +244,14 @@ const useUser = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingUser(false);
 		}
 	};
 
-	return { findOneUser, updatePassword, searchAllUsers, findAllUsers, approveUser, createUserByAdmin, createUser, findOneUserById, deleteUser };
+	return { findOneUser, updateUserPassword, updateUser, searchAllUsers, findAllUsers, approveUser, createUserByAdmin, createUser, findOneUserById, deleteUser };
 };
 
 export default useUser;

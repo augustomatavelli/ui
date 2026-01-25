@@ -57,7 +57,7 @@ const ListAircraftsForAdmin = () => {
 				</Grid>
 			}
 		>
-			<AircraftsTable openFilter={openFilter} reload={reload} />
+			<AircraftsTable openFilter={openFilter} reload={reload} setReload={setReload} />
 		</MainCard>
 	);
 };

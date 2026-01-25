@@ -29,7 +29,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -37,6 +37,41 @@ const useAircraft = () => {
 	};
 
 	const updateAircraft = async (aircraftId, data) => {
+		try {
+			setLoadingAircraft(true);
+			const response = await publicAxios.patch(`/aircrafts/admin/${aircraftId}`, data);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.data.message,
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: true,
+				}),
+			);
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err],
+					variant: "alert",
+					alert: {
+						color: "error",
+					},
+					close: true,
+				}),
+			);
+		} finally {
+			setLoadingAircraft(false);
+		}
+	};
+
+	const updateAircraftImage = async (aircraftId, data) => {
 		try {
 			setLoadingAircraft(true);
 			const response = await publicAxios.patch(`/aircrafts/${aircraftId}`, data);
@@ -53,7 +88,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -77,7 +112,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -103,7 +138,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -127,7 +162,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -151,7 +186,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -175,7 +210,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -199,7 +234,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -225,7 +260,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -249,7 +284,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -273,7 +308,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -297,7 +332,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -321,7 +356,7 @@ const useAircraft = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingAircraft(false);
@@ -341,6 +376,7 @@ const useAircraft = () => {
 		toggleRestrictedAircraft,
 		addLinkOperatorAircraft,
 		removeLinkOperatorAircraft,
+		updateAircraftImage,
 		updateAircraft,
 	};
 };

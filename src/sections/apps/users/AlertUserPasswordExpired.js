@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 import useUser from "hooks/useUser";
 
 export default function AlertUserPasswordExpired({ open, setOpen }) {
-	const { updatePassword } = useUser();
+	const { updateUserPassword } = useUser();
 
 	const { user, loadingUser } = useContext(UserContext);
 
@@ -71,7 +71,7 @@ export default function AlertUserPasswordExpired({ open, setOpen }) {
 							try {
 								const { password, newPassword, confirmNewPassword } = values;
 								const payload = { password: password, newPassword: newPassword, confirmNewPassword: confirmNewPassword };
-								const response = await updatePassword(payload);
+								const response = await updateUserPassword(payload);
 								if (response) {
 									dispatch(
 										openSnackbar({
@@ -82,7 +82,7 @@ export default function AlertUserPasswordExpired({ open, setOpen }) {
 												color: "success",
 											},
 											close: false,
-										})
+										}),
 									);
 									setStatus({ success: true });
 									setSubmitting(false);

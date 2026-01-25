@@ -1,25 +1,35 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse, OutlinedInput, IconButton } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
+import InputMask from "react-input-mask";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import Loader from "components/Loader";
-import { UpOutlined, DownOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
+import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 dayjs.extend(utc);
 
 const UserDetails = () => {
-	const { findOneUserById, deleteUser } = useUser();
+	const { findOneUserById, deleteUser, updateUser } = useUser();
 
 	const { loadingUser, userDetails, setUserDetails } = useContext(UserContext);
 
 	const [openUserAircrafts, setOpenUserAircrafts] = useState(false);
 	const [openAlert, setOpenAlert] = useState(false);
+	const [editName, setEditName] = useState(false);
+	const [editNameValue, setEditNameValue] = useState("");
+	const [editEmail, setEditEmail] = useState(false);
+	const [editEmailValue, setEditEmailValue] = useState("");
+	const [editMobile, setEditMobile] = useState(false);
+	const [editMobileValue, setEditMobileValue] = useState("");
 
 	const { id } = useParams();
 
@@ -27,6 +37,51 @@ const UserDetails = () => {
 
 	const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
+	};
+
+	const handleSave = async () => {
+		if ((editName && !editNameValue) || (editEmail && !editEmailValue) || (editMobile && !editMobileValue)) {
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Preencha os campos antes de salvar",
+					variant: "alert",
+					alert: { color: "error" },
+					close: false,
+				}),
+			);
+			return;
+		}
+		try {
+			const response = await updateUser(id, {
+				name: editNameValue ? editNameValue : name,
+				email: editEmailValue ? editEmailValue : email,
+				mobile: editMobileValue ? editMobileValue : mobile,
+			});
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.message,
+					variant: "alert",
+					alert: { color: "success" },
+					close: false,
+				}),
+			);
+			setEditName(false);
+			setEditEmail(false);
+			setEditMobile(false);
+			await findOneUserById(id);
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Erro ao salvar alterações",
+					variant: "alert",
+					alert: { color: "error" },
+					close: false,
+				}),
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -48,7 +103,36 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Nome</Typography>
-													<Typography>{name}</Typography>
+													{!editName ? (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<Typography>{name}</Typography>
+															<IconButton
+																size="small"
+																onClick={() => {
+																	setEditName(true);
+																	setEditNameValue(name);
+																}}
+															>
+																<EditOutlined />
+															</IconButton>
+														</Box>
+													) : (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<OutlinedInput
+																id="name"
+																type="text"
+																value={editNameValue}
+																name="name"
+																sx={{ height: "30px" }}
+																inputProps={{
+																	style: { padding: 5, width: "fit-content" },
+																}}
+																onChange={(e) => {
+																	setEditNameValue(e.target.value);
+																}}
+															/>
+														</Box>
+													)}
 												</Stack>
 											</Grid>
 										</Grid>
@@ -59,7 +143,36 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Email</Typography>
-													<Typography>{email}</Typography>
+													{!editEmail ? (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<Typography>{email}</Typography>
+															<IconButton
+																size="small"
+																onClick={() => {
+																	setEditEmail(true);
+																	setEditEmailValue(email);
+																}}
+															>
+																<EditOutlined />
+															</IconButton>
+														</Box>
+													) : (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<OutlinedInput
+																id="email"
+																type="email"
+																value={editEmailValue}
+																name="email"
+																sx={{ height: "30px" }}
+																inputProps={{
+																	style: { padding: 5, width: "fit-content" },
+																}}
+																onChange={(e) => {
+																	setEditEmailValue(e.target.value);
+																}}
+															/>
+														</Box>
+													)}
 												</Stack>
 											</Grid>
 										</Grid>
@@ -81,7 +194,32 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Celular</Typography>
-													<Typography>{mobile}</Typography>
+													{!editMobile ? (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<Typography>{mobile}</Typography>
+															<IconButton
+																size="small"
+																onClick={() => {
+																	setEditMobile(true);
+																	setEditMobileValue(mobile);
+																}}
+															>
+																<EditOutlined />
+															</IconButton>
+														</Box>
+													) : (
+														<Box display="inline-flex" alignItems="center" gap={1}>
+															<InputMask
+																mask={"(99) 99999-9999"}
+																value={editMobileValue}
+																onChange={(e) => {
+																	setEditMobileValue(e.target.value);
+																}}
+															>
+																{() => <OutlinedInput fullWidth id="phone-signup" name="phone" />}
+															</InputMask>
+														</Box>
+													)}
 												</Stack>
 											</Grid>
 										</Grid>
@@ -192,6 +330,9 @@ const UserDetails = () => {
 										}}
 									>
 										Voltar
+									</Button>
+									<Button variant="contained" onClick={handleSave}>
+										Salvar
 									</Button>
 									<Button
 										variant="contained"

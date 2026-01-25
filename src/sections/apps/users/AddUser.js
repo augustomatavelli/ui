@@ -1,18 +1,9 @@
-// material-ui
 import { useEffect, useState } from "react";
-
-// material-ui
 import { Button, Grid, InputLabel, Stack, FormHelperText, OutlinedInput, RadioGroup, FormControlLabel, Radio, DialogActions, Divider, DialogTitle, DialogContent } from "@mui/material";
-
-// third party
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
-
-// project import
-
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-
 import useUser from "hooks/useUser";
 import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
@@ -83,7 +74,7 @@ const AddUser = ({ user, onCancel }) => {
 								color: "success",
 							},
 							close: false,
-						})
+						}),
 					);
 					setTimeout(() => {
 						resetForm();

@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, Switch } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -20,8 +20,8 @@ export const header = [
 	{ label: "Celular", key: "mobile" },
 ];
 
-export default function AircraftsTable({ openFilter, reload }) {
-	const { findAllAircrafts, approveAircraft, searchAllAircrafts } = useAircraft();
+export default function AircraftsTable({ openFilter, reload, setReload }) {
+	const { findAllAircrafts, approveAircraft, searchAllAircrafts, updateAircraft } = useAircraft();
 
 	const { aircrafts, totalAircrafts, loadingAircraft } = useContext(AircraftContext);
 	const { user } = useContext(UserContext);
@@ -102,6 +102,7 @@ export default function AircraftsTable({ openFilter, reload }) {
 							<TableCell />
 							<TableCell align="center">Matrícula</TableCell>
 							<TableCell align="center">Modelo</TableCell>
+							<TableCell align="center">Mensalista</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -155,6 +156,22 @@ export default function AircraftsTable({ openFilter, reload }) {
 									</TableCell>
 									<TableCell align="center">{aircraft.registration}</TableCell>
 									<TableCell align="center">{aircraft.modelo}</TableCell>
+									<TableCell align="center">
+										<Box display="flex" justifyContent="center" alignItems="center">
+											<Switch
+												checked={aircraft.membership === "S"}
+												onClick={(e) => e.stopPropagation()}
+												onChange={async (event) => {
+													event.stopPropagation();
+													await updateAircraft(aircraft.id_aircraft, {
+														membership: event.target.checked ? "S" : "N",
+													});
+													setReload(!reload);
+												}}
+												color="primary"
+											/>
+										</Box>
+									</TableCell>
 								</TableRow>
 							))
 						) : search || openFilter ? (
