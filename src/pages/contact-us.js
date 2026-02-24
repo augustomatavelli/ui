@@ -26,14 +26,27 @@ const ContactUs = () => {
 						<Typography variant="subtitle1" color="primary" fontWeight="bold">
 							Telefone
 						</Typography>
-						<Typography variant="body1">+55 (81) 99267-4934</Typography>
+						<Box display="flex" alignItems="center" gap={1}>
+							<Typography variant="body1">+55 (81) 99267-4934</Typography>
+							<Link href="https://wa.me/5581992674934" target="_blank" rel="noopener noreferrer" sx={{ display: "flex", alignItems: "center", color: "#25D366", "&:hover": { color: "#128C7E" } }}>
+								<WhatsAppIcon fontSize="small" />
+							</Link>
+						</Box>
 					</Box>
 
 					<Box mt={2}>
 						<Typography variant="subtitle1" color="primary" fontWeight="bold">
 							Whatsapp
 						</Typography>
-						<Typography variant="body1">+55 (81) 99267-4934</Typography>
+						<Link
+							href="https://wa.me/5581992674934"
+							target="_blank"
+							rel="noopener noreferrer"
+							sx={{ display: "flex", alignItems: "center", gap: 1, color: "#25D366", textDecoration: "none", "&:hover": { color: "#128C7E", textDecoration: "underline" } }}
+						>
+							<WhatsAppIcon fontSize="small" />
+							<Typography variant="body1">+55 (81) 99267-4934</Typography>
+						</Link>
 					</Box>
 
 					<Box mt={2}>
@@ -70,10 +83,15 @@ const ContactUs = () => {
 					<Grid container spacing={4} justifyContent="center">
 						<Grid item xs={12} sm={6} md={3}>
 							<Typography fontWeight="bold">Atendimento por telefone</Typography>
-							<Typography display="flex" alignItems="center" marginTop={1}>
-								<PhoneIcon fontSize="small" sx={{ mr: 1 }} />
-								+55 (81) 99267-4934
-							</Typography>
+							<Box display="flex" alignItems="center" marginTop={1} gap={1}>
+								<Typography display="flex" alignItems="center">
+									<PhoneIcon fontSize="small" sx={{ mr: 1 }} />
+									+55 (81) 99267-4934
+								</Typography>
+								<Link href="https://wa.me/5581992674934" target="_blank" rel="noopener noreferrer" sx={{ display: "flex", alignItems: "center", color: "#fff", "&:hover": { color: "#25D366" } }}>
+									<WhatsAppIcon fontSize="small" />
+								</Link>
+							</Box>
 						</Grid>
 						<Grid item xs={12} sm={6} md={3} alignItems={"center"}>
 							<Typography fontWeight="bold">Atendimento por e-mail</Typography>
@@ -86,10 +104,15 @@ const ContactUs = () => {
 						</Grid>
 						<Grid item xs={12} sm={6} md={3}>
 							<Typography fontWeight="bold">Atendimento pelo whatsapp</Typography>
-							<Typography display="flex" alignItems="center" marginTop={1}>
+							<Link
+								href="https://wa.me/5581992674934"
+								target="_blank"
+								rel="noopener noreferrer"
+								sx={{ display: "flex", alignItems: "center", marginTop: 1, color: "#fff", textDecoration: "none", "&:hover": { color: "#25D366" } }}
+							>
 								<WhatsAppIcon fontSize="small" sx={{ mr: 1 }} />
 								+55 (81) 99267-4934
-							</Typography>
+							</Link>
 						</Grid>
 						<Grid item xs={12} sm={6} md={3}>
 							<Typography fontWeight="bold">Onde estamos</Typography>
