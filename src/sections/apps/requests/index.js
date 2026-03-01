@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme, CircularProgress } from "@mui/material";
+import { Stepper, StepLabel, Typography, Step, Grid, Stack, Button, Box, Divider, useMediaQuery, useTheme, CircularProgress, Avatar } from "@mui/material";
 import AnimateButton from "components/@extended/AnimateButton";
 import { useNavigate } from "react-router";
 import { RequestResume } from "./RequestResume";
@@ -13,6 +13,7 @@ import ScheduleFormTakeoff from "./ScheduleFormTakeoff";
 import ScheduleFormLanding from "./ScheduleFormLanding";
 import ProductsContext from "contexts/ProductsContext";
 import OperationsContext from "contexts/OperationContext";
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import utc from "dayjs/plugin/utc";
@@ -85,7 +86,7 @@ const CreateRequestStepper = ({ aircraft }) => {
 					color: "success",
 				},
 				close: false,
-			})
+			}),
 		);
 		navigate("/aircrafts/me");
 	};
@@ -144,15 +145,21 @@ const CreateRequestStepper = ({ aircraft }) => {
 							justifyContent: "center",
 						}}
 					>
-						<img
-							src={aircraft.image}
-							alt="Aircraft"
-							style={{
-								width: "100%",
-								height: "100%",
-								objectFit: "fill",
-							}}
-						/>
+						{!aircraft.image ? (
+							<Avatar alt="aircraft" size="lg" sx={{ width: "80%", height: "90%", alignItems: "center", alignSelf: "center" }}>
+								<AirplanemodeActiveIcon style={{ fontSize: 100 }} />
+							</Avatar>
+						) : (
+							<img
+								src={aircraft.image}
+								alt="Aircraft"
+								style={{
+									width: "100%",
+									height: "100%",
+									objectFit: "cover",
+								}}
+							/>
+						)}
 					</Box>
 					<Typography variant="h4">{aircraft.registration}</Typography>
 					<Typography variant="h5">Modelo {modelo}</Typography>

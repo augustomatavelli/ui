@@ -76,7 +76,7 @@ const AircraftCard = ({ data, setReload, reload }) => {
 										objectFit: "cover",
 									}}
 								/>
-							)}{" "}
+							)}
 						</Box>
 					</Grid>
 					<Grid item xs={12}>

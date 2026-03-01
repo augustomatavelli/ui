@@ -16,14 +16,14 @@ const TakeoffProductsForm = ({ onValidate }) => {
 	const { requestResume, setRequestResume } = useContext(RequestContext);
 	const { searchProducts, loadingProduct } = useContext(ProductsContext);
 
-	const handleAddProduct = (newProduct, name) => {
+	const handleAddProduct = (newProduct, name, price) => {
 		setRequestResume((prev) => {
 			const products = prev.products || [];
 			const existingProduct = products.find((p) => p.id_product === newProduct);
 			if (!existingProduct) {
 				return {
 					...prev,
-					products: [...products, { id_product: newProduct, name: name, amount: 1 }],
+					products: [...products, { id_product: newProduct, name: name, amount: 1, price: price }],
 				};
 			}
 			return {

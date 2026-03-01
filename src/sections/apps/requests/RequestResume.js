@@ -11,6 +11,26 @@ export const RequestResume = ({ aircraft }) => {
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
 
+	const parseNumber = (value) => {
+		if (typeof value === "number") return value;
+		if (typeof value !== "string") return 0;
+
+		const trimmedValue = value.trim();
+		if (!trimmedValue) return 0;
+
+		const normalizedValue = trimmedValue.includes(",") ? trimmedValue.replace(/\./g, "").replace(",", ".") : trimmedValue;
+		const parsedValue = Number(normalizedValue);
+
+		return Number.isFinite(parsedValue) ? parsedValue : 0;
+	};
+
+	const productsTotal = (requestResume.products || []).reduce((total, product) => {
+		const price = parseNumber(product.price);
+		const itemAmount = parseNumber(product.amount);
+
+		return total + price * itemAmount;
+	}, 0);
+
 	const { membership } = aircraft;
 	const { amount } = requestResume;
 
@@ -93,7 +113,17 @@ export const RequestResume = ({ aircraft }) => {
 					{requestResume.products && requestResume.products.length > 0 && (
 						<>
 							<TableRow onClick={() => setOpenProducts(!openProducts)} sx={{ cursor: "pointer" }}>
-								<TableCell sx={{ borderBottom: openProducts && "none", opacity: 0.5 }}>Produtos</TableCell>
+								<TableCell sx={{ borderBottom: openProducts && "none", opacity: 0.5 }}>
+									<Box>
+										<Typography variant="body1">Produtos</Typography>
+										<Typography variant="caption" color="text.secondary">
+											{new Intl.NumberFormat("pt-BR", {
+												style: "currency",
+												currency: "BRL",
+											}).format(productsTotal)}
+										</Typography>
+									</Box>
+								</TableCell>
 								<TableCell align="right" sx={{ borderBottom: openProducts && "none", opacity: 0.5 }}>
 									<Button type="secondary" onClick={() => setOpenProducts(!openProducts)} color="secondary">
 										{openProducts ? <UpOutlined /> : <DownOutlined />}

@@ -21,7 +21,7 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 		return (
 			<Card key={e.id_service} sx={{ minWidth: 200, marginRight: "1rem" }}>
 				<Box>
-					<Checkbox checked={checked[e.name]} onChange={() => handleCheckboxChange(e)} onClick={(event) => event.stopPropagation()} />
+					<Checkbox checked={checked[e.name]} onChange={() => handleCheckboxChange(e)} onClick={(event) => event.stopPropagation()} disabled={e.actual_stock && Number(e.actual_stock) === 0} />
 				</Box>
 				<CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 					<Grid
@@ -86,6 +86,36 @@ export const OperationsList = ({ checked, setChecked, searchOperations, requestO
 								sx={{ width: 80, mt: 1 }}
 								disabled={!checked[e.name] || fillTank[e.name]}
 							/>
+							<Box sx={{ mt: 1, maxWidth: 150, textAlign: "left" }}>
+								{fillTank[e.name] && (
+									<Typography
+										variant="caption"
+										sx={{
+											display: "block",
+											width: "100%",
+											whiteSpace: "normal",
+											wordBreak: "break-word",
+										}}
+									>
+										*O abastecimento completo depende da disponibilidade de combustível
+									</Typography>
+								)}
+
+								{e.actual_stock && Number(e.actual_stock) === 0 && (
+									<Typography
+										variant="caption"
+										color="error"
+										sx={{
+											display: "block",
+											width: "100%",
+											whiteSpace: "normal",
+											wordBreak: "break-word",
+										}}
+									>
+										*No momento não temos estoque de {e.name}
+									</Typography>
+								)}
+							</Box>
 						</>
 					)}
 				</CardContent>

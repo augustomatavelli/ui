@@ -80,7 +80,7 @@ export const ProductsList = ({ searchProducts, requestObject, handleAddProduct, 
 					<IconButton
 						onClick={(event) => {
 							event.stopPropagation();
-							handleAddProduct(e.id_product, e.name);
+							handleAddProduct(e.id_product, e.name, e.price);
 						}}
 						color="success"
 						sx={{ mt: 1, fontSize: 20 }}
