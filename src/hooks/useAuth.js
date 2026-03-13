@@ -14,7 +14,7 @@ import ProductsContext from "contexts/ProductsContext";
 import RequestContext from "contexts/RequestContext";
 
 const useAuth = () => {
-	const { authAxios, publicAxios } = UseAxios();
+	const { publicAxios } = UseAxios();
 
 	const { resetAircraftstates } = useContext(AircraftContext);
 	const { resetLandingSiteStates } = useContext(LandingSiteContext);
@@ -29,7 +29,7 @@ const useAuth = () => {
 	const login = async (data) => {
 		try {
 			setLoadingLogin(true);
-			const response = await authAxios.post("/auth/login", data);
+			const response = await publicAxios.post("/auth/login", data);
 			const { token, name, userType, userId, userStatus } = response.data;
 			setSession(token);
 			dispatchAuth({
@@ -57,7 +57,7 @@ const useAuth = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingLogin(false);
@@ -81,7 +81,7 @@ const useAuth = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingResetPassword(false);
@@ -106,7 +106,7 @@ const useAuth = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingResetPassword(false);
@@ -130,7 +130,7 @@ const useAuth = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingResetPassword(false);
