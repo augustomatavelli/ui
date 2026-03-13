@@ -1,52 +1,44 @@
 "use client";
 
-import { destroyCookie } from "nookies";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
 import axios from "axios";
+import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
-const UseAxios = () => {
-	const authAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-	const publicAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
+// Instancias criadas uma unica vez no modulo
+const publicAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 
+publicAxios.interceptors.request.use(
+	(config) => {
+		const token = parseCookies()["sessionToken"];
+		if (token) config.headers["Authorization"] = `Bearer ${token}`;
+		return config;
+	},
+	(error) => Promise.reject(error)
+);
+
+publicAxios.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error?.response?.status === 401 || error?.response?.status === 403) {
+			localStorage.clear();
+			destroyCookie(null, "sessionToken", { path: "/" });
+			window.location.href = "/";
+		}
+		return Promise.reject(error);
+	}
+);
+
+const UseAxios = () => {
 	const navigate = useNavigate();
 
-	const insertAuthorization = async (config) => {
-		const cookies = parseCookies();
-		const token = cookies["sessionToken"];
-
-		if (token) {
-			config.headers["Authorization"] = `Bearer ${token}`;
-		} else {
-			logout();
-		}
-
-		return config;
-	};
-
-	const logout = async () => {
+	const logout = useCallback(() => {
 		localStorage.clear();
-		destroyCookie(null, "sessionToken", {
-			path: "/",
-		});
+		destroyCookie(null, "sessionToken", { path: "/" });
 		navigate("/");
-	};
+	}, [navigate]);
 
-	const invalidAuthorization = async (error) => {
-		console.log(error);
-		if (error?.response?.status == 401 || error?.response?.status == 403) {
-			logout();
-		}
-
-		return Promise.reject(error);
-	};
-
-	authAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
-	authAxios.interceptors.response.use((response) => response, invalidAuthorization);
-	publicAxios.interceptors.request.use(insertAuthorization, (error) => Promise.reject(error));
-	publicAxios.interceptors.response.use((response) => response, invalidAuthorization);
-
-	return { authAxios, logout, publicAxios };
+	return { publicAxios, logout };
 };
 
 export default UseAxios;

@@ -34,7 +34,7 @@ const config = {
 	 * `'Roboto', sans-serif`
 	 * `'Public Sans', sans-serif` (default)
 	 */
-	fontFamily: `'Public Sans', sans-serif`,
+	fontFamily: `'Inter', sans-serif`,
 
 	/**
 	 * The props used for display menu-items with multi-language.

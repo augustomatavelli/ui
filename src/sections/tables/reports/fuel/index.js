@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Button, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Loader from "components/Loader";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -313,12 +312,14 @@ export default function ReportFuelTable({ openFilter, reload }) {
 				</Grid>
 				{graph ? (
 					loadingReport ? (
-						<Loader />
+						<LinearProgress />
 					) : (
 						<FuelBarChart data={reportFuelList || []} />
 					)
 				) : (
-					<Table aria-label="simple table">
+					<>
+						{loadingReport && <LinearProgress />}
+						<Table aria-label="simple table">
 						<TableHead>
 							<TableRow>
 								<TableCell align="center">Data</TableCell>
@@ -328,13 +329,7 @@ export default function ReportFuelTable({ openFilter, reload }) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{loadingReport ? (
-								<TableRow>
-									<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-										<Loader />
-									</TableCell>
-								</TableRow>
-							) : reportFuelList && reportFuelList.length > 0 ? (
+							{reportFuelList && reportFuelList.length > 0 ? (
 								reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 							) : (
 								<TableRow>
@@ -361,6 +356,7 @@ export default function ReportFuelTable({ openFilter, reload }) {
 							</TableFooter>
 						)}
 					</Table>
+					</>
 				)}
 			</TableContainer>
 		</>

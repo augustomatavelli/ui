@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const ProductsContext = createContext({});
 
@@ -11,36 +11,29 @@ export const ProductsProvider = ({ children }) => {
 	const [categories, setCategories] = useState([]);
 	const [productDetails, setProductDetails] = useState({});
 
-	const resetProductStates = () => {
+	const resetProductStates = useCallback(() => {
 		setLoadingProduct(false);
 		setProducts([]);
 		setTotalProducts(0);
 		setSearchProducts([]);
 		setCategories([]);
 		setProductDetails({});
-	};
+	}, []);
 
-	return (
-		<ProductsContext.Provider
-			value={{
-				loadingProduct,
-				setLoadingProduct,
-				products,
-				setProducts,
-				totalProducts,
-				setTotalProducts,
-				searchProducts,
-				setSearchProducts,
-				categories,
-				setCategories,
-				productDetails,
-				setProductDetails,
-				resetProductStates,
-			}}
-		>
-			{children}
-		</ProductsContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			loadingProduct, setLoadingProduct,
+			products, setProducts,
+			totalProducts, setTotalProducts,
+			searchProducts, setSearchProducts,
+			categories, setCategories,
+			productDetails, setProductDetails,
+			resetProductStates,
+		}),
+		[loadingProduct, products, totalProducts, searchProducts, categories, productDetails, resetProductStates]
 	);
+
+	return <ProductsContext.Provider value={contextValue}>{children}</ProductsContext.Provider>;
 };
 
 ProductsProvider.propTypes = {

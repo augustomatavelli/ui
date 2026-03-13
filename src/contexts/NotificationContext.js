@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const NotificationContext = createContext({});
 
@@ -8,17 +8,23 @@ export const NotificationProvider = ({ children }) => {
 	const [notifications, setNotifications] = useState([]);
 	const [totalNotification, setTotalNotifications] = useState(0);
 
-	const resetNotificationStates = () => {
+	const resetNotificationStates = useCallback(() => {
 		setLoadingNotification(false);
-		loadingNotification([]);
+		setNotifications([]);
 		setTotalNotifications(0);
-	};
+	}, []);
 
-	return (
-		<NotificationContext.Provider value={{ resetNotificationStates, notifications, setNotifications, loadingNotification, setLoadingNotification, totalNotification, setTotalNotifications }}>
-			{children}
-		</NotificationContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			notifications, setNotifications,
+			loadingNotification, setLoadingNotification,
+			totalNotification, setTotalNotifications,
+			resetNotificationStates,
+		}),
+		[notifications, loadingNotification, totalNotification, resetNotificationStates]
 	);
+
+	return <NotificationContext.Provider value={contextValue}>{children}</NotificationContext.Provider>;
 };
 
 NotificationProvider.propTypes = {

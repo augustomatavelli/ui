@@ -65,7 +65,6 @@ const MyAircrafts = () => {
 		searchAllAircrafts(search, page);
 	}, [search, page, reload]);
 
-	useEffect(() => {}, [searchAircrafts]);
 
 	return (
 		<>

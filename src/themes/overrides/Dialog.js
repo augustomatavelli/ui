@@ -9,8 +9,12 @@ export default function Dialog() {
       styleOverrides: {
         root: {
           '& .MuiBackdrop-root': {
-            backgroundColor: alpha('#000', 0.7)
+            backgroundColor: alpha('#000', 0.5)
           }
+        },
+        paper: {
+          borderRadius: 16,
+          boxShadow: '0px 24px 48px rgba(0,0,0,0.14), 0px 8px 16px rgba(0,0,0,0.06)'
         }
       }
     }

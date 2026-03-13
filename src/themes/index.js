@@ -37,10 +37,13 @@ export default function ThemeCustomization({ children }) {
 			direction: themeDirection,
 			mixins: {
 				toolbar: {
-					minHeight: 60,
+					minHeight: 64,
 					paddingTop: 8,
 					paddingBottom: 8,
 				},
+			},
+			shape: {
+				borderRadius: 8,
 			},
 			palette: theme.palette,
 			customShadows: themeCustomShadows,

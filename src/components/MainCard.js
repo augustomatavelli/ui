@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/materia
 
 // project import
 import { ThemeMode } from 'config';
-import Highlighter from './third-party/Highlighter';
 
 // header style
 const headerSX = {
@@ -33,8 +32,6 @@ const MainCard = forwardRef(
       shadow,
       sx = {},
       title,
-      codeHighlight = false,
-      codeString,
       modal = false,
       ...others
     },
@@ -51,20 +48,12 @@ const MainCard = forwardRef(
         sx={{
           position: 'relative',
           border: border ? '1px solid' : 'none',
-          borderRadius: 1,
-          borderColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.divider : theme.palette.grey.A800,
-          boxShadow: boxShadow && (!border || theme.palette.mode === ThemeMode.DARK) ? shadow || theme.customShadows.z1 : 'inherit',
+          borderRadius: 2,
+          borderColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.divider : theme.palette.grey[200],
+          boxShadow: boxShadow && (!border || theme.palette.mode === ThemeMode.DARK) ? shadow || theme.customShadows.z1 : 'none',
           ':hover': {
             boxShadow: boxShadow ? shadow || theme.customShadows.z1 : 'inherit'
           },
-          ...(codeHighlight && {
-            '& pre': {
-              m: 0,
-              p: '12px !important',
-              fontFamily: theme.typography.fontFamily,
-              fontSize: '0.75rem'
-            }
-          }),
           ...(modal && {
             position: 'absolute',
             top: '50%',
@@ -99,13 +88,6 @@ const MainCard = forwardRef(
         {content && <CardContent sx={contentSX}>{children}</CardContent>}
         {!content && children}
 
-        {/* card footer - clipboard & highlighter  */}
-        {codeString && (
-          <>
-            <Divider sx={{ borderStyle: 'dashed' }} />
-            <Highlighter codeString={codeString} codeHighlight={codeHighlight} />
-          </>
-        )}
       </Card>
     );
   }

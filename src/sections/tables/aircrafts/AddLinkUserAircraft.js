@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, LinearProgress } from "@mui/material";
 
 // project imports
 import MainCard from "components/MainCard";
@@ -13,7 +13,6 @@ import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import AircraftContext from "contexts/AircraftContext";
-import Loader from "components/Loader";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -63,6 +62,7 @@ export default function AddLinkUserAircraftTable() {
 	return (
 		<MainCard>
 			<SearchUser />
+			{(loadingUser || loadingAircraft) && <LinearProgress />}
 			<TableContainer>
 				<Table aria-label="simple table">
 					<TableHead>
@@ -76,13 +76,7 @@ export default function AddLinkUserAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingUser || loadingAircraft ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : searchUser.length > 0 ? (
+						{searchUser.length > 0 ? (
 							searchUser.map((user) => (
 								<TableRow hover key={user.id_user}>
 									<TableCell align="center">

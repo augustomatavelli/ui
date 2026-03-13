@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, Switch } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, Switch, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -7,7 +7,6 @@ import AircraftContext from "contexts/AircraftContext";
 import useAircraft from "hooks/useAircraft";
 import AddAircraft from "sections/apps/aircrafts/AddAircraft";
 import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin";
-import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 import UserContext from "contexts/UserContext";
 import { AircraftFilter } from "./AircraftFilter";
@@ -73,7 +72,6 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 		user.type === "A" || user.type === "S" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
 	}, [search, page, selectedStatus, reload]);
 
-	useEffect(() => {}, [aircrafts]);
 
 	return (
 		<>
@@ -96,7 +94,8 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <AircraftFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
-				<Table aria-label="simple table">
+				{loadingAircraft && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -106,13 +105,7 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingAircraft ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : aircrafts.length > 0 ? (
+						{aircrafts.length > 0 ? (
 							aircrafts.map((aircraft) => (
 								<TableRow
 									hover

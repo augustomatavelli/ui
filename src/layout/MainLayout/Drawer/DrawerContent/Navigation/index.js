@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Box, useMediaQuery } from "@mui/material";
-import { Menu } from "menu-items/dashboard";
 import { useSelector } from "store";
 import useConfig from "hooks/useConfig";
 import { HORIZONTAL_MAX_ITEM, MenuOrientation } from "config";
@@ -26,22 +25,13 @@ const Navigation = () => {
 		// eslint-disable-next-line
 	}, [user]);
 
-	const getMenu = Menu();
-
 	const handlerMenuItem = () => {
 		const filteredItems = menuItem.items.filter((item) => {
-			if (item.id === "group-dashboard") {
-				return true;
-			}
 			if (item.id === "group-admin" && user.type !== "A" && user.type !== "S") {
 				return false;
 			}
 			return true;
 		});
-
-		if (getMenu?.id !== undefined && !filteredItems.some((item) => item.id === getMenu.id)) {
-			filteredItems.splice(0, 0, getMenu);
-		}
 
 		setMenuItems({ items: filteredItems });
 	};
@@ -101,7 +91,6 @@ const Navigation = () => {
 						item={item}
 					/>
 				);
-				break;
 			case "A":
 				if (item.type === "admin" || item.type === "staff" || item.type === "reports" || item.type === "user" || item.type === "notifications") {
 					return (

@@ -1,11 +1,10 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
-import Loader from "components/Loader";
 import { RequestFilter } from "./RequestFilter";
 
 export default function MyRequestsTable({ openFilter, reload }) {
@@ -41,7 +40,6 @@ export default function MyRequestsTable({ openFilter, reload }) {
 		searchAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
 	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
 
-	useEffect(() => {}, [searchRequests]);
 
 	return (
 		<>
@@ -62,7 +60,8 @@ export default function MyRequestsTable({ openFilter, reload }) {
 						setDateFilter={setDateFilter}
 					/>
 				)}
-				<Table aria-label="simple table">
+				{loadingRequest && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -75,13 +74,7 @@ export default function MyRequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingRequest ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : searchRequests.length > 0 ? (
+						{searchRequests.length > 0 ? (
 							searchRequests.map((e) => (
 								<TableRow
 									hover

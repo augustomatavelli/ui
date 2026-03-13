@@ -11,6 +11,12 @@ import { DRAWER_WIDTH } from 'config';
 
 const AppBarStyled = styled(AppBar, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  boxShadow: 'none',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  backdropFilter: 'blur(8px)',
+  backgroundColor: theme.palette.mode === 'dark'
+    ? 'rgba(22,28,36,0.92)'
+    : 'rgba(255,255,255,0.92)',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen

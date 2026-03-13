@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Collapse, IconButton, Grid, Card, FormControl, Select, MenuItem, TableFooter, Chip, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Loader from "components/Loader";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import { ReportRequestsFilter } from "./ReportRequestFilter";
@@ -113,7 +112,8 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 						</Select>
 					</FormControl>
 				</Grid>
-				<Table aria-label="simple table">
+				{loadingReport && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Data</TableCell>
@@ -124,13 +124,7 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingReport ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : reportRequestsList && reportRequestsList.length > 0 ? (
+						{reportRequestsList && reportRequestsList.length > 0 ? (
 							reportRequestsList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 						) : (
 							<TableRow>

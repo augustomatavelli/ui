@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const RequestContext = createContext({});
 
@@ -16,7 +16,7 @@ export const RequestProvider = ({ children }) => {
 	const [liveRequests, setLiveRequests] = useState([]);
 	const [requestsControl, setRequestsControl] = useState([]);
 
-	const resetRequestStates = () => {
+	const resetRequestStates = useCallback(() => {
 		setLoadingRequest(false);
 		setRequests([]);
 		setTotalRequests(0);
@@ -27,39 +27,27 @@ export const RequestProvider = ({ children }) => {
 		setRequestResume({ products: [], services: [] });
 		setRequestDetails({});
 		setRequestsControl([]);
-	};
+	}, []);
 
-	return (
-		<RequestContext.Provider
-			value={{
-				loadingRequest,
-				setLoadingRequest,
-				requests,
-				setRequests,
-				totalRequests,
-				setTotalRequests,
-				searchRequests,
-				setSearchRequests,
-				totalSearchRequests,
-				setTotalSearchRequests,
-				searchAircraftsRequests,
-				setSearchAircraftsRequests,
-				totalSearchAircraftsRequests,
-				setTotalSearchAircraftsRequests,
-				requestResume,
-				setRequestResume,
-				requestDetails,
-				setRequestDetails,
-				liveRequests,
-				setLiveRequests,
-				requestsControl,
-				setRequestsControl,
-				resetRequestStates,
-			}}
-		>
-			{children}
-		</RequestContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			loadingRequest, setLoadingRequest,
+			requests, setRequests,
+			totalRequests, setTotalRequests,
+			searchRequests, setSearchRequests,
+			totalSearchRequests, setTotalSearchRequests,
+			searchAircraftsRequests, setSearchAircraftsRequests,
+			totalSearchAircraftsRequests, setTotalSearchAircraftsRequests,
+			requestResume, setRequestResume,
+			requestDetails, setRequestDetails,
+			liveRequests, setLiveRequests,
+			requestsControl, setRequestsControl,
+			resetRequestStates,
+		}),
+		[loadingRequest, requests, totalRequests, searchRequests, totalSearchRequests, searchAircraftsRequests, totalSearchAircraftsRequests, requestResume, requestDetails, liveRequests, requestsControl, resetRequestStates]
 	);
+
+	return <RequestContext.Provider value={contextValue}>{children}</RequestContext.Provider>;
 };
 
 RequestProvider.propTypes = {

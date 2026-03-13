@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const LogContext = createContext({});
 
@@ -8,27 +8,18 @@ export const LogProvider = ({ children }) => {
 	const [logs, setLogs] = useState([]);
 	const [totalLogs, setTotalLogs] = useState(0);
 
-	const resetLogsStates = () => {
+	const resetLogsStates = useCallback(() => {
 		setLoadingLog(false);
 		setLogs([]);
 		setTotalLogs(0);
-	};
+	}, []);
 
-	return (
-		<LogContext.Provider
-			value={{
-				loadingLog,
-				setLoadingLog,
-				logs,
-				setLogs,
-				totalLogs,
-				setTotalLogs,
-				resetLogsStates,
-			}}
-		>
-			{children}
-		</LogContext.Provider>
+	const contextValue = useMemo(
+		() => ({ loadingLog, setLoadingLog, logs, setLogs, totalLogs, setTotalLogs, resetLogsStates }),
+		[loadingLog, logs, totalLogs, resetLogsStates]
 	);
+
+	return <LogContext.Provider value={contextValue}>{children}</LogContext.Provider>;
 };
 
 LogProvider.propTypes = {

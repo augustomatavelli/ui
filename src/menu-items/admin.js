@@ -96,7 +96,6 @@ const admin = {
 			url: "/inventory/admin",
 			icon: icons.ContainerOutlined,
 		},
-		,
 		{
 			id: "programação",
 			title: "Programação",

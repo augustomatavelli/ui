@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
 import { useContext, useEffect, useState } from "react";
@@ -7,7 +7,6 @@ import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddUser from "sections/apps/users/AddUser";
-import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 import { UserFilter } from "./UserFilter";
 
@@ -84,7 +83,6 @@ export default function UsersTable({ openFilter, reload }) {
 		findAllUsers(search, page, params, paramsStatus);
 	}, [search, page, selectedRole, selectedStatus, reload]);
 
-	useEffect(() => {}, [users]);
 
 	return (
 		<>
@@ -107,7 +105,8 @@ export default function UsersTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <UserFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} selectedRole={selectedRole} setSelectedRole={setSelectedRole} />}
-				<Table aria-label="simple table">
+				{loadingUser && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -120,13 +119,7 @@ export default function UsersTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingUser ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : users.length > 0 ? (
+						{users.length > 0 ? (
 							users.map((user) => (
 								<TableRow
 									hover

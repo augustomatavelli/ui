@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const InspectionContext = createContext({});
 
@@ -7,12 +7,17 @@ export const InspectionProvider = ({ children }) => {
 	const [loadingInspection, setLoadingInspection] = useState(false);
 	const [inspections, setInspections] = useState([]);
 
-	const resetInspectionStates = () => {
+	const resetInspectionStates = useCallback(() => {
 		setLoadingInspection(false);
-		loadingInspection([]);
-	};
+		setInspections([]);
+	}, []);
 
-	return <InspectionContext.Provider value={{ inspections, setInspections, loadingInspection, setLoadingInspection, resetInspectionStates }}>{children}</InspectionContext.Provider>;
+	const contextValue = useMemo(
+		() => ({ inspections, setInspections, loadingInspection, setLoadingInspection, resetInspectionStates }),
+		[inspections, loadingInspection, resetInspectionStates]
+	);
+
+	return <InspectionContext.Provider value={contextValue}>{children}</InspectionContext.Provider>;
 };
 
 InspectionProvider.propTypes = {

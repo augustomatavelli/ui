@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Checkbox, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Checkbox, useTheme, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Loader from "components/Loader";
 import NotificationContext from "contexts/NotificationContext";
 import useNotification from "hooks/useNotification";
 import { NotificationFilter } from "./NotificationFilter";
@@ -66,7 +65,6 @@ export default function NotificationsTable({ openFilter, reload }) {
 		findAllNotifications(page, selectedStatus);
 	}, [reload, selectedStatus]);
 
-	useEffect(() => {}, [notifications]);
 
 	return (
 		<>
@@ -79,7 +77,8 @@ export default function NotificationsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <NotificationFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
-				<Table aria-label="simple table">
+				{loadingNotification && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">
@@ -90,13 +89,7 @@ export default function NotificationsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingNotification ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : notifications.length > 0 ? (
+						{notifications.length > 0 ? (
 							notifications.map((notification) => (
 								<TableRow hover key={notification.id_notification} sx={{ bgcolor: notification.is_read === 0 ? theme.palette.warning.lighter : "inherit" }}>
 									<TableCell align="center">

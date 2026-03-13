@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton, TextField } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton, TextField, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
-import Loader from "components/Loader";
 import OrderContext from "contexts/OrdersContext";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -119,13 +118,8 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOrder || loadingInspection ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : orders.length > 0 ? (
+					{(loadingOrder || loadingInspection) && <LinearProgress />}
+					{orders.length > 0 ? (
 							orders.map((item, indexItem) => (
 								<TableRow hover key={`${item.id_order}-${item.id_item}`}>
 									<TableCell align="center">

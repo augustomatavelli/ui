@@ -3,7 +3,8 @@
 export default function TableBody(theme) {
   const hoverStyle = {
     '&:hover': {
-      backgroundColor: theme.palette.secondary.lighter
+      backgroundColor: theme.palette.primary.lighter,
+      transition: 'background-color 0.15s ease'
     }
   };
 

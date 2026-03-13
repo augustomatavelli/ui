@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const LandingSiteContext = createContext({});
 
@@ -11,36 +11,29 @@ export const LandingSiteProvider = ({ children }) => {
 	const [uf, setUf] = useState([]);
 	const [landingSiteDetails, setLandingSiteDetails] = useState({});
 
-	const resetLandingSiteStates = () => {
+	const resetLandingSiteStates = useCallback(() => {
 		setLoadingLandingSite(false);
 		setLandingSites([]);
 		setTotalLandingSites(0);
 		setSearchLandingSites([]);
 		setUf([]);
 		setLandingSiteDetails({});
-	};
+	}, []);
 
-	return (
-		<LandingSiteContext.Provider
-			value={{
-				loadingLandingSite,
-				setLoadingLandingSite,
-				landingSites,
-				setLandingSites,
-				totalLandingSites,
-				setTotalLandingSites,
-				searchLandingSites,
-				setSearchLandingSites,
-				uf,
-				setUf,
-				landingSiteDetails,
-				setLandingSiteDetails,
-				resetLandingSiteStates,
-			}}
-		>
-			{children}
-		</LandingSiteContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			loadingLandingSite, setLoadingLandingSite,
+			landingSites, setLandingSites,
+			totalLandingSites, setTotalLandingSites,
+			searchLandingSites, setSearchLandingSites,
+			uf, setUf,
+			landingSiteDetails, setLandingSiteDetails,
+			resetLandingSiteStates,
+		}),
+		[loadingLandingSite, landingSites, totalLandingSites, searchLandingSites, uf, landingSiteDetails, resetLandingSiteStates]
 	);
+
+	return <LandingSiteContext.Provider value={contextValue}>{children}</LandingSiteContext.Provider>;
 };
 
 LandingSiteProvider.propTypes = {

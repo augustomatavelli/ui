@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { PopupTransition } from "components/@extended/Transitions";
 import useRequest from "hooks/useRequest";
@@ -6,7 +6,6 @@ import RequestContext from "contexts/RequestContext";
 import AddRequest from "sections/apps/requests/ScheduleFormLanding";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
-import Loader from "components/Loader";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { useNavigate } from "react-router";
@@ -86,7 +85,6 @@ export default function RequestsTable({ openFilter, reload }) {
 		findAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
 	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
 
-	useEffect(() => {}, [requests]);
 
 	return (
 		<>
@@ -107,7 +105,8 @@ export default function RequestsTable({ openFilter, reload }) {
 						setDateFilter={setDateFilter}
 					/>
 				)}
-				<Table aria-label="simple table">
+				{loadingRequest && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -122,13 +121,7 @@ export default function RequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingRequest ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : requests.length > 0 ? (
+						{requests.length > 0 ? (
 							requests.map((e) => (
 								<>
 									<TableRow

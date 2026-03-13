@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Switch, Button, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Switch, Button, Box, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Loader from "components/Loader";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { PlusOutlined } from "@ant-design/icons";
@@ -52,7 +51,6 @@ export default function ChecklistsTable({ openFilter, reload }) {
 		findAllChecklists(search, page);
 	}, [search, page, reload]);
 
-	useEffect(() => {}, [checklists]);
 
 	return (
 		<>
@@ -75,7 +73,8 @@ export default function ChecklistsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{/* {openFilter && <LogFilter selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} selectedAction={selectedAction} setSelectedAction={setSelectedAction} />} */}
-				<Table aria-label="simple table">
+				{loadingChecklist && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -84,13 +83,7 @@ export default function ChecklistsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingChecklist ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : checklists.length > 0 ? (
+						{checklists.length > 0 ? (
 							checklists.map((checklist) => (
 								<TableRow hover key={checklist.id}>
 									<TableCell align="center">#{checklist.id_checklist}</TableCell>

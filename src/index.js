@@ -2,16 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
 import "simplebar/dist/simplebar.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "assets/third-party/apex-chart.css";
 import "assets/third-party/react-table.css";
 import App from "./App";
-import { store, persister } from "store";
+import { store } from "store";
 import { ConfigProvider } from "contexts/ConfigContext";
-import { JWTProvider } from "contexts/JWTContext";
 import { AuthProvider } from "contexts/AuthContext";
 import reportWebVitals from "./reportWebVitals";
 import { AircraftProvider } from "contexts/AircraftContext";
@@ -33,45 +31,41 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
 	<ReduxProvider store={store}>
-		<PersistGate loading={null} persistor={persister}>
-			<ConfigProvider>
-				<BrowserRouter>
-					<LogProvider>
-						<JWTProvider>
-							<AuthProvider>
-								<UserProvider>
-									<ReportProvider>
-										<AircraftProvider>
-											<LandingSiteProvider>
-												<RequestProvider>
-													<ProductsProvider>
-														<OperationsProvider>
-															<OrderProvider>
-																<InspectionProvider>
-																	<OperatorProvider>
-																		<ChecklistProvider>
-																			<NotificationProvider>
-																				<InventoryProvider>
-																					<App />
-																				</InventoryProvider>
-																			</NotificationProvider>
-																		</ChecklistProvider>
-																	</OperatorProvider>
-																</InspectionProvider>
-															</OrderProvider>
-														</OperationsProvider>
-													</ProductsProvider>
-												</RequestProvider>
-											</LandingSiteProvider>
-										</AircraftProvider>
-									</ReportProvider>
-								</UserProvider>
-							</AuthProvider>
-						</JWTProvider>
-					</LogProvider>
-				</BrowserRouter>
-			</ConfigProvider>
-		</PersistGate>
+		<ConfigProvider>
+			<BrowserRouter>
+				<LogProvider>
+					<AuthProvider>
+						<UserProvider>
+							<ReportProvider>
+								<AircraftProvider>
+									<LandingSiteProvider>
+										<RequestProvider>
+											<ProductsProvider>
+												<OperationsProvider>
+													<OrderProvider>
+														<InspectionProvider>
+															<OperatorProvider>
+																<ChecklistProvider>
+																	<NotificationProvider>
+																		<InventoryProvider>
+																			<App />
+																		</InventoryProvider>
+																	</NotificationProvider>
+																</ChecklistProvider>
+															</OperatorProvider>
+														</InspectionProvider>
+													</OrderProvider>
+												</OperationsProvider>
+											</ProductsProvider>
+										</RequestProvider>
+									</LandingSiteProvider>
+								</AircraftProvider>
+							</ReportProvider>
+						</UserProvider>
+					</AuthProvider>
+				</LogProvider>
+			</BrowserRouter>
+		</ConfigProvider>
 	</ReduxProvider>
 );
 

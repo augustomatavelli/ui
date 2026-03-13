@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const InventoryContext = createContext({});
 
@@ -11,36 +11,21 @@ export const InventoryProvider = ({ children }) => {
 	const [actualStock, setActualStock] = useState(0);
 	const [stockHistory, setStockHistory] = useState([]);
 
-	const resetInventoryStates = () => {
+	const resetInventoryStates = useCallback(() => {
 		setLoadingInventory(false);
 		setInventory([]);
 		setInventoryList([]);
 		setTotalInventoryItems(0);
 		setActualStock(0);
 		setStockHistory([]);
-	};
+	}, []);
 
-	return (
-		<InventoryContext.Provider
-			value={{
-				loadingInventory,
-				setLoadingInventory,
-				inventory,
-				setInventory,
-				inventoryList,
-				setInventoryList,
-				totalInventoryItems,
-				setTotalInventoryItems,
-				actualStock,
-				setActualStock,
-				stockHistory,
-				setStockHistory,
-				resetInventoryStates,
-			}}
-		>
-			{children}
-		</InventoryContext.Provider>
+	const contextValue = useMemo(
+		() => ({ loadingInventory, setLoadingInventory, inventory, setInventory, inventoryList, setInventoryList, totalInventoryItems, setTotalInventoryItems, actualStock, setActualStock, stockHistory, setStockHistory, resetInventoryStates }),
+		[loadingInventory, inventory, inventoryList, totalInventoryItems, actualStock, stockHistory, resetInventoryStates]
 	);
+
+	return <InventoryContext.Provider value={contextValue}>{children}</InventoryContext.Provider>;
 };
 
 InventoryProvider.propTypes = {

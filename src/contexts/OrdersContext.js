@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const OrderContext = createContext({});
 
@@ -9,18 +9,19 @@ export const OrderProvider = ({ children }) => {
 	const [totalOrders, setTotalOrders] = useState(0);
 	const [totalTabOrders, setTotalTabOrders] = useState(0);
 
-	const resetOrderStates = () => {
+	const resetOrderStates = useCallback(() => {
 		setLoadingOrder(false);
 		setOrders([]);
 		setTotalOrders(0);
 		setTotalTabOrders(0);
-	};
+	}, []);
 
-	return (
-		<OrderContext.Provider value={{ loadingOrder, setLoadingOrder, orders, setOrders, totalOrders, setTotalOrders, totalTabOrders, setTotalTabOrders, resetOrderStates }}>
-			{children}
-		</OrderContext.Provider>
+	const contextValue = useMemo(
+		() => ({ loadingOrder, setLoadingOrder, orders, setOrders, totalOrders, setTotalOrders, totalTabOrders, setTotalTabOrders, resetOrderStates }),
+		[loadingOrder, orders, totalOrders, totalTabOrders, resetOrderStates]
 	);
+
+	return <OrderContext.Provider value={contextValue}>{children}</OrderContext.Provider>;
 };
 
 OrderProvider.propTypes = {

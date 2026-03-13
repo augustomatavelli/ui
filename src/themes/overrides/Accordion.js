@@ -5,14 +5,17 @@ export default function Accordion(theme) {
     MuiAccordion: {
       defaultProps: {
         disableGutters: true,
-        square: true,
+        square: false,
         elevation: 0
       },
       styleOverrides: {
         root: {
-          border: `1px solid ${theme.palette.secondary.light}`,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: `${theme.shape?.borderRadius ?? 8}px !important`,
+          overflow: 'hidden',
           '&:not(:last-child)': {
-            borderBottom: 0
+            marginBottom: 8,
+            borderBottom: `1px solid ${theme.palette.divider}`
           },
           '&:before': {
             display: 'none'

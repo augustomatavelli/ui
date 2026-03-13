@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, Tooltip, IconButton } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, Tooltip, IconButton, LinearProgress } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -9,7 +9,6 @@ import useProduct from "hooks/useProduct";
 import ProductsContext from "contexts/ProductsContext";
 import SearchProductByAdmin from "sections/apps/products/SearchProductByAdmin";
 import AddProduct from "sections/apps/products/AddProduct";
-import Loader from "components/Loader";
 import { ProductFilter } from "./ProductFilter";
 import { useNavigate } from "react-router";
 
@@ -58,7 +57,6 @@ export default function ProductsTable({ openFilter, reload }) {
 		Promise.all([findCategories(), findAllProducts(search, page, params)]);
 	}, [search, page, selectedCategory, reload]);
 
-	useEffect(() => {}, [products]);
 
 	return (
 		<>
@@ -81,7 +79,8 @@ export default function ProductsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <ProductFilter selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
-				<Table aria-label="simple table">
+				{loadingProduct && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -94,13 +93,7 @@ export default function ProductsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingProduct ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : products.length > 0 ? (
+						{products.length > 0 ? (
 							products.map((e) => (
 								<TableRow
 									hover

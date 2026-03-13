@@ -48,8 +48,8 @@ const PopperStyled = styled(Popper)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     transform: 'translateY(-50%) rotate(45deg)',
     zIndex: 120,
-    borderLeft: `1px solid ${theme.palette.grey.A800}`,
-    borderBottom: `1px solid ${theme.palette.grey.A800}`
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`
   }
 }));
 
@@ -228,14 +228,17 @@ const NavCollapse = ({ menu, level, parentId, setSelectedItems, selectedItems, s
             sx={{
               pl: drawerOpen ? `${level * 28}px` : 1.5,
               py: !drawerOpen && level === 1 ? 1.25 : 1,
+              mx: drawerOpen ? 0.75 : 0,
+              borderRadius: drawerOpen ? 1 : 0,
+              transition: 'background-color 0.2s ease, color 0.2s ease',
               ...(drawerOpen && {
                 '&:hover': {
                   bgcolor: theme.palette.mode === ThemeMode.DARK ? 'divider' : 'primary.lighter'
                 },
                 '&.Mui-selected': {
-                  bgcolor: 'transparent',
+                  bgcolor: theme.palette.mode === ThemeMode.DARK ? 'primary.900' : 'primary.lighter',
                   color: iconSelectedColor,
-                  '&:hover': { color: iconSelectedColor, bgcolor: theme.palette.mode === ThemeMode.DARK ? 'divider' : 'transparent' }
+                  '&:hover': { color: iconSelectedColor, bgcolor: theme.palette.mode === ThemeMode.DARK ? 'primary.darker' : 'primary.lighter' }
                 }
               }),
               ...(!drawerOpen && {

@@ -1,8 +1,7 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
-import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 import { OperatorFilter } from "./OperatorFilter";
 import SearchOperatorByAdmin from "sections/apps/operators/SearchOperatorByAdmin";
@@ -73,7 +72,8 @@ export default function OperatorsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{/* {openFilter && <OperatorFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} selectedRole={selectedRole} setSelectedRole={setSelectedRole} />} */}
-				<Table aria-label="simple table">
+				{loadingOperator && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Nome</TableCell>
@@ -82,13 +82,7 @@ export default function OperatorsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOperator ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : operators.length > 0 ? (
+						{operators.length > 0 ? (
 							operators.map((operator) => (
 								<TableRow
 									hover

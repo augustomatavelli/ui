@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Typography, Pagination, Stack, Grid, useTheme } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Typography, Pagination, Stack, Grid, useTheme, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Loader from "components/Loader";
 import useLog from "hooks/useLogs";
 import LogContext from "contexts/LogContext";
 import SearchLogByAdmin from "sections/apps/logs/SearchLogByAdmin";
@@ -47,7 +46,6 @@ export default function LogsTable({ openFilter, reload }) {
 		findAllLogs(search, page, paramsAction, paramsEntities);
 	}, [search, page, selectedAction, selectedEntity, reload]);
 
-	useEffect(() => {}, [logs]);
 
 	return (
 		<>
@@ -59,7 +57,8 @@ export default function LogsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <LogFilter selectedEntity={selectedEntity} setSelectedEntity={setSelectedEntity} selectedAction={selectedAction} setSelectedAction={setSelectedAction} />}
-				<Table aria-label="simple table">
+				{loadingLog && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -75,13 +74,7 @@ export default function LogsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingLog ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : logs.length > 0 ? (
+						{logs.length > 0 ? (
 							logs.map((log) => (
 								<TableRow hover key={log.id}>
 									<TableCell align="center">#{log.id}</TableCell>

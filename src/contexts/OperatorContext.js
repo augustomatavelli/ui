@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const OperatorContext = createContext({});
 
@@ -10,33 +10,27 @@ export const OperatorProvider = ({ children }) => {
 	const [operatorDetails, setOperatorDetails] = useState({});
 	const [searchOperator, setSearchOperator] = useState([]);
 
-	const resetOperatorStates = () => {
+	const resetOperatorStates = useCallback(() => {
 		setLoadingOperator(false);
 		setOperators([]);
 		setTotalOperators(0);
 		setOperatorDetails({});
 		setSearchOperator([]);
-	};
+	}, []);
 
-	return (
-		<OperatorContext.Provider
-			value={{
-				loadingOperator,
-				setLoadingOperator,
-				operators,
-				setOperators,
-				totalOperators,
-				setTotalOperators,
-				operatorDetails,
-				setOperatorDetails,
-				resetOperatorStates,
-				searchOperator,
-				setSearchOperator,
-			}}
-		>
-			{children}
-		</OperatorContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			loadingOperator, setLoadingOperator,
+			operators, setOperators,
+			totalOperators, setTotalOperators,
+			operatorDetails, setOperatorDetails,
+			searchOperator, setSearchOperator,
+			resetOperatorStates,
+		}),
+		[loadingOperator, operators, totalOperators, operatorDetails, searchOperator, resetOperatorStates]
 	);
+
+	return <OperatorContext.Provider value={contextValue}>{children}</OperatorContext.Provider>;
 };
 
 OperatorProvider.propTypes = {

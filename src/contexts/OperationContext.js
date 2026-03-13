@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const OperationsContext = createContext({});
 
@@ -12,7 +12,7 @@ export const OperationsProvider = ({ children }) => {
 	const [operationDetails, setOperationDetails] = useState({});
 	const [icons, setIcons] = useState([]);
 
-	const resetOperationStates = () => {
+	const resetOperationStates = useCallback(() => {
 		setLoadingOperation(false);
 		setOperations([]);
 		setTotalOperations(0);
@@ -20,31 +20,23 @@ export const OperationsProvider = ({ children }) => {
 		setCategories([]);
 		setOperationDetails({});
 		setIcons([]);
-	};
+	}, []);
 
-	return (
-		<OperationsContext.Provider
-			value={{
-				loadingOperation,
-				setLoadingOperation,
-				operations,
-				setOperations,
-				totalOperations,
-				setTotalOperations,
-				searchOperations,
-				setSearchOperations,
-				categories,
-				setCategories,
-				operationDetails,
-				setOperationDetails,
-				resetOperationStates,
-				icons,
-				setIcons,
-			}}
-		>
-			{children}
-		</OperationsContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			loadingOperation, setLoadingOperation,
+			operations, setOperations,
+			totalOperations, setTotalOperations,
+			searchOperations, setSearchOperations,
+			categories, setCategories,
+			operationDetails, setOperationDetails,
+			icons, setIcons,
+			resetOperationStates,
+		}),
+		[loadingOperation, operations, totalOperations, searchOperations, categories, operationDetails, icons, resetOperationStates]
 	);
+
+	return <OperationsContext.Provider value={contextValue}>{children}</OperationsContext.Provider>;
 };
 
 OperationsProvider.propTypes = {

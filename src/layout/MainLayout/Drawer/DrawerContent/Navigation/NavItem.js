@@ -78,13 +78,15 @@ const NavItem = ({ item, level }) => {
 						zIndex: 1201,
 						pl: drawerOpen ? `${level * 28}px` : 1.5,
 						py: !drawerOpen && level === 1 ? 1.25 : 1,
+						mx: drawerOpen ? 0.75 : 0,
+						borderRadius: drawerOpen ? 1 : 0,
+						transition: 'background-color 0.2s ease, color 0.2s ease',
 						...(drawerOpen && {
 							"&:hover": {
 								bgcolor: theme.palette.mode === ThemeMode.DARK ? "divider" : "primary.lighter",
 							},
 							"&.Mui-selected": {
 								bgcolor: theme.palette.mode === ThemeMode.DARK ? "divider" : "primary.lighter",
-								borderRight: `2px solid ${theme.palette.primary.main}`,
 								color: iconSelectedColor,
 								"&:hover": {
 									color: iconSelectedColor,

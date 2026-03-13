@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, Chip, LinearProgress } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -9,7 +9,6 @@ import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import AddLandingSite from "sections/apps/landing-sites/AddLandingSite";
 import SearchLandingSiteByAdmin from "sections/apps/landing-sites/SearchLandingSiteByAdmin";
-import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 
 export const header = [
@@ -48,7 +47,6 @@ export default function LandingSitesTable() {
 		findAllLandingSites(search, page);
 	}, [search, page]);
 
-	useEffect(() => {}, [landingSites]);
 
 	return (
 		<>
@@ -70,7 +68,8 @@ export default function LandingSitesTable() {
 						</Button>
 					</Stack>
 				</Grid>
-				<Table aria-label="simple table">
+				{loadingLandingSite && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -82,13 +81,7 @@ export default function LandingSitesTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingLandingSite ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : landingSites.length > 0 ? (
+						{landingSites.length > 0 ? (
 							landingSites.map((e) => (
 								<TableRow
 									hover

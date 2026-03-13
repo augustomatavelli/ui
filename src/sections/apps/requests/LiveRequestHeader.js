@@ -7,7 +7,6 @@ import RequestContext from "contexts/RequestContext";
 function LiveRequestsHeader() {
 	const { liveRequests } = useContext(RequestContext);
 
-	useEffect(() => {}, [liveRequests]);
 
 	return (
 		<>

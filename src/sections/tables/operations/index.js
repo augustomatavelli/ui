@@ -1,5 +1,5 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, LinearProgress } from "@mui/material";
 
 // project imports
 import { useContext, useEffect, useState } from "react";
@@ -9,7 +9,6 @@ import OperationsContext from "contexts/OperationContext";
 import SearchOperationByAdmin from "sections/apps/operations/SearchOperationByAdmin";
 import AddOperation from "sections/apps/operations/AddOperation";
 import { PlusOutlined } from "@ant-design/icons";
-import Loader from "components/Loader";
 import { OperationFilter } from "./OperationFilter";
 import { useNavigate } from "react-router";
 
@@ -50,7 +49,6 @@ export default function OperationsTable({ openFilter, reload }) {
 		Promise.all([findCategories(), findAllOperations(search, page, params)]);
 	}, [search, page, selectedCategory, reload]);
 
-	useEffect(() => {}, [operations]);
 
 	return (
 		<>
@@ -73,7 +71,8 @@ export default function OperationsTable({ openFilter, reload }) {
 					</Stack>
 				</Grid>
 				{openFilter && <OperationFilter selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />}
-				<Table aria-label="simple table">
+				{loadingOperation && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -86,13 +85,7 @@ export default function OperationsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOperation ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : operations.length > 0 ? (
+						{operations.length > 0 ? (
 							operations.map((e) => (
 								<TableRow
 									hover

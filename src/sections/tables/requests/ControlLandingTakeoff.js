@@ -1,8 +1,7 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Box, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
-import Loader from "components/Loader";
 import { useNavigate } from "react-router";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -66,7 +65,6 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 		findRequestsControl(search, page /* , paramsStatus, selectedPeriod, dateFilter */);
 	}, [search, page, /*  selectedStatus, selectedPeriod, dateFilter, */ reload]);
 
-	useEffect(() => {}, [requestsControl]);
 
 	return (
 		<>
@@ -87,7 +85,8 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 						setDateFilter={setDateFilter}
 					/>
 				)} */}
-				<Table aria-label="simple table">
+				{loadingRequest && <LinearProgress />}
+			<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
@@ -101,13 +100,7 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingRequest ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : requestsControl.length > 0 ? (
+						{requestsControl.length > 0 ? (
 							requestsControl.map((e) => (
 								<>
 									<TableRow

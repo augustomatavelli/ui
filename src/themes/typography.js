@@ -8,24 +8,28 @@ const Typography = (fontFamily) => ({
   fontWeightMedium: 500,
   fontWeightBold: 600,
   h1: {
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: '2.375rem',
-    lineHeight: 1.21
+    lineHeight: 1.21,
+    letterSpacing: '-0.02em'
   },
   h2: {
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: '1.875rem',
-    lineHeight: 1.27
+    lineHeight: 1.27,
+    letterSpacing: '-0.01em'
   },
   h3: {
     fontWeight: 600,
     fontSize: '1.5rem',
-    lineHeight: 1.33
+    lineHeight: 1.33,
+    letterSpacing: '-0.01em'
   },
   h4: {
     fontWeight: 600,
     fontSize: '1.25rem',
-    lineHeight: 1.4
+    lineHeight: 1.4,
+    letterSpacing: '-0.005em'
   },
   h5: {
     fontWeight: 600,
@@ -33,7 +37,7 @@ const Typography = (fontFamily) => ({
     lineHeight: 1.5
   },
   h6: {
-    fontWeight: 400,
+    fontWeight: 500,
     fontSize: '0.875rem',
     lineHeight: 1.57
   },

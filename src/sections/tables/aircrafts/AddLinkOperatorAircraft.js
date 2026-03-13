@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme, Typography, LinearProgress } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -7,7 +7,6 @@ import useAircraft from "hooks/useAircraft";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import AircraftContext from "contexts/AircraftContext";
-import Loader from "components/Loader";
 import OperatorContext from "contexts/OperatorContext";
 import useOperator from "hooks/useOperator";
 import SearchOperator from "sections/apps/operators/SearchOperator";
@@ -60,6 +59,7 @@ export default function AddLinkOperatorAircraftTable() {
 	return (
 		<MainCard>
 			<SearchOperator />
+			{(loadingOperator || loadingAircraft) && <LinearProgress />}
 			<TableContainer>
 				<Table aria-label="simple table">
 					<TableHead>
@@ -72,13 +72,7 @@ export default function AddLinkOperatorAircraftTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingOperator || loadingAircraft ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : searchOperator.length > 0 ? (
+						{searchOperator.length > 0 ? (
 							searchOperator.map((operator) => (
 								<TableRow hover key={operator.id_operator}>
 									<TableCell align="center">

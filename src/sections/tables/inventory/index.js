@@ -1,6 +1,5 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip, Chip } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip, Chip, LinearProgress } from "@mui/material";
 import { useContext } from "react";
-import Loader from "components/Loader";
 import dayjs from "dayjs";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import InventoryContext from "contexts/InventoryContext";
@@ -55,13 +54,8 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loadingInventory ? (
-							<TableRow>
-								<TableCell colSpan={5} align="center">
-									<Loader />
-								</TableCell>
-							</TableRow>
-						) : inventory.length > 0 ? (
+					{loadingInventory && <LinearProgress />}
+					{inventory.length > 0 ? (
 							inventory.map((i) => (
 								<TableRow hover key={i.id}>
 									<TableCell align="center">{dayjs(i.created_at).format("DD/MM/YYYY HH:mm")}</TableCell>
