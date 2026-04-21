@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
+const formatBRL = (value) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+
 export const RequestResume = ({ aircraft }) => {
 	const { requestResume } = useContext(RequestContext);
 
@@ -33,6 +35,49 @@ export const RequestResume = ({ aircraft }) => {
 
 	const { membership } = aircraft;
 	const { amount } = requestResume;
+
+	const landingDate = requestResume.landing_date ? dayjs(requestResume.landing_date) : null;
+	const takeoffDate = requestResume.takeoff_date ? dayjs(requestResume.takeoff_date) : null;
+
+	const hasBothDates = Boolean(landingDate && takeoffDate);
+
+	let nights = 0;
+	if (hasBothDates) {
+		const earlierDate = membership === "S" ? takeoffDate : landingDate;
+		const laterDate = membership === "S" ? landingDate : takeoffDate;
+		nights = laterDate.startOf("day").diff(earlierDate.startOf("day"), "day");
+	}
+
+	const fuelService = (requestResume.services || []).find((s) => s.id_service === 1);
+	const hasFuel = Boolean(fuelService);
+	const fuelIsFull = hasFuel && fuelService.amount === "full";
+
+	let stayFee = null;
+	if (hasBothDates && membership !== "S") {
+		if (nights > 0) {
+			stayFee = 350 * nights;
+		} else {
+			stayFee = hasFuel ? 250 : 350;
+		}
+	}
+
+	let fuelCost = null;
+	if (hasFuel && !fuelIsFull) {
+		const fuelPrice = parseNumber(fuelService.price);
+		const fuelAmount = parseNumber(fuelService.amount);
+		fuelCost = fuelPrice * fuelAmount;
+	}
+
+	const servicesTotal = (requestResume.services || []).reduce((total, service) => {
+		if (service.amount === "full") return total;
+		const price = parseNumber(service.price);
+		const amt = parseNumber(service.amount);
+		return total + price * amt;
+	}, 0);
+
+	const servicesCaptionText = fuelIsFull && servicesTotal === 0 ? "a confirmar" : fuelIsFull ? `${formatBRL(servicesTotal)} + combustível` : formatBRL(servicesTotal);
+
+	const grandTotal = productsTotal + (stayFee ?? 0) + (fuelCost ?? 0);
 
 	return (
 		<TableContainer>
@@ -86,7 +131,14 @@ export const RequestResume = ({ aircraft }) => {
 					{requestResume.services && requestResume.services.length > 0 && (
 						<>
 							<TableRow onClick={() => setOpenOperations(!openOperations)} sx={{ cursor: "pointer" }}>
-								<TableCell sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>Serviços</TableCell>
+								<TableCell sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>
+									<Box>
+										<Typography variant="body1">Serviços</Typography>
+										<Typography variant="caption" color="text.secondary">
+											{servicesCaptionText}
+										</Typography>
+									</Box>
+								</TableCell>
 								<TableCell align="right" sx={{ borderBottom: openOperations && "none", opacity: 0.5 }}>
 									<Button type="secondary" onClick={() => setOpenOperations(!openOperations)} color="secondary">
 										{openOperations ? <UpOutlined /> : <DownOutlined />}
@@ -99,9 +151,24 @@ export const RequestResume = ({ aircraft }) => {
 										<Box sx={{ padding: 0 }}>
 											<Table>
 												<List sx={{ padding: 0, opacity: 0.5 }}>
-													{requestResume.services.map((e) => (
-														<ListItem key={e.id_operation}>{e.unit === "un" ? `${e.name}` : e.amount === "full" ? "Full" : `${e.name} ${e.amount}${e.unit}`}</ListItem>
-													))}
+													{requestResume.services.map((e) => {
+														let leftText;
+														let rightText;
+														if (e.amount === "full") {
+															leftText = `${e.name} (Full)`;
+															rightText = "a confirmar";
+														} else {
+															const itemCost = parseNumber(e.price) * parseNumber(e.amount);
+															leftText = e.unit === "un" ? e.name : `${e.name} ${e.amount}${e.unit}`;
+															rightText = itemCost > 0 ? formatBRL(itemCost) : "";
+														}
+														return (
+															<ListItem key={e.id_service} sx={{ display: "flex", justifyContent: "space-between" }}>
+																<span>{leftText}</span>
+																{rightText && <span>{rightText}</span>}
+															</ListItem>
+														);
+													})}
 												</List>
 											</Table>
 										</Box>
@@ -146,6 +213,36 @@ export const RequestResume = ({ aircraft }) => {
 								</TableCell>
 							</TableRow>
 						</>
+					)}
+					{hasBothDates && membership !== "S" && (
+						<TableRow>
+							<TableCell sx={{ opacity: 0.5 }}>
+								Estadia
+								{nights > 0 && (
+									<Typography variant="caption" color="text.secondary" display="block">
+										{nights} {nights === 1 ? "noite" : "noites"}
+									</Typography>
+								)}
+							</TableCell>
+							<TableCell align="right" sx={{ opacity: 0.5 }}>
+								{formatBRL(stayFee)}
+							</TableCell>
+						</TableRow>
+					)}
+
+					{(stayFee !== null || productsTotal > 0 || fuelCost !== null) && (
+						<TableRow>
+							<TableCell>
+								<Typography variant="subtitle1" fontWeight="bold">
+									Total
+								</Typography>
+							</TableCell>
+							<TableCell align="right">
+								<Typography variant="subtitle1" fontWeight="bold">
+									{fuelIsFull ? `${formatBRL(grandTotal)} + combustível` : formatBRL(grandTotal)}
+								</Typography>
+							</TableCell>
+						</TableRow>
 					)}
 				</TableBody>
 			</Table>

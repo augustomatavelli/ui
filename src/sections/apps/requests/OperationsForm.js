@@ -18,7 +18,7 @@ const OperationsForm = ({ onValidate }) => {
 	const [checked, setChecked] = useState({});
 
 	const handleChange = useCallback(
-		(id, name, newAmount, unit) => {
+		(id, name, newAmount, unit, price) => {
 			setRequestResume((prev) => {
 				const services = prev.services || [];
 				if (newAmount === 0) {
@@ -31,24 +31,24 @@ const OperationsForm = ({ onValidate }) => {
 				if (!existingService) {
 					return {
 						...prev,
-						services: [...services, { id_service: id, name: name, amount: String(newAmount), unit: unit }],
+						services: [...services, { id_service: id, name: name, amount: String(newAmount), unit: unit, price: price }],
 					};
 				}
 
 				return {
 					...prev,
-					services: services.map((p) => (p.id_service === id ? { ...p, amount: String(newAmount), unit: unit } : p)),
+					services: services.map((p) => (p.id_service === id ? { ...p, amount: String(newAmount), unit: unit, price: price } : p)),
 				};
 			});
 		},
-		[setRequestResume]
+		[setRequestResume],
 	);
 
 	const handleCheckboxChange = (e) => {
-		const { name, amount, unit } = e;
+		const { name, amount, unit, price } = e;
 		setChecked((prev) => {
 			const newChecked = { ...prev, [name]: !prev[name] };
-			handleChange(e.id_service, e.name, unit === "un" ? 1 : amount, e.unit);
+			handleChange(e.id_service, e.name, unit === "un" ? 1 : amount, e.unit, price);
 			return newChecked;
 		});
 	};
