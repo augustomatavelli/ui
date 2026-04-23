@@ -30,7 +30,7 @@ const ListOrders = () => {
 
 	useEffect(() => {
 		if (!user) return;
-		if (user.type !== "A" && user.type !== "S" && user.type !== "C") {
+		if (user.type !== "A" && user.type !== "S") {
 			navigate("/aircrafts/me", { replace: true });
 		}
 		const fetchCategories = async () => {

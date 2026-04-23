@@ -137,7 +137,12 @@ const useAuth = () => {
 		}
 	};
 
-	const logout = () => {
+	const logout = async () => {
+		try {
+			await publicAxios.post("/auth/logout");
+		} catch (_) {
+			// erro silencioso — logout local ocorre independentemente
+		}
 		localStorage.clear();
 		resetUserStates();
 		resetAircraftstates();
