@@ -1,9 +1,9 @@
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
-import { Grid, Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material";
+import { Grid, Select, MenuItem, FormControl, InputLabel, Button, TextField, InputAdornment } from "@mui/material";
 import StockCard from "components/cards/inventory/StockCard";
 import InventoryMovementsTable from "sections/tables/inventory";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import useInventory from "hooks/useInventory";
 import InventoryContext from "contexts/InventoryContext";
 import Loader from "components/Loader";
@@ -80,8 +80,23 @@ const InventoryAdmin = () => {
 								title="Movimentações de Estoque"
 								sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 								secondary={
-									<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-										<FormControl>
+									<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>									<TextField
+										size="small"
+										placeholder="Buscar por solicitação..."
+										value={search}
+										onChange={(e) => {
+											setSearch(e.target.value);
+											setPage(1);
+										}}
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<SearchOutlined />
+												</InputAdornment>
+											),
+										}}
+										sx={{ minWidth: 200 }}
+									/>										<FormControl>
 											<InputLabel id="type-select-label">Tipo</InputLabel>
 											<Select labelId="type-select-label" id="type-select" value={typeFilter} label="Item" onChange={handleTypeChange}>
 												{["Todos", "Entrada", "Saída", "Ajuste"].map((item) => (

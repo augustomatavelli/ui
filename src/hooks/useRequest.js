@@ -38,10 +38,26 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
+		}
+	};
+
+	const calculateResume = async ({ aircraftId, landing_date, takeoff_date, services, products }) => {
+		try {
+			const response = await publicAxios.post("/requests/calculate-resume", {
+				aircraftId,
+				landing_date: landing_date ?? null,
+				takeoff_date: takeoff_date ?? null,
+				services: (services || []).map((s) => ({ id_service: s.id_service, amount: String(s.amount) })),
+				products: (products || []).map((p) => ({ id_product: p.id_product, amount: String(p.amount) })),
+			});
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			return null;
 		}
 	};
 
@@ -65,7 +81,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -92,7 +108,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -116,7 +132,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -140,7 +156,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -165,7 +181,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -192,7 +208,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -216,7 +232,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -240,7 +256,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -275,7 +291,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -299,7 +315,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -323,7 +339,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -347,7 +363,7 @@ const useRequest = () => {
 						color: "error",
 					},
 					close: true,
-				})
+				}),
 			);
 		} finally {
 			setLoadingRequest(false);
@@ -356,6 +372,7 @@ const useRequest = () => {
 
 	return {
 		createRequest,
+		calculateResume,
 		findAllRequests,
 		searchAllRequests,
 		searchMyAircraftsRequests,

@@ -12,6 +12,7 @@ import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import InputMask from "react-input-mask";
 import useUser from "hooks/useUser";
 import UserContext from "contexts/UserContext";
+import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const AuthRegister = () => {
 	const { createUser } = useUser();
@@ -101,8 +102,8 @@ const AuthRegister = () => {
 					} catch (err) {
 						setErrors({});
 						console.error(err);
-						const message =
-							err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
+						const errType = err?.response?.data?.errors?.[0]?.type || err?.response?.data?.errors?.[0]?.message;
+						const message = ErrorMessages[errType] || "Erro ao cadastrar usuário!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
 							setErrors({ submit: message });

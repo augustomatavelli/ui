@@ -6,10 +6,14 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "contexts/UserContext";
 import AircraftContext from "contexts/AircraftContext";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import UseAxios from "hooks/useAxios";
+import { openSnackbar } from "store/reducers/snackbar";
+import { dispatch } from "store";
 
 const AircraftCard = ({ data, setReload, reload }) => {
 	const { user } = useContext(UserContext);
 	const { setRequestAircraft } = useContext(AircraftContext);
+	const { publicAxios } = UseAxios();
 
 	const [addRequest, setAddRequest] = useState(false);
 
@@ -120,8 +124,34 @@ const AircraftCard = ({ data, setReload, reload }) => {
 						<Button
 							variant="contained"
 							size="small"
-							onClick={(event) => {
+							onClick={async (event) => {
 								event.stopPropagation();
+								try {
+									const res = await publicAxios.get(`/aircrafts/${id_aircraft}/can-create-request`);
+									if (!res.data.canCreate) {
+										dispatch(
+											openSnackbar({
+												open: true,
+												message: "Não é possível criar uma solicitação para esta aeronave no momento.",
+												variant: "alert",
+												alert: { color: "error" },
+												close: true,
+											}),
+										);
+										return;
+									}
+								} catch {
+									dispatch(
+										openSnackbar({
+											open: true,
+											message: "Erro ao verificar disponibilidade da aeronave.",
+											variant: "alert",
+											alert: { color: "error" },
+											close: true,
+										}),
+									);
+									return;
+								}
 								handleAddRequest();
 								setRequestAircraft(data);
 								navigate("/requests/create");

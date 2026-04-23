@@ -1,79 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TableContainer, Table, TableBody, TableRow, TableCell, Typography, Button, Collapse, Box, Grid, List, ListItem } from "@mui/material";
 import RequestContext from "contexts/RequestContext";
 import { useContext } from "react";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import useRequest from "hooks/useRequest";
 
 const formatBRL = (value) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
 export const RequestResume = ({ aircraft }) => {
 	const { requestResume } = useContext(RequestContext);
+	const { calculateResume } = useRequest();
 
 	const [openOperations, setOpenOperations] = useState(false);
 	const [openProducts, setOpenProducts] = useState(false);
 
-	const parseNumber = (value) => {
-		if (typeof value === "number") return value;
-		if (typeof value !== "string") return 0;
+	const [resumeData, setResumeData] = useState({
+		productsTotal: 0,
+		servicesTotal: 0,
+		fuelCost: null,
+		fuelIsFull: false,
+		stayFee: null,
+		nights: 0,
+		grandTotal: 0,
+		membership: aircraft.membership,
+	});
 
-		const trimmedValue = value.trim();
-		if (!trimmedValue) return 0;
+	const debounceRef = useRef(null);
 
-		const normalizedValue = trimmedValue.includes(",") ? trimmedValue.replace(/\./g, "").replace(",", ".") : trimmedValue;
-		const parsedValue = Number(normalizedValue);
+	useEffect(() => {
+		if (debounceRef.current) clearTimeout(debounceRef.current);
 
-		return Number.isFinite(parsedValue) ? parsedValue : 0;
-	};
+		debounceRef.current = setTimeout(async () => {
+			const result = await calculateResume({
+				aircraftId: aircraft.id_aircraft,
+				landing_date: requestResume.landing_date ?? null,
+				takeoff_date: requestResume.takeoff_date ?? null,
+				services: requestResume.services || [],
+				products: requestResume.products || [],
+			});
+			if (result) setResumeData(result);
+		}, 400);
 
-	const productsTotal = (requestResume.products || []).reduce((total, product) => {
-		const price = parseNumber(product.price);
-		const itemAmount = parseNumber(product.amount);
-
-		return total + price * itemAmount;
-	}, 0);
+		return () => clearTimeout(debounceRef.current);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [requestResume.services, requestResume.products, requestResume.landing_date, requestResume.takeoff_date]);
 
 	const { membership } = aircraft;
 	const { amount } = requestResume;
 
-	const landingDate = requestResume.landing_date ? dayjs(requestResume.landing_date) : null;
-	const takeoffDate = requestResume.takeoff_date ? dayjs(requestResume.takeoff_date) : null;
+	const { productsTotal, servicesTotal, fuelCost, fuelIsFull, stayFee, nights } = resumeData;
 
-	const hasBothDates = Boolean(landingDate && takeoffDate);
+	const hasBothDates = Boolean(requestResume.landing_date && requestResume.takeoff_date);
 
-	let nights = 0;
-	if (hasBothDates) {
-		const earlierDate = membership === "S" ? takeoffDate : landingDate;
-		const laterDate = membership === "S" ? landingDate : takeoffDate;
-		nights = laterDate.startOf("day").diff(earlierDate.startOf("day"), "day");
-	}
-
-	const fuelService = (requestResume.services || []).find((s) => s.id_service === 1);
-	const hasFuel = Boolean(fuelService);
-	const fuelIsFull = hasFuel && fuelService.amount === "full";
-
-	let stayFee = null;
-	if (hasBothDates && membership !== "S") {
-		if (nights > 0) {
-			stayFee = 350 * nights;
-		} else {
-			stayFee = hasFuel ? 250 : 350;
-		}
-	}
-
-	let fuelCost = null;
-	if (hasFuel && !fuelIsFull) {
-		const fuelPrice = parseNumber(fuelService.price);
-		const fuelAmount = parseNumber(fuelService.amount);
-		fuelCost = fuelPrice * fuelAmount;
-	}
-
-	const servicesTotal = (requestResume.services || []).reduce((total, service) => {
-		if (service.amount === "full") return total;
-		const price = parseNumber(service.price);
-		const amt = parseNumber(service.amount);
-		return total + price * amt;
-	}, 0);
+	const parseNumber = (value) => {
+		if (typeof value === "number") return value;
+		if (typeof value !== "string") return 0;
+		const trimmedValue = value.trim();
+		if (!trimmedValue) return 0;
+		const normalizedValue = trimmedValue.includes(",") ? trimmedValue.replace(/\./g, "").replace(",", ".") : trimmedValue;
+		const parsedValue = Number(normalizedValue);
+		return Number.isFinite(parsedValue) ? parsedValue : 0;
+	};
 
 	const servicesCaptionText = fuelIsFull && servicesTotal === 0 ? "a confirmar" : fuelIsFull ? `${formatBRL(servicesTotal)} + combustível` : formatBRL(servicesTotal);
 

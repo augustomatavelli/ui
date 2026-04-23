@@ -124,13 +124,11 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 								<TableRow hover key={`${item.id_order}-${item.id_item}`}>
 									<TableCell align="center">
 										<Button
-											disabled={loadingOrder}
-											variant="contained"
-											color={item.order_status === "P" ? "primary" : item.order_status === "E" ? "warning" : item.order_status === "C" ? "error" : "success"}
-											sx={{ px: 1, py: 0.25, color: item.order_status === "E" ? "#252525" : "white" }}
-											onClick={async () => {
-												if (item.order_status === "F") return;
-												if (item.order_status === "C") return;
+										disabled={loadingOrder || item.order_status === "F" || item.order_status === "C"}
+										variant="contained"
+										color={item.order_status === "P" ? "primary" : item.order_status === "E" ? "warning" : item.order_status === "C" ? "error" : "success"}
+										sx={{ px: 1, py: 0.25, color: item.order_status === "E" ? "#252525" : "white" }}
+										onClick={async () => {
 												const newStatus = item.order_status === "P" ? "E" : "F";
 												const orderIds = item.id_orders && item.id_orders.length > 0 ? item.id_orders : [item.id_order];
 												await Promise.all(orderIds.map((orderId) => handleStatus(orderId, newStatus)));
@@ -192,7 +190,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 															setSelectedOrder(item.id_order);
 														}}
 													/>
-												) : item.item_id === 1 && item.order_status === "E" ? (
+												) : item.is_fuel && item.order_status === "E" ? (
 													<PaperClipOutlined onClick={() => handlePhotoClick(item.id_order)} style={{ cursor: "pointer", color: orderPhotos[item.id_order] ? "#52c41a" : "inherit" }} />
 												) : null}
 											</Grid>
