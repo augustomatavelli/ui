@@ -95,7 +95,7 @@ const AuthRegister = () => {
 										color: "success",
 									},
 									close: false,
-								})
+								}),
 							);
 							navigate("/", { replace: true });
 						}

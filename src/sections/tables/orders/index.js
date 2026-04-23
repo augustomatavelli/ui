@@ -54,7 +54,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 					color: "success",
 				},
 				close: false,
-			})
+			}),
 		);
 		setEditFuel((prev) => ({ ...prev, [itemKey]: false }));
 		setEditFuelValue((prev) => ({ ...prev, [itemKey]: "" }));
@@ -88,7 +88,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						color: "success",
 					},
 					close: false,
-				})
+				}),
 			);
 			setPhotoOrderId(null);
 		};
@@ -118,17 +118,17 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-					{(loadingOrder || loadingInspection) && <LinearProgress />}
-					{orders.length > 0 ? (
+						{(loadingOrder || loadingInspection) && <LinearProgress />}
+						{orders.length > 0 ? (
 							orders.map((item, indexItem) => (
 								<TableRow hover key={`${item.id_order}-${item.id_item}`}>
 									<TableCell align="center">
 										<Button
-										disabled={loadingOrder || item.order_status === "F" || item.order_status === "C"}
-										variant="contained"
-										color={item.order_status === "P" ? "primary" : item.order_status === "E" ? "warning" : item.order_status === "C" ? "error" : "success"}
-										sx={{ px: 1, py: 0.25, color: item.order_status === "E" ? "#252525" : "white" }}
-										onClick={async () => {
+											disabled={loadingOrder || item.order_status === "F" || item.order_status === "C"}
+											variant="contained"
+											color={item.order_status === "P" ? "primary" : item.order_status === "E" ? "warning" : item.order_status === "C" ? "error" : "success"}
+											sx={{ px: 1, py: 0.25, color: item.order_status === "E" ? "#252525" : "white" }}
+											onClick={async () => {
 												const newStatus = item.order_status === "P" ? "E" : "F";
 												const orderIds = item.id_orders && item.id_orders.length > 0 ? item.id_orders : [item.id_order];
 												await Promise.all(orderIds.map((orderId) => handleStatus(orderId, newStatus)));
@@ -145,7 +145,7 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 															color: "success",
 														},
 														close: false,
-													})
+													}),
 												);
 											}}
 										>

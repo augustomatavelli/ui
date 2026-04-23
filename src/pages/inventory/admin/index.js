@@ -80,23 +80,26 @@ const InventoryAdmin = () => {
 								title="Movimentações de Estoque"
 								sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 								secondary={
-									<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>									<TextField
-										size="small"
-										placeholder="Buscar por solicitação..."
-										value={search}
-										onChange={(e) => {
-											setSearch(e.target.value);
-											setPage(1);
-										}}
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<SearchOutlined />
-												</InputAdornment>
-											),
-										}}
-										sx={{ minWidth: 200 }}
-									/>										<FormControl>
+									<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+										{" "}
+										<TextField
+											size="small"
+											placeholder="Buscar por solicitação..."
+											value={search}
+											onChange={(e) => {
+												setSearch(e.target.value);
+												setPage(1);
+											}}
+											InputProps={{
+												startAdornment: (
+													<InputAdornment position="start">
+														<SearchOutlined />
+													</InputAdornment>
+												),
+											}}
+											sx={{ minWidth: 200 }}
+										/>{" "}
+										<FormControl>
 											<InputLabel id="type-select-label">Tipo</InputLabel>
 											<Select labelId="type-select-label" id="type-select" value={typeFilter} label="Item" onChange={handleTypeChange}>
 												{["Todos", "Entrada", "Saída", "Ajuste"].map((item) => (
