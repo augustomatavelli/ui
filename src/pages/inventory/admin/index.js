@@ -17,11 +17,17 @@ const InventoryAdmin = () => {
 
 	const [service, setService] = useState("");
 	const [serviceName, setServiceName] = useState("");
+	const [searchInput, setSearchInput] = useState("");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [typeFilter, setTypeFilter] = useState("Todos");
 	const [openIn, setOpenIn] = useState(false);
 	const [openAdjust, setOpenAdjust] = useState(false);
+
+	const handleSearch = () => {
+		setSearch(searchInput);
+		setPage(1);
+	};
 
 	const handleServiceChange = (event) => {
 		setService(event.target.value);
@@ -85,15 +91,13 @@ const InventoryAdmin = () => {
 										<TextField
 											size="small"
 											placeholder="Buscar por solicitação..."
-											value={search}
-											onChange={(e) => {
-												setSearch(e.target.value);
-												setPage(1);
-											}}
+											value={searchInput}
+											onChange={(e) => setSearchInput(e.target.value)}
+											onKeyDown={(e) => e.key === "Enter" && handleSearch()}
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
-														<SearchOutlined />
+														<SearchOutlined style={{ cursor: "pointer" }} onClick={handleSearch} />
 													</InputAdornment>
 												),
 											}}
