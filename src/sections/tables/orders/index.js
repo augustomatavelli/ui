@@ -10,9 +10,13 @@ import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import AlertComissary from "sections/apps/orders/AlertComissary";
 
 dayjs.extend(utc);
+dayjs.extend(customParseFormat);
+
+const DISPLAY_FORMAT = "DD/MM/YYYY HH:mm";
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
@@ -161,10 +165,15 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 												: item.available_at === "A"
 													? (() => {
 															const now = dayjs();
-															const landingDiff = Math.abs(now.diff(dayjs(item.landing_date)));
-															const takeoffDiff = Math.abs(now.diff(dayjs(item.takeoff_date)));
-															const closestDate = !takeoffDiff ? item.landing_date : landingDiff < takeoffDiff ? item.landing_date : item.takeoff_date;
-															return closestDate;
+															const landing = item.landing_date ? dayjs(item.landing_date, DISPLAY_FORMAT) : null;
+															const takeoff = item.takeoff_date ? dayjs(item.takeoff_date, DISPLAY_FORMAT) : null;
+															// Sem uma das datas, mostra a que existir.
+															if (!landing?.isValid()) return item.takeoff_date || "Não agendado";
+															if (!takeoff?.isValid()) return item.landing_date || "Não agendado";
+															// Mostra a hora mais próxima do momento atual.
+															const landingDiff = Math.abs(now.diff(landing));
+															const takeoffDiff = Math.abs(now.diff(takeoff));
+															return landingDiff <= takeoffDiff ? item.landing_date : item.takeoff_date;
 														})()
 													: "Não agendado"}
 									</TableCell>
