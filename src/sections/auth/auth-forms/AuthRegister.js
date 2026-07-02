@@ -12,7 +12,6 @@ import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import InputMask from "react-input-mask";
 import useUser from "hooks/useUser";
 import UserContext from "contexts/UserContext";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
 
 const AuthRegister = () => {
 	const { createUser } = useUser();
@@ -36,6 +35,15 @@ const AuthRegister = () => {
 
 	const handleChangeCheckBox = () => {
 		setIsPilot(!isPilot);
+	};
+
+	const handleChangeTypeDoc = (value) => {
+		setTypeDoc(value);
+		// O campo "piloto" só existe para CPF. Ao trocar para CNPJ, desliga isPilot
+		// para não exigir o número ANAC (campo oculto) e travar o submit.
+		if (value === "cnpj") {
+			setIsPilot(false);
+		}
 	};
 
 	return (
@@ -69,46 +77,40 @@ const AuthRegister = () => {
 						.matches(/\d/, "A senha deve conter pelo menos um número")
 						.matches(/[\W_]/, "A senha deve conter pelo menos um caractere especial"),
 				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-					try {
-						const payload = {
-							name: values.name,
-							email: values.email,
-							phone: values.phone.replace(/\D/g, ""),
-							cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
-							cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-							type: isPilot ? "P" : "O",
-							pilotRegister: values.pilot,
-							password: values.password,
-						};
+				onSubmit={async (values, { setStatus, setSubmitting }) => {
+					const payload = {
+						name: values.name,
+						email: values.email,
+						phone: values.phone.replace(/\D/g, ""),
+						cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
+						cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
+						type: isPilot ? "P" : "O",
+						pilotRegister: isPilot ? values.pilot : "",
+						password: values.password,
+					};
 
-						const response = await createUser(payload);
-						if (scriptedRef.current) {
-							setStatus({ success: true });
-							setSubmitting(false);
-							dispatch(
-								openSnackbar({
-									open: true,
-									message: response.message,
-									variant: "alert",
-									alert: {
-										color: "success",
-									},
-									close: false,
-								}),
-							);
-							navigate("/", { replace: true });
-						}
-					} catch (err) {
-						setErrors({});
-						console.error(err);
-						const errType = err?.response?.data?.errors?.[0]?.type || err?.response?.data?.errors?.[0]?.message;
-						const message = ErrorMessages[errType] || "Erro ao cadastrar usuário!";
-						if (scriptedRef.current) {
-							setStatus({ success: false });
-							setErrors({ submit: message });
-							setSubmitting(false);
-						}
+					// createUser usa runRequest: não lança em erro e já exibe o snackbar.
+					// Em falha retorna undefined/null; só seguimos no sucesso.
+					const result = await createUser(payload);
+					if (!scriptedRef.current) return;
+					if (result) {
+						setStatus({ success: true });
+						setSubmitting(false);
+						dispatch(
+							openSnackbar({
+								open: true,
+								message: "Usuário cadastrado com sucesso!",
+								variant: "alert",
+								alert: {
+									color: "success",
+								},
+								close: false,
+							}),
+						);
+						navigate("/", { replace: true });
+					} else {
+						setStatus({ success: false });
+						setSubmitting(false);
 					}
 				}}
 			>
@@ -122,7 +124,7 @@ const AuthRegister = () => {
 										row
 										value={typeDoc}
 										onChange={(e) => {
-											setTypeDoc(e.target.value);
+											handleChangeTypeDoc(e.target.value);
 										}}
 									>
 										<FormControlLabel value="cpf" control={<Radio />} label="CPF" />

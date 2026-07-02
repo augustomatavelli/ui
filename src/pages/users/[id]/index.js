@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse, OutlinedInput, IconButton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Collapse, OutlinedInput, IconButton, Tooltip } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
@@ -9,13 +9,10 @@ import Loader from "components/Loader";
 import { UpOutlined, DownOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { UserAircraftsList } from "sections/apps/users/UserAircraftsList";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
-
-dayjs.extend(utc);
+import { USER_TYPE, USER_STATUS } from "constants/domain";
 
 const UserDetails = () => {
 	const { findOneUserById, deleteUser, updateUser } = useUser();
@@ -85,7 +82,10 @@ const UserDetails = () => {
 	};
 
 	useEffect(() => {
-		findOneUserById(id);
+		setUserDetails({});
+		const controller = new AbortController();
+		findOneUserById(id, controller.signal);
+		return () => controller.abort();
 	}, [id]);
 
 	return (
@@ -106,15 +106,18 @@ const UserDetails = () => {
 													{!editName ? (
 														<Box display="inline-flex" alignItems="center" gap={1}>
 															<Typography>{name}</Typography>
-															<IconButton
-																size="small"
-																onClick={() => {
-																	setEditName(true);
-																	setEditNameValue(name);
-																}}
-															>
-																<EditOutlined />
-															</IconButton>
+															<Tooltip title="Editar nome">
+																<IconButton
+																	size="small"
+																	aria-label="Editar nome"
+																	onClick={() => {
+																		setEditName(true);
+																		setEditNameValue(name);
+																	}}
+																>
+																	<EditOutlined />
+																</IconButton>
+															</Tooltip>
 														</Box>
 													) : (
 														<Box display="inline-flex" alignItems="center" gap={1}>
@@ -146,15 +149,18 @@ const UserDetails = () => {
 													{!editEmail ? (
 														<Box display="inline-flex" alignItems="center" gap={1}>
 															<Typography>{email}</Typography>
-															<IconButton
-																size="small"
-																onClick={() => {
-																	setEditEmail(true);
-																	setEditEmailValue(email);
-																}}
-															>
-																<EditOutlined />
-															</IconButton>
+															<Tooltip title="Editar email">
+																<IconButton
+																	size="small"
+																	aria-label="Editar email"
+																	onClick={() => {
+																		setEditEmail(true);
+																		setEditEmailValue(email);
+																	}}
+																>
+																	<EditOutlined />
+																</IconButton>
+															</Tooltip>
 														</Box>
 													) : (
 														<Box display="inline-flex" alignItems="center" gap={1}>
@@ -197,15 +203,18 @@ const UserDetails = () => {
 													{!editMobile ? (
 														<Box display="inline-flex" alignItems="center" gap={1}>
 															<Typography>{mobile}</Typography>
-															<IconButton
-																size="small"
-																onClick={() => {
-																	setEditMobile(true);
-																	setEditMobileValue(mobile);
-																}}
-															>
-																<EditOutlined />
-															</IconButton>
+															<Tooltip title="Editar celular">
+																<IconButton
+																	size="small"
+																	aria-label="Editar celular"
+																	onClick={() => {
+																		setEditMobile(true);
+																		setEditMobileValue(mobile);
+																	}}
+																>
+																	<EditOutlined />
+																</IconButton>
+															</Tooltip>
 														</Box>
 													) : (
 														<Box display="inline-flex" alignItems="center" gap={1}>
@@ -230,7 +239,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Tipo</Typography>
-													<Typography>{type === "A" ? "Administrador" : type === "P" ? "Piloto" : type === "O" ? "Operador" : "Comum"}</Typography>
+													<Typography>{type === USER_TYPE.ADMIN ? "Administrador" : type === USER_TYPE.PILOT ? "Piloto" : type === USER_TYPE.OPERATOR ? "Operador" : "Comum"}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>
@@ -252,7 +261,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Status</Typography>
-													<Typography>{status === "A" ? "Ativo" : status === "P" ? "Pendente" : "Inativo"}</Typography>
+													<Typography>{status === USER_STATUS.ACTIVE ? "Ativo" : status === USER_STATUS.PENDING ? "Pendente" : "Inativo"}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>

@@ -6,8 +6,6 @@ import AnimateButton from "components/@extended/AnimateButton";
 import { ThemeMode } from "config";
 import useAuth from "hooks/useAuth";
 import AuthContext from "contexts/AuthContext";
-import { dispatch } from "store";
-import { openSnackbar } from "store/reducers/snackbar";
 import { useNavigate } from "react-router";
 
 const AuthCodeVerification = () => {
@@ -25,21 +23,10 @@ const AuthCodeVerification = () => {
 	const handleVerify = async () => {
 		try {
 			const payload = { code: otp, email: emailSent };
-			const response = await checkResetPasswordCode(payload);
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: response.message,
-					variant: "alert",
-					alert: {
-						color: "success",
-					},
-					close: false,
-				})
-			);
+			await checkResetPasswordCode(payload);
 			navigate("/reset-password", { replace: true });
 		} catch (error) {
-			console.error("Erro ao verificar o código:", error);
+			// erro já tratado (snackbar) no hook useAuth
 		}
 	};
 

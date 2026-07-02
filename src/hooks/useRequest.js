@@ -1,9 +1,7 @@
 import UseAxios from "./useAxios";
 import { useContext } from "react";
 import RequestContext from "contexts/RequestContext";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import { runRequest } from "utils/api/runRequest";
 
 const useRequest = () => {
 	const { publicAxios } = UseAxios();
@@ -22,254 +20,98 @@ const useRequest = () => {
 	} = useContext(RequestContext);
 
 	const createRequest = async (data) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.post("/requests", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.post("/requests", data), { setLoading: setLoadingRequest });
+		return result;
 	};
 
 	const calculateResume = async ({ aircraftId, landing_date, takeoff_date, services, products }) => {
-		try {
-			const response = await publicAxios.post("/requests/calculate-resume", {
-				aircraftId,
-				landing_date: landing_date ?? null,
-				takeoff_date: takeoff_date ?? null,
-				services: (services || []).map((s) => ({ id_service: s.id_service, amount: String(s.amount) })),
-				products: (products || []).map((p) => ({ id_product: p.id_product, amount: String(p.amount) })),
-			});
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			return null;
+		const { data, error } = await runRequest(
+			() =>
+				publicAxios.post("/requests/calculate-resume", {
+					aircraftId,
+					landing_date: landing_date ?? null,
+					takeoff_date: takeoff_date ?? null,
+					services: (services || []).map((s) => ({ id_service: s.id_service, amount: String(s.amount) })),
+					products: (products || []).map((p) => ({ id_product: p.id_product, amount: String(p.amount) })),
+				}),
+			{ notifyError: false },
+		);
+		if (error) return null;
+		return data;
+	};
+
+	const searchAllRequests = async (search, page, statusParams, period, dateFilter, signal) => {
+		const { startDate, endDate } = dateFilter;
+
+		const { data } = await runRequest(
+			() => publicAxios.get(`/requests?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`, { signal }),
+			{ setLoading: setLoadingRequest },
+		);
+		if (data) {
+			setSearchRequests(data.items ?? []);
+			setTotalSearchRequests(data.pagination?.totalPages ?? 0);
 		}
 	};
 
-	const searchAllRequests = async (search, page, statusParams, period, dateFilter) => {
+	const searchMyAircraftsRequests = async (search, page, statusParams, period, dateFilter, signal) => {
 		const { startDate, endDate } = dateFilter;
 
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
-			setSearchRequests(response.data.items);
-			setTotalSearchRequests(response.data.pagination.totalPages);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
-	};
-
-	const searchMyAircraftsRequests = async (search, page, statusParams, period, dateFilter) => {
-		const { startDate, endDate } = dateFilter;
-
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
-			setSearchAircraftsRequests(response.data.items);
-			setTotalSearchAircraftsRequests(response.data.pagination.totalPages);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
+		const { data } = await runRequest(
+			() => publicAxios.get(`/requests/aircrafts/me?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`, { signal }),
+			{ setLoading: setLoadingRequest },
+		);
+		if (data) {
+			setSearchAircraftsRequests(data.items ?? []);
+			setTotalSearchAircraftsRequests(data.pagination?.totalPages ?? 0);
 		}
 	};
 
 	const updateRequest = async (requestId, data) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.patch(`/requests?requestId=${requestId}`, data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
+		const { data: result } = await runRequest(() => publicAxios.patch(`/requests?requestId=${requestId}`, data), { setLoading: setLoadingRequest });
+		return result;
+	};
+
+	const findAllLiveRequests = async (search, page, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/requests/dashboard/live`, { signal }), { setLoading: setLoadingRequest });
+		if (data) {
+			setLiveRequests(data);
 		}
 	};
 
-	const findAllLiveRequests = async (search, page) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/dashboard/live`);
-			setLiveRequests(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
+	const findRequestsControl = async (search, page, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/requests/find-all/flight-operations?search=${search}&page=${page}`, { signal }), { setLoading: setLoadingRequest });
+		if (data) {
+			setTotalRequests(data.pagination?.totalPages ?? 0);
+			setRequestsControl(data.items ?? []);
 		}
 	};
 
-	const findRequestsControl = async (search, page) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/find-all/flight-operations?search=${search}&page=${page}`);
-			setTotalRequests(response.data.pagination.totalPages);
-			setRequestsControl(response.data.items);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
-	};
-
-	const findAllRequests = async (search, page, statusParams, period, dateFilter) => {
+	const findAllRequests = async (search, page, statusParams, period, dateFilter, signal) => {
 		const { startDate, endDate } = dateFilter;
 
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`);
-			setRequests(response.data.items);
-			setTotalRequests(response.data.pagination.totalPages);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
+		const { data } = await runRequest(
+			() => publicAxios.get(`/requests/admin/find-all?search=${search}&page=${page}&${statusParams.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`, { signal }),
+			{ setLoading: setLoadingRequest },
+		);
+		if (data) {
+			setRequests(data.items ?? []);
+			setTotalRequests(data.pagination?.totalPages ?? 0);
 		}
 	};
 
 	const updateStatus = async (requestId) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.patch(`/requests/admin/update-status/${requestId}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
+		const { data } = await runRequest(() => publicAxios.patch(`/requests/admin/update-status/${requestId}`), { setLoading: setLoadingRequest });
+		return data;
 	};
 
 	const updateAbsence = async (requestId) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.patch(`/requests/admin/update-absence/${requestId}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
+		const { data } = await runRequest(() => publicAxios.patch(`/requests/admin/update-absence/${requestId}`), { setLoading: setLoadingRequest });
+		return data;
 	};
 
 	const findSummaryPdf = async (requestId) => {
-		try {
-			setLoadingRequest(true);
-
-			const response = await publicAxios.get(`/requests/admin/find-pdf/${requestId}`, {
-				responseType: "blob",
-			});
+		const { response } = await runRequest(() => publicAxios.get(`/requests/admin/find-pdf/${requestId}`, { responseType: "blob" }), { setLoading: setLoadingRequest });
+		if (response) {
 			const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
 			const link = document.createElement("a");
 			link.href = url;
@@ -278,96 +120,24 @@ const useRequest = () => {
 			link.click();
 			document.body.removeChild(link);
 			window.URL.revokeObjectURL(url);
-		} catch (error) {
-			console.log(error);
-			const err = error?.response?.data?.errors?.[0]?.type || error?.response?.data?.errors?.[0]?.message || "Ocorreu um erro";
-
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
 		}
 	};
 
-	const findOneRequestById = async (requestId) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.get(`/requests/details/${requestId}`);
-			setRequestDetails(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
+	const findOneRequestById = async (requestId, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/requests/details/${requestId}`, { signal }), { setLoading: setLoadingRequest });
+		if (data) {
+			setRequestDetails(data);
 		}
 	};
 
 	const deleteRequest = async (requestId) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.delete(`/requests/${requestId}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
+		const { data } = await runRequest(() => publicAxios.delete(`/requests/${requestId}`), { setLoading: setLoadingRequest });
+		return data;
 	};
 
 	const updateRequestsControl = async (requestId, type, date) => {
-		try {
-			setLoadingRequest(true);
-			const response = await publicAxios.patch(`/requests/${requestId}/flight-operations?type=${type}&date=${date}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingRequest(false);
-		}
+		const { data } = await runRequest(() => publicAxios.patch(`/requests/${requestId}/flight-operations?type=${type}&date=${date}`), { setLoading: setLoadingRequest });
+		return data;
 	};
 
 	return {

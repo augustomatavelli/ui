@@ -6,12 +6,11 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { FilePdfOutlined, BarChartOutlined, TableOutlined } from "@ant-design/icons";
 import { ReportFuelFilter } from "./ReportFuelFilter";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import { format, startOfDay, endOfYear } from "date-fns";
 import ReactApexChart from "react-apexcharts";
-dayjs.extend(utc);
-dayjs.extend(timezone);
+
+const API_LOCAL_FMT = "yyyy-MM-dd'T'HH:mm:ss";
 
 const allColumns = [
 	{
@@ -246,8 +245,8 @@ export default function ReportFuelTable({ openFilter, reload }) {
 
 	const [selectedPeriod, setSelectedPeriod] = useState("general");
 	const [dateFilter, setDateFilter] = useState({
-		start: dayjs("2025-01-01").startOf("day").format("YYYY-MM-DDTHH:mm:ss"),
-		end: dayjs().endOf("year").format("YYYY-MM-DDTHH:mm:ss"),
+		start: format(startOfDay(new Date("2025-01-01T00:00:00")), API_LOCAL_FMT),
+		end: format(endOfYear(new Date()), API_LOCAL_FMT),
 	});
 	const [graph, setGraph] = useState(false);
 
@@ -279,7 +278,7 @@ export default function ReportFuelTable({ openFilter, reload }) {
 									value={period}
 									onChange={handleChange}
 									displayEmpty
-									inputProps={{ "aria-label": "Without label" }}
+									inputProps={{ "aria-label": "Agrupar por período" }}
 									renderValue={(selected) => {
 										if (!selected) {
 											return <Typography variant="subtitle1">Agrupar por</Typography>;
@@ -329,7 +328,9 @@ export default function ReportFuelTable({ openFilter, reload }) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{reportFuelList && reportFuelList.length > 0 ? (
+							{loadingReport ? (
+								<TableSkeleton rows={5} columns={4} />
+							) : reportFuelList && reportFuelList.length > 0 ? (
 								reportFuelList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 							) : (
 								<TableRow>

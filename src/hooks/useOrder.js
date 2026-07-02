@@ -1,92 +1,36 @@
 import UseAxios from "./useAxios";
 import { useContext } from "react";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import OrderContext from "contexts/OrdersContext";
+import { runRequest } from "utils/api/runRequest";
 
 const useOrder = () => {
 	const { publicAxios } = UseAxios();
 
 	const { setLoadingOrder, setOrders, setTotalOrders, setTotalTabOrders } = useContext(OrderContext);
 
-	const findAllOrders = async (search, page, params, paramsStatus, period, dateFilter) => {
+	const findAllOrders = async (search, page, params, paramsStatus, period, dateFilter, signal) => {
 		const { startDate, endDate } = dateFilter;
 
-		try {
-			setLoadingOrder(true);
-			const response = await publicAxios.get(
-				`/orders/find-all?search=${search}&page=${page}&${params.toString()}&${paramsStatus.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`
-			);
-			setOrders(response.data.items);
-			setTotalOrders(response.data.pagination.totalPages);
-			setTotalTabOrders(response.data.count);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingOrder(false);
+		const { data } = await runRequest(
+			() => publicAxios.get(`/orders/find-all?search=${search}&page=${page}&${params.toString()}&${paramsStatus.toString()}&period=${period}&startDate=${startDate}&endDate=${endDate}`, { signal }),
+			{ setLoading: setLoadingOrder },
+		);
+		if (data) {
+			setOrders(data.items ?? []);
+			setTotalOrders(data.pagination?.totalPages ?? 0);
+			setTotalTabOrders(data.count);
 		}
+		return data;
 	};
 
-	const findAllCategories = async () => {
-		try {
-			setLoadingOrder(true);
-			const response = await publicAxios.get(`/orders/categories`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingOrder(false);
-		}
+	const findAllCategories = async (signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/orders/categories`, { signal }), { setLoading: setLoadingOrder });
+		return data;
 	};
 
 	const updateOrderStatus = async (orderId, data) => {
-		try {
-			setLoadingOrder(true);
-			const response = await publicAxios.patch(`/orders/update-status/${orderId}`, data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingOrder(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.patch(`/orders/update-status/${orderId}`, data), { setLoading: setLoadingOrder });
+		return result;
 	};
 
 	return { findAllOrders, findAllCategories, updateOrderStatus };

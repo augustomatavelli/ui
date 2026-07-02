@@ -62,7 +62,9 @@ const MyAircrafts = () => {
 
 	useEffect(() => {
 		setRequestResume({});
-		searchAllAircrafts(search, page);
+		const controller = new AbortController();
+		searchAllAircrafts(search, page, controller.signal);
+		return () => controller.abort();
 	}, [search, page, reload]);
 
 
@@ -104,7 +106,7 @@ const MyAircrafts = () => {
 										})}
 									</Select>
 								</FormControl>
-								{(user.type === "O" || user.type === "P") && (
+								{(user?.type === "O" || user?.type === "P") && (
 									<Button
 										variant="contained"
 										startIcon={<PlusOutlined />}
@@ -126,11 +128,11 @@ const MyAircrafts = () => {
 				<Loader />
 			) : searchAircrafts.length > 0 ? (
 				<Grid container spacing={3}>
-					{searchAircrafts
+					{[...searchAircrafts]
 						.sort(function (a, b) {
 							if (sortBy === "Padrão") return b.id_aircraft < a.id_aircraft ? 1 : -1;
 							if (sortBy === "Matrícula") return a.registration.localeCompare(b.registration);
-							return a;
+							return 0;
 						})
 						.map((aircraft) => (
 							<Grid item key={aircraft.id_aircraft} xs={12} sm={6} md={4}>

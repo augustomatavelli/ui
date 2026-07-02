@@ -7,6 +7,8 @@ import useInventory from "hooks/useInventory";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { CameraFilled } from "@ant-design/icons";
+import { validateImageFile } from "utils/file/validateImageFile";
+import { readFileAsBase64 } from "utils/file/readFileAsBase64";
 
 export default function AlertStockIn({ open, handleClose, handleSave, service }) {
 	const { createInventory } = useInventory();
@@ -47,27 +49,12 @@ export default function AlertStockIn({ open, handleClose, handleSave, service })
 	const handleFileChange = async (e) => {
 		const file = e.target.files?.[0];
 		if (file) {
-			const validFormats = ["image/png", "image/jpeg"];
-			const maxSize = 2 * 1024 * 1024;
-
-			if (!validFormats.includes(file.type)) {
+			const { valid, error } = validateImageFile(file);
+			if (!valid) {
 				dispatch(
 					openSnackbar({
 						open: true,
-						message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-						variant: "alert",
-						alert: { color: "warning" },
-						close: false,
-					})
-				);
-				return;
-			}
-
-			if (file.size > maxSize) {
-				dispatch(
-					openSnackbar({
-						open: true,
-						message: "O tamanho máximo permitido é 2MB",
+						message: error,
 						variant: "alert",
 						alert: { color: "warning" },
 						close: false,
@@ -78,20 +65,11 @@ export default function AlertStockIn({ open, handleClose, handleSave, service })
 
 			setImagePreview(URL.createObjectURL(file));
 			let base64Image = "";
-			base64Image = await readFile(file);
+			base64Image = await readFileAsBase64(file);
 
 			setImageRecipe(base64Image);
 		}
 	};
-
-	async function readFile(file) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	}
 
 	const handleCloseDialog = () => {
 		handleClose();
@@ -128,7 +106,7 @@ export default function AlertStockIn({ open, handleClose, handleSave, service })
 						)}
 						<Grid spacing={2} sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 							<Grid item xs={12} sm="auto">
-								<TextField type="file" sx={{ display: "none" }} inputRef={fileInputRef} onChange={(event) => handleFileChange(event)} accept="image/png, image/jpeg" />
+								<TextField type="file" sx={{ display: "none" }} inputRef={fileInputRef} onChange={(event) => handleFileChange(event)} inputProps={{ accept: "image/png, image/jpeg" }} />
 								<IconButton
 									onClick={() => fileInputRef.current?.click()}
 									sx={{
@@ -158,11 +136,12 @@ export default function AlertStockIn({ open, handleClose, handleSave, service })
 						<Button
 							disabled={loadingInventory || error || !inputValue}
 							onClick={async () => {
-								const response = await createInventory({ type: "E", amount: Number(inputValue), id_item: service, receipt: imageRecipe });
+								const result = await createInventory({ type: "E", amount: Number(inputValue), id_item: service, receipt: imageRecipe });
+								if (!result) return;
 								dispatch(
 									openSnackbar({
 										open: true,
-										message: response.message,
+										message: "Entrada registrada com sucesso!",
 										variant: "alert",
 										alert: {
 											color: "success",

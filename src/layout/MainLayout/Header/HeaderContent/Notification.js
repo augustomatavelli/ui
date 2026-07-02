@@ -6,19 +6,12 @@ import IconButton from "components/@extended/IconButton";
 import Transitions from "components/@extended/Transitions";
 import { BellOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import NotificationContext from "contexts/NotificationContext";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/pt-br";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { fromDisplay } from "utils/date";
 import useNotification from "hooks/useNotification";
 import { useNavigate } from "react-router";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 import UserContext from "contexts/UserContext";
-
-dayjs.extend(utc);
-dayjs.extend(relativeTime);
-dayjs.extend(customParseFormat);
-dayjs.locale("pt-br");
 
 const avatarSX = {
 	width: 36,
@@ -162,7 +155,13 @@ const Notification = () => {
 													}),
 												}}
 											>
-												<ListItemText primary={<Typography variant="h6">{notification.message}</Typography>} secondary={dayjs(notification.created_at, "DD/MM/YYYY HH:mm").fromNow()} />
+												<ListItemText
+													primary={<Typography variant="h6">{notification.message}</Typography>}
+													secondary={(() => {
+														const date = fromDisplay(notification.created_at);
+														return date ? formatDistanceToNow(date, { addSuffix: true, locale: ptBR }) : "";
+													})()}
+												/>
 											</ListItemButton>
 										))}
 									</List>

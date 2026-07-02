@@ -7,15 +7,12 @@ import useLandingSite from "hooks/useLandingSite";
 import LandingSiteContext from "contexts/LandingSiteContext";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
 import { useState } from "react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
-dayjs.extend(utc);
+import { formatDisplay } from "utils/date";
 
 const UserDetails = () => {
 	const { findOneLandingSiteById, deleteLandingSite } = useLandingSite();
 
-	const { loadingLandingSite, landingSiteDetails, setLoadingLandingSite } = useContext(LandingSiteContext);
+	const { loadingLandingSite, landingSiteDetails, setLandingSiteDetails } = useContext(LandingSiteContext);
 
 	const [openAlert, setOpenAlert] = useState(false);
 
@@ -134,7 +131,7 @@ const UserDetails = () => {
 											<Grid item xs={12} md={6}>
 												<Stack spacing={0.5}>
 													<Typography color="secondary">Criado em</Typography>
-													<Typography>{dayjs(created_at).format("DD/MM/YYYY HH:mm")}</Typography>
+													<Typography>{formatDisplay(created_at)}</Typography>
 												</Stack>
 											</Grid>
 										</Grid>
@@ -149,7 +146,7 @@ const UserDetails = () => {
 										color="error"
 										onClick={() => {
 											window.history.back();
-											setLoadingLandingSite({});
+											setLandingSiteDetails({});
 										}}
 									>
 										Voltar

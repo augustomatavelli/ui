@@ -11,35 +11,6 @@ const AuthGuard = ({ children, requiredUserType }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	/* useEffect(() => {
-		const allowedTypes = typeof requiredUserType === "string" ? requiredUserType : requiredUserType;
-
-		if (user && !allowedTypes.includes(user.type)) {
-			switch (user.type) {
-				case "A":
-					navigate("/users/admin", { replace: true });
-					break;
-				case "O":
-					navigate("/aircrafts/me", { replace: true });
-					break;
-				case "P":
-					navigate("/aircrafts/me", { replace: true });
-					break;
-				case "C":
-					navigate("/aircrafts/me", { replace: true });
-					break;
-				default:
-					navigate("/", { replace: true });
-					break;
-			}
-		} else if (!isLoggedIn) {
-			navigate("/", {
-				state: { from: location.pathname },
-				replace: true,
-			});
-		}
-	}, [isLoggedIn, user, navigate, location, requiredUserType]); */
-
 	return children;
 };
 

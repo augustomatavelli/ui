@@ -1,13 +1,12 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Checkbox, useTheme, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Checkbox, useTheme, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import NotificationContext from "contexts/NotificationContext";
 import useNotification from "hooks/useNotification";
 import { NotificationFilter } from "./NotificationFilter";
 import { NotificationMarkAsRead } from "./NotificationMarkAsRead";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
-dayjs.extend(utc);
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -18,12 +17,13 @@ export const header = [
 	{ label: "Número ANAC", key: "license" },
 ];
 
+const COLUMN_COUNT = 3;
+
 export default function NotificationsTable({ openFilter, reload }) {
 	const { findAllNotifications, updateNotificationAsRead } = useNotification();
 
-	const { notifications, loadingNotification } = useContext(NotificationContext);
+	const { notifications, loadingNotification, totalNotification } = useContext(NotificationContext);
 
-	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [selectedStatus, setSelectedStatus] = useState("T");
 	const [selectedNotifications, setSelectedNotifications] = useState([]);
@@ -62,8 +62,17 @@ export default function NotificationsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
-		findAllNotifications(page, selectedStatus);
-	}, [reload, selectedStatus]);
+		setPage(1);
+	}, [selectedStatus]);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		findAllNotifications(page, selectedStatus, undefined, controller.signal);
+
+		return () => controller.abort();
+	}, [reload, selectedStatus, page]);
+
+	const isEmpty = useMemo(() => !loadingNotification && notifications.length === 0, [loadingNotification, notifications.length]);
 
 
 	return (
@@ -73,7 +82,7 @@ export default function NotificationsTable({ openFilter, reload }) {
 					{/* <SearchLogByAdmin setSearch={setSearch} /> */}
 					<NotificationMarkAsRead handleUpdate={handleUpdate} />
 					<Stack spacing={2} sx={{ width: "100%", mb: 1 }} alignItems="center" justifyContent="flex-end" display="flex" direction="row">
-						<Pagination count={1} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
+						<Pagination count={totalNotification} size="medium" page={page} showFirstButton showLastButton variant="combined" color="primary" onChange={handleChangePage} />
 					</Stack>
 				</Grid>
 				{openFilter && <NotificationFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
@@ -89,7 +98,15 @@ export default function NotificationsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{notifications.length > 0 ? (
+						{loadingNotification ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhuma notificação foi encontrada com os filtros atuais." />
+								</TableCell>
+							</TableRow>
+						) : (
 							notifications.map((notification) => (
 								<TableRow hover key={notification.id_notification} sx={{ bgcolor: notification.is_read === 0 ? theme.palette.warning.lighter : "inherit" }}>
 									<TableCell align="center">
@@ -99,18 +116,6 @@ export default function NotificationsTable({ openFilter, reload }) {
 									<TableCell align="center">{notification.created_at}</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhuma notificação encontrada</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhuma notificação registrada</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
@@ -118,3 +123,8 @@ export default function NotificationsTable({ openFilter, reload }) {
 		</>
 	);
 }
+
+NotificationsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

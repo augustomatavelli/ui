@@ -2,10 +2,7 @@ import PropTypes from "prop-types";
 import { Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import MainCard from "components/MainCard";
 import { CalendarOutlined, CalendarFilled } from "@ant-design/icons";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
-dayjs.extend(utc);
+import { formatDisplay } from "utils/date";
 
 const OrderCard = ({ data }) => {
 	const { id_request, registration, landing_date, takeoff_date, itemOrders } = data;
@@ -39,13 +36,13 @@ const OrderCard = ({ data }) => {
 										<ListItemIcon>
 											<CalendarOutlined />
 										</ListItemIcon>
-										<ListItemText primary={<Typography color="secondary">Pouso: {dayjs(landing_date).format("DD/MM/YYYY HH:mm")}</Typography>} />
+										<ListItemText primary={<Typography color="secondary">Pouso: {formatDisplay(landing_date)}</Typography>} />
 									</ListItem>
 									<ListItem>
 										<ListItemIcon>
 											<CalendarFilled />
 										</ListItemIcon>
-										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? dayjs(takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}</Typography>} />
+										<ListItemText primary={<Typography color="secondary">Decolagem: {takeoff_date ? formatDisplay(takeoff_date) : "Não agendado"}</Typography>} />
 									</ListItem>
 									{itemOrders.map((item, index) => (
 										<ListItem key={index}>

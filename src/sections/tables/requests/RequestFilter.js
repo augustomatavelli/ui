@@ -1,10 +1,11 @@
+import PropTypes from "prop-types";
 import { Box, Stack, Chip, useTheme, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
+import { now, isRangeValid } from "utils/date";
 
 export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
 	const theme = useTheme();
@@ -122,7 +123,7 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
 									<DateTimePicker
 										value={dateFilter.startDate}
-										minDateTime={dayjs()}
+										minDateTime={now()}
 										onChange={(e) => {
 											setDateFilter((prev) => ({
 												...prev,
@@ -144,9 +145,9 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
 									<DateTimePicker
 										value={dateFilter.endDate}
-										minDateTime={dateFilter.startDate ? dayjs(dateFilter.startDate) : dayjs()}
+										minDateTime={dateFilter.startDate ? dateFilter.startDate : now()}
 										onChange={(e) => {
-											if (e && dateFilter.startDate && dayjs(e).isAfter(dateFilter.startDate)) {
+											if (e && dateFilter.startDate && isRangeValid(dateFilter.startDate, e)) {
 												setDateFilter((prev) => ({
 													...prev,
 													endDate: e,
@@ -184,4 +185,13 @@ export const RequestFilter = ({ selectedStatus, setSelectedStatus, selectedPerio
 			</Stack>
 		</Box>
 	);
+};
+
+RequestFilter.propTypes = {
+	selectedStatus: PropTypes.object,
+	setSelectedStatus: PropTypes.func,
+	selectedPeriod: PropTypes.string,
+	setSelectedPeriod: PropTypes.func,
+	dateFilter: PropTypes.object,
+	setDateFilter: PropTypes.func,
 };

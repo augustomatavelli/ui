@@ -45,6 +45,10 @@ const ListOrders = () => {
 	}, [user]);
 
 	useEffect(() => {
+		setPage(1);
+	}, [search, selectedCategory, selectedStatus, selectedPeriod, dateFilter]);
+
+	useEffect(() => {
 		if (selectedPeriod === "custom" && (!dateFilter?.startDate || !dateFilter?.endDate)) {
 			return;
 		}

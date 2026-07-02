@@ -13,7 +13,6 @@ import { useFormik, Form, FormikProvider } from "formik";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 
-import useScriptRef from "hooks/useScriptRef";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import useLandingSite from "hooks/useLandingSite";
@@ -23,6 +22,8 @@ const getInitialValues = () => {
 	const newLandingSite = {
 		name: "",
 		type: "",
+		operationType: "",
+		ciad: "",
 		address: "",
 		number: "",
 		city: "",
@@ -39,8 +40,6 @@ const AddLandingSite = ({ onCancel }) => {
 	const { createLandingSite, findUf } = useLandingSite();
 
 	const { uf } = useContext(LandingSiteContext);
-
-	const scriptedRef = useScriptRef();
 
 	useEffect(() => {
 		findUf();
@@ -61,51 +60,42 @@ const AddLandingSite = ({ onCancel }) => {
 	const formik = useFormik({
 		initialValues: getInitialValues(),
 		validationSchema: NewLandingSiteSchema,
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus, resetForm }) => {
-			try {
-				const payload = {
-					name: values.name,
-					type: values.type,
-					operationType: values.operationType,
-					ciad: values.ciad,
-					capacity: values.capacity,
-					address: values.address,
-					number: values.number,
-					city: values.city,
-					uf: values.uf,
-				};
+		onSubmit: async (values, { setSubmitting, setStatus, resetForm }) => {
+			const payload = {
+				name: values.name,
+				type: values.type,
+				operationType: values.operationType,
+				ciad: values.ciad,
+				capacity: values.capacity,
+				address: values.address,
+				number: values.number,
+				city: values.city,
+				uf: values.uf,
+			};
 
-				const response = await createLandingSite(payload);
-				if (scriptedRef.current) {
-					setStatus({ success: true });
-					setSubmitting(false);
-					dispatch(
-						openSnackbar({
-							open: true,
-							message: response.message,
-							variant: "alert",
-							alert: {
-								color: "success",
-							},
-							close: false,
-						})
-					);
-					setTimeout(() => {
-						resetForm();
-					}, 500);
-					onCancel();
-				}
-			} catch (err) {
-				setErrors({});
-				console.error(err);
-				const message =
-					err.response.status === 409 ? "Helicentro já existe!" : err.response.status === 400 ? "Erro ao cadastrar helicentro! Confira se os dados estão corretos!" : "Erro ao cadastrar helicentro!";
-				if (scriptedRef.current) {
-					setStatus({ success: false });
-					setErrors({ submit: message });
-					setSubmitting(false);
-				}
+			const result = await createLandingSite(payload);
+			if (!result) {
+				setSubmitting(false);
+				return;
 			}
+
+			setStatus({ success: true });
+			setSubmitting(false);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Helicentro cadastrado com sucesso!",
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				})
+			);
+			setTimeout(() => {
+				resetForm();
+			}, 500);
+			onCancel();
 		},
 	});
 

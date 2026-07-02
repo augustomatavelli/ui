@@ -7,6 +7,8 @@ import InspectionContext from "contexts/InspectionsContext";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import { CheckCircleOutlined, CloseCircleOutlined, CameraFilled } from "@ant-design/icons";
+import { validateImageFile } from "utils/file/validateImageFile";
+import { readFileAsBase64 } from "utils/file/readFileAsBase64";
 export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const { findAllInspectionsByOrder, updateInspectionOrderCompliance } = useInspection();
 
@@ -52,27 +54,12 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 	const handleFileChange = async (e, itemId) => {
 		const file = e.target.files?.[0];
 		if (file) {
-			const validFormats = ["image/png", "image/jpeg"];
-			const maxSize = 2 * 1024 * 1024;
-
-			if (!validFormats.includes(file.type)) {
+			const { valid, error } = validateImageFile(file);
+			if (!valid) {
 				dispatch(
 					openSnackbar({
 						open: true,
-						message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-						variant: "alert",
-						alert: { color: "warning" },
-						close: false,
-					})
-				);
-				return;
-			}
-
-			if (file.size > maxSize) {
-				dispatch(
-					openSnackbar({
-						open: true,
-						message: "O tamanho máximo permitido é 2MB",
+						message: error,
 						variant: "alert",
 						alert: { color: "warning" },
 						close: false,
@@ -82,7 +69,7 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 			}
 
 			let base64Image = "";
-			base64Image = await readFile(file);
+			base64Image = await readFileAsBase64(file);
 
 			setObjCompliance((prev) => ({
 				...prev,
@@ -93,15 +80,6 @@ export default function AlertChecklist({ open, handleClose, selectedOrder }) {
 			}));
 		}
 	};
-
-	async function readFile(file) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	}
 
 	const ImagePreview = ({ src, onClick }) => (
 		<Box

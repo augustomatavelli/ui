@@ -1,15 +1,14 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Switch, Button, Box, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Dialog, Switch, Button, Box, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import useChecklist from "hooks/useChecklists";
 import ChecklistContext from "contexts/ChecklistContext";
 import SearchChecklistByAdmin from "sections/apps/checklists/SearchChecklistByAdmin";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddChecklist from "sections/apps/checklists/AddChecklist";
-
-dayjs.extend(utc);
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -20,6 +19,8 @@ export const header = [
 	{ label: "Número ANAC", key: "license" },
 ];
 
+const COLUMN_COUNT = 3;
+
 export default function ChecklistsTable({ openFilter, reload }) {
 	const { findAllChecklists, toggleStatus } = useChecklist();
 
@@ -28,14 +29,20 @@ export default function ChecklistsTable({ openFilter, reload }) {
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	const [open, setOpen] = useState(false);
+	const [togglingStatus, setTogglingStatus] = useState({});
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
 	const handleStatusChange = async (id) => {
-		await toggleStatus(id);
-		await findAllChecklists(search, page);
+		setTogglingStatus((prev) => ({ ...prev, [id]: true }));
+		try {
+			await toggleStatus(id);
+			await findAllChecklists(search, page);
+		} finally {
+			setTogglingStatus((prev) => ({ ...prev, [id]: false }));
+		}
 	};
 
 	const handleAdd = async () => {
@@ -48,8 +55,17 @@ export default function ChecklistsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
-		findAllChecklists(search, page);
+		setPage(1);
+	}, [search]);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		findAllChecklists(search, page, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, reload]);
+
+	const isEmpty = useMemo(() => !loadingChecklist && checklists.length === 0, [loadingChecklist, checklists.length]);
 
 
 	return (
@@ -83,18 +99,26 @@ export default function ChecklistsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{checklists.length > 0 ? (
+						{loadingChecklist ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum checklist foi encontrado com os filtros atuais." />
+								</TableCell>
+							</TableRow>
+						) : (
 							checklists.map((checklist) => (
-								<TableRow hover key={checklist.id}>
+								<TableRow hover key={checklist.id_checklist}>
 									<TableCell align="center">#{checklist.id_checklist}</TableCell>
 									<TableCell align="center">{checklist.name}</TableCell>
 									<TableCell align="center">
 										<Box display="flex" justifyContent="center" alignItems="center">
 											<Switch
 												checked={checklist.status === "A"}
-												onChange={async (event) => {
-													const newStatus = event.target.checked ? "A" : "I";
-													await handleStatusChange(checklist.id_checklist, newStatus);
+												disabled={togglingStatus[checklist.id_checklist]}
+												onChange={async () => {
+													await handleStatusChange(checklist.id_checklist);
 												}}
 												color="primary"
 											/>
@@ -102,18 +126,6 @@ export default function ChecklistsTable({ openFilter, reload }) {
 									</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={3} align="center">
-									<Typography variant="h5">Nenhum checklist encontrado</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={3} align="center">
-									<Typography variant="h5">Nenhum checklist registrado</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
@@ -124,3 +136,8 @@ export default function ChecklistsTable({ openFilter, reload }) {
 		</>
 	);
 }
+
+ChecklistsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

@@ -1,9 +1,10 @@
+import PropTypes from "prop-types";
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, Tooltip, IconButton, LinearProgress } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Dialog, Button, LinearProgress } from "@mui/material";
 
 // project imports
-import { useContext, useEffect, useState } from "react";
-import { PlusOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import useProduct from "hooks/useProduct";
 import ProductsContext from "contexts/ProductsContext";
@@ -11,6 +12,11 @@ import SearchProductByAdmin from "sections/apps/products/SearchProductByAdmin";
 import AddProduct from "sections/apps/products/AddProduct";
 import { ProductFilter } from "./ProductFilter";
 import { useNavigate } from "react-router";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import ProductTableRow from "./ProductTableRow";
+
+const COLUMN_COUNT = 7;
 
 export default function ProductsTable({ openFilter, reload }) {
 	const { findAllProducts, updateProduct, findCategories } = useProduct();
@@ -36,27 +42,45 @@ export default function ProductsTable({ openFilter, reload }) {
 		await findAllProducts(search, page, params);
 	};
 
-	const handleClickVisibility = async (productId, hidePrice) => {
-		const categoriesParams = Object.keys(selectedCategory);
-		const params = new URLSearchParams();
-		params.set("categories", categoriesParams.join(","));
-
-		await updateProduct(productId, { hide_price: hidePrice === "S" ? "N" : "S" });
-		await findAllProducts(search, page, params);
+	const handleDialogClose = () => {
+		setOpen(false);
 	};
 
-	const handleRedirect = (productId) => {
-		navigate(`/products/${productId}`);
-	};
+	const handleClickVisibility = useCallback(
+		async (productId, hidePrice) => {
+			const categoriesParams = Object.keys(selectedCategory);
+			const params = new URLSearchParams();
+			params.set("categories", categoriesParams.join(","));
+
+			await updateProduct(productId, { hide_price: hidePrice === "S" ? "N" : "S" });
+			await findAllProducts(search, page, params);
+		},
+		[updateProduct, findAllProducts, search, page, selectedCategory],
+	);
+
+	const handleRedirect = useCallback(
+		(productId) => {
+			navigate(`/products/${productId}`);
+		},
+		[navigate],
+	);
+
+	useEffect(() => {
+		setPage(1);
+	}, [search, selectedCategory]);
 
 	useEffect(() => {
 		const categoriesParams = Object.keys(selectedCategory);
 		const params = new URLSearchParams();
 		params.set("categories", categoriesParams.join(","));
 
-		Promise.all([findCategories(), findAllProducts(search, page, params)]);
+		const controller = new AbortController();
+		Promise.all([findCategories(controller.signal), findAllProducts(search, page, params, controller.signal)]);
+
+		return () => controller.abort();
 	}, [search, page, selectedCategory, reload]);
 
+	const isEmpty = useMemo(() => !loadingProduct && products.length === 0, [loadingProduct, products.length]);
 
 	return (
 		<>
@@ -93,72 +117,29 @@ export default function ProductsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{products.length > 0 ? (
-							products.map((e) => (
-								<TableRow
-									hover
-									key={e.id_product}
-									sx={{ cursor: "pointer" }}
-									onClick={() => {
-										handleRedirect(e.id_product);
-									}}
-								>
-									<TableCell align="center">
-										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_product}`} />
-									</TableCell>
-									<TableCell align="center">{e.name}</TableCell>
-									<TableCell align="center">
-										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "#252525" }} />
-									</TableCell>
-									<TableCell align="center">
-										<>
-											{new Intl.NumberFormat("pt-BR", {
-												style: "currency",
-												currency: "BRL",
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2,
-											}).format(e.price)}{" "}
-											<Tooltip title={e.hide_price === "S" ? "Mostrar" : "Esconder"}>
-												<IconButton
-													onClick={(event) => {
-														event.stopPropagation();
-														handleClickVisibility(e.id_product, e.hide_price);
-													}}
-													edge="end"
-													color={e.hide_price === "S" ? "error" : "success"}
-												>
-													{e.hide_price === "S" ? <EyeInvisibleOutlined style={{ fontSize: 20, fontWeight: "bold" }} /> : <EyeOutlined style={{ fontSize: 20, fontWeight: "bold" }} />}
-												</IconButton>
-											</Tooltip>
-										</>
-									</TableCell>
-									<TableCell align="center">{e.unit}</TableCell>
-									<TableCell align="center">
-										<Chip color={e.status === "D" ? "success" : "error"} variant="filled" size="small" label={e.status === "D" ? "Disponível" : "Indisponível"} />
-									</TableCell>
-									<TableCell align="center">{e.created_by}</TableCell>
-								</TableRow>
-							))
-						) : search || openFilter ? (
+						{loadingProduct ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum produto encontrado</Typography>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum produto foi encontrado com os filtros atuais." />
 								</TableCell>
 							</TableRow>
 						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum produto cadastrado</Typography>
-								</TableCell>
-							</TableRow>
+							products.map((e) => <ProductTableRow key={e.id_product} product={e} onRedirect={handleRedirect} onToggleVisibility={handleClickVisibility} />)
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddProduct onCancel={handleAdd} />
 			</Dialog>
 		</>
 	);
 }
+
+ProductsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, OutlinedInput, IconButton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, OutlinedInput, IconButton, Tooltip } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
@@ -44,15 +44,11 @@ const OperatorDetails = () => {
 
 			if (field.startsWith("email")) {
 				const emailIndex = parseInt(field.replace("email", ""));
-				const updatedEmails = [...(emails || [])];
+				const updatedEmails = [...(prev.emails || emails || [])];
 				updatedEmails[emailIndex] = value;
 
 				newState.emails = updatedEmails;
-
-				setOperatorDetails((prevDetails) => ({
-					...prevDetails,
-					emails: updatedEmails,
-				}));
+				newState[field] = value;
 			} else {
 				newState[field] = value;
 			}
@@ -71,20 +67,17 @@ const OperatorDetails = () => {
 	};
 
 	const handleAddEmail = () => {
-		const newIndex = emails ? emails.length : 0;
-
-		let updatedEmails;
-		if (!emails) {
-			updatedEmails = [""];
-		} else if (emails.length < 8) {
-			updatedEmails = [...emails, ""];
-		} else {
+		const currentEmails = operatorDetails.emails || [];
+		if (currentEmails.length >= 8) {
 			return;
 		}
 
+		const newIndex = currentEmails.length;
+		const updatedEmails = [...currentEmails, ""];
+
 		setOperatorDetails((prev) => ({
 			...prev,
-			emails: updatedEmails,
+			emails: [...(prev.emails || []), ""],
 		}));
 
 		setEditOperator((prev) => ({
@@ -100,28 +93,28 @@ const OperatorDetails = () => {
 	};
 
 	const handleRemoveEmail = (indexToRemove) => {
-		if (emails && emails.length > 1) {
-			const updatedEmails = emails.filter((_, index) => index !== indexToRemove);
-
-			setOperatorDetails((prev) => ({
-				...prev,
-				emails: updatedEmails,
-			}));
-
-			setEditOperator((prev) => ({
-				...prev,
-				emails: updatedEmails,
-			}));
-
-			setOpenEditInput((prev) => ({
-				...prev,
-				emails: true,
-			}));
-
-			const newOpenEditInput = { ...openEditInput };
-			delete newOpenEditInput[`email${indexToRemove}`];
-			setOpenEditInput(newOpenEditInput);
+		const currentEmails = operatorDetails.emails || [];
+		if (currentEmails.length <= 1) {
+			return;
 		}
+
+		const updatedEmails = currentEmails.filter((_, index) => index !== indexToRemove);
+
+		setOperatorDetails((prev) => ({
+			...prev,
+			emails: (prev.emails || []).filter((_, index) => index !== indexToRemove),
+		}));
+
+		setEditOperator((prev) => ({
+			...prev,
+			emails: updatedEmails,
+		}));
+
+		setOpenEditInput((prev) => {
+			const newState = { ...prev, emails: true };
+			delete newState[`email${indexToRemove}`];
+			return newState;
+		});
 	};
 
 	useEffect(() => {
@@ -157,66 +150,75 @@ const OperatorDetails = () => {
 														<Stack direction="row" alignItems="center" spacing={1} justifyContent="space-between">
 															<Typography color="secondary">Email</Typography>
 															{emails && emails.length < 8 && (
-																<IconButton
-																	size="small"
-																	color="primary"
-																	onClick={() => handleAddEmail()}
-																	disabled={loadingOperator}
-																	sx={{
-																		border: 1,
-																		borderColor: "primary.main",
-																		backgroundColor: "transparent",
-																		"&:hover": {
-																			backgroundColor: "primary.main",
-																			color: "white",
-																		},
-																	}}
-																>
-																	<AddIcon />
-																</IconButton>
+																<Tooltip title="Adicionar email">
+																	<IconButton
+																		size="small"
+																		color="primary"
+																		aria-label="Adicionar email"
+																		onClick={() => handleAddEmail()}
+																		disabled={loadingOperator}
+																		sx={{
+																			border: 1,
+																			borderColor: "primary.main",
+																			backgroundColor: "transparent",
+																			"&:hover": {
+																				backgroundColor: "primary.main",
+																				color: "white",
+																			},
+																		}}
+																	>
+																		<AddIcon />
+																	</IconButton>
+																</Tooltip>
 															)}
 														</Stack>
 
 														{emails?.map((email, index) => (
-															<Stack key={index} direction="row" alignItems="center" spacing={1}>
+															<Stack key={email ? `email-${email}` : `email-new-${index}`} direction="row" alignItems="center" spacing={1}>
 																{!openEditInput[`email${index}`] ? (
 																	<>
 																		<Typography sx={{ flex: 1 }}>{email}</Typography>
 																		<Box display="flex" gap={0.5}>
-																			<IconButton
-																				size="small"
-																				onClick={() => handleUpdate(`email${index}`)}
-																				disabled={loadingOperator}
-																				sx={{
-																					border: 1,
-																					borderColor: "secondary.main",
-																					backgroundColor: "transparent",
-																					"&:hover": {
-																						backgroundColor: "secondary.main",
-																						color: "white",
-																					},
-																				}}
-																			>
-																				<EditOutlined />
-																			</IconButton>
-																			{emails.length > 1 && (
+																			<Tooltip title="Editar email">
 																				<IconButton
 																					size="small"
-																					color="error"
-																					onClick={() => handleRemoveEmail(index)}
+																					aria-label="Editar email"
+																					onClick={() => handleUpdate(`email${index}`)}
 																					disabled={loadingOperator}
 																					sx={{
 																						border: 1,
-																						borderColor: "error.main",
+																						borderColor: "secondary.main",
 																						backgroundColor: "transparent",
 																						"&:hover": {
-																							backgroundColor: "error.main",
+																							backgroundColor: "secondary.main",
 																							color: "white",
 																						},
 																					}}
 																				>
-																					<RemoveIcon />
+																					<EditOutlined />
 																				</IconButton>
+																			</Tooltip>
+																			{emails.length > 1 && (
+																				<Tooltip title="Remover email">
+																					<IconButton
+																						size="small"
+																						color="error"
+																						aria-label="Remover email"
+																						onClick={() => handleRemoveEmail(index)}
+																						disabled={loadingOperator}
+																						sx={{
+																							border: 1,
+																							borderColor: "error.main",
+																							backgroundColor: "transparent",
+																							"&:hover": {
+																								backgroundColor: "error.main",
+																								color: "white",
+																							},
+																						}}
+																					>
+																						<RemoveIcon />
+																					</IconButton>
+																				</Tooltip>
 																			)}
 																		</Box>
 																	</>
@@ -232,23 +234,26 @@ const OperatorDetails = () => {
 																			inputProps={{ style: { padding: 5 } }}
 																			onChange={(e) => handleChangeValue(`email${index}`, e.target.value)}
 																		/>
-																		<IconButton
-																			size="small"
-																			color="error"
-																			onClick={() => handleRemoveEmail(index)}
-																			disabled={loadingOperator}
-																			sx={{
-																				border: 1,
-																				borderColor: "error.main",
-																				backgroundColor: "transparent",
-																				"&:hover": {
-																					backgroundColor: "error.main",
-																					color: "white",
-																				},
-																			}}
-																		>
-																			<RemoveIcon />
-																		</IconButton>
+																		<Tooltip title="Remover email">
+																			<IconButton
+																				size="small"
+																				color="error"
+																				aria-label="Remover email"
+																				onClick={() => handleRemoveEmail(index)}
+																				disabled={loadingOperator}
+																				sx={{
+																					border: 1,
+																					borderColor: "error.main",
+																					backgroundColor: "transparent",
+																					"&:hover": {
+																						backgroundColor: "error.main",
+																						color: "white",
+																					},
+																				}}
+																			>
+																				<RemoveIcon />
+																			</IconButton>
+																		</Tooltip>
 																	</Box>
 																)}
 															</Stack>
@@ -266,9 +271,11 @@ const OperatorDetails = () => {
 													<Stack direction="row" alignItems="center" spacing={1}>
 														<Typography color="secondary">Celular</Typography>
 														{!openEditInput["phone"] && (
-															<IconButton size="small" onClick={() => handleUpdate("phone")} disabled={loadingOperator}>
-																<EditOutlined />
-															</IconButton>
+															<Tooltip title="Editar celular">
+																<IconButton size="small" aria-label="Editar celular" onClick={() => handleUpdate("phone")} disabled={loadingOperator}>
+																	<EditOutlined />
+																</IconButton>
+															</Tooltip>
 														)}
 													</Stack>
 													{!openEditInput["phone"] ? (
@@ -276,7 +283,7 @@ const OperatorDetails = () => {
 													) : (
 														<InputMask
 															mask={"(99) 99999-9999"}
-															value={editOperator["phone"]}
+															value={editOperator["phone"] ?? mobile ?? ""}
 															sx={{ width: "100%" }}
 															onChange={(e) => {
 																handleChangeValue("phone", e.target.value);
@@ -319,9 +326,11 @@ const OperatorDetails = () => {
 														<Stack direction="row" alignItems="center" spacing={1}>
 															<Typography color="secondary">Razão social</Typography>
 															{!openEditInput["social"] && (
-																<IconButton size="small" onClick={() => handleUpdate("social")} disabled={loadingOperator}>
-																	<EditOutlined />
-																</IconButton>
+																<Tooltip title="Editar razão social">
+																	<IconButton size="small" aria-label="Editar razão social" onClick={() => handleUpdate("social")} disabled={loadingOperator}>
+																		<EditOutlined />
+																	</IconButton>
+																</Tooltip>
 															)}
 														</Stack>
 														{!openEditInput["social"] ? (

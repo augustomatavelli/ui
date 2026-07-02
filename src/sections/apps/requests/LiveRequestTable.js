@@ -6,7 +6,12 @@ import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import FlightLandIcon from "@mui/icons-material/FlightLand";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import Loader from "components/Loader";
+import TableSkeleton from "components/feedback/TableSkeleton";
+
+const alertSound = new Howl({
+	src: ["/sounds/mixkit-home-standard-ding-dong-109.wav"],
+	volume: 1,
+});
 
 export default function RequestsTable() {
 	const { findAllLiveRequests } = useRequest();
@@ -14,11 +19,7 @@ export default function RequestsTable() {
 	const { liveRequests, loadingRequest } = useContext(RequestContext);
 
 	const previousIds = useRef(new Set());
-
-	const alertSound = new Howl({
-		src: ["/sounds/mixkit-home-standard-ding-dong-109.wav"],
-		volume: 1,
-	});
+	const isFirstLoad = useRef(true);
 
 	useEffect(() => {
 		findAllLiveRequests();
@@ -34,11 +35,12 @@ export default function RequestsTable() {
 		if (liveRequests?.items) {
 			const currentIds = new Set(liveRequests.items.map((item) => item.id_request));
 			const newItems = Array.from(currentIds).filter((id) => !previousIds.current.has(id));
-			if (newItems.length > 0) {
+			if (newItems.length > 0 && !isFirstLoad.current) {
 				alertSound.play();
 			}
 
 			previousIds.current = currentIds;
+			isFirstLoad.current = false;
 		}
 	}, [liveRequests]);
 
@@ -87,11 +89,7 @@ export default function RequestsTable() {
 					</TableHead>
 					<TableBody>
 						{loadingRequest ? (
-							<TableRow>
-								<TableCell colSpan={999} align="center" sx={{ padding: 0 }}>
-									<Loader />
-								</TableCell>
-							</TableRow>
+							<TableSkeleton rows={5} columns={7} />
 						) : liveRequests && liveRequests.items && liveRequests.items.length > 0 ? (
 							liveRequests.items.flatMap((e) =>
 								e.schedules.map((schedule, index) => {
@@ -124,12 +122,12 @@ export default function RequestsTable() {
 											<TableCell align="center" sx={{ color: isSoon(schedule.date) ? "#252525	" : "white", fontSize: 18 }}>
 												{schedule.type === "landing_date" ? (
 													<Grid>
-														<Typography variant="h4" a sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
+														<Typography variant="h4" sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
 															<FlightLandIcon sx={{ fontSize: 30 }} /> Pouso
 														</Typography>
 													</Grid>
 												) : (
-													<Typography variant="h4" a sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
+													<Typography variant="h4" sx={{ gap: 2, alignItems: "center", justifyContent: "center", display: "flex" }}>
 														Decolagem
 														<FlightTakeoffIcon sx={{ fontSize: 30 }} />
 													</Typography>

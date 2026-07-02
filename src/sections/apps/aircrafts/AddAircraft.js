@@ -31,6 +31,8 @@ import { CameraOutlined } from "@ant-design/icons";
 import useAircraft from "hooks/useAircraft";
 import UserContext from "contexts/UserContext";
 import AircraftContext from "contexts/AircraftContext";
+import { validateImageFile } from "utils/file/validateImageFile";
+import { readFileAsBase64 } from "utils/file/readFileAsBase64";
 
 const getInitialValues = (aircraft) => {
 	const newAircraft = {
@@ -59,15 +61,6 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 
 	const theme = useTheme();
 
-	async function readFile(file) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	}
-
 	useEffect(() => {
 		if (selectedImage) {
 			setAvatar(URL.createObjectURL(selectedImage));
@@ -88,7 +81,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 
 				let base64Image = "";
 				if (selectedImage) {
-					base64Image = await readFile(selectedImage);
+					base64Image = await readFileAsBase64(selectedImage);
 				}
 
 				const newAircraft = {
@@ -103,7 +96,7 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					dispatch(
 						openSnackbar({
 							open: true,
-							message: response.message,
+							message: "Aeronave cadastrada com sucesso!",
 							variant: "alert",
 							alert: {
 								color: "success",
@@ -118,9 +111,12 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 					setStatus({ success: true });
 					setSubmitting(false);
 					onCancel();
+				} else {
+					setSubmitting(false);
 				}
 			} catch (error) {
 				console.error(error);
+				setSubmitting(false);
 			}
 		},
 	});
@@ -181,29 +177,12 @@ const AddAircraft = ({ aircraft, onCancel }) => {
 												onChange={(e) => {
 													const file = e.target.files?.[0];
 													if (file) {
-														const validFormats = ["image/png", "image/jpeg"];
-														const maxSize = 2 * 1024 * 1024; // 2MB
-
-														if (!validFormats.includes(file.type)) {
+														const { valid, error } = validateImageFile(file);
+														if (!valid) {
 															dispatch(
 																openSnackbar({
 																	open: true,
-																	message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-																	variant: "alert",
-																	alert: {
-																		color: "warning",
-																	},
-																	close: false,
-																})
-															);
-															return;
-														}
-
-														if (file.size > maxSize) {
-															dispatch(
-																openSnackbar({
-																	open: true,
-																	message: "O tamanho máximo permitido é 2MB",
+																	message: error,
 																	variant: "alert",
 																	alert: {
 																		color: "warning",

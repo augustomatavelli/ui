@@ -32,6 +32,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
 import { CameraOutlined } from "@ant-design/icons";
+import { validateImageFile } from "utils/file/validateImageFile";
+import { readFileAsBase64 } from "utils/file/readFileAsBase64";
 
 const getInitialValues = () => {
 	const newProduct = {
@@ -62,15 +64,6 @@ const AddProduct = ({ onCancel }) => {
 	const theme = useTheme();
 
 	const units = ["g", "kg", "L", "un", "pacote", "fardo", "lata", "garrafa"];
-
-	async function readFile(file) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = (event) => resolve(event.target.result.split(",")[1]);
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	}
 
 	const handleChangeAvailable = (event) => {
 		setAvailable(event.target.value);
@@ -104,7 +97,9 @@ const AddProduct = ({ onCancel }) => {
 			try {
 				const { name, price, unit, category } = values;
 				let base64Image = "";
-				base64Image = await readFile(selectedImage);
+				if (selectedImage) {
+					base64Image = await readFileAsBase64(selectedImage);
+				}
 				const payload = {
 					name: name,
 					price: parseFloat(price.replace(",", ".")).toFixed(1),
@@ -112,16 +107,23 @@ const AddProduct = ({ onCancel }) => {
 					id_category: Number(category),
 					available_at: available,
 					inventory: stock,
-					image: selectedImage ? base64Image : "",
+					image: base64Image,
 				};
-				const response = await createProduct(payload);
+				const result = await createProduct(payload);
+				if (!result) {
+					if (scriptedRef.current) {
+						setStatus({ success: false });
+						setSubmitting(false);
+					}
+					return;
+				}
 				if (scriptedRef.current) {
 					setStatus({ success: true });
 					setSubmitting(false);
 					dispatch(
 						openSnackbar({
 							open: true,
-							message: response.message,
+							message: "Produto criado com sucesso!",
 							variant: "alert",
 							alert: {
 								color: "success",
@@ -135,13 +137,10 @@ const AddProduct = ({ onCancel }) => {
 					onCancel();
 				}
 			} catch (err) {
-				setErrors({});
 				console.error(err);
-				const message =
-					err.response.status === 409 ? "Produto já existe!" : err.response.status === 400 ? "Erro ao cadastrar produto! Confira se os dados estão corretos!" : "Erro ao cadastrar produto!";
 				if (scriptedRef.current) {
 					setStatus({ success: false });
-					setErrors({ submit: message });
+					setErrors({ submit: "Erro ao cadastrar produto!" });
 					setSubmitting(false);
 				}
 			}
@@ -203,29 +202,12 @@ const AddProduct = ({ onCancel }) => {
 											onChange={(e) => {
 												const file = e.target.files?.[0];
 												if (file) {
-													const validFormats = ["image/png", "image/jpeg"];
-													const maxSize = 2 * 1024 * 1024; // 2MB
-
-													if (!validFormats.includes(file.type)) {
+													const { valid, error } = validateImageFile(file);
+													if (!valid) {
 														dispatch(
 															openSnackbar({
 																open: true,
-																message: "Formato inválido! Apenas PNG e JPEG são permitidos",
-																variant: "alert",
-																alert: {
-																	color: "warning",
-																},
-																close: false,
-															})
-														);
-														return;
-													}
-
-													if (file.size > maxSize) {
-														dispatch(
-															openSnackbar({
-																open: true,
-																message: "O tamanho máximo permitido é 2MB",
+																message: error,
 																variant: "alert",
 																alert: {
 																	color: "warning",

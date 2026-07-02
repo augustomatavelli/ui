@@ -5,10 +5,10 @@ import { useFormik, Form, FormikProvider } from "formik";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import useUser from "hooks/useUser";
-import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DOC_TYPE, DOC_MASKS, USER_TYPE } from "constants/domain";
 
 const getInitialValues = (user) => {
 	const newUser = {
@@ -27,9 +27,7 @@ const getInitialValues = (user) => {
 const AddUser = ({ user, onCancel }) => {
 	const { createUserByAdmin } = useUser();
 
-	const scriptedRef = useScriptRef();
-
-	const [typeDoc, setTypeDoc] = useState("cpf");
+	const [typeDoc, setTypeDoc] = useState(DOC_TYPE.CPF);
 	const [isPilot, setIsPilot] = useState(1);
 
 	const NewUserSchema = Yup.object().shape({
@@ -49,49 +47,40 @@ const AddUser = ({ user, onCancel }) => {
 	const formik = useFormik({
 		initialValues: getInitialValues(user),
 		validationSchema: NewUserSchema,
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus, resetForm }) => {
-			try {
-				const payload = {
-					name: values.name,
-					email: values.email,
-					phone: values.phone.replace(/\D/g, ""),
-					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
-					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-					type: isPilot === 1 ? "P" : isPilot === 2 ? "O" : "C",
-					pilotRegister: values.pilot,
-				};
+		onSubmit: async (values, { setSubmitting, setStatus, resetForm }) => {
+			const payload = {
+				name: values.name,
+				email: values.email,
+				phone: values.phone.replace(/\D/g, ""),
+				cpf: typeDoc === DOC_TYPE.CPF ? values.doc.replace(/\D/g, "") : "",
+				cnpj: typeDoc === DOC_TYPE.CNPJ ? values.doc.replace(/\D/g, "") : "",
+				type: isPilot === 1 ? USER_TYPE.PILOT : isPilot === 2 ? USER_TYPE.OPERATOR : USER_TYPE.COMMON,
+				pilotRegister: values.pilot,
+			};
 
-				const response = await createUserByAdmin(payload);
-				if (scriptedRef.current) {
-					setStatus({ success: true });
-					setSubmitting(false);
-					dispatch(
-						openSnackbar({
-							open: true,
-							message: response.message,
-							variant: "alert",
-							alert: {
-								color: "success",
-							},
-							close: false,
-						}),
-					);
-					setTimeout(() => {
-						resetForm();
-					}, 500);
-					onCancel();
-				}
-			} catch (err) {
-				setErrors({});
-				console.error(err);
-				const message =
-					err.response.status === 409 ? "Usuário já existe!" : err.response.status === 400 ? "Erro ao cadastrar usuário! Confira se os dados estão corretos!" : "Erro ao cadastrar usuário!";
-				if (scriptedRef.current) {
-					setStatus({ success: false });
-					setErrors({ submit: message });
-					setSubmitting(false);
-				}
+			const result = await createUserByAdmin(payload);
+			if (!result) {
+				setSubmitting(false);
+				return;
 			}
+
+			setStatus({ success: true });
+			setSubmitting(false);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Usuário cadastrado com sucesso!",
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				}),
+			);
+			setTimeout(() => {
+				resetForm();
+			}, 500);
+			onCancel();
 		},
 	});
 
@@ -122,18 +111,18 @@ const AddUser = ({ user, onCancel }) => {
 												const newTypeDoc = e.target.value;
 												if (newTypeDoc !== typeDoc) {
 													setTypeDoc(newTypeDoc);
-													if (newTypeDoc === "cpf" && isPilot !== 1) {
+													if (newTypeDoc === DOC_TYPE.CPF && isPilot !== 1) {
 														setIsPilot(1);
-													} else if (newTypeDoc === "cnpj" && isPilot !== 2) {
+													} else if (newTypeDoc === DOC_TYPE.CNPJ && isPilot !== 2) {
 														setIsPilot(2);
 													}
 												}
 											}}
 										>
-											<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
-											<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
+											<FormControlLabel value={DOC_TYPE.CPF} control={<Radio />} label="CPF" />
+											<FormControlLabel value={DOC_TYPE.CNPJ} control={<Radio />} label="CNPJ" />
 										</RadioGroup>
-										<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+										<InputMask mask={typeDoc === DOC_TYPE.CPF ? DOC_MASKS.CPF : DOC_MASKS.CNPJ} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
 											{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento..." />}
 										</InputMask>
 										{touched.doc && errors.doc && (
@@ -145,7 +134,7 @@ const AddUser = ({ user, onCancel }) => {
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="firstname-signup">{typeDoc === "cpf" ? "Nome completo" : "Razão social"}</InputLabel>
+										<InputLabel htmlFor="firstname-signup">{typeDoc === DOC_TYPE.CPF ? "Nome completo" : "Razão social"}</InputLabel>
 										<OutlinedInput
 											id="name-login"
 											type="name"
@@ -153,7 +142,7 @@ const AddUser = ({ user, onCancel }) => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder={typeDoc === "cpf" ? "Digite seu nome..." : "Digite a razão social..."}
+											placeholder={typeDoc === DOC_TYPE.CPF ? "Digite seu nome..." : "Digite a razão social..."}
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>
@@ -211,10 +200,10 @@ const AddUser = ({ user, onCancel }) => {
 												const newIsPilot = Number(e.target.value);
 												if (newIsPilot !== isPilot) {
 													setIsPilot(newIsPilot);
-													if (newIsPilot === 2 && typeDoc !== "cnpj") {
-														setTypeDoc("cnpj");
-													} else if ((newIsPilot === 1 || newIsPilot === 3) && typeDoc !== "cpf") {
-														setTypeDoc("cpf");
+													if (newIsPilot === 2 && typeDoc !== DOC_TYPE.CNPJ) {
+														setTypeDoc(DOC_TYPE.CNPJ);
+													} else if ((newIsPilot === 1 || newIsPilot === 3) && typeDoc !== DOC_TYPE.CPF) {
+														setTypeDoc(DOC_TYPE.CPF);
 													}
 												}
 											}}

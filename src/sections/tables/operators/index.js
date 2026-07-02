@@ -1,15 +1,17 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import { useNavigate } from "react-router";
-import { OperatorFilter } from "./OperatorFilter";
 import SearchOperatorByAdmin from "sections/apps/operators/SearchOperatorByAdmin";
 import OperatorContext from "contexts/OperatorContext";
 import useOperator from "hooks/useOperator";
 import AddOperator from "sections/apps/operators/AddOperator";
 import { formatCpfCnpj } from "utils/format/formatDoc";
 import { formatPhoneNumber } from "utils/format/formatPhoneNumber";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -18,6 +20,8 @@ export const header = [
 	{ label: "Celular", key: "mobile" },
 	{ label: "Documento", key: "doc" },
 ];
+
+const COLUMN_COUNT = 3;
 
 export default function OperatorsTable({ openFilter, reload }) {
 	const { findAllOperators } = useOperator();
@@ -38,6 +42,10 @@ export default function OperatorsTable({ openFilter, reload }) {
 		setOpen(true);
 	};
 
+	const handleDialogClose = () => {
+		setOpen(false);
+	};
+
 	const handleClose = async () => {
 		setOpen(false);
 		await findAllOperators(search, page);
@@ -48,8 +56,17 @@ export default function OperatorsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
-		findAllOperators(search, page);
+		setPage(1);
+	}, [search]);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		findAllOperators(search, page, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, reload]);
+
+	const isEmpty = useMemo(() => !loadingOperator && operators.length === 0, [loadingOperator, operators.length]);
 
 	return (
 		<>
@@ -82,7 +99,15 @@ export default function OperatorsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{operators.length > 0 ? (
+						{loadingOperator ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum operador foi encontrado com os filtros atuais." />
+								</TableCell>
+							</TableRow>
+						) : (
 							operators.map((operator) => (
 								<TableRow
 									hover
@@ -97,25 +122,18 @@ export default function OperatorsTable({ openFilter, reload }) {
 									<TableCell align="center">{formatCpfCnpj(operator.doc)}</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum operador encontrado</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum operador cadastrado</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddOperator onCancel={handleClose} />
 			</Dialog>
 		</>
 	);
 }
+
+OperatorsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

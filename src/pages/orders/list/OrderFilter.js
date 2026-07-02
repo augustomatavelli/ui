@@ -3,7 +3,8 @@ import { Box, Stack, Chip, useMediaQuery, useTheme, Typography, Grid } from "@mu
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+import { isAfter } from "date-fns";
+import { now } from "utils/date";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
 
@@ -152,7 +153,7 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 									<LocalizationProvider dateAdapter={AdapterDateFns}>
 										<DateTimePicker
 											value={dateFilter.startDate}
-											minDateTime={dayjs()}
+											minDateTime={now()}
 											onChange={(e) => {
 												setDateFilter((prev) => ({
 													...prev,
@@ -174,9 +175,9 @@ export const OrderFilter = ({ setSearch, selectedCategory, setSelectedCategory, 
 									<LocalizationProvider dateAdapter={AdapterDateFns}>
 										<DateTimePicker
 											value={dateFilter.endDate}
-											minDateTime={dateFilter.startDate ? dayjs(dateFilter.startDate) : dayjs()}
+											minDateTime={dateFilter.startDate ? new Date(dateFilter.startDate) : now()}
 											onChange={(e) => {
-												if (e && dateFilter.startDate && dayjs(e).isAfter(dateFilter.startDate)) {
+												if (e && dateFilter.startDate && isAfter(e, new Date(dateFilter.startDate))) {
 													setDateFilter((prev) => ({
 														...prev,
 														endDate: e,

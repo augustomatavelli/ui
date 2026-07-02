@@ -19,7 +19,7 @@ const ListProductsForAdmin = () => {
 		if (user.type !== "A" && user.type !== "S") {
 			navigate("/aircrafts/me");
 		}
-	}, []);
+	}, [user, navigate]);
 
 	return (
 		<MainCard

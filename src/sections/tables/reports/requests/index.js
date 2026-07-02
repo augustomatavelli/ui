@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import useReport from "hooks/useReport";
 import ReportContext from "contexts/ReportContext";
 import { ReportRequestsFilter } from "./ReportRequestFilter";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import { format, startOfDay, endOfYear } from "date-fns";
 
-dayjs.extend(utc);
+const API_LOCAL_FMT = "yyyy-MM-dd'T'HH:mm:ss";
 
 const allColumns = [
 	{
@@ -52,8 +52,8 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 
 	const [selectedPeriod, setSelectedPeriod] = useState("general");
 	const [dateFilter, setDateFilter] = useState({
-		start: dayjs("2025-01-01").startOf("day").format("YYYY-MM-DDTHH:mm:ss"),
-		end: dayjs().endOf("year").format("YYYY-MM-DDTHH:mm:ss"),
+		start: format(startOfDay(new Date("2025-01-01T00:00:00")), API_LOCAL_FMT),
+		end: format(endOfYear(new Date()), API_LOCAL_FMT),
 	});
 
 	const handleChange = (event) => {
@@ -90,7 +90,7 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 							value={period}
 							onChange={handleChange}
 							displayEmpty
-							inputProps={{ "aria-label": "Without label" }}
+							inputProps={{ "aria-label": "Agrupar por período" }}
 							renderValue={(selected) => {
 								if (!selected) {
 									return <Typography variant="subtitle1">Agrupar por</Typography>;
@@ -124,7 +124,9 @@ export default function ReportRequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{reportRequestsList && reportRequestsList.length > 0 ? (
+						{loadingReport ? (
+							<TableSkeleton rows={5} columns={5} />
+						) : reportRequestsList && reportRequestsList.length > 0 ? (
 							reportRequestsList.map((periodData) => <Row key={periodData.date} period={periodData} />)
 						) : (
 							<TableRow>

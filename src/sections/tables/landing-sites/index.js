@@ -1,8 +1,8 @@
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Button, Dialog, Chip, LinearProgress } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Button, Dialog, Chip, LinearProgress } from "@mui/material";
 
 // project imports
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import useLandingSite from "hooks/useLandingSite";
@@ -10,6 +10,8 @@ import LandingSiteContext from "contexts/LandingSiteContext";
 import AddLandingSite from "sections/apps/landing-sites/AddLandingSite";
 import SearchLandingSiteByAdmin from "sections/apps/landing-sites/SearchLandingSiteByAdmin";
 import { useNavigate } from "react-router";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -18,6 +20,8 @@ export const header = [
 	{ label: "Capacidade", key: "capacity" },
 	{ label: "Tipo", key: "type" },
 ];
+
+const COLUMN_COUNT = 6;
 
 export default function LandingSitesTable() {
 	const { findAllLandingSites } = useLandingSite();
@@ -34,9 +38,17 @@ export default function LandingSitesTable() {
 		setPage(value);
 	};
 
-	const handleAdd = async () => {
-		setOpen(!open);
+	const handleOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = async () => {
+		setOpen(false);
 		await findAllLandingSites(search, page);
+	};
+
+	const handleDialogClose = () => {
+		setOpen(false);
 	};
 
 	const handleRedirect = (landingSiteId) => {
@@ -44,8 +56,17 @@ export default function LandingSitesTable() {
 	};
 
 	useEffect(() => {
-		findAllLandingSites(search, page);
+		setPage(1);
+	}, [search]);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		findAllLandingSites(search, page, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page]);
+
+	const isEmpty = useMemo(() => !loadingLandingSite && landingSites.length === 0, [loadingLandingSite, landingSites.length]);
 
 
 	return (
@@ -58,7 +79,7 @@ export default function LandingSitesTable() {
 						<Button
 							variant="contained"
 							startIcon={<PlusOutlined />}
-							onClick={handleAdd}
+							onClick={handleOpen}
 							sx={{
 								height: 40,
 								paddingY: 0,
@@ -81,7 +102,15 @@ export default function LandingSitesTable() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{landingSites.length > 0 ? (
+						{loadingLandingSite ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum helicentro foi encontrado com os filtros atuais." />
+								</TableCell>
+							</TableRow>
+						) : (
 							landingSites.map((e) => (
 								<TableRow
 									hover
@@ -107,25 +136,13 @@ export default function LandingSitesTable() {
 									<TableCell align="center">{e.capacity}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum helicentro encontrado</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum helicentro cadastrado</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
-				<AddLandingSite onCancel={handleAdd} />
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+				<AddLandingSite onCancel={handleClose} />
 			</Dialog>
 		</>
 	);

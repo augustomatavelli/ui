@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, Box, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import { useNavigate } from "react-router";
@@ -9,9 +9,12 @@ import SearchRequestControl from "sections/apps/requests/SearchRequestControl";
 import UserContext from "contexts/UserContext";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import dayjs from "dayjs";
 import { SaveOutlined } from "@ant-design/icons";
-import { ptBR } from "date-fns/locale";
+import { now, toApi } from "utils/date";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+
+const COLUMN_COUNT = 8;
 
 export default function RequestsControlLandingTakeoffTable({ openFilter, reload }) {
 	const { findRequestsControl, updateRequestsControl } = useRequest();
@@ -24,8 +27,9 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 	/* const [selectedStatus, setSelectedStatus] = useState({});
 	const [selectedPeriod, setSelectedPeriod] = useState("");
 	const [dateFilter, setDateFilter] = useState({}); */
-	const [landingDate, setLandingDate] = useState(null);
-	const [takeoffDate, setTakeoffDate] = useState(null);
+	const [landingDate, setLandingDate] = useState({});
+	const [takeoffDate, setTakeoffDate] = useState({});
+	const [savingTime, setSavingTime] = useState({});
 
 	const navigate = useNavigate();
 
@@ -38,19 +42,28 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 	};
 
 	const handleRegisterTime = async (requestId, type, date) => {
-		const response = await updateRequestsControl(requestId, type, date);
-		dispatch(
-			openSnackbar({
-				open: true,
-				message: response.message,
-				variant: "alert",
-				alert: {
-					color: "success",
-				},
-				close: false,
-			})
-		);
-		await findRequestsControl(search, page);
+		const key = `${requestId}-${type}`;
+		setSavingTime((prev) => ({ ...prev, [key]: true }));
+		try {
+			const response = await updateRequestsControl(requestId, type, date);
+			if (!response) {
+				return;
+			}
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.message,
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				})
+			);
+			await findRequestsControl(search, page);
+		} finally {
+			setSavingTime((prev) => ({ ...prev, [key]: false }));
+		}
 	};
 
 	useEffect(() => {
@@ -62,8 +75,13 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(",")); */
 
-		findRequestsControl(search, page /* , paramsStatus, selectedPeriod, dateFilter */);
+		const controller = new AbortController();
+		findRequestsControl(search, page, controller.signal /* , paramsStatus, selectedPeriod, dateFilter */);
+
+		return () => controller.abort();
 	}, [search, page, /*  selectedStatus, selectedPeriod, dateFilter, */ reload]);
+
+	const isEmpty = useMemo(() => !loadingRequest && requestsControl.length === 0, [loadingRequest, requestsControl.length]);
 
 
 	return (
@@ -100,17 +118,24 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{requestsControl.length > 0 ? (
+						{loadingRequest ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title={search ? "Nenhuma solicitação encontrada" : "Nenhuma solicitação em aberto"} />
+								</TableCell>
+							</TableRow>
+						) : (
 							requestsControl.map((e) => (
-								<>
-									<TableRow
-										hover
-										key={e.id_request}
-										sx={{ cursor: user.type !== "C" ? "pointer" : "default" }}
-										onClick={() => {
-											user.type !== "C" && handleRedirect(e.id_request);
-										}}
-									>
+								<TableRow
+									hover
+									key={e.id_request}
+									sx={{ cursor: user.type !== "C" ? "pointer" : "default" }}
+									onClick={() => {
+										user.type !== "C" && handleRedirect(e.id_request);
+									}}
+								>
 										<TableCell align="center">
 											<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_request}`} />
 										</TableCell>
@@ -132,10 +157,11 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 													<>
 														<LocalizationProvider dateAdapter={AdapterDateFns}>
 															<DateTimePicker
-																value={landingDate ? landingDate[e.id_request] : null}
+																value={landingDate?.[e.id_request] ?? null}
 																disablePast
-																minDateTime={dayjs()}
-																onChange={(newValue) => setLandingDate(newValue)}
+																minDateTime={now()}
+																onChange={(newValue) => setLandingDate((prev) => ({ ...prev, [e.id_request]: newValue }))}
+																disabled={savingTime[`${e.id_request}-L`]}
 																slotProps={{
 																	field: { format: "dd/MM/yyyy HH:mm" },
 																	textField: { error: false, size: "small" },
@@ -143,10 +169,11 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 															/>
 														</LocalizationProvider>
 														<SaveOutlined
-															style={{ cursor: "pointer", fontSize: "20px" }}
+															style={{ cursor: savingTime[`${e.id_request}-L`] ? "not-allowed" : "pointer", fontSize: "20px", opacity: savingTime[`${e.id_request}-L`] ? 0.5 : 1 }}
 															onClick={async (event) => {
 																event.stopPropagation();
-																await handleRegisterTime(e.id_request, "L", dayjs(landingDate));
+																if (savingTime[`${e.id_request}-L`]) return;
+																await handleRegisterTime(e.id_request, "L", toApi(landingDate?.[e.id_request]));
 															}}
 														/>
 													</>
@@ -171,10 +198,11 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 													<>
 														<LocalizationProvider dateAdapter={AdapterDateFns}>
 															<DateTimePicker
-																value={takeoffDate ? takeoffDate[e.id_request] : null}
+																value={takeoffDate?.[e.id_request] ?? null}
 																disablePast
-																minDateTime={dayjs()}
-																onChange={(newValue) => setTakeoffDate(newValue)}
+																minDateTime={now()}
+																onChange={(newValue) => setTakeoffDate((prev) => ({ ...prev, [e.id_request]: newValue }))}
+																disabled={savingTime[`${e.id_request}-T`]}
 																slotProps={{
 																	field: { format: "dd/MM/yyyy HH:mm" },
 																	textField: { error: false, size: "small" },
@@ -182,10 +210,11 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 															/>
 														</LocalizationProvider>
 														<SaveOutlined
-															style={{ cursor: "pointer", fontSize: "20px" }}
+															style={{ cursor: savingTime[`${e.id_request}-T`] ? "not-allowed" : "pointer", fontSize: "20px", opacity: savingTime[`${e.id_request}-T`] ? 0.5 : 1 }}
 															onClick={async (event) => {
 																event.stopPropagation();
-																await handleRegisterTime(e.id_request, "T", dayjs(takeoffDate));
+																if (savingTime[`${e.id_request}-T`]) return;
+																await handleRegisterTime(e.id_request, "T", toApi(takeoffDate?.[e.id_request]));
 															}}
 														/>
 													</>
@@ -194,20 +223,7 @@ export default function RequestsControlLandingTakeoffTable({ openFilter, reload 
 										</TableCell>
 										<TableCell align="center">{e.takeoff_created_by}</TableCell>
 									</TableRow>
-								</>
 							))
-						) : search /* || openFilter */ ? (
-							<TableRow>
-								<TableCell colSpan={11} align="center">
-									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={11} align="center">
-									<Typography variant="h5">Nenhuma solicitação em aberto</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>

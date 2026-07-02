@@ -1,9 +1,7 @@
 import UseAxios from "./useAxios";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import { useContext } from "react";
 import ProductsContext from "contexts/ProductsContext";
+import { runRequest } from "utils/api/runRequest";
 
 const useProduct = () => {
 	const { publicAxios } = UseAxios();
@@ -11,172 +9,49 @@ const useProduct = () => {
 	const { setLoadingProduct, setSearchProducts, setProducts, setTotalProducts, setCategories, setProductDetails } = useContext(ProductsContext);
 
 	const createProduct = async (data) => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.post("/products", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
+		const { data: result } = await runRequest(() => publicAxios.post("/products", data), { setLoading: setLoadingProduct });
+		return result;
+	};
+
+	const searchAllProducts = async (signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/products`, { signal }), { setLoading: setLoadingProduct });
+		if (data) {
+			setSearchProducts(data);
 		}
 	};
 
-	const searchAllProducts = async () => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.get(`/products`);
-			setSearchProducts(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
+	const findAllProducts = async (search, page, categoriesParams, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/products/admin/find-all?search=${search}&page=${page}&${categoriesParams.toString()}`, { signal }), {
+			setLoading: setLoadingProduct,
+		});
+		if (data) {
+			setProducts(data.items ?? []);
+			setTotalProducts(data.pagination?.totalPages ?? 0);
 		}
 	};
 
-	const findAllProducts = async (search, page, categoriesParams) => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.get(`/products/admin/find-all?search=${search}&page=${page}&${categoriesParams.toString()}`);
-			setProducts(response.data.items);
-			setTotalProducts(response.data.pagination.totalPages);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
+	const findCategories = async (signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/products/categories`, { signal }), { setLoading: setLoadingProduct });
+		if (data) {
+			setCategories(data);
 		}
 	};
 
-	const findCategories = async () => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.get(`/products/categories`);
-			setCategories(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
-		}
-	};
-
-	const findOneProductById = async (productId) => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.get(`/products/admin/${productId}`);
-			setProductDetails(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
+	const findOneProductById = async (productId, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/products/admin/${productId}`, { signal }), { setLoading: setLoadingProduct });
+		if (data) {
+			setProductDetails(data);
 		}
 	};
 
 	const deleteProduct = async (productId) => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.delete(`/products/admin/delete/${productId}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
-		}
+		const { data } = await runRequest(() => publicAxios.delete(`/products/admin/delete/${productId}`), { setLoading: setLoadingProduct });
+		return data;
 	};
 
 	const updateProduct = async (productId, data) => {
-		try {
-			setLoadingProduct(true);
-			const response = await publicAxios.patch(`/products/admin/update/${productId}`, { ...data });
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				})
-			);
-		} finally {
-			setLoadingProduct(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.patch(`/products/admin/update/${productId}`, { ...data }), { setLoading: setLoadingProduct });
+		return result;
 	};
 
 	return { createProduct, findAllProducts, searchAllProducts, findCategories, deleteProduct, updateProduct, findOneProductById };

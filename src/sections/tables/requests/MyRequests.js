@@ -1,11 +1,14 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Chip, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
-import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import { RequestFilter } from "./RequestFilter";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+
+const COLUMN_COUNT = 7;
 
 export default function MyRequestsTable({ openFilter, reload }) {
 	const { searchAllRequests } = useRequest();
@@ -37,8 +40,13 @@ export default function MyRequestsTable({ openFilter, reload }) {
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		searchAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+		const controller = new AbortController();
+		searchAllRequests(search, page, paramsStatus, selectedPeriod, dateFilter, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
+
+	const isEmpty = useMemo(() => !loadingRequest && searchRequests.length === 0, [loadingRequest, searchRequests.length]);
 
 
 	return (
@@ -74,7 +82,15 @@ export default function MyRequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchRequests.length > 0 ? (
+						{loadingRequest ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title={search || openFilter ? "Nenhuma solicitação encontrada" : "Nenhuma solicitação cadastrada"} />
+								</TableCell>
+							</TableRow>
+						) : (
 							searchRequests.map((e) => (
 								<TableRow
 									hover
@@ -105,18 +121,6 @@ export default function MyRequestsTable({ openFilter, reload }) {
 									<TableCell align="center">{e.created_at}</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={8} align="center">
-									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={8} align="center">
-									<Typography variant="h5">Nenhuma solicitação cadastrada</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>

@@ -1,5 +1,6 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, useTheme, Box, OutlinedInput, Grid, IconButton, TextField, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography, Box, OutlinedInput, Grid, IconButton, Tooltip } from "@mui/material";
+import { useContext, useMemo, useState, useRef } from "react";
 import OrderContext from "contexts/OrdersContext";
 import useOrder from "hooks/useOrder";
 import { openSnackbar } from "store/reducers/snackbar";
@@ -8,15 +9,10 @@ import { EditOutlined, SaveOutlined, FileSearchOutlined, PaperClipOutlined, EyeO
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import customParseFormat from "dayjs/plugin/customParseFormat";
+import { fromDisplay } from "utils/date";
 import AlertComissary from "sections/apps/orders/AlertComissary";
-
-dayjs.extend(utc);
-dayjs.extend(customParseFormat);
-
-const DISPLAY_FORMAT = "DD/MM/YYYY HH:mm";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export default function OrdersTable({ reload, setReload, search, tab }) {
 	const { updateOrderStatus } = useOrder();
@@ -34,6 +30,9 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 	const [photoOrderId, setPhotoOrderId] = useState(null);
 	const [orderPhotos, setOrderPhotos] = useState({});
 	const fileInputRef = useRef(null);
+
+	const loading = loadingOrder || loadingInspection;
+	const isEmpty = useMemo(() => !loading && orders.length === 0, [loading, orders.length]);
 
 	const handleStatus = async (orderId, status) => {
 		const data = { status: status };
@@ -122,10 +121,32 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{(loadingOrder || loadingInspection) && <LinearProgress />}
-						{orders.length > 0 ? (
-							orders.map((item, indexItem) => (
-								<TableRow hover key={`${item.id_order}-${item.id_item}`}>
+						{loading ? (
+							<TableSkeleton rows={5} columns={7} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={7}>
+									<EmptyState
+										title="Nenhum resultado encontrado"
+										description={
+											search
+												? "Nenhuma ordem de serviço encontrada."
+												: tab === 0
+													? "Nenhuma ordem de serviço encontrada."
+													: tab === 1
+														? "Nenhuma ordem de serviço aberta."
+														: tab === 2
+															? "Nenhuma ordem de serviço em execução."
+															: tab === 3
+																? "Nenhuma ordem de serviço finalizada."
+																: "Nenhuma ordem de serviço cancelada."
+										}
+									/>
+								</TableCell>
+							</TableRow>
+						) : (
+							orders.map((item, index) => (
+								<TableRow hover key={`${item.id_order}-${item.id_item}-${index}`}>
 									<TableCell align="center">
 										<Button
 											disabled={loadingOrder || item.order_status === "F" || item.order_status === "C"}
@@ -135,8 +156,13 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 											onClick={async () => {
 												const newStatus = item.order_status === "P" ? "E" : "F";
 												const orderIds = item.id_orders && item.id_orders.length > 0 ? item.id_orders : [item.id_order];
-												await Promise.all(orderIds.map((orderId) => handleStatus(orderId, newStatus)));
+												const results = await Promise.all(orderIds.map((orderId) => handleStatus(orderId, newStatus)));
 												setReload(!reload);
+
+												const allSucceeded = results.every((result) => result);
+												if (!allSucceeded) {
+													return;
+												}
 
 												const successMessage = "Ordem atualizada com sucesso";
 
@@ -164,15 +190,15 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 												? item.takeoff_date
 												: item.available_at === "A"
 													? (() => {
-															const now = dayjs();
-															const landing = item.landing_date ? dayjs(item.landing_date, DISPLAY_FORMAT) : null;
-															const takeoff = item.takeoff_date ? dayjs(item.takeoff_date, DISPLAY_FORMAT) : null;
+															const now = Date.now();
+															const landing = item.landing_date ? fromDisplay(item.landing_date) : null;
+															const takeoff = item.takeoff_date ? fromDisplay(item.takeoff_date) : null;
 															// Sem uma das datas, mostra a que existir.
-															if (!landing?.isValid()) return item.takeoff_date || "Não agendado";
-															if (!takeoff?.isValid()) return item.landing_date || "Não agendado";
+															if (!landing) return item.takeoff_date || "Não agendado";
+															if (!takeoff) return item.landing_date || "Não agendado";
 															// Mostra a hora mais próxima do momento atual.
-															const landingDiff = Math.abs(now.diff(landing));
-															const takeoffDiff = Math.abs(now.diff(takeoff));
+															const landingDiff = Math.abs(now - landing.getTime());
+															const takeoffDiff = Math.abs(now - takeoff.getTime());
 															return landingDiff <= takeoffDiff ? item.landing_date : item.takeoff_date;
 														})()
 													: "Não agendado"}
@@ -181,13 +207,18 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 										{item.products ? (
 											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
 												<Typography>Comissaria</Typography>
-												<EyeOutlined
-													onClick={() => {
-														setSelectedProducts(item.products);
-														setOpenComissary(true);
-													}}
-													style={{ cursor: "pointer" }}
-												/>
+												<Tooltip title="Visualizar comissaria">
+													<IconButton
+														size="small"
+														aria-label="Visualizar comissaria"
+														onClick={() => {
+															setSelectedProducts(item.products);
+															setOpenComissary(true);
+														}}
+													>
+														<EyeOutlined />
+													</IconButton>
+												</Tooltip>
 											</Grid>
 										) : (
 											<Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
@@ -210,16 +241,19 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 											<Box display="inline-flex" alignItems="center" gap={1}>
 												{item.unit === "un" || item.unit === "pacote" ? "-" : item.amount === "full" ? "Full" : `${item.amount} ${item.unit}`}
 												{item.unit === "L" && (item.order_status === "E" || item.order_status === "P") && (
-													<IconButton
-														size="small"
-														onClick={() => {
-															const itemKey = `${item.id_order}-${item.id_item}`;
-															setEditFuel((prev) => ({ ...prev, [itemKey]: true }));
-															setEditFuelValue((prev) => ({ ...prev, [itemKey]: item.amount === "full" ? "" : item.amount }));
-														}}
-													>
-														<EditOutlined />
-													</IconButton>
+													<Tooltip title="Editar quantidade">
+														<IconButton
+															size="small"
+															aria-label="Editar quantidade"
+															onClick={() => {
+																const itemKey = `${item.id_order}-${item.id_item}`;
+																setEditFuel((prev) => ({ ...prev, [itemKey]: true }));
+																setEditFuelValue((prev) => ({ ...prev, [itemKey]: item.amount === "full" ? "" : item.amount }));
+															}}
+														>
+															<EditOutlined />
+														</IconButton>
+													</Tooltip>
 												)}
 											</Box>
 										) : (
@@ -251,28 +285,6 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 									<TableCell align="center">{item.finalized_by}</TableCell>
 								</TableRow>
 							))
-						) : search ? (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhuma ordem de serviço encontrada</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									{tab === 0 ? (
-										<Typography variant="h5">Nenhuma ordem de serviço encontrada</Typography>
-									) : tab === 1 ? (
-										<Typography variant="h5">Nenhuma ordem de serviço aberta</Typography>
-									) : tab === 2 ? (
-										<Typography variant="h5">Nenhuma ordem de serviço em execução</Typography>
-									) : tab === 3 ? (
-										<Typography variant="h5">Nenhuma ordem de serviço finalizada</Typography>
-									) : (
-										<Typography variant="h5">Nenhuma ordem de serviço cancelada</Typography>
-									)}
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
@@ -284,3 +296,10 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 		</>
 	);
 }
+
+OrdersTable.propTypes = {
+	reload: PropTypes.bool,
+	setReload: PropTypes.func,
+	search: PropTypes.string,
+	tab: PropTypes.number,
+};

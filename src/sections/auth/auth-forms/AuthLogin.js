@@ -9,8 +9,6 @@ import IconButton from "components/@extended/IconButton";
 import AnimateButton from "components/@extended/AnimateButton";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import useAuth from "hooks/useAuth";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
 import AuthContext from "contexts/AuthContext";
 
 const AuthLogin = ({ isDemo = false }) => {
@@ -41,35 +39,20 @@ const AuthLogin = ({ isDemo = false }) => {
 					email: Yup.string().max(255).required("Login é obrigatório"),
 					password: Yup.string().max(255).required("Senha é obrigatória"),
 				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+				onSubmit={async (values, { setStatus, setSubmitting }) => {
 					try {
 						const payload = {
 							login: values.email,
 							password: values.password,
 						};
-						const response = await login(payload);
+						await login(payload);
 						if (scriptedRef.current) {
-							dispatch(
-								openSnackbar({
-									open: true,
-									message: response.message,
-									variant: "alert",
-									alert: {
-										color: "success",
-									},
-									close: false,
-								})
-							);
 							setStatus({ success: true });
 							setSubmitting(false);
 						}
 					} catch (err) {
-						setErrors({});
-						console.error(err);
-						const message = err.response.status === 404 ? "Usuário não encontrado!" : "Erro ao fazer login!";
 						if (scriptedRef.current) {
 							setStatus({ success: false });
-							setErrors({ submit: message });
 							setSubmitting(false);
 						}
 					}

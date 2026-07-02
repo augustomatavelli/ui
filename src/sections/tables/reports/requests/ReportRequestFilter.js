@@ -4,12 +4,9 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { format, startOfDay, endOfDay, startOfMonth, endOfMonth, endOfYear, subDays, isAfter } from "date-fns";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+const API_LOCAL_FMT = "yyyy-MM-dd'T'HH:mm:ss";
 
 export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
 	const theme = useTheme();
@@ -26,30 +23,33 @@ export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFi
 	const handleChangePeriod = (value) => {
 		setSelectedPeriod(value);
 
-		const today = dayjs().tz("America/Sao_Paulo");
+		const today = new Date();
 		let startDate = null;
 		let endDate = null;
 
 		switch (value) {
 			case "general":
-				startDate = dayjs("2025-01-01").startOf("day").format("YYYY-MM-DDTHH:mm:ss");
-				endDate = dayjs().endOf("year").format("YYYY-MM-DDTHH:mm:ss");
-				break;
+				// Formato local (sem fuso), preservando o comportamento de dayjs().format("YYYY-MM-DDTHH:mm:ss").
+				setDateFilter({
+					start: format(startOfDay(new Date("2025-01-01T00:00:00")), API_LOCAL_FMT),
+					end: format(endOfYear(today), API_LOCAL_FMT),
+				});
+				return;
 			case "current_month":
-				startDate = today.startOf("month");
-				endDate = today.endOf("month");
+				startDate = startOfMonth(today);
+				endDate = endOfMonth(today);
 				break;
 			case "last_7_days":
-				startDate = today.subtract(7, "day").startOf("day");
-				endDate = today.endOf("day");
+				startDate = startOfDay(subDays(today, 7));
+				endDate = endOfDay(today);
 				break;
 			case "yesterday":
-				startDate = today.subtract(1, "day").startOf("day");
-				endDate = today.subtract(1, "day").endOf("day");
+				startDate = startOfDay(subDays(today, 1));
+				endDate = endOfDay(subDays(today, 1));
 				break;
 			case "today":
-				startDate = today.startOf("day");
-				endDate = today.endOf("day");
+				startDate = startOfDay(today);
+				endDate = endOfDay(today);
 				break;
 			default:
 				break;
@@ -142,7 +142,7 @@ export const ReportRequestsFilter = ({ selectedPeriod, setSelectedPeriod, dateFi
 									<DateTimePicker
 										value={dateFilter.end}
 										onChange={(e) => {
-											if (e && dateFilter.start && dayjs(e).isAfter(dateFilter.start)) {
+											if (e && dateFilter.start && isAfter(e, new Date(dateFilter.start))) {
 												setDateFilter((prev) => ({
 													...prev,
 													end: e,

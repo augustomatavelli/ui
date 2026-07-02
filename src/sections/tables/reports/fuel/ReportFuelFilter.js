@@ -4,11 +4,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { openSnackbar } from "store/reducers/snackbar";
 import { dispatch } from "store";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import { startOfDay, endOfDay, startOfMonth, endOfMonth, endOfYear, subDays, isAfter } from "date-fns";
 
 export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter, setDateFilter }) => {
 	const theme = useTheme();
@@ -25,30 +21,30 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 	const handleChangePeriod = (value) => {
 		setSelectedPeriod(value);
 
-		const today = dayjs();
+		const today = new Date();
 		let startDate = null;
 		let endDate = null;
 
 		switch (value) {
 			case "general":
-				startDate = dayjs("2025-01-01");
-				endDate = dayjs().endOf("year");
+				startDate = new Date("2025-01-01T00:00:00");
+				endDate = endOfYear(today);
 				break;
 			case "current_month":
-				startDate = today.startOf("month");
-				endDate = today.endOf("month");
+				startDate = startOfMonth(today);
+				endDate = endOfMonth(today);
 				break;
 			case "last_7_days":
-				startDate = today.subtract(7, "day").startOf("day");
-				endDate = today.endOf("day");
+				startDate = startOfDay(subDays(today, 7));
+				endDate = endOfDay(today);
 				break;
 			case "yesterday":
-				startDate = today.subtract(1, "day").startOf("day");
-				endDate = today.subtract(1, "day").endOf("day");
+				startDate = startOfDay(subDays(today, 1));
+				endDate = endOfDay(subDays(today, 1));
 				break;
 			case "today":
-				startDate = today.startOf("day");
-				endDate = today.endOf("day");
+				startDate = startOfDay(today);
+				endDate = endOfDay(today);
 				break;
 			default:
 				break;
@@ -141,7 +137,7 @@ export const ReportFuelFilter = ({ selectedPeriod, setSelectedPeriod, dateFilter
 									<DateTimePicker
 										value={dateFilter.end}
 										onChange={(e) => {
-											if (e && dateFilter.start && dayjs(e).isAfter(dateFilter.start)) {
+											if (e && dateFilter.start && isAfter(e, new Date(dateFilter.start))) {
 												setDateFilter((prev) => ({
 													...prev,
 													end: e,

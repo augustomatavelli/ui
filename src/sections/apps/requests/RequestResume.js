@@ -3,7 +3,7 @@ import { TableContainer, Table, TableBody, TableRow, TableCell, Typography, Butt
 import RequestContext from "contexts/RequestContext";
 import { useContext } from "react";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
+import { formatDisplay } from "utils/date";
 import useRequest from "hooks/useRequest";
 
 const formatBRL = (value) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -82,13 +82,13 @@ export const RequestResume = ({ aircraft }) => {
 							<TableRow>
 								<TableCell sx={{ opacity: 0.5 }}>Data agendada para decolagem</TableCell>
 								<TableCell align="right" sx={{ opacity: 0.5 }}>
-									{dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm")}
+									{requestResume.takeoff_date ? formatDisplay(requestResume.takeoff_date) : "Não agendado"}
 								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell sx={{ opacity: 0.5 }}>Data agendada para pouso</TableCell>
 								<TableCell align="right" sx={{ opacity: 0.5 }}>
-									{requestResume.landing_date ? dayjs(requestResume.landing_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
+									{requestResume.landing_date ? formatDisplay(requestResume.landing_date) : "Não agendado"}
 								</TableCell>
 							</TableRow>
 						</>
@@ -97,13 +97,13 @@ export const RequestResume = ({ aircraft }) => {
 							<TableRow>
 								<TableCell sx={{ opacity: 0.5 }}>Data agendada para pouso</TableCell>
 								<TableCell align="right" sx={{ opacity: 0.5 }}>
-									{dayjs(requestResume.landing_date).format("DD/MM/YYYY HH:mm")}
+									{requestResume.landing_date ? formatDisplay(requestResume.landing_date) : "Não agendado"}
 								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell sx={{ opacity: 0.5 }}>Data agendada para decolagem</TableCell>
 								<TableCell align="right" sx={{ opacity: 0.5 }}>
-									{requestResume.takeoff_date ? dayjs(requestResume.takeoff_date).format("DD/MM/YYYY HH:mm") : "Não agendado"}
+									{requestResume.takeoff_date ? formatDisplay(requestResume.takeoff_date) : "Não agendado"}
 								</TableCell>
 							</TableRow>
 						</>

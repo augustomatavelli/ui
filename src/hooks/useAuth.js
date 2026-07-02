@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext, { setSession } from "contexts/AuthContext";
 import UseAxios from "./useAxios";
 import { openSnackbar } from "store/reducers/snackbar";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import { getApiErrorMessage } from "utils/api/getApiErrorMessage";
 import AircraftContext from "contexts/AircraftContext";
 import UserContext from "contexts/UserContext";
 import { LOGIN, LOGOUT } from "store/reducers/actions";
@@ -21,7 +21,7 @@ const useAuth = () => {
 	const { resetOperationStates } = useContext(OperationsContext);
 	const { resetProductStates } = useContext(ProductsContext);
 	const { resetRequestStates } = useContext(RequestContext);
-	const { user, resetUserStates } = useContext(UserContext);
+	const { resetUserStates } = useContext(UserContext);
 	const { dispatchAuth, setLoadingResetPassword, setResetToken, setLoadingLogin } = useContext(AuthContext);
 
 	const navigate = useNavigate();
@@ -36,7 +36,7 @@ const useAuth = () => {
 				type: LOGIN,
 				payload: {
 					isLoggedIn: true,
-					user,
+					user: { name, userType, userId, userStatus },
 				},
 			});
 			localStorage.setItem("_userId", userId);
@@ -46,12 +46,10 @@ const useAuth = () => {
 
 			return response.data;
 		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
 			dispatch(
 				openSnackbar({
 					open: true,
-					message: ErrorMessages[err],
+					message: getApiErrorMessage(error),
 					variant: "alert",
 					alert: {
 						color: "error",
@@ -59,6 +57,7 @@ const useAuth = () => {
 					close: true,
 				}),
 			);
+			throw error;
 		} finally {
 			setLoadingLogin(false);
 		}
@@ -70,12 +69,10 @@ const useAuth = () => {
 			const response = await publicAxios.post(`/auth/request-code`, data);
 			return response.data;
 		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
 			dispatch(
 				openSnackbar({
 					open: true,
-					message: ErrorMessages[err],
+					message: getApiErrorMessage(error),
 					variant: "alert",
 					alert: {
 						color: "error",
@@ -83,6 +80,7 @@ const useAuth = () => {
 					close: true,
 				}),
 			);
+			throw error;
 		} finally {
 			setLoadingResetPassword(false);
 		}
@@ -95,12 +93,10 @@ const useAuth = () => {
 			setResetToken(response.data.token);
 			return response.data;
 		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
 			dispatch(
 				openSnackbar({
 					open: true,
-					message: ErrorMessages[err],
+					message: getApiErrorMessage(error),
 					variant: "alert",
 					alert: {
 						color: "error",
@@ -108,6 +104,7 @@ const useAuth = () => {
 					close: true,
 				}),
 			);
+			throw error;
 		} finally {
 			setLoadingResetPassword(false);
 		}
@@ -119,12 +116,10 @@ const useAuth = () => {
 			const response = await publicAxios.patch(`/auth/reset-password`, data);
 			return response.data;
 		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
 			dispatch(
 				openSnackbar({
 					open: true,
-					message: ErrorMessages[err],
+					message: getApiErrorMessage(error),
 					variant: "alert",
 					alert: {
 						color: "error",
@@ -132,6 +127,7 @@ const useAuth = () => {
 					close: true,
 				}),
 			);
+			throw error;
 		} finally {
 			setLoadingResetPassword(false);
 		}

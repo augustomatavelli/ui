@@ -1,6 +1,6 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, Switch, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { LikeFilled, DislikeFilled } from "@ant-design/icons";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AircraftContext from "contexts/AircraftContext";
@@ -10,6 +10,9 @@ import SearchAircraftByAdmin from "sections/apps/aircrafts/SearchAircraftByAdmin
 import { useNavigate } from "react-router";
 import UserContext from "contexts/UserContext";
 import { AircraftFilter } from "./AircraftFilter";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import AircraftTableRow from "./AircraftTableRow";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -18,6 +21,8 @@ export const header = [
 	{ label: "Email", key: "email" },
 	{ label: "Celular", key: "mobile" },
 ];
+
+const COLUMN_COUNT = 4;
 
 export default function AircraftsTable({ openFilter, reload, setReload }) {
 	const { findAllAircrafts, approveAircraft, searchAllAircrafts, updateAircraft } = useAircraft();
@@ -30,7 +35,6 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 	const [open, setOpen] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState({});
 
-	const theme = useTheme();
 	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
@@ -39,6 +43,10 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 
 	const handleOpen = () => {
 		setOpen(true);
+	};
+
+	const handleDialogClose = () => {
+		setOpen(false);
 	};
 
 	const handleAdd = async () => {
@@ -51,27 +59,53 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 		user.type === "A" || user.type === "S" ? await findAllAircrafts(search, page, paramsStatus) : await searchAllAircrafts(search, page);
 	};
 
-	const handleRedirect = (aircraftId) => {
-		navigate(`/aircrafts/${aircraftId}`);
-	};
+	const handleRedirect = useCallback(
+		(aircraftId) => {
+			navigate(`/aircrafts/${aircraftId}`);
+		},
+		[navigate],
+	);
 
-	const handleApprove = async (event, aircraft, status) => {
-		event.stopPropagation();
-		await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: status });
-		const statusParams = Object.keys(selectedStatus);
-		const paramsStatus = new URLSearchParams();
-		paramsStatus.set("status", statusParams.join(","));
-		await findAllAircrafts(search, page, paramsStatus);
-	};
+	const handleApprove = useCallback(
+		async (event, aircraft, status) => {
+			event.stopPropagation();
+			await approveAircraft({ id_aircraft: aircraft.id_aircraft, approve: status });
+			const statusParams = Object.keys(selectedStatus);
+			const paramsStatus = new URLSearchParams();
+			paramsStatus.set("status", statusParams.join(","));
+			await findAllAircrafts(search, page, paramsStatus);
+		},
+		[approveAircraft, findAllAircrafts, search, page, selectedStatus],
+	);
+
+	const handleToggleMembership = useCallback(
+		async (aircraft, checked) => {
+			const response = await updateAircraft(aircraft.id_aircraft, {
+				membership: checked ? "S" : "N",
+			});
+			if (response.status === 200) {
+				setReload((prev) => !prev);
+			}
+		},
+		[updateAircraft, setReload],
+	);
+
+	useEffect(() => {
+		setPage(1);
+	}, [search, selectedStatus]);
 
 	useEffect(() => {
 		const statusParams = Object.keys(selectedStatus);
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		user.type === "A" || user.type === "S" ? findAllAircrafts(search, page, paramsStatus) : searchAllAircrafts(search, page);
+		const controller = new AbortController();
+		user.type === "A" || user.type === "S" ? findAllAircrafts(search, page, paramsStatus, controller.signal) : searchAllAircrafts(search, page, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, selectedStatus, reload]);
 
+	const isEmpty = useMemo(() => !loadingAircraft && aircrafts.length === 0, [loadingAircraft, aircrafts.length]);
 
 	return (
 		<>
@@ -105,90 +139,38 @@ export default function AircraftsTable({ openFilter, reload, setReload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{aircrafts.length > 0 ? (
-							aircrafts.map((aircraft) => (
-								<TableRow
-									hover
-									key={aircraft.id_aircraft}
-									sx={{ cursor: "pointer" }}
-									onClick={() => {
-										handleRedirect(aircraft.id_aircraft);
-									}}
-								>
-									<TableCell align="center">
-										{aircraft.status === "P" ? (
-											<Box display="flex" gap={4} justifyContent="center">
-												<Tooltip title="Aprovar">
-													<LikeFilled
-														style={{
-															fontSize: 20,
-															color: theme.palette.success.main,
-															cursor: "pointer",
-														}}
-														onClick={async (event) => {
-															await handleApprove(event, aircraft, "S");
-														}}
-													/>
-												</Tooltip>
-												<Tooltip title="Rejeitar">
-													<DislikeFilled
-														style={{
-															fontSize: 20,
-															color: theme.palette.error.main,
-															cursor: "pointer",
-														}}
-														onClick={async (event) => {
-															await handleApprove(event, aircraft, "N");
-														}}
-													/>
-												</Tooltip>
-											</Box>
-										) : (
-											<Chip color="success" variant="filled" size="small" label="Ativo" />
-										)}
-									</TableCell>
-									<TableCell align="center">{aircraft.registration}</TableCell>
-									<TableCell align="center">{aircraft.modelo}</TableCell>
-									<TableCell align="center">
-										<Box display="flex" justifyContent="center" alignItems="center">
-											<Switch
-												checked={aircraft.membership === "S"}
-												onClick={(e) => e.stopPropagation()}
-												onChange={async (event) => {
-													event.stopPropagation();
-													const response = await updateAircraft(aircraft.id_aircraft, {
-														membership: event.target.checked ? "S" : "N",
-													});
-													if (response.status === 200) {
-														setReload(!reload);
-													}
-												}}
-												color="primary"
-											/>
-										</Box>
-									</TableCell>
-								</TableRow>
-							))
-						) : search || openFilter ? (
+						{loadingAircraft ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhuma aeronave encontrada</Typography>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhuma aeronave foi encontrada com os filtros atuais." />
 								</TableCell>
 							</TableRow>
 						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhuma aeronave cadastrada</Typography>
-								</TableCell>
-							</TableRow>
+							aircrafts.map((aircraft) => (
+								<AircraftTableRow
+									key={aircraft.id_aircraft}
+									aircraft={aircraft}
+									onRedirect={handleRedirect}
+									onApprove={handleApprove}
+									onToggleMembership={handleToggleMembership}
+								/>
+							))
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddAircraft onCancel={handleAdd} />
 			</Dialog>
 		</>
 	);
 }
+
+AircraftsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+	setReload: PropTypes.func,
+};

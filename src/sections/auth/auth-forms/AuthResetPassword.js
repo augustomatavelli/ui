@@ -53,14 +53,14 @@ const AuthResetPassword = () => {
 					.oneOf([Yup.ref("password"), null], "As senhas devem ser iguais")
 					.required("Confirmação de senha é obrigatória"),
 			})}
-			onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+			onSubmit={async (values, { setStatus, setSubmitting }) => {
 				try {
 					const payload = {
 						email: emailSent,
 						uuid: resetToken,
 						...values,
 					};
-					const response = await resetPassword(payload);
+					await resetPassword(payload);
 					if (scriptedRef.current) {
 						setStatus({ success: true });
 						setSubmitting(false);
@@ -68,7 +68,7 @@ const AuthResetPassword = () => {
 						dispatch(
 							openSnackbar({
 								open: true,
-								message: response.message,
+								message: "Senha alterada com sucesso!",
 								variant: "alert",
 								alert: {
 									color: "success",
@@ -80,10 +80,8 @@ const AuthResetPassword = () => {
 						navigate("/", { replace: true });
 					}
 				} catch (err) {
-					console.error(err);
 					if (scriptedRef.current) {
 						setStatus({ success: false });
-						setErrors({ submit: err.message });
 						setSubmitting(false);
 					}
 				}

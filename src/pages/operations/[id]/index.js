@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton, Select, MenuItem } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton, Select, MenuItem, Tooltip } from "@mui/material";
 import MainCard from "components/MainCard";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -7,14 +7,19 @@ import Loader from "components/Loader";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
 import useOperation from "hooks/useOperation";
+import useChecklist from "hooks/useChecklists";
 import OperationsContext from "contexts/OperationContext";
+import { ChecklistContext } from "contexts/ChecklistContext";
 import AlertInfoAttributionOperation from "sections/apps/operations/AlertInfoAttributionOperation";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
 import AlertCustomerDelete from "sections/apps/customer/AlertCustomerDelete";
+import { AVAILABILITY, PRODUCT_STATUS, YES_NO } from "constants/domain";
 
 const OperationDetails = () => {
 	const { findOneOperationById, updateOperation, deleteOperation } = useOperation();
+	const { findAllActive } = useChecklist();
 	const { loadingOperation, operationDetails } = useContext(OperationsContext);
+	const { activeChecklists } = useContext(ChecklistContext);
 
 	const [formData, setFormData] = useState({
 		price: "",
@@ -23,7 +28,6 @@ const OperationDetails = () => {
 		checklist: "",
 		allow_schedule: "",
 		id_checklist: "",
-		checklists: [],
 	});
 	const [editPrice, setEditPrice] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -39,6 +43,10 @@ const OperationDetails = () => {
 	}, [id]);
 
 	useEffect(() => {
+		findAllActive();
+	}, []);
+
+	useEffect(() => {
 		setFormData({
 			price: operationDetails.price || "",
 			available: operationDetails.available_at || "",
@@ -48,7 +56,6 @@ const OperationDetails = () => {
 			allow_schedule: operationDetails.allow_schedule || "",
 			checklist_name: operationDetails.checklist_name || "",
 			id_checklist: operationDetails.id_checklist || "",
-			checklists: operationDetails.checklists || [],
 		});
 	}, [operationDetails]);
 
@@ -112,11 +119,11 @@ const OperationDetails = () => {
 				secondary={
 					!loadingOperation && (
 						<Chip
-							color={status === "D" ? "success" : "error"}
+							color={status === PRODUCT_STATUS.AVAILABLE ? "success" : "error"}
 							variant="filled"
 							size="medium"
-							label={status === "D" ? "Disponível" : "Indisponível"}
-							sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
+							label={status === PRODUCT_STATUS.AVAILABLE ? "Disponível" : "Indisponível"}
+							sx={{ fontWeight: "bold", color: status === PRODUCT_STATUS.PENDING ? "#252525" : "white" }}
 						/>
 					)
 				}
@@ -162,9 +169,11 @@ const OperationDetails = () => {
 																currency: "BRL",
 															}).format(Number(price))}
 														</Typography>
-														<IconButton size="small" onClick={() => setEditPrice(true)}>
-															<EditOutlined />
-														</IconButton>
+														<Tooltip title="Editar preço">
+															<IconButton size="small" aria-label="Editar preço" onClick={() => setEditPrice(true)}>
+																<EditOutlined />
+															</IconButton>
+														</Tooltip>
 													</Box>
 												) : (
 													<Box display="inline-flex" alignItems="center" gap={1}>
@@ -177,7 +186,11 @@ const OperationDetails = () => {
 															inputProps={{ style: { padding: 5, width: "50px" } }}
 															onChange={handleChange}
 														/>
-														<SaveOutlined style={{ cursor: "pointer" }} onClick={() => setEditPrice(false)} />
+														<Tooltip title="Salvar preço">
+															<IconButton size="small" aria-label="Salvar preço" onClick={() => setEditPrice(false)}>
+																<SaveOutlined />
+															</IconButton>
+														</Tooltip>
 													</Box>
 												)}
 											</Stack>
@@ -191,9 +204,9 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="available">Disponibilidade</InputLabel>
 												<RadioGroup aria-label="available" value={formData.available} name="available" onChange={handleChange} row>
-													<FormControlLabel value="P" control={<Radio />} label="No pouso" />
-													<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
-													<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+													<FormControlLabel value={AVAILABILITY.LANDING} control={<Radio />} label="No pouso" />
+													<FormControlLabel value={AVAILABILITY.TAKEOFF} control={<Radio />} label="Na decolagem" />
+													<FormControlLabel value={AVAILABILITY.BOTH} control={<Radio />} label="Ambos" />
 												</RadioGroup>
 											</Stack>
 										</Grid>
@@ -208,8 +221,8 @@ const OperationDetails = () => {
 													<InputLabel htmlFor="stock">Controle de estoque?</InputLabel>
 												</Grid>
 												<RadioGroup aria-label="stock" value={formData.stock} name="stock" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Sim" />
-													<FormControlLabel value="N" control={<Radio />} label="Não" />
+													<FormControlLabel value={YES_NO.YES} control={<Radio />} label="Sim" />
+													<FormControlLabel value={YES_NO.NO} control={<Radio />} label="Não" />
 												</RadioGroup>
 											</Stack>
 										</Grid>
@@ -225,8 +238,8 @@ const OperationDetails = () => {
 													<InfoCircleOutlined onClick={() => setOpen(true)} />
 												</Grid>
 												<RadioGroup aria-label="selectionMode" value={formData.selectionMode} name="selectionMode" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Manual" />
-													<FormControlLabel value="N" control={<Radio />} label="Automático" />
+													<FormControlLabel value={YES_NO.YES} control={<Radio />} label="Manual" />
+													<FormControlLabel value={YES_NO.NO} control={<Radio />} label="Automático" />
 												</RadioGroup>
 											</Stack>
 										</Grid>
@@ -239,31 +252,25 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="checklist">Necessita checklist?</InputLabel>
 												<RadioGroup aria-label="checklist" value={formData.checklist} name="checklist" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Sim" />
-													<FormControlLabel value="N" control={<Radio />} label="Não" />
+													<FormControlLabel value={YES_NO.YES} control={<Radio />} label="Sim" />
+													<FormControlLabel value={YES_NO.NO} control={<Radio />} label="Não" />
 													<Select
-														value={formData.checklist_name || ""}
-														name="checklist_name"
+														value={formData.id_checklist || ""}
+														name="id_checklist"
 														onChange={handleChange}
 														displayEmpty
-														disabled={formData.checklist === "N"}
+														disabled={formData.checklist === YES_NO.NO}
 														inputProps={{ "aria-label": "Without label" }}
 														sx={{ width: "fit-content", marginTop: 1 }}
 													>
 														<MenuItem value="" disabled>
 															Selecione um checklist
 														</MenuItem>
-														{checklist_name && id_checklist ? (
-															<MenuItem key={id_checklist} value={checklist_name}>
-																{checklist_name}
+														{activeChecklists.map((checklist) => (
+															<MenuItem key={checklist.id_checklist} value={checklist.id_checklist}>
+																{checklist.name}
 															</MenuItem>
-														) : (
-															formData.checklists.map((checklist) => (
-																<MenuItem key={checklist.id_checklist} value={checklist.name}>
-																	{checklist.name}
-																</MenuItem>
-															))
-														)}
+														))}
 													</Select>
 												</RadioGroup>
 											</Stack>
@@ -277,8 +284,8 @@ const OperationDetails = () => {
 											<Stack spacing={0.5}>
 												<InputLabel htmlFor="allow_schedule">Necessita reserva?</InputLabel>
 												<RadioGroup aria-label="allow_schedule" value={formData.allow_schedule} name="allow_schedule" onChange={handleChange} row>
-													<FormControlLabel value="S" control={<Radio />} label="Sim" />
-													<FormControlLabel value="N" control={<Radio />} label="Não" />
+													<FormControlLabel value={YES_NO.YES} control={<Radio />} label="Sim" />
+													<FormControlLabel value={YES_NO.NO} control={<Radio />} label="Não" />
 												</RadioGroup>
 											</Stack>
 										</Grid>

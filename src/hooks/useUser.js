@@ -1,9 +1,7 @@
 import { useContext } from "react";
 import UseAxios from "./useAxios";
 import UserContext from "contexts/UserContext";
-import { openSnackbar } from "store/reducers/snackbar";
-import { dispatch } from "store";
-import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import { runRequest } from "utils/api/runRequest";
 
 const useUser = () => {
 	const { publicAxios } = UseAxios();
@@ -11,244 +9,66 @@ const useUser = () => {
 	const { setLoadingUser, setUser, setSearchUser, setUsers, setTotalUser, setUserDetails } = useContext(UserContext);
 
 	const createUser = async (data) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.post("/users", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.post("/users", data), { setLoading: setLoadingUser });
+		return result;
 	};
 
 	const createUserByAdmin = async (data) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.post("/users/admin/create", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
+		const { data: result } = await runRequest(() => publicAxios.post("/users/admin/create", data), { setLoading: setLoadingUser });
+		return result;
+	};
+
+	const findOneUser = async (signal) => {
+		const { data } = await runRequest(() => publicAxios.get("/users/find-one", { signal }), { setLoading: setLoadingUser });
+		if (data) {
+			setUser(data);
 		}
 	};
 
-	const findOneUser = async () => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.get("/users/find-one");
-			setUser(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
+	const findOneUserById = async (userId, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/users/find-one/${userId}`, { signal }), { setLoading: setLoadingUser });
+		if (data) {
+			setUserDetails(data);
 		}
 	};
 
-	const findOneUserById = async (userId) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.get(`/users/find-one/${userId}`);
-			setUserDetails(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
+	const searchAllUsers = async (searchTerm, aircraftId, hasAircraft, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/users/search?search=${searchTerm}&aircraftId=${aircraftId}&hasAircraft=${hasAircraft}`, { signal }), {
+			setLoading: setLoadingUser,
+		});
+		if (data) {
+			setSearchUser(data);
 		}
 	};
 
-	const searchAllUsers = async (searchTerm, aircraftId, hasAircraft) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.get(`/users/search?search=${searchTerm}&aircraftId=${aircraftId}&hasAircraft=${hasAircraft}`);
-			setSearchUser(response.data);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
-	};
-
-	const findAllUsers = async (search, page, roleParams, statusParams) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.get(`/users/admin/find-all?search=${search}&page=${page}&${roleParams.toString()}&${statusParams.toString()}`);
-			setUsers(response.data.items);
-			setTotalUser(response.data.pagination.totalPages);
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
+	const findAllUsers = async (search, page, roleParams, statusParams, signal) => {
+		const { data } = await runRequest(() => publicAxios.get(`/users/admin/find-all?search=${search}&page=${page}&${roleParams.toString()}&${statusParams.toString()}`, { signal }), {
+			setLoading: setLoadingUser,
+		});
+		if (data) {
+			setUsers(data.items ?? []);
+			setTotalUser(data.pagination?.totalPages ?? 0);
 		}
 	};
 
 	const updateUser = async (userId, data) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.patch(`/users/admin/${userId}`, data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.patch(`/users/admin/${userId}`, data), { setLoading: setLoadingUser });
+		return result;
 	};
 
 	const updateUserPassword = async (data) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.patch("/users/update-password", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.patch("/users/update-password", data), { setLoading: setLoadingUser });
+		return result;
 	};
 
 	const approveUser = async (data) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.patch("/users/admin/approve", data);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
+		const { data: result } = await runRequest(() => publicAxios.patch("/users/admin/approve", data), { setLoading: setLoadingUser });
+		return result;
 	};
 
 	const deleteUser = async (userId) => {
-		try {
-			setLoadingUser(true);
-			const response = await publicAxios.delete(`/users/admin/delete/${userId}`);
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
-			dispatch(
-				openSnackbar({
-					open: true,
-					message: ErrorMessages[err],
-					variant: "alert",
-					alert: {
-						color: "error",
-					},
-					close: true,
-				}),
-			);
-		} finally {
-			setLoadingUser(false);
-		}
+		const { data } = await runRequest(() => publicAxios.delete(`/users/admin/delete/${userId}`), { setLoading: setLoadingUser });
+		return data;
 	};
 
 	return { findOneUser, updateUserPassword, updateUser, searchAllUsers, findAllUsers, approveUser, createUserByAdmin, createUser, findOneUserById, deleteUser };

@@ -1,13 +1,12 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Typography, Pagination, Stack, Grid, useTheme, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Pagination, Stack, Grid, useTheme, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import useLog from "hooks/useLogs";
 import LogContext from "contexts/LogContext";
 import SearchLogByAdmin from "sections/apps/logs/SearchLogByAdmin";
 import { LogFilter } from "./LogFilter";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
-dayjs.extend(utc);
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -17,6 +16,8 @@ export const header = [
 	{ label: "Tipo", key: "type" },
 	{ label: "Número ANAC", key: "license" },
 ];
+
+const COLUMN_COUNT = 10;
 
 export default function LogsTable({ openFilter, reload }) {
 	const { findAllLogs } = useLog();
@@ -35,6 +36,10 @@ export default function LogsTable({ openFilter, reload }) {
 	};
 
 	useEffect(() => {
+		setPage(1);
+	}, [search, selectedAction, selectedEntity]);
+
+	useEffect(() => {
 		const actionParams = Object.keys(selectedAction);
 		const paramsAction = new URLSearchParams();
 		paramsAction.set("action", actionParams.join(","));
@@ -43,8 +48,13 @@ export default function LogsTable({ openFilter, reload }) {
 		const paramsEntities = new URLSearchParams();
 		paramsEntities.set("entity", entitiesParams.join(","));
 
-		findAllLogs(search, page, paramsAction, paramsEntities);
+		const controller = new AbortController();
+		findAllLogs(search, page, paramsAction, paramsEntities, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, selectedAction, selectedEntity, reload]);
+
+	const isEmpty = useMemo(() => !loadingLog && logs.length === 0, [loadingLog, logs.length]);
 
 
 	return (
@@ -74,7 +84,15 @@ export default function LogsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{logs.length > 0 ? (
+						{loadingLog ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum log foi encontrado com os filtros atuais." />
+								</TableCell>
+							</TableRow>
+						) : (
 							logs.map((log) => (
 								<TableRow hover key={log.id}>
 									<TableCell align="center">#{log.id}</TableCell>
@@ -101,18 +119,6 @@ export default function LogsTable({ openFilter, reload }) {
 									<TableCell align="center">{log.date}</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhum log encontrado</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhum log registrado</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
@@ -120,3 +126,8 @@ export default function LogsTable({ openFilter, reload }) {
 		</>
 	);
 }
+
+LogsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

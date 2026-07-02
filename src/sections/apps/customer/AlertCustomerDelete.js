@@ -66,11 +66,12 @@ export default function AlertCustomerDelete({ title, open, handleClose, id, hand
 							color="error"
 							variant="contained"
 							onClick={async () => {
-								const response = await handleDelete(Number(id));
+								const result = await handleDelete(Number(id));
+								if (!result) return;
 								dispatch(
 									openSnackbar({
 										open: true,
-										message: response.message,
+										message: !cancel ? "Excluído com sucesso!" : "Cancelado com sucesso!",
 										variant: "alert",
 										alert: {
 											color: "success",

@@ -4,9 +4,19 @@ import { destroyCookie, parseCookies } from "nookies";
 import axios from "axios";
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 
 // Instancias criadas uma unica vez no modulo
 const publicAxios = axios.create({ baseURL: process.env.REACT_APP_API_URL });
+
+// Logout "duro" — usado fora do ciclo do React (interceptor). Limpa credenciais
+// e redireciona para a tela inicial.
+const forceLogout = () => {
+	localStorage.clear();
+	destroyCookie(null, "sessionToken", { path: "/" });
+	window.location.href = "/";
+};
 
 publicAxios.interceptors.request.use(
 	(config) => {
@@ -20,10 +30,21 @@ publicAxios.interceptors.request.use(
 publicAxios.interceptors.response.use(
 	(response) => response,
 	(error) => {
-		if (error?.response?.status === 401 || error?.response?.status === 403) {
-			localStorage.clear();
-			destroyCookie(null, "sessionToken", { path: "/" });
-			window.location.href = "/";
+		const status = error?.response?.status;
+		// 401 = sessão inválida/expirada -> desloga.
+		if (status === 401) {
+			forceLogout();
+		} else if (status === 403) {
+			// 403 = autenticado, mas sem permissão -> avisa e MANTÉM o usuário na página.
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Você não possui permissão para esta ação.",
+					variant: "alert",
+					alert: { color: "error" },
+					close: true,
+				})
+			);
 		}
 		return Promise.reject(error);
 	}

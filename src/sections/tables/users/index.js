@@ -1,14 +1,17 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme, Typography, Box, Tooltip, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Button, Dialog, LinearProgress } from "@mui/material";
 import UserContext from "contexts/UserContext";
 import useUser from "hooks/useUser";
-import { useContext, useEffect, useState } from "react";
-import { LikeFilled, DislikeFilled } from "@ant-design/icons";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import SearchUserByAdmin from "sections/apps/users/SearchUserByAdmin";
 import { PlusOutlined } from "@ant-design/icons";
 import { PopupTransition } from "components/@extended/Transitions";
 import AddUser from "sections/apps/users/AddUser";
 import { useNavigate } from "react-router";
 import { UserFilter } from "./UserFilter";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import UserTableRow from "./UserTableRow";
 
 export const header = [
 	{ label: "", key: "icon" },
@@ -18,6 +21,8 @@ export const header = [
 	{ label: "Tipo", key: "type" },
 	{ label: "Número ANAC", key: "license" },
 ];
+
+const COLUMN_COUNT = 7;
 
 export default function UsersTable({ openFilter, reload }) {
 	const { findAllUsers, approveUser } = useUser();
@@ -30,7 +35,6 @@ export default function UsersTable({ openFilter, reload }) {
 	const [selectedStatus, setSelectedStatus] = useState({});
 	const [selectedRole, setSelectedRole] = useState({});
 
-	const theme = useTheme();
 	const navigate = useNavigate();
 
 	const handleChangePage = (event, value) => {
@@ -39,6 +43,10 @@ export default function UsersTable({ openFilter, reload }) {
 
 	const handleAdd = async () => {
 		setOpen(true);
+	};
+
+	const handleDialogClose = () => {
+		setOpen(false);
 	};
 
 	const handleClose = async () => {
@@ -53,23 +61,33 @@ export default function UsersTable({ openFilter, reload }) {
 		await findAllUsers(search, page, params, paramsStatus);
 	};
 
-	const handleRedirect = (userId) => {
-		navigate(`/users/${userId}`);
-	};
+	const handleRedirect = useCallback(
+		(userId) => {
+			navigate(`/users/${userId}`);
+		},
+		[navigate],
+	);
 
-	const handleApprove = async (event, user, approve) => {
-		event.stopPropagation();
-		await approveUser({ id_user: user.id_user, approve: approve });
-		const roleParams = Object.keys(selectedRole);
-		const params = new URLSearchParams();
-		params.set("role", roleParams.join(","));
+	const handleApprove = useCallback(
+		async (event, user, approve) => {
+			event.stopPropagation();
+			await approveUser({ id_user: user.id_user, approve: approve });
+			const roleParams = Object.keys(selectedRole);
+			const params = new URLSearchParams();
+			params.set("role", roleParams.join(","));
 
-		const statusParams = Object.keys(selectedStatus);
-		const paramsStatus = new URLSearchParams();
-		paramsStatus.set("status", statusParams.join(","));
-		setOpen(false);
-		await findAllUsers(search, page, params, paramsStatus);
-	};
+			const statusParams = Object.keys(selectedStatus);
+			const paramsStatus = new URLSearchParams();
+			paramsStatus.set("status", statusParams.join(","));
+			setOpen(false);
+			await findAllUsers(search, page, params, paramsStatus);
+		},
+		[approveUser, findAllUsers, search, page, selectedRole, selectedStatus],
+	);
+
+	useEffect(() => {
+		setPage(1);
+	}, [search, selectedRole, selectedStatus]);
 
 	useEffect(() => {
 		const roleParams = Object.keys(selectedRole);
@@ -80,8 +98,13 @@ export default function UsersTable({ openFilter, reload }) {
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		findAllUsers(search, page, params, paramsStatus);
+		const controller = new AbortController();
+		findAllUsers(search, page, params, paramsStatus, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, selectedRole, selectedStatus, reload]);
+
+	const isEmpty = useMemo(() => !loadingUser && users.length === 0, [loadingUser, users.length]);
 
 
 	return (
@@ -119,83 +142,28 @@ export default function UsersTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{users.length > 0 ? (
-							users.map((user) => (
-								<TableRow
-									hover
-									key={user.id_user}
-									sx={{ cursor: "pointer" }}
-									onClick={() => {
-										handleRedirect(user.id_user);
-									}}
-								>
-									<TableCell align="center">
-										{user.status === "P" ? (
-											<Box display="flex" gap={4} justifyContent="center">
-												<Tooltip title="Aprovar">
-													<LikeFilled
-														style={{
-															fontSize: 20,
-															color: theme.palette.success.main,
-															cursor: "pointer",
-														}}
-														onClick={async (event) => {
-															await handleApprove(event, user, "S");
-														}}
-													/>
-												</Tooltip>
-												<Tooltip title="Rejeitar">
-													<DislikeFilled
-														style={{
-															fontSize: 20,
-															color: theme.palette.error.main,
-															cursor: "pointer",
-														}}
-														onClick={async (event) => {
-															await handleApprove(event, user, "N");
-														}}
-													/>
-												</Tooltip>
-											</Box>
-										) : (
-											<Chip color="success" variant="filled" size="small" label="Ativo" />
-										)}
-									</TableCell>
-									<TableCell align="center">{user.name}</TableCell>
-									<TableCell align="center">{user.email ? user.email : "-"} </TableCell>
-									<TableCell align="center">{user.login ? user.login : "-"}</TableCell>
-									<TableCell align="center">{user.mobile}</TableCell>
-									<TableCell align="center">
-										<Chip
-											color={user.type === "P" ? "success" : user.type === "O" ? "primary" : user.type === "A" ? "error" : "warning"}
-											variant="filled"
-											size="small"
-											label={user.type === "P" ? "Piloto" : user.type === "O" ? "Operador" : user.type === "A" ? "Administrador" : "Comum"}
-											sx={{ color: user.type === "C" ? "#252525" : "white" }}
-										/>
-									</TableCell>
-									<TableCell align="center">{user?.license ?? <Typography>-</Typography>}</TableCell>
-								</TableRow>
-							))
-						) : search || openFilter ? (
+						{loadingUser ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum usuário encontrado</Typography>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum usuário foi encontrado com os filtros atuais." />
 								</TableCell>
 							</TableRow>
 						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum usuário cadastrado</Typography>
-								</TableCell>
-							</TableRow>
+							users.map((user) => <UserTableRow key={user.id_user} user={user} onRedirect={handleRedirect} onApprove={handleApprove} />)
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddUser onCancel={handleClose} />
 			</Dialog>
 		</>
 	);
 }
+
+UsersTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

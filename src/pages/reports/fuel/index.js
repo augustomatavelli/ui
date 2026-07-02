@@ -163,7 +163,6 @@ const ReportFuelPeriod = () => {
 
 	const handleGeneratePDF = async () => {
 		if (!reportFuelListPDF || reportFuelListPDF.length === 0) {
-			console.warn("Nenhum dado disponível para gerar o PDF");
 			return;
 		}
 

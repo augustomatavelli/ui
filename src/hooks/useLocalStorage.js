@@ -2,16 +2,25 @@ import { useState, useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
+const safeParse = (raw, fallback) => {
+  if (raw === null || raw === undefined) return fallback;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+};
+
 export default function useLocalStorage(key, defaultValue) {
   const [value, setValue] = useState(() => {
     const storedValue = typeof window !== 'undefined' ? localStorage.getItem(key) : null;
-    return storedValue === null ? defaultValue : JSON.parse(storedValue);
+    return safeParse(storedValue, defaultValue);
   });
 
   useEffect(() => {
     const listener = (e) => {
       if (typeof window !== 'undefined' && e.storageArea === localStorage && e.key === key) {
-        setValue(e.newValue ? JSON.parse(e.newValue) : e.newValue);
+        setValue(safeParse(e.newValue, defaultValue));
       }
     };
     window.addEventListener('storage', listener);

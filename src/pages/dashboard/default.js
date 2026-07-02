@@ -57,7 +57,6 @@ const LocalEvento = ({ onEnviar }) => {
 			map.setCenter(place.geometry.location);
 			map.setZoom(17);
 			marker.setPosition(place.geometry.location);
-			console.log(place);
 			vincularDadosLocal(place);
 		});
 	};

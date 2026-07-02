@@ -41,6 +41,8 @@ const SearchOrder = ({ setSearch }) => {
 					fullWidth
 					endAdornment={
 						<CloseCircleOutlined
+							role="button"
+							aria-label="Limpar busca"
 							style={{
 								cursor: "pointer",
 								fontSize: 15,
@@ -60,7 +62,7 @@ const SearchOrder = ({ setSearch }) => {
 					onChange={handleChange}
 					sx={{ height: 40, paddingY: 0 }}
 				/>
-				<Button variant="contained" type="submit" sx={{ height: 40 }}>
+				<Button variant="contained" type="submit" sx={{ height: 40 }} aria-label="Buscar">
 					<SearchOutlined style={{ fontSize: 18 }} />
 				</Button>
 			</FormControl>

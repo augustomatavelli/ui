@@ -14,11 +14,6 @@ import ScheduleFormLanding from "./ScheduleFormLanding";
 import ProductsContext from "contexts/ProductsContext";
 import OperationsContext from "contexts/OperationContext";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
-import dayjs from "dayjs";
-import "dayjs/locale/pt-br";
-import utc from "dayjs/plugin/utc";
-dayjs.extend(utc);
-dayjs.locale("pt-br");
 
 const CreateRequestStepper = ({ aircraft }) => {
 	const { createRequest } = useRequest();
@@ -69,18 +64,16 @@ const CreateRequestStepper = ({ aircraft }) => {
 	};
 
 	const handleCreateRequest = async () => {
-		if (Array.isArray(requestResume.products)) {
-			requestResume.products = requestResume.products.map((product) => ({
-				...product,
-				amount: String(product.amount),
-			}));
-		}
+		const payload = Array.isArray(requestResume.products)
+			? { ...requestResume, products: requestResume.products.map((product) => ({ ...product, amount: String(product.amount) })) }
+			: requestResume;
 
-		const response = await createRequest(requestResume);
+		const response = await createRequest(payload);
+		if (!response) return;
 		dispatch(
 			openSnackbar({
 				open: true,
-				message: response.message,
+				message: "Solicitação criada com sucesso!",
 				variant: "alert",
 				alert: {
 					color: "success",

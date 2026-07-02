@@ -41,8 +41,8 @@ export default function AlertStockAdjust({ open, handleClose, handleSave, servic
 							Registro de ajuste de estoque
 						</Typography>
 						<Divider />
-						<OutlinedInput fullWidth type="number" placeholder="Digite a quantidade..." onChange={handleInputChange} />
-						<OutlinedInput fullWidth type="text" placeholder="Digite o motivo do ajuste..." onChange={handleInputObservationChange} />
+						<OutlinedInput fullWidth type="number" placeholder="Digite a quantidade..." value={inputValue} onChange={handleInputChange} />
+						<OutlinedInput fullWidth type="text" placeholder="Digite o motivo do ajuste..." value={inputObservation} onChange={handleInputObservationChange} />
 					</Stack>
 					<Stack direction="row" spacing={2} justifyContent="end" sx={{ width: 1 }}>
 						<Button disabled={loadingInventory} onClick={handleClose} color="secondary" variant="outlined">
@@ -53,11 +53,25 @@ export default function AlertStockAdjust({ open, handleClose, handleSave, servic
 							color="primary"
 							variant="contained"
 							onClick={async () => {
-								const response = await createInventory({ type: "A", amount: Number(inputValue), observation: String(inputObservation), id_item: service });
+								const amount = Number(inputValue);
+								if (!inputValue || Number.isNaN(amount) || amount <= 0) {
+									dispatch(
+										openSnackbar({
+											open: true,
+											message: "Digite uma quantidade válida",
+											variant: "alert",
+											alert: { color: "warning" },
+											close: false,
+										})
+									);
+									return;
+								}
+								const result = await createInventory({ type: "A", amount, observation: String(inputObservation), id_item: service });
+								if (!result) return;
 								dispatch(
 									openSnackbar({
 										open: true,
-										message: response.message,
+										message: "Ajuste registrado com sucesso!",
 										variant: "alert",
 										alert: {
 											color: "success",

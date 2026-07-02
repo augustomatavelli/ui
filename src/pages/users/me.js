@@ -58,11 +58,12 @@ const UserProfile = () => {
 			}
 		>
 			<Formik
+				enableReinitialize
 				initialValues={{
-					name: user.name,
-					email: user.email,
-					phone: user.mobile,
-					license: user.license,
+					name: user?.name ?? "",
+					email: user?.email ?? "",
+					phone: user?.mobile ?? "",
+					license: user?.license ?? "",
 					newPassword: "",
 					confirmNewPassword: "",
 					submit: null,

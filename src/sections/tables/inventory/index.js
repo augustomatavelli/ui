@@ -1,31 +1,42 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, IconButton, Tooltip, Chip, LinearProgress } from "@mui/material";
-import { useContext } from "react";
-import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, IconButton, Tooltip, Chip } from "@mui/material";
+import { useContext, useMemo, useState } from "react";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import InventoryContext from "contexts/InventoryContext";
 import useInventory from "hooks/useInventory";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import utc from "dayjs/plugin/utc";
+import { formatDisplay } from "utils/date";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import ConfirmDialog from "components/feedback/ConfirmDialog";
 
-dayjs.extend(utc);
-dayjs.locale("pt-br");
+const COLUMN_COUNT = 6;
 
-export default function InventoryMovementsTable({ setSearch, search, page, setPage, service, typeFilter }) {
+export default function InventoryMovementsTable({ search, page, setPage, service, typeFilter }) {
 	const { deleteInventory, findAllInventory } = useInventory();
 
 	const { loadingInventory, inventory, totalInventoryItems } = useContext(InventoryContext);
+
+	const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
 	const handleChangePage = (event, value) => {
 		setPage(value);
 	};
 
-	const handleDelete = async (id) => {
-		const response = await deleteInventory(id);
+	const isEmpty = useMemo(() => !loadingInventory && inventory.length === 0, [loadingInventory, inventory.length]);
+
+	const handleConfirmDelete = async () => {
+		const id = confirmDeleteId;
+		const result = await deleteInventory(id);
+		if (!result) {
+			setConfirmDeleteId(null);
+			return;
+		}
 		dispatch(
 			openSnackbar({
 				open: true,
-				message: response.message,
+				message: "Ajuste removido com sucesso!",
 				variant: "alert",
 				alert: {
 					color: "success",
@@ -33,6 +44,7 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 				close: false,
 			})
 		);
+		setConfirmDeleteId(null);
 		await findAllInventory(service, search, page, typeFilter);
 	};
 
@@ -54,11 +66,18 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 						</TableRow>
 					</TableHead>
 					<TableBody>
-					{loadingInventory && <LinearProgress />}
-					{inventory.length > 0 ? (
+						{loadingInventory ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhuma movimentação foi encontrada." />
+								</TableCell>
+							</TableRow>
+						) : (
 							inventory.map((i) => (
 								<TableRow hover key={i.id}>
-									<TableCell align="center">{dayjs(i.created_at).format("DD/MM/YYYY HH:mm")}</TableCell>
+									<TableCell align="center">{formatDisplay(i.created_at)}</TableCell>
 									<TableCell align="center">
 										<Chip
 											color={i.type === "E" ? "success" : i.type === "S" ? "warning" : "error"}
@@ -74,7 +93,7 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 									<TableCell align="center">
 										{i.type === "A" ? (
 											<Tooltip title="Remover Ajuste">
-												<IconButton onClick={() => handleDelete(i.id)} size="small">
+												<IconButton aria-label="Remover ajuste" onClick={() => setConfirmDeleteId(i.id)} size="small">
 													<DeleteOutlined style={{ color: "red" }} />
 												</IconButton>
 											</Tooltip>
@@ -88,16 +107,27 @@ export default function InventoryMovementsTable({ setSearch, search, page, setPa
 									</TableCell>
 								</TableRow>
 							))
-						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhuma movimentação encontrada</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
+			<ConfirmDialog
+				open={confirmDeleteId !== null}
+				title="Remover ajuste"
+				description="Tem certeza que deseja remover este ajuste de estoque? Esta ação não poderá ser desfeita."
+				confirmText="Remover"
+				loading={loadingInventory}
+				onClose={() => setConfirmDeleteId(null)}
+				onConfirm={handleConfirmDelete}
+			/>
 		</>
 	);
 }
+
+InventoryMovementsTable.propTypes = {
+	search: PropTypes.string,
+	page: PropTypes.number,
+	setPage: PropTypes.func,
+	service: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	typeFilter: PropTypes.string,
+};

@@ -38,6 +38,7 @@ const InventoryAdmin = () => {
 
 	const handleTypeChange = (event) => {
 		setTypeFilter(event.target.value);
+		setPage(1);
 	};
 
 	const handleClose = async () => {

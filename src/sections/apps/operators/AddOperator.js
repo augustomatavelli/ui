@@ -20,7 +20,6 @@ import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import { dispatch } from "store";
 import { openSnackbar } from "store/reducers/snackbar";
-import useScriptRef from "hooks/useScriptRef";
 import InputMask from "react-input-mask";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -28,6 +27,7 @@ import useOperator from "hooks/useOperator";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import OperatorContext from "contexts/OperatorContext";
+import { DOC_TYPE, DOC_MASKS } from "constants/domain";
 
 const getInitialValues = () => {
 	const newOperator = {
@@ -53,9 +53,7 @@ const AddOperator = ({ onCancel }) => {
 
 	const { loadingOperator } = useContext(OperatorContext);
 
-	const scriptedRef = useScriptRef();
-
-	const [typeDoc, setTypeDoc] = useState("cpf");
+	const [typeDoc, setTypeDoc] = useState(DOC_TYPE.CPF);
 	const [emailFields, setEmailFields] = useState([0]);
 
 	const addEmailField = () => {
@@ -95,55 +93,46 @@ const AddOperator = ({ onCancel }) => {
 	const formik = useFormik({
 		initialValues: getInitialValues(),
 		validationSchema: NewOperatorSchema,
-		onSubmit: async (values, { setSubmitting, setErrors, setStatus, resetForm }) => {
-			try {
-				const payload = {
-					name: values.name,
-					email0: values.email0,
-					email1: values.email1,
-					email2: values.email2,
-					email3: values.email3,
-					email4: values.email4,
-					email5: values.email5,
-					email6: values.email6,
-					email7: values.email7,
-					phone: values.phone.replace(/\D/g, ""),
-					cpf: typeDoc === "cpf" ? values.doc.replace(/\D/g, "") : "",
-					cnpj: typeDoc === "cnpj" ? values.doc.replace(/\D/g, "") : "",
-					social: values.social,
-				};
+		onSubmit: async (values, { setSubmitting, setStatus, resetForm }) => {
+			const payload = {
+				name: values.name,
+				email0: values.email0,
+				email1: values.email1,
+				email2: values.email2,
+				email3: values.email3,
+				email4: values.email4,
+				email5: values.email5,
+				email6: values.email6,
+				email7: values.email7,
+				phone: values.phone.replace(/\D/g, ""),
+				cpf: typeDoc === DOC_TYPE.CPF ? values.doc.replace(/\D/g, "") : "",
+				cnpj: typeDoc === DOC_TYPE.CNPJ ? values.doc.replace(/\D/g, "") : "",
+				social: values.social,
+			};
 
-				const response = await createOperator(payload);
-				if (scriptedRef.current) {
-					setStatus({ success: true });
-					setSubmitting(false);
-					dispatch(
-						openSnackbar({
-							open: true,
-							message: response.message,
-							variant: "alert",
-							alert: {
-								color: "success",
-							},
-							close: false,
-						})
-					);
-					setTimeout(() => {
-						resetForm();
-					}, 500);
-					onCancel();
-				}
-			} catch (err) {
-				setErrors({});
-				console.error(err);
-				const message =
-					err.response.status === 409 ? "Operador já existe!" : err.response.status === 400 ? "Erro ao cadastrar operador! Confira se os dados estão corretos!" : "Erro ao cadastrar operador!";
-				if (scriptedRef.current) {
-					setStatus({ success: false });
-					setErrors({ submit: message });
-					setSubmitting(false);
-				}
+			const result = await createOperator(payload);
+			if (!result) {
+				setSubmitting(false);
+				return;
 			}
+
+			setStatus({ success: true });
+			setSubmitting(false);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Operador cadastrado com sucesso!",
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				})
+			);
+			setTimeout(() => {
+				resetForm();
+			}, 500);
+			onCancel();
 		},
 	});
 
@@ -171,10 +160,10 @@ const AddOperator = ({ onCancel }) => {
 												}
 											}}
 										>
-											<FormControlLabel value="cpf" control={<Radio />} label="CPF" />
-											<FormControlLabel value="cnpj" control={<Radio />} label="CNPJ" />
+											<FormControlLabel value={DOC_TYPE.CPF} control={<Radio />} label="CPF" />
+											<FormControlLabel value={DOC_TYPE.CNPJ} control={<Radio />} label="CNPJ" />
 										</RadioGroup>
-										<InputMask mask={typeDoc === "cpf" ? "999.999.999-99" : "99.999.999/9999-99"} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
+										<InputMask mask={typeDoc === DOC_TYPE.CPF ? DOC_MASKS.CPF : DOC_MASKS.CNPJ} value={values.doc} onChange={handleChange} onBlur={handleBlur}>
 											{() => <OutlinedInput fullWidth error={Boolean(touched.doc && errors.doc)} id="doc-signup" name="doc" placeholder="Digite o número do documento..." />}
 										</InputMask>
 										{touched.doc && errors.doc && (
@@ -186,7 +175,7 @@ const AddOperator = ({ onCancel }) => {
 								</Grid>
 								<Grid item xs={12}>
 									<Stack spacing={1}>
-										<InputLabel htmlFor="firstname-signup">{typeDoc === "cpf" ? "Nome completo" : "Razão social"}</InputLabel>
+										<InputLabel htmlFor="firstname-signup">{typeDoc === DOC_TYPE.CPF ? "Nome completo" : "Razão social"}</InputLabel>
 										<OutlinedInput
 											id="name-login"
 											type="name"
@@ -194,7 +183,7 @@ const AddOperator = ({ onCancel }) => {
 											name="name"
 											onBlur={handleBlur}
 											onChange={handleChange}
-											placeholder={typeDoc === "cpf" ? "Digite o nome..." : "Digite a razão social..."}
+											placeholder={typeDoc === DOC_TYPE.CPF ? "Digite o nome..." : "Digite a razão social..."}
 											fullWidth
 											error={Boolean(touched.name && errors.name)}
 										/>

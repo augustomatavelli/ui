@@ -1,5 +1,5 @@
 // material-ui
-import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton } from "@mui/material";
+import { Grid, List, ListItem, Stack, Typography, Divider, Box, Button, Chip, OutlinedInput, InputLabel, RadioGroup, Radio, FormControlLabel, IconButton, Tooltip } from "@mui/material";
 
 // project import
 import MainCard from "components/MainCard";
@@ -13,6 +13,7 @@ import UserContext from "contexts/UserContext";
 import ProductsContext from "contexts/ProductsContext";
 import useProduct from "hooks/useProduct";
 import { ErrorMessages } from "utils/errors-messages/errors-messages";
+import { AVAILABILITY, PRODUCT_STATUS, YES_NO } from "constants/domain";
 
 const ProductDetails = () => {
 	const { findOneProductById, updateProduct } = useProduct();
@@ -70,8 +71,44 @@ const ProductDetails = () => {
 		}
 	};
 
+	const handleSavePrice = async () => {
+		try {
+			const response = await updateProduct(id_product, {
+				price: editPriceValue ? editPriceValue : price,
+				available_at: available ? available : available_at,
+				inventory: stock ? stock : inventory,
+			});
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: response.message,
+					variant: "alert",
+					alert: { color: "success" },
+					close: false,
+				})
+			);
+			setEditPrice(false);
+			await findOneProductById(id);
+		} catch (error) {
+			const err = error.response.data.errors[0].type || error.response.data.errors[0].message;
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: ErrorMessages[err] ?? "Erro ao salvar alterações",
+					variant: "alert",
+					alert: { color: "error" },
+					close: false,
+				})
+			);
+		}
+	};
+
 	useEffect(() => {
 		setAvailable(productDetails.available_at);
+		setStock(productDetails.inventory || "");
+		if (!editPrice) {
+			setEditPriceValue(productDetails.price ?? "");
+		}
 	}, [productDetails]);
 	/* const handleAlertClose = () => {
 		setOpenAlert(!openAlert);
@@ -91,11 +128,11 @@ const ProductDetails = () => {
 					secondary={
 						!loadingProduct && (
 							<Chip
-								color={status === "D" ? "success" : "error"}
+								color={status === PRODUCT_STATUS.AVAILABLE ? "success" : "error"}
 								variant="filled"
 								size="medium"
-								label={status === "D" ? "Disponível" : "Indisponível"}
-								sx={{ fontWeight: "bold", color: status === "P" ? "#252525" : "white" }}
+								label={status === PRODUCT_STATUS.AVAILABLE ? "Disponível" : "Indisponível"}
+								sx={{ fontWeight: "bold", color: status === PRODUCT_STATUS.PENDING ? "#252525" : "white" }}
 							/>
 						)
 					}
@@ -171,14 +208,17 @@ const ProductDetails = () => {
 																		currency: "BRL",
 																	}).format(Number(price))}
 																</Typography>
-																<IconButton
-																	size="small"
-																	onClick={() => {
-																		setEditPrice(true);
-																	}}
-																>
-																	<EditOutlined />
-																</IconButton>
+																<Tooltip title="Editar preço">
+																	<IconButton
+																		size="small"
+																		aria-label="Editar preço"
+																		onClick={() => {
+																			setEditPrice(true);
+																		}}
+																	>
+																		<EditOutlined />
+																	</IconButton>
+																</Tooltip>
 															</Box>
 														) : (
 															<Box display="inline-flex" alignItems="center" gap={1}>
@@ -195,12 +235,17 @@ const ProductDetails = () => {
 																		setEditPriceValue(e.target.value);
 																	}}
 																/>
-																<SaveOutlined
-																	style={{ cursor: "pointer" }}
-																	onClick={async () => {
-																		setEditPrice(false);
-																	}}
-																/>
+																<Tooltip title="Salvar preço">
+																	<IconButton
+																		size="small"
+																		aria-label="Salvar preço"
+																		onClick={async () => {
+																			await handleSavePrice();
+																		}}
+																	>
+																		<SaveOutlined />
+																	</IconButton>
+																</Tooltip>
 															</Box>
 														)}
 													</Stack>
@@ -214,9 +259,9 @@ const ProductDetails = () => {
 													<Stack spacing={0.5}>
 														<InputLabel htmlFor="unit">Disponibilidade</InputLabel>
 														<RadioGroup aria-label="size" value={available ? available : available_at} name="radio-buttons-group" onChange={handleChangeAvailable} row>
-															<FormControlLabel value="P" control={<Radio />} label="No pouso" />
-															<FormControlLabel value="D" control={<Radio />} label="Na decolagem" />
-															<FormControlLabel value="A" control={<Radio />} label="Ambos" />
+															<FormControlLabel value={AVAILABILITY.LANDING} control={<Radio />} label="No pouso" />
+															<FormControlLabel value={AVAILABILITY.TAKEOFF} control={<Radio />} label="Na decolagem" />
+															<FormControlLabel value={AVAILABILITY.BOTH} control={<Radio />} label="Ambos" />
 														</RadioGroup>
 													</Stack>
 												</Grid>
@@ -232,8 +277,8 @@ const ProductDetails = () => {
 															<InputLabel htmlFor="stock">Controle de estoque?</InputLabel>
 														</Grid>
 														<RadioGroup aria-label="stock" value={stock ? stock : inventory} name="stock" onChange={handleChangeStock} row>
-															<FormControlLabel value="S" control={<Radio />} label="Sim" />
-															<FormControlLabel value="N" control={<Radio />} label="Não" />
+															<FormControlLabel value={YES_NO.YES} control={<Radio />} label="Sim" />
+															<FormControlLabel value={YES_NO.NO} control={<Radio />} label="Não" />
 														</RadioGroup>
 													</Stack>
 												</Grid>

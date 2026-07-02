@@ -2,6 +2,8 @@ import { FieldArray, useFormik, FormikProvider, Form } from "formik";
 import * as Yup from "yup";
 import { Button, Grid, InputLabel, Stack, OutlinedInput, FormHelperText, Divider, DialogActions, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { dispatch } from "store";
+import { openSnackbar } from "store/reducers/snackbar";
 import useChecklist from "hooks/useChecklists";
 
 const getInitialValues = () => ({
@@ -21,19 +23,31 @@ const AddChecklist = ({ onCancel }) => {
 		initialValues: getInitialValues(),
 		validationSchema,
 		onSubmit: async (values, { setSubmitting, resetForm }) => {
-			try {
-				const payload = {
-					name: values.name,
-					itens: values.itens,
-				};
-				await createChecklist(payload);
-				resetForm();
-				onCancel();
-			} catch (err) {
-				console.error(err);
-			} finally {
+			const payload = {
+				name: values.name,
+				itens: values.itens,
+			};
+
+			const result = await createChecklist(payload);
+			if (!result) {
 				setSubmitting(false);
+				return;
 			}
+
+			setSubmitting(false);
+			dispatch(
+				openSnackbar({
+					open: true,
+					message: "Checklist cadastrado com sucesso!",
+					variant: "alert",
+					alert: {
+						color: "success",
+					},
+					close: false,
+				}),
+			);
+			resetForm();
+			onCancel();
 		},
 	});
 

@@ -1,8 +1,9 @@
+import PropTypes from "prop-types";
 // material-ui
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Dialog, Chip, Button, LinearProgress } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Dialog, Button, LinearProgress } from "@mui/material";
 
 // project imports
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { PopupTransition } from "components/@extended/Transitions";
 import useOperation from "hooks/useOperation";
 import OperationsContext from "contexts/OperationContext";
@@ -11,6 +12,11 @@ import AddOperation from "sections/apps/operations/AddOperation";
 import { PlusOutlined } from "@ant-design/icons";
 import { OperationFilter } from "./OperationFilter";
 import { useNavigate } from "react-router";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+import OperationTableRow from "./OperationTableRow";
+
+const COLUMN_COUNT = 7;
 
 export default function OperationsTable({ openFilter, reload }) {
 	const { findAllOperations, findCategories } = useOperation();
@@ -37,18 +43,33 @@ export default function OperationsTable({ openFilter, reload }) {
 		await findAllOperations(search, page, params);
 	};
 
-	const handleRedirect = (productId) => {
-		navigate(`/operations/${productId}`);
+	const handleDialogClose = () => {
+		setOpen(false);
 	};
+
+	const handleRedirect = useCallback(
+		(productId) => {
+			navigate(`/operations/${productId}`);
+		},
+		[navigate],
+	);
+
+	useEffect(() => {
+		setPage(1);
+	}, [search, selectedCategory]);
 
 	useEffect(() => {
 		const categoriesParams = Object.keys(selectedCategory);
 		const params = new URLSearchParams();
 		params.set("categories", categoriesParams.join(","));
 
-		Promise.all([findCategories(), findAllOperations(search, page, params)]);
+		const controller = new AbortController();
+		Promise.all([findCategories(controller.signal), findAllOperations(search, page, params, controller.signal)]);
+
+		return () => controller.abort();
 	}, [search, page, selectedCategory, reload]);
 
+	const isEmpty = useMemo(() => !loadingOperation && operations.length === 0, [loadingOperation, operations.length]);
 
 	return (
 		<>
@@ -85,58 +106,29 @@ export default function OperationsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{operations.length > 0 ? (
-							operations.map((e) => (
-								<TableRow
-									hover
-									key={e.id_service}
-									sx={{ cursor: "pointer" }}
-									onClick={() => {
-										handleRedirect(e.id_service);
-									}}
-								>
-									<TableCell align="center">
-										<Chip color="secondary" variant="filled" size="small" label={`# ${e.id_service}`} />
-									</TableCell>
-									<TableCell align="center">{e.name}</TableCell>
-									<TableCell align="center">
-										<Chip color="warning" variant="filled" size="small" label={e.category_name} sx={{ color: "#252525" }} />
-									</TableCell>
-									<TableCell align="center">
-										{new Intl.NumberFormat("pt-BR", {
-											style: "currency",
-											currency: "BRL",
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2,
-										}).format(e.price)}
-									</TableCell>
-									<TableCell align="center">{e.unit}</TableCell>
-									<TableCell align="center">
-										<Chip color={e.status === "D" ? "success" : "error"} variant="filled" size="small" label={e.status === "D" ? "Disponível" : "Indisponível"} />
-									</TableCell>
-									<TableCell align="center">{e.created_by}</TableCell>
-								</TableRow>
-							))
-						) : search || openFilter ? (
+						{loadingOperation ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
 							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum serviço encontrado</Typography>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title="Nenhum resultado encontrado" description="Nenhum serviço foi encontrado com os filtros atuais." />
 								</TableCell>
 							</TableRow>
 						) : (
-							<TableRow>
-								<TableCell colSpan={7} align="center">
-									<Typography variant="h5">Nenhum serviço cadastrado</Typography>
-								</TableCell>
-							</TableRow>
+							operations.map((e) => <OperationTableRow key={e.id_service} operation={e} onRedirect={handleRedirect} />)
 						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
-			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleAdd} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
+			<Dialog maxWidth="sm" fullWidth TransitionComponent={PopupTransition} onClose={handleDialogClose} open={open} sx={{ "& .MuiDialog-paper": { p: 0 } }}>
 				<AddOperation onCancel={handleAdd} />
 			</Dialog>
 		</>
 	);
 }
+
+OperationsTable.propTypes = {
+	openFilter: PropTypes.bool,
+	reload: PropTypes.bool,
+};

@@ -12,8 +12,6 @@ import useAuth from "hooks/useAuth";
 import useScriptRef from "hooks/useScriptRef";
 import AnimateButton from "components/@extended/AnimateButton";
 
-import { dispatch } from "store";
-import { openSnackbar } from "store/reducers/snackbar";
 import { useContext } from "react";
 import AuthContext from "contexts/AuthContext";
 
@@ -35,39 +33,18 @@ const AuthForgotPassword = () => {
 				validationSchema={Yup.object().shape({
 					email: Yup.string().email("Digite um email válido").max(255).required("Email é obrigatório"),
 				})}
-				onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+				onSubmit={async (values, { setStatus, setSubmitting }) => {
 					try {
-						await requestResetPasswordCode(values).then(
-							(res) => {
-								setStatus({ success: true });
-								setSubmitting(false);
-								dispatch(
-									openSnackbar({
-										open: true,
-										message: res.message,
-										variant: "alert",
-										alert: {
-											color: "success",
-										},
-										close: false,
-									})
-								);
-
-								setEmailSent(values.email);
-								navigate("/code-verification", { replace: true });
-							},
-
-							(err) => {
-								setStatus({ success: false });
-								setErrors({ submit: err.message });
-								setSubmitting(false);
-							}
-						);
+						await requestResetPasswordCode(values);
+						if (scriptedRef.current) {
+							setStatus({ success: true });
+							setSubmitting(false);
+							setEmailSent(values.email);
+							navigate("/code-verification", { replace: true });
+						}
 					} catch (err) {
-						console.error(err);
 						if (scriptedRef.current) {
 							setStatus({ success: false });
-							setErrors({ submit: err.message });
 							setSubmitting(false);
 						}
 					}

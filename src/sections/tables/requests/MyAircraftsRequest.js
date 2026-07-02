@@ -1,11 +1,15 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, Stack, Grid, Chip, LinearProgress } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Stack, Grid, Chip, LinearProgress } from "@mui/material";
+import { useContext, useEffect, useMemo, useState } from "react";
 import useRequest from "hooks/useRequest";
 import RequestContext from "contexts/RequestContext";
 import SearchRequestByAdmin from "sections/apps/requests/SearchRequestByAdmin";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import { RequestFilter } from "./RequestFilter";
+import EmptyState from "components/feedback/EmptyState";
+import TableSkeleton from "components/feedback/TableSkeleton";
+
+const COLUMN_COUNT = 8;
 
 export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 	const { searchMyAircraftsRequests } = useRequest();
@@ -33,8 +37,13 @@ export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 		const paramsStatus = new URLSearchParams();
 		paramsStatus.set("status", statusParams.join(","));
 
-		searchMyAircraftsRequests(search, page, paramsStatus, selectedPeriod, dateFilter);
+		const controller = new AbortController();
+		searchMyAircraftsRequests(search, page, paramsStatus, selectedPeriod, dateFilter, controller.signal);
+
+		return () => controller.abort();
 	}, [search, page, selectedStatus, selectedPeriod, dateFilter, reload]);
+
+	const isEmpty = useMemo(() => !loadingRequest && searchAircraftsRequests.length === 0, [loadingRequest, searchAircraftsRequests.length]);
 
 
 	return (
@@ -71,7 +80,15 @@ export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{searchAircraftsRequests.length > 0 ? (
+						{loadingRequest ? (
+							<TableSkeleton rows={5} columns={COLUMN_COUNT} />
+						) : isEmpty ? (
+							<TableRow>
+								<TableCell colSpan={COLUMN_COUNT}>
+									<EmptyState title={search || openFilter ? "Nenhuma solicitação encontrada" : "Nenhuma solicitação cadastrada"} />
+								</TableCell>
+							</TableRow>
+						) : (
 							searchAircraftsRequests.map((e) => (
 								<TableRow
 									hover
@@ -103,18 +120,6 @@ export default function MyAircraftsRequestsTable({ openFilter, reload }) {
 									<TableCell align="center">{format(new Date(e.created_at), "dd/MM/yyyy HH:mm")}</TableCell>
 								</TableRow>
 							))
-						) : search || openFilter ? (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhuma solicitação encontrada</Typography>
-								</TableCell>
-							</TableRow>
-						) : (
-							<TableRow>
-								<TableCell colSpan={10} align="center">
-									<Typography variant="h5">Nenhuma solicitação cadastrada</Typography>
-								</TableCell>
-							</TableRow>
 						)}
 					</TableBody>
 				</Table>

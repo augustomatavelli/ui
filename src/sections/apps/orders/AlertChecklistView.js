@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { Fragment } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { PopupTransition } from "components/@extended/Transitions";
 import useInspection from "hooks/useInspection";
@@ -76,10 +77,10 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 							Checklist de inspeção
 						</Typography>
 						<Divider />
-						{inspections.map((e, index) => {
+						{inspections.map((e) => {
 							return (
-								<>
-									<Grid key={Math.random()} sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+								<Fragment key={e.id_checklist_item}>
+									<Grid sx={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
 										<Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: 80 }}>
 											<Grid sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 												<ToggleButtonGroup
@@ -157,7 +158,7 @@ export default function AlertChecklistView({ open, handleClose, selectedOrder })
 										</Grid>
 									</Grid>
 									<Divider />
-								</>
+								</Fragment>
 							);
 						})}
 					</Stack>
