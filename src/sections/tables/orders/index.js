@@ -9,7 +9,6 @@ import { EditOutlined, SaveOutlined, FileSearchOutlined, PaperClipOutlined, EyeO
 import useRequest from "hooks/useRequest";
 import AlertChecklist from "sections/apps/orders/AlertChecklist";
 import InspectionContext from "contexts/InspectionsContext";
-import { fromDisplay } from "utils/date";
 import AlertComissary from "sections/apps/orders/AlertComissary";
 import EmptyState from "components/feedback/EmptyState";
 import TableSkeleton from "components/feedback/TableSkeleton";
@@ -184,24 +183,17 @@ export default function OrdersTable({ reload, setReload, search, tab }) {
 									</TableCell>
 									<TableCell align="center">{item.registration}</TableCell>
 									<TableCell align="center">
-										{item.available_at === "P"
-											? item.landing_date
-											: item.available_at === "D"
-												? item.takeoff_date
-												: item.available_at === "A"
-													? (() => {
-															const now = Date.now();
-															const landing = item.landing_date ? fromDisplay(item.landing_date) : null;
-															const takeoff = item.takeoff_date ? fromDisplay(item.takeoff_date) : null;
-															// Sem uma das datas, mostra a que existir.
-															if (!landing) return item.takeoff_date || "Não agendado";
-															if (!takeoff) return item.landing_date || "Não agendado";
-															// Mostra a hora mais próxima do momento atual.
-															const landingDiff = Math.abs(now - landing.getTime());
-															const takeoffDiff = Math.abs(now - takeoff.getTime());
-															return landingDiff <= takeoffDiff ? item.landing_date : item.takeoff_date;
-														})()
-													: "Não agendado"}
+										{/* O evento (pouso/decolagem) é resolvido na API — ver common/helpers/order-event.helper.ts. */}
+										{item.event_date ? (
+											<Box>
+												<Typography>{item.event_date}</Typography>
+												<Typography variant="caption" color="text.secondary">
+													{item.event_at === "P" ? "Pouso" : "Decolagem"}
+												</Typography>
+											</Box>
+										) : (
+											"Não agendado"
+										)}
 									</TableCell>
 									<TableCell align="center">
 										{item.products ? (

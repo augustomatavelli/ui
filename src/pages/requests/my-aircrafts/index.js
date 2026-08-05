@@ -18,7 +18,7 @@ const ListRequestsOfMyAircrafts = () => {
 	return (
 		<MainCard
 			content={false}
-			title="Solicitações de pouso"
+			title="Solicitações"
 			sx={{ "& .MuiInputLabel-root": { fontSize: "0.875rem" } }}
 			secondary={
 				<Grid sx={{ display: "flex", alignItems: "center", gap: 1 }}>
